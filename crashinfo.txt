@@ -1,0 +1,999 @@
+
+--------------------------
+SA-MP Server: 0.3x-R2
+
+Exception At Address: 0x76F322D2 Module: (ntdll.dll)
+
+Registers:
+EAX: 0x00000024	EBX: 0x0000002F	ECX: 0x004E25A8	EDX: 0x00000000
+ESI: 0x00000024	EDI: 0x00000020	EBP: 0x0018F7AC	ESP: 0x0018F798
+EFLAGS: 0x00010206
+
+Stack:
++0000: 0x049DCCAC   0x00000000   0x767A6281   0x0000008F
++0010: 0x00000800   0x0018F7E8   0x00492980   0x00000020
++0020: 0x00492FDE   0x00000000   0x049DCCAC   0x00000000
++0030: 0x0000002F   0x00600024   0x0018F7C0   0x0018F36C
++0040: 0x0018FB3C   0x00496FD8   0x004B2638   0xFFFFFFFF
++0050: 0x00000000   0x0040531E   0x0000002F   0x00000000
++0060: 0x049E2404   0x0018F818   0x03581B24   0x0040575F
++0070: 0x00000001   0x00341F58   0x00341F58   0x00000073
++0080: 0x035B29CC   0x004010B6   0x00341F58   0x049DCCAC
++0090: 0x035B5544   0x00402B63   0x00341F58   0x00000043
++00A0: 0x0018F850   0x049E2404   0x00000000   0x00000000
++00B0: 0x003472D8   0x0018FA30   0x00000000   0x0142CEC0
++00C0: 0x0142CEC0   0x0142D5A0   0x01429604   0x0142D4F0
++00D0: 0x01429604   0x03581B24   0x035B5544   0x00000000
++00E0: 0x03580020   0x00033A20   0x0046B69F   0x00341F58
++00F0: 0x0018F8D8   0x0000004C   0x00341F58   0x00000000
++0100: 0x00341F58   0x00000000   0x00341F58   0x00000001
++0110: 0x00341F58   0x00000000   0x00341F58   0x0018F8F0
++0120: 0x0018F8DC   0x0018FA30   0x049DEAE8   0x00000000
++0130: 0x0018FB31   0x003378E8   0x0018FB4C   0x00000000
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Texture Studio\samp-server.exe)
+ntdll.dll	A: 0x76F10000 - 0x77090000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x75B10000 - 0x75C20000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x76770000 - 0x767B7000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x74A20000 - 0x7566A000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x76130000 - 0x761DC000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x75C30000 - 0x75C87000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x764B0000 - 0x76540000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x76A10000 - 0x76B10000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x761E0000 - 0x76280000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x75690000 - 0x756A9000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x75DD0000 - 0x75EC0000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x74960000 - 0x749C0000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x74950000 - 0x7495C000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x75C20000 - 0x75C2A000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x75D30000 - 0x75DCD000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x62010000 - 0x62017000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x756B0000 - 0x756E5000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x766D0000 - 0x766D6000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x71200000 - 0x71232000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x749C0000 - 0x74A20000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x76280000 - 0x7634C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Texture Studio\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x6DED0000 - 0x6DF8F000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x5DE70000 - 0x5DEAF000	(C:\Users\JEFF\Desktop\Texture Studio\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x6C110000 - 0x6C179000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x5DDD0000 - 0x5DE6C000	(C:\Users\JEFF\Desktop\Texture Studio\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x598A0000 - 0x59A12000	(C:\Users\JEFF\Desktop\Texture Studio\MSVCR100D.dll)
+mswsock.dll	A: 0x70760000 - 0x7079C000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x70750000 - 0x70755000	(C:\Windows\System32\wshtcpip.dll)
+NLAapi.dll	A: 0x70740000 - 0x70750000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x70730000 - 0x70740000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x70710000 - 0x70722000	(C:\Windows\system32\pnrpnsp.dll)
+DNSAPI.dll	A: 0x706C0000 - 0x70704000	(C:\Windows\system32\DNSAPI.dll)
+winrnr.dll	A: 0x706B0000 - 0x706B8000	(C:\Windows\System32\winrnr.dll)
+IPHLPAPI.DLL	A: 0x715F0000 - 0x7160C000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x715E0000 - 0x715E7000	(C:\Windows\system32\WINNSI.DLL)
+rasadhlp.dll	A: 0x70660000 - 0x70666000	(C:\Windows\system32\rasadhlp.dll)
+
+--------------------------
+SA-MP Server: 0.3x-R2
+
+Exception At Address: 0x0040531E Module: (samp-server.exe)
+
+Registers:
+EAX: 0x00000024	EBX: 0x0000002F	ECX: 0x004E25A8	EDX: 0x00000000
+ESI: 0x00000024	EDI: 0x00000020	EBP: 0x00000000	ESP: 0x0018F760
+EFLAGS: 0x00010202
+
+Stack:
++0000: 0x0000002F   0x00000000   0x04AE2404   0x0018F788
++0010: 0x00000000   0x0040575F   0x00000001   0x00000043
++0020: 0x02211F30   0x00000073   0x0018F7CC   0x004010B6
++0030: 0x02211F30   0x04ADCCAC   0x028ADFD8   0x5DD7B1C4
++0040: 0x02211F30   0x00000043   0x0018F840   0x04AE2404
++0050: 0x036B29CC   0x02211F30   0x00000000   0x02211F30
++0060: 0x0142D4F0   0x00030EA8   0x00000043   0x0018F7E0
++0070: 0x5DD8350A   0x0018F7B8   0x0018F840   0x04AE2404
++0080: 0x0018F838   0x5DD851A6   0x02211F30   0x00000043
++0090: 0x0018F840   0x04AE2404   0x0000004C   0x028ADFD8
++00A0: 0x00000000   0x00033A20   0x03680020   0x00000000
++00B0: 0x0018F840   0x00000000   0x03681B24   0x01429604
++00C0: 0x0142D5A0   0x036B5544   0x01429604   0x0142D4F0
++00D0: 0x0142CEC0   0x0142CEC0   0x0018F86C   0x5DD7D641
++00E0: 0x00000000   0x0018F8D8   0x0000004C   0x022172B0
++00F0: 0x00000000   0x0018FA30   0x00000001   0x02211F30
++0100: 0x00000000   0x00000008   0x0000004C   0x0018F87C
++0110: 0x5DD8355A   0x0018F8D8   0x0018F858   0x00000000
++0120: 0x0046B69F   0x02211F30   0x0018F8D8   0x0000004C
++0130: 0x02211F30   0x00000000   0x02211F30   0x00000000
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Texture Studio\samp-server.exe)
+ntdll.dll	A: 0x76F10000 - 0x77090000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x75B10000 - 0x75C20000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x76770000 - 0x767B7000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x74A20000 - 0x7566A000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x76130000 - 0x761DC000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x75C30000 - 0x75C87000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x764B0000 - 0x76540000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x76A10000 - 0x76B10000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x761E0000 - 0x76280000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x75690000 - 0x756A9000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x75DD0000 - 0x75EC0000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x74960000 - 0x749C0000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x74950000 - 0x7495C000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x75C20000 - 0x75C2A000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x75D30000 - 0x75DCD000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x62010000 - 0x62017000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x756B0000 - 0x756E5000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x766D0000 - 0x766D6000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x71200000 - 0x71232000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x749C0000 - 0x74A20000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x76280000 - 0x7634C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Texture Studio\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x6DED0000 - 0x6DF8F000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x5DE70000 - 0x5DEAF000	(C:\Users\JEFF\Desktop\Texture Studio\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x6C110000 - 0x6C179000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x5DDD0000 - 0x5DE6C000	(C:\Users\JEFF\Desktop\Texture Studio\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x5AAB0000 - 0x5AC22000	(C:\Users\JEFF\Desktop\Texture Studio\MSVCR100D.dll)
+mswsock.dll	A: 0x70760000 - 0x7079C000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x70750000 - 0x70755000	(C:\Windows\System32\wshtcpip.dll)
+DNSAPI.dll	A: 0x706C0000 - 0x70704000	(C:\Windows\system32\DNSAPI.dll)
+IPHLPAPI.DLL	A: 0x715F0000 - 0x7160C000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x715E0000 - 0x715E7000	(C:\Windows\system32\WINNSI.DLL)
+NLAapi.dll	A: 0x70740000 - 0x70750000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x70730000 - 0x70740000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x70710000 - 0x70722000	(C:\Windows\system32\pnrpnsp.dll)
+winrnr.dll	A: 0x706B0000 - 0x706B8000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x70660000 - 0x70666000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x6EC40000 - 0x6EC46000	(C:\Windows\System32\wship6.dll)
+
+--------------------------
+SA-MP Server: 0.3x-R2
+
+Exception At Address: 0x0040531E Module: (samp-server.exe)
+
+Registers:
+EAX: 0x00000024	EBX: 0x0000002F	ECX: 0x004E25A8	EDX: 0x00000000
+ESI: 0x00000024	EDI: 0x00000020	EBP: 0x00000000	ESP: 0x0018F760
+EFLAGS: 0x00010202
+
+Stack:
++0000: 0x0000002F   0x00000000   0x04CD2480   0x0018F788
++0010: 0x00000000   0x0040575F   0x00000001   0x00000043
++0020: 0x02121F30   0x00000073   0x0018F7CC   0x004010B6
++0030: 0x02121F30   0x04CCCD20   0x026EDFD8   0x5DDAB1C4
++0040: 0x02121F30   0x00000043   0x0018F840   0x04CD2480
++0050: 0x038A2A14   0x02121F30   0x00000000   0x02121F30
++0060: 0x0142D500   0x00030EF0   0x00000043   0x0018F7E0
++0070: 0x5DDB350A   0x0018F7B8   0x0018F840   0x04CD2480
++0080: 0x0018F838   0x5DDB51A6   0x02121F30   0x00000043
++0090: 0x0018F840   0x04CD2480   0x0000004C   0x026EDFD8
++00A0: 0x00000000   0x00033A8C   0x03870020   0x00000000
++00B0: 0x0018F840   0x00000000   0x03871B24   0x01429614
++00C0: 0x0142D5B0   0x038A55B0   0x01429614   0x0142D500
++00D0: 0x0142CED4   0x0142CED0   0x0018F86C   0x5DDAD641
++00E0: 0x00000000   0x0018F8D8   0x0000004C   0x021272B0
++00F0: 0x00000000   0x0018FA30   0x00000001   0x02121F30
++0100: 0x00000000   0x00000008   0x0000004C   0x0018F87C
++0110: 0x5DDB355A   0x0018F8D8   0x0018F858   0x00000000
++0120: 0x0046B69F   0x02121F30   0x0018F8D8   0x0000004C
++0130: 0x02121F30   0x00000000   0x02121F30   0x00000000
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Texture Studio\samp-server.exe)
+ntdll.dll	A: 0x76F10000 - 0x77090000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x75B10000 - 0x75C20000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x76770000 - 0x767B7000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x74A20000 - 0x7566A000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x76130000 - 0x761DC000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x75C30000 - 0x75C87000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x764B0000 - 0x76540000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x76A10000 - 0x76B10000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x761E0000 - 0x76280000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x75690000 - 0x756A9000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x75DD0000 - 0x75EC0000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x74960000 - 0x749C0000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x74950000 - 0x7495C000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x75C20000 - 0x75C2A000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x75D30000 - 0x75DCD000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x62010000 - 0x62017000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x756B0000 - 0x756E5000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x766D0000 - 0x766D6000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x71200000 - 0x71232000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x749C0000 - 0x74A20000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x76280000 - 0x7634C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Texture Studio\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x6DED0000 - 0x6DF8F000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x5DE70000 - 0x5DEAF000	(C:\Users\JEFF\Desktop\Texture Studio\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x6C110000 - 0x6C179000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x5DDD0000 - 0x5DE6C000	(C:\Users\JEFF\Desktop\Texture Studio\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x5AAB0000 - 0x5AC22000	(C:\Users\JEFF\Desktop\Texture Studio\MSVCR100D.dll)
+mswsock.dll	A: 0x70760000 - 0x7079C000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x70750000 - 0x70755000	(C:\Windows\System32\wshtcpip.dll)
+DNSAPI.dll	A: 0x706C0000 - 0x70704000	(C:\Windows\system32\DNSAPI.dll)
+IPHLPAPI.DLL	A: 0x715F0000 - 0x7160C000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x715E0000 - 0x715E7000	(C:\Windows\system32\WINNSI.DLL)
+NLAapi.dll	A: 0x70740000 - 0x70750000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x70730000 - 0x70740000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x70710000 - 0x70722000	(C:\Windows\system32\pnrpnsp.dll)
+winrnr.dll	A: 0x706B0000 - 0x706B8000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x70660000 - 0x70666000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x6EC40000 - 0x6EC46000	(C:\Windows\System32\wship6.dll)
+
+--------------------------
+SA-MP Server: 0.3x-R2
+
+Exception At Address: 0x91880000 Module: (Unknown)
+
+Registers:
+EAX: 0x00731F30	EBX: 0x00000001	ECX: 0x00000000	EDX: 0x00000000
+ESI: 0x00000000	EDI: 0x007372B0	EBP: 0x26880894	ESP: 0x0047F192
+EFLAGS: 0x00010212
+
+Stack:
++0000: 0x00002695   0xCC0004C2   0xCCCCCCCC   0x448BCCCC
++0010: 0xC0850424   0xF8830F7C   0x8B0A7D0A   0x25858184
++0020: 0x04C20000   0xC2C03300   0xCCCC0004   0x44D9CCCC
++0030: 0xDC560424   0x4A64301D   0xDFF18B00   0x05C4F6E0
++0040: 0x07E8077A   0xEBFFFCF4   0xF3E0E805   0x44D9FFFC
++0050: 0xCE8B0C24   0x64301DDC   0xE0DF004A   0x7A05C4F6
++0060: 0xF3E8E807   0x05EBFFFC   0xFCF3C1E8   0x2444D9FF
++0070: 0xDCCE8B10   0x4A64301D   0xF6E0DF00   0x077A05C4
++0080: 0xFCF3C9E8   0xE805EBFF   0xFFFCF3A2   0x142444D9
++0090: 0x1DDCCE8B   0x004A6430   0xC4F6E0DF   0xE8077A05
++00A0: 0xFFFCF3AA   0x83E805EB   0xD9FFFCF3   0xD90C2444
++00B0: 0x280DDCE1   0xE8004B08   0x00014802   0x106A016A
++00C0: 0x4489CE8B   0x448D1424   0xE8501424   0xFFFCF42E
++00D0: 0x102444D9   0x0DDCE1D9   0x004B0828   0x0147DDE8
++00E0: 0x6A016A00   0x244C8D10   0xCE8B5114   0x18244489
++00F0: 0xFCF409E8   0x2444D9FF   0xDCE1D914   0x4B08280D
++0100: 0x47B8E800   0x016A0001   0x548D106A   0x8B521424
++0110: 0x244489CE   0xF3E4E818   0xC25EFFFC   0x44D90010
++0120: 0xD8560424   0x4B083815   0xDFF18B00   0x05C4F6E0
++0130: 0xD8DD0A7A   0x083805D9   0x15EB004B   0x083415D8
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Texture Studio\samp-server.exe)
+ntdll.dll	A: 0x76F10000 - 0x77090000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x75B10000 - 0x75C20000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x76770000 - 0x767B7000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x74A20000 - 0x7566A000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x76130000 - 0x761DC000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x75C30000 - 0x75C87000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x764B0000 - 0x76540000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x76A10000 - 0x76B10000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x761E0000 - 0x76280000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x75690000 - 0x756A9000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x75DD0000 - 0x75EC0000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x74960000 - 0x749C0000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x74950000 - 0x7495C000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x75C20000 - 0x75C2A000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x75D30000 - 0x75DCD000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x62010000 - 0x62017000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x756B0000 - 0x756E5000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x766D0000 - 0x766D6000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x71200000 - 0x71232000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x749C0000 - 0x74A20000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x76280000 - 0x7634C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Texture Studio\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x6DED0000 - 0x6DF8F000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x5DE70000 - 0x5DEAF000	(C:\Users\JEFF\Desktop\Texture Studio\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x6C110000 - 0x6C179000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x5DDD0000 - 0x5DE6C000	(C:\Users\JEFF\Desktop\Texture Studio\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x598A0000 - 0x59A12000	(C:\Users\JEFF\Desktop\Texture Studio\MSVCR100D.dll)
+mswsock.dll	A: 0x70760000 - 0x7079C000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x70750000 - 0x70755000	(C:\Windows\System32\wshtcpip.dll)
+DNSAPI.dll	A: 0x706C0000 - 0x70704000	(C:\Windows\system32\DNSAPI.dll)
+NLAapi.dll	A: 0x70740000 - 0x70750000	(C:\Windows\system32\NLAapi.dll)
+IPHLPAPI.DLL	A: 0x715F0000 - 0x7160C000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x715E0000 - 0x715E7000	(C:\Windows\system32\WINNSI.DLL)
+napinsp.dll	A: 0x70730000 - 0x70740000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x70710000 - 0x70722000	(C:\Windows\system32\pnrpnsp.dll)
+winrnr.dll	A: 0x706B0000 - 0x706B8000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x70660000 - 0x70666000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x6EC40000 - 0x6EC46000	(C:\Windows\System32\wship6.dll)
+
+--------------------------
+SA-MP Server: 0.3x-R2
+
+Exception At Address: 0x6C6C696B Module: (Unknown)
+
+Registers:
+EAX: 0x46F7DBDA	EBX: 0x0018F350	ECX: 0x00000000	EDX: 0x44F40F2E
+ESI: 0x020412A4	EDI: 0x01FB1990	EBP: 0x2F1EF4C6	ESP: 0x0018F93D
+EFLAGS: 0x00010212
+
+Stack:
++0000: 0x00000000   0x00000000   0x00000000   0x00000000
++0010: 0x00000000   0x00000000   0x00000000   0x00000000
++0020: 0x00000000   0x00000000   0x00000000   0x00000000
++0030: 0x00000000   0x00000000   0x00000000   0x00000000
++0040: 0x00000000   0x00000000   0x00000000   0x00000000
++0050: 0x00000000   0x00000000   0x00000000   0x00000000
++0060: 0x00000000   0x00000000   0x00000000   0x00000000
++0070: 0x00000000   0x00000000   0x00000000   0x00000000
++0080: 0x00000000   0x00000000   0x00000000   0x00000000
++0090: 0x00000000   0x00000000   0x00000000   0x00000000
++00A0: 0x00000000   0x00000000   0x00000000   0x00000000
++00B0: 0x00000000   0x00000000   0x00000000   0x4D000000
++00C0: 0x14004540   0xC00018FA   0x7C0202A8   0x7401F9C6
++00D0: 0xCB0018FB   0xC000455B   0xC00202A8   0x540202A8
++00E0: 0x600018FC   0x4B0018FB   0x00004A4C   0x56000000
++00F0: 0x360048D6   0xFF0018FB   0xE80208FF   0x740208DE
++0100: 0x010018FB   0x3601F925   0xFF0018FB   0x200208FF
++0110: 0x20000000   0x18000000   0x74000000   0x000018FB
++0120: 0x01000000   0xC0000000   0x7C0202A8   0x000000C6
++0130: 0xB6000000   0xD800489B   0x010018FA   0x01000000
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Texture Studio\samp-server.exe)
+ntdll.dll	A: 0x77C60000 - 0x77DE0000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x76240000 - 0x76350000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x75C30000 - 0x75C77000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x766F0000 - 0x7733A000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x775D0000 - 0x7767C000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x76000000 - 0x76057000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x76190000 - 0x76220000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x75F00000 - 0x76000000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x75B00000 - 0x75BA0000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x77840000 - 0x77859000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x763F0000 - 0x764E0000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x756B0000 - 0x75710000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x756A0000 - 0x756AC000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x764E0000 - 0x764EA000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x76650000 - 0x766ED000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x5C950000 - 0x5C957000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x75AB0000 - 0x75AE5000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x77410000 - 0x77416000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x71AA0000 - 0x71AD2000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x75C80000 - 0x75CE0000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x760B0000 - 0x7617C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Texture Studio\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x5D0F0000 - 0x5D1AF000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x60AB0000 - 0x60AEF000	(C:\Users\JEFF\Desktop\Texture Studio\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x5D080000 - 0x5D0E9000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x50440000 - 0x504DC000	(C:\Users\JEFF\Desktop\Texture Studio\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x0F6C0000 - 0x0F832000	(C:\Users\JEFF\Desktop\Texture Studio\MSVCR100D.dll)
+mswsock.dll	A: 0x71120000 - 0x7115C000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x704D0000 - 0x704D5000	(C:\Windows\System32\wshtcpip.dll)
+DNSAPI.dll	A: 0x70920000 - 0x70964000	(C:\Windows\system32\DNSAPI.dll)
+NLAapi.dll	A: 0x70570000 - 0x70580000	(C:\Windows\system32\NLAapi.dll)
+IPHLPAPI.DLL	A: 0x72350000 - 0x7236C000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x72340000 - 0x72347000	(C:\Windows\system32\WINNSI.DLL)
+napinsp.dll	A: 0x70560000 - 0x70570000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x70540000 - 0x70552000	(C:\Windows\system32\pnrpnsp.dll)
+winrnr.dll	A: 0x70530000 - 0x70538000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x704E0000 - 0x704E6000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x6DA50000 - 0x6DA56000	(C:\Windows\System32\wship6.dll)
+
+--------------------------
+SA-MP Server: 0.3x-R2
+
+Exception At Address: 0x0046A798 Module: (samp-server.exe)
+
+Registers:
+EAX: 0x0018F254	EBX: 0x00000000	ECX: 0x00000000	EDX: 0x004056C0
+ESI: 0x00000000	EDI: 0x0000007E	EBP: 0x00000000	ESP: 0x0018F8D0
+EFLAGS: 0x00010286
+
+Stack:
++0000: 0x02348E90   0x0018F90C   0x000000CC   0x02348E90
++0010: 0x00000000   0x02348E90   0x0018F918   0x0018F910
++0020: 0x0018F938   0x055085F0   0x00000000   0x0018FA38
++0030: 0x00000000   0x0018FB60   0x00000000   0x00000000
++0040: 0x055085F0   0x0048DC41   0x019BB238   0x000000CC
++0050: 0x01F2E070   0x0018FB6C   0x023B8601   0x00000004
++0060: 0x77E971F5   0x0A4AF947   0x6670632F   0x00000000
++0070: 0x00000000   0x00000000   0x00000000   0x00000000
++0080: 0x00000000   0x00000000   0x00000000   0x00000000
++0090: 0x00000000   0x00000000   0x00000000   0x00000000
++00A0: 0x00000000   0x00000000   0x00000000   0x00000000
++00B0: 0x00000000   0x00000000   0x00000000   0x00000000
++00C0: 0x00000000   0x00000000   0x00000000   0x00000000
++00D0: 0x00000000   0x00000000   0x00000000   0x00000000
++00E0: 0x00000000   0x00000000   0x00000000   0x00000000
++00F0: 0x00000000   0x00000000   0x00000000   0x00000000
++0100: 0x00000000   0x00000000   0x00000000   0x00000000
++0110: 0x00000000   0x00000000   0x00000000   0x00000000
++0120: 0x00000000   0x00000000   0x00000000   0x00000000
++0130: 0x00000000   0x00000000   0x00000000   0x00000000
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\samp-server.exe)
+ntdll.dll	A: 0x77E20000 - 0x77FA0000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x776B0000 - 0x777C0000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x76EB0000 - 0x76EF7000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x76260000 - 0x76EAA000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x76FA0000 - 0x7704C000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x77640000 - 0x77697000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x75E80000 - 0x75F10000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x770E0000 - 0x771E0000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x758A0000 - 0x75940000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x77400000 - 0x77419000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x760E0000 - 0x761D0000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x75840000 - 0x758A0000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x75830000 - 0x7583C000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x776A0000 - 0x776AA000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x77980000 - 0x77A1D000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x6FF10000 - 0x6FF17000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x76F60000 - 0x76F95000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x77480000 - 0x77486000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x71D40000 - 0x71D72000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x75BB0000 - 0x75C10000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x75940000 - 0x75A0C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x5AE40000 - 0x5AEFF000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x54CC0000 - 0x54CFF000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x5ADB0000 - 0x5AE19000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x548E0000 - 0x5497C000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x50D70000 - 0x50EE2000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\MSVCR100D.dll)
+mswsock.dll	A: 0x73090000 - 0x730CC000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x72B40000 - 0x72B45000	(C:\Windows\System32\wshtcpip.dll)
+mapandreas.DLL	A: 0x54CA0000 - 0x54CB7000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\plugins\mapandreas.DLL)
+DNSAPI.dll	A: 0x71590000 - 0x715D4000	(C:\Windows\system32\DNSAPI.dll)
+WLIDNSP.DLL	A: 0x70260000 - 0x70287000	(C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live\WLIDNSP.DLL)
+PSAPI.DLL	A: 0x77050000 - 0x77055000	(C:\Windows\syswow64\PSAPI.DLL)
+NLAapi.dll	A: 0x711C0000 - 0x711D0000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x711B0000 - 0x711C0000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x71190000 - 0x711A2000	(C:\Windows\system32\pnrpnsp.dll)
+IPHLPAPI.DLL	A: 0x72F60000 - 0x72F7C000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x72F30000 - 0x72F37000	(C:\Windows\system32\WINNSI.DLL)
+winrnr.dll	A: 0x71180000 - 0x71188000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x71130000 - 0x71136000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x6E250000 - 0x6E256000	(C:\Windows\System32\wship6.dll)
+
+--------------------------
+SA-MP Server: 0.3x-R2
+
+Exception At Address: 0x0046A798 Module: (samp-server.exe)
+
+Registers:
+EAX: 0x0018F254	EBX: 0x00000000	ECX: 0x00000000	EDX: 0x004056C0
+ESI: 0x00000000	EDI: 0x0000007E	EBP: 0x00000000	ESP: 0x0018F8D0
+EFLAGS: 0x00010286
+
+Stack:
++0000: 0x01EB21C0   0x0018F90C   0x000000CC   0x01EB21C0
++0010: 0x00000000   0x01EB21C0   0x0018F918   0x0018F910
++0020: 0x0018F938   0x053085CC   0x00000000   0x0018FA38
++0030: 0x00000000   0x0018FB60   0x00000000   0x00000000
++0040: 0x053085CC   0x0048DC41   0x019BB238   0x000000CC
++0050: 0x003CE070   0x0018FB6C   0x01F08601   0x00000004
++0060: 0x77E971F5   0x0A70DCFF   0x6670632F   0x00000000
++0070: 0x00000000   0x00000000   0x00000000   0x00000000
++0080: 0x00000000   0x00000000   0x00000000   0x00000000
++0090: 0x00000000   0x00000000   0x00000000   0x00000000
++00A0: 0x00000000   0x00000000   0x00000000   0x00000000
++00B0: 0x00000000   0x00000000   0x00000000   0x00000000
++00C0: 0x00000000   0x00000000   0x00000000   0x00000000
++00D0: 0x00000000   0x00000000   0x00000000   0x00000000
++00E0: 0x00000000   0x00000000   0x00000000   0x00000000
++00F0: 0x00000000   0x00000000   0x00000000   0x00000000
++0100: 0x00000000   0x00000000   0x00000000   0x00000000
++0110: 0x00000000   0x00000000   0x00000000   0x00000000
++0120: 0x00000000   0x00000000   0x00000000   0x00000000
++0130: 0x00000000   0x00000000   0x00000000   0x00000000
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\samp-server.exe)
+ntdll.dll	A: 0x77E20000 - 0x77FA0000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x776B0000 - 0x777C0000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x76EB0000 - 0x76EF7000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x76260000 - 0x76EAA000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x76FA0000 - 0x7704C000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x77640000 - 0x77697000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x75E80000 - 0x75F10000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x770E0000 - 0x771E0000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x758A0000 - 0x75940000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x77400000 - 0x77419000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x760E0000 - 0x761D0000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x75840000 - 0x758A0000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x75830000 - 0x7583C000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x776A0000 - 0x776AA000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x77980000 - 0x77A1D000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x6FF10000 - 0x6FF17000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x76F60000 - 0x76F95000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x77480000 - 0x77486000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x71D40000 - 0x71D72000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x75BB0000 - 0x75C10000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x75940000 - 0x75A0C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x5AE40000 - 0x5AEFF000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x54D00000 - 0x54D3F000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x5ADB0000 - 0x5AE19000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x54C60000 - 0x54CFC000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x54480000 - 0x545F2000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\MSVCR100D.dll)
+mswsock.dll	A: 0x73090000 - 0x730CC000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x72B40000 - 0x72B45000	(C:\Windows\System32\wshtcpip.dll)
+mapandreas.DLL	A: 0x54960000 - 0x54977000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio\plugins\mapandreas.DLL)
+DNSAPI.dll	A: 0x71590000 - 0x715D4000	(C:\Windows\system32\DNSAPI.dll)
+WLIDNSP.DLL	A: 0x70260000 - 0x70287000	(C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live\WLIDNSP.DLL)
+PSAPI.DLL	A: 0x77050000 - 0x77055000	(C:\Windows\syswow64\PSAPI.DLL)
+NLAapi.dll	A: 0x711C0000 - 0x711D0000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x711B0000 - 0x711C0000	(C:\Windows\system32\napinsp.dll)
+IPHLPAPI.DLL	A: 0x72F60000 - 0x72F7C000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x72F30000 - 0x72F37000	(C:\Windows\system32\WINNSI.DLL)
+pnrpnsp.dll	A: 0x71190000 - 0x711A2000	(C:\Windows\system32\pnrpnsp.dll)
+winrnr.dll	A: 0x71180000 - 0x71188000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x71130000 - 0x71136000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x6E250000 - 0x6E256000	(C:\Windows\System32\wship6.dll)
+
+--------------------------
+SA-MP Server: 0.3z
+
+Exception At Address: 0x00401696 Module: (samp-server.exe)
+
+Registers:
+EAX: 0x02252220	EBX: 0x0000FFFF	ECX: 0x00000000	EDX: 0x0000FFFF
+ESI: 0x00000000	EDI: 0x02257DA0	EBP: 0x00000000	ESP: 0x0018F9C8
+EFLAGS: 0x00010206
+
+Stack:
++0000: 0x00401726   0x02252220   0x0018F9E4   0x02257DA0
++0010: 0x00000000   0x00000000   0x0000FFFF   0x00000000
++0020: 0x00000000   0x00000000   0x00000000   0x00000000
++0030: 0x00000000   0x0045417D   0x0018FA14   0x00000010
++0040: 0x0046BFFC   0x02252220   0x004AE6E0   0x0018FA34
++0050: 0x02247BB0   0x00000000   0x00000000   0x0018FA00
++0060: 0x00000000   0x0048E4E0   0x00000000   0x0000FFFF
++0070: 0x021FED60   0x0018FB74   0x0018FC54   0x02202501
++0080: 0x0000FFFF   0x00000018   0x00000018   0x00000010
++0090: 0x0018FB74   0x00000000   0x00000000   0x00000000
++00A0: 0x00000000   0x00000000   0x00000000   0x00000000
++00B0: 0x00000000   0x00000000   0x00000000   0x00000000
++00C0: 0x00000000   0x00000000   0x00000000   0x00000000
++00D0: 0x00000000   0x00000000   0x00000000   0x00000000
++00E0: 0x00000000   0x00000000   0x0048AFFE   0x0018FE10
++00F0: 0x0048B01B   0x0048B18C   0x002C94A0   0x002CEF78
++0100: 0x00000000   0xDC000000   0x4CBEBC20   0x00000010
++0110: 0x00000000   0x00000010   0x000000A8   0x000000A8
++0120: 0x000000A8   0x002CEEF8   0x00003500   0x002C0000
++0130: 0x022C0BA8   0x00003BF8   0x000007FF   0x021E0000
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\samp-server.exe)
+ntdll.dll	A: 0x779D0000 - 0x77B50000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x761C0000 - 0x762D0000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x75450000 - 0x75497000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x762D0000 - 0x76F1A000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x77400000 - 0x774AC000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x75C40000 - 0x75C97000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x76F20000 - 0x76FB0000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x77300000 - 0x77400000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x754B0000 - 0x75550000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x76140000 - 0x76159000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x75CA0000 - 0x75D90000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x753F0000 - 0x75450000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x753E0000 - 0x753EC000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x75F00000 - 0x75F0A000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x75740000 - 0x757DD000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x6F900000 - 0x6F907000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x75A60000 - 0x75A95000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x75730000 - 0x75736000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x73690000 - 0x736C2000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x75B40000 - 0x75BA0000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x76FD0000 - 0x7709C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x6FCF0000 - 0x6FDAF000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x57030000 - 0x5706F000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x6FDB0000 - 0x6FE19000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x56F90000 - 0x5702C000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x56E10000 - 0x56F82000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\MSVCR100D.dll)
+mswsock.dll	A: 0x745C0000 - 0x745FC000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x744C0000 - 0x744C5000	(C:\Windows\System32\wshtcpip.dll)
+mapandreas.DLL	A: 0x572F0000 - 0x57307000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\mapandreas.DLL)
+DNSAPI.dll	A: 0x731F0000 - 0x73234000	(C:\Windows\system32\DNSAPI.dll)
+WLIDNSP.DLL	A: 0x70FB0000 - 0x70FD7000	(C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live\WLIDNSP.DLL)
+PSAPI.DLL	A: 0x75C30000 - 0x75C35000	(C:\Windows\syswow64\PSAPI.DLL)
+NLAapi.dll	A: 0x72DD0000 - 0x72DE0000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x72DC0000 - 0x72DD0000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x72DA0000 - 0x72DB2000	(C:\Windows\system32\pnrpnsp.dll)
+IPHLPAPI.DLL	A: 0x745A0000 - 0x745BC000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x74590000 - 0x74597000	(C:\Windows\system32\WINNSI.DLL)
+winrnr.dll	A: 0x72D80000 - 0x72D88000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x72D30000 - 0x72D36000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x6DDF0000 - 0x6DDF6000	(C:\Windows\System32\wship6.dll)
+
+--------------------------
+SA-MP Server: 0.3z
+
+Exception At Address: 0x00401696 Module: (samp-server.exe)
+
+Registers:
+EAX: 0x02292220	EBX: 0x0000FFFF	ECX: 0x00000000	EDX: 0x0000FFFF
+ESI: 0x00000000	EDI: 0x02297DA0	EBP: 0x00000000	ESP: 0x0018F9C8
+EFLAGS: 0x00010206
+
+Stack:
++0000: 0x00401726   0x02292220   0x0018F9E4   0x02297DA0
++0010: 0x00000000   0x00000000   0x0000FFFF   0x00000000
++0020: 0x00000000   0x00000000   0x00000000   0x00000000
++0030: 0x00000000   0x0045417D   0x0018FA14   0x00000010
++0040: 0x0046BFFC   0x02292220   0x004AE6E0   0x0018FA34
++0050: 0x02287BB0   0x00000000   0x00000000   0x0018FA00
++0060: 0x00000000   0x0048E4E0   0x00000000   0x0000FFFF
++0070: 0x0223ED60   0x0018FB74   0x0018FC54   0x02242501
++0080: 0x0000FFFF   0x00000018   0x00000018   0x00000010
++0090: 0x0018FB74   0x00000000   0x00000000   0x00000000
++00A0: 0x00000000   0x00000000   0x00000000   0x00000000
++00B0: 0x00000000   0x00000000   0x00000000   0x00000000
++00C0: 0x00000000   0x00000000   0x00000000   0x00000000
++00D0: 0x00000000   0x00000000   0x00000000   0x00000000
++00E0: 0x00000000   0x00000000   0x0048AFFE   0x0018FE10
++00F0: 0x0048B01B   0x0048B18C   0x001F94A0   0x001FED38
++0100: 0x00000000   0xDC000000   0x4CBEBC20   0x00000010
++0110: 0x00000000   0x00000010   0x000000A8   0x000000A8
++0120: 0x000000A8   0x001FEDF8   0xFFFFFF00   0x004010B6
++0130: 0x02292220   0x0560C39C   0x003EFE60   0x5729B1C4
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\samp-server.exe)
+ntdll.dll	A: 0x779D0000 - 0x77B50000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x761C0000 - 0x762D0000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x75450000 - 0x75497000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x762D0000 - 0x76F1A000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x77400000 - 0x774AC000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x75C40000 - 0x75C97000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x76F20000 - 0x76FB0000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x77300000 - 0x77400000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x754B0000 - 0x75550000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x76140000 - 0x76159000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x75CA0000 - 0x75D90000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x753F0000 - 0x75450000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x753E0000 - 0x753EC000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x75F00000 - 0x75F0A000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x75740000 - 0x757DD000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x6F900000 - 0x6F907000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x75A60000 - 0x75A95000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x75730000 - 0x75736000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x73690000 - 0x736C2000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x75B40000 - 0x75BA0000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x76FD0000 - 0x7709C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x6FCF0000 - 0x6FDAF000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x56EC0000 - 0x56EFF000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x6FDB0000 - 0x6FE19000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x56E20000 - 0x56EBC000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x51700000 - 0x51872000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\MSVCR100D.dll)
+mswsock.dll	A: 0x745C0000 - 0x745FC000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x744C0000 - 0x744C5000	(C:\Windows\System32\wshtcpip.dll)
+mapandreas.DLL	A: 0x572F0000 - 0x57307000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\mapandreas.DLL)
+DNSAPI.dll	A: 0x731F0000 - 0x73234000	(C:\Windows\system32\DNSAPI.dll)
+WLIDNSP.DLL	A: 0x70FB0000 - 0x70FD7000	(C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live\WLIDNSP.DLL)
+PSAPI.DLL	A: 0x75C30000 - 0x75C35000	(C:\Windows\syswow64\PSAPI.DLL)
+NLAapi.dll	A: 0x72DD0000 - 0x72DE0000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x72DC0000 - 0x72DD0000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x72DA0000 - 0x72DB2000	(C:\Windows\system32\pnrpnsp.dll)
+winrnr.dll	A: 0x72D80000 - 0x72D88000	(C:\Windows\System32\winrnr.dll)
+IPHLPAPI.DLL	A: 0x745A0000 - 0x745BC000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x74590000 - 0x74597000	(C:\Windows\system32\WINNSI.DLL)
+rasadhlp.dll	A: 0x72D30000 - 0x72D36000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x6DDF0000 - 0x6DDF6000	(C:\Windows\System32\wship6.dll)
+
+--------------------------
+SA-MP Server: 0.3z
+
+Exception At Address: 0x0046A8F8 Module: (samp-server.exe)
+
+Registers:
+EAX: 0x0018F138	EBX: 0x02F25370	ECX: 0x00000003	EDX: 0x00000000
+ESI: 0x02F1F5B0	EDI: 0x02F1E9C4	EBP: 0x00000000	ESP: 0x0018F8C0
+EFLAGS: 0x00000212
+
+Stack:
++0000: 0x00558F20   0x0018F8FC   0x00000002   0x00558F20
++0010: 0x00000000   0x00558F20   0x0018F908   0x0018F900
++0020: 0x0018F928   0x05C23448   0x00000000   0x0018FA28
++0030: 0x00000000   0x0018FB54   0x00000000   0x00000000
++0040: 0x05C23448   0x0048CBC1   0x00002EC4   0x00000002
++0050: 0x0051EC70   0x0018FB60   0x05BFD001   0x00000013
++0060: 0x00000000   0x0018F243   0x7465672F   0x6F6C6F63
++0070: 0x30312072   0x31203030   0x00303030   0x00000000
++0080: 0x00000000   0x00000000   0x00000000   0x00000000
++0090: 0x00000000   0x00000000   0x00000000   0x00000000
++00A0: 0x00000000   0x00000000   0x00000000   0x00000000
++00B0: 0x00000000   0x00000000   0x00000000   0x00000000
++00C0: 0x00000000   0x00000000   0x00000000   0x00000000
++00D0: 0x00000000   0x00000000   0x00000000   0x00000000
++00E0: 0x00000000   0x00000000   0x00000000   0x00000000
++00F0: 0x00000000   0x00000000   0x00000000   0x00000000
++0100: 0x00000000   0x00000000   0x00000000   0x00000000
++0110: 0x00000000   0x00000000   0x00000000   0x00000000
++0120: 0x00000000   0x00000000   0x00000000   0x00000000
++0130: 0x00000000   0x00000000   0x00000000   0x00000000
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\samp-server.exe)
+ntdll.dll	A: 0x772E0000 - 0x77460000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x75D30000 - 0x75E40000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x75F30000 - 0x75F77000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x760A0000 - 0x76CEA000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x75120000 - 0x751CC000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x754A0000 - 0x754F7000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x752A0000 - 0x75330000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x755F0000 - 0x756F0000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x75550000 - 0x755F0000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x74DB0000 - 0x74DC9000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x74FA0000 - 0x75090000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x74D00000 - 0x74D60000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x74CF0000 - 0x74CFC000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x772B0000 - 0x772BA000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x74F00000 - 0x74F9D000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x6A810000 - 0x6A817000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x75EF0000 - 0x75F25000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x75780000 - 0x75786000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x70CF0000 - 0x70D22000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x75880000 - 0x758E0000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x757B0000 - 0x7587C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x5A710000 - 0x5A7CF000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x66D80000 - 0x66DBF000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x59850000 - 0x598B9000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x58EC0000 - 0x58F5C000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x53A40000 - 0x53BB2000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\MSVCR100D.dll)
+mswsock.dll	A: 0x71C90000 - 0x71CCC000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x71300000 - 0x71305000	(C:\Windows\System32\wshtcpip.dll)
+mapandreas.DLL	A: 0x66D60000 - 0x66D77000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\mapandreas.DLL)
+DNSAPI.dll	A: 0x70850000 - 0x70894000	(C:\Windows\system32\DNSAPI.dll)
+MPNG.DLL	A: 0x67290000 - 0x672BA000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\MPNG.DLL)
+MSVCR90.dll	A: 0x729A0000 - 0x72A43000	(C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.6161_none_50934f2ebcb7eb57\MSVCR90.dll)
+MSVCP90.dll	A: 0x73B30000 - 0x73BBE000	(C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.6161_none_50934f2ebcb7eb57\MSVCP90.dll)
+WLIDNSP.DLL	A: 0x6F4E0000 - 0x6F507000	(C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live\WLIDNSP.DLL)
+PSAPI.DLL	A: 0x75200000 - 0x75205000	(C:\Windows\syswow64\PSAPI.DLL)
+NLAapi.dll	A: 0x704A0000 - 0x704B0000	(C:\Windows\system32\NLAapi.dll)
+IPHLPAPI.DLL	A: 0x71C70000 - 0x71C8C000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x71C60000 - 0x71C67000	(C:\Windows\system32\WINNSI.DLL)
+napinsp.dll	A: 0x70490000 - 0x704A0000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x70470000 - 0x70482000	(C:\Windows\system32\pnrpnsp.dll)
+winrnr.dll	A: 0x70460000 - 0x70468000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x70410000 - 0x70416000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x67680000 - 0x67686000	(C:\Windows\System32\wship6.dll)
+
+--------------------------
+SA-MP Server: 0.3z-R2
+
+Exception At Address: 0x00401696 Module: (samp-server.exe)
+
+Registers:
+EAX: 0x058F2870	EBX: 0x0000FFFF	ECX: 0x00000000	EDX: 0x0000FFFF
+ESI: 0x00000000	EDI: 0x00578268	EBP: 0x00000000	ESP: 0x0018F9C8
+EFLAGS: 0x00010206
+
+Stack:
++0000: 0x00401726   0x058F2870   0x0018F9E4   0x00578268
++0010: 0x00000000   0x00000000   0x0000FFFF   0x00000000
++0020: 0x00000000   0x00000000   0x00000000   0x00000000
++0030: 0x00000000   0x00453FED   0x0018FA14   0x00000010
++0040: 0x0046C16C   0x058F2870   0x004AE7D0   0x0018FA34
++0050: 0x00568878   0x00000000   0x00000000   0x0018FA00
++0060: 0x00000000   0x0048EBF0   0x00000000   0x0000FFFF
++0070: 0x00523068   0x0018FB74   0x0018FC54   0x00522E01
++0080: 0x0000FFFF   0x00000018   0x00000018   0x00000010
++0090: 0x0018FB74   0x00000000   0x00000000   0x00000000
++00A0: 0x00000000   0x00000000   0x00000000   0x00000000
++00B0: 0x00000000   0x00000000   0x00000000   0x00000000
++00C0: 0x00000000   0x00000000   0x00000000   0x00000000
++00D0: 0x00000000   0x00000000   0x00000000   0x00000000
++00E0: 0x00000000   0x00000000   0x0048B6FE   0x0018FE10
++00F0: 0x0048B71B   0x0048B88C   0x00329CA0   0x00520160
++0100: 0x00000000   0xDC000000   0x4CBEBC20   0x00000010
++0110: 0x00000000   0x00000010   0x000000A8   0x000000A8
++0120: 0x000000A8   0x005202C0   0x00004800   0x00320000
++0130: 0x0598BFA8   0x00003BF8   0x000007FF   0x058C0000
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\samp-server.exe)
+ntdll.dll	A: 0x772E0000 - 0x77460000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x75D30000 - 0x75E40000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x75F30000 - 0x75F77000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x760A0000 - 0x76CEA000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x75120000 - 0x751CC000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x754A0000 - 0x754F7000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x752A0000 - 0x75330000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x755F0000 - 0x756F0000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x75550000 - 0x755F0000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x74DB0000 - 0x74DC9000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x74FA0000 - 0x75090000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x74D00000 - 0x74D60000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x74CF0000 - 0x74CFC000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x772B0000 - 0x772BA000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x74F00000 - 0x74F9D000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x6A810000 - 0x6A817000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x75EF0000 - 0x75F25000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x75780000 - 0x75786000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x70CF0000 - 0x70D22000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x75880000 - 0x758E0000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x757B0000 - 0x7587C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x5A710000 - 0x5A7CF000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x5AA60000 - 0x5AA9F000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x59850000 - 0x598B9000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x58EC0000 - 0x58F5C000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x54C00000 - 0x54D72000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\MSVCR100D.dll)
+mswsock.dll	A: 0x71C90000 - 0x71CCC000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x71300000 - 0x71305000	(C:\Windows\System32\wshtcpip.dll)
+mapandreas.DLL	A: 0x66D70000 - 0x66D87000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio - 03z\plugins\mapandreas.DLL)
+DNSAPI.dll	A: 0x70850000 - 0x70894000	(C:\Windows\system32\DNSAPI.dll)
+WLIDNSP.DLL	A: 0x6F4E0000 - 0x6F507000	(C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live\WLIDNSP.DLL)
+PSAPI.DLL	A: 0x75200000 - 0x75205000	(C:\Windows\syswow64\PSAPI.DLL)
+NLAapi.dll	A: 0x704A0000 - 0x704B0000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x70490000 - 0x704A0000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x70470000 - 0x70482000	(C:\Windows\system32\pnrpnsp.dll)
+IPHLPAPI.DLL	A: 0x71C70000 - 0x71C8C000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x71C60000 - 0x71C67000	(C:\Windows\system32\WINNSI.DLL)
+winrnr.dll	A: 0x70460000 - 0x70468000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x70410000 - 0x70416000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x67680000 - 0x67686000	(C:\Windows\System32\wship6.dll)
+
+--------------------------
+SA-MP Server: 0.3z-R2
+
+Exception At Address: 0x0046ACCC Module: (samp-server.exe)
+
+Registers:
+EAX: 0x006A2F20	EBX: 0x00000009	ECX: 0x00000000	EDX: 0x02059560
+ESI: 0x00000000	EDI: 0x006A82A0	EBP: 0x00000000	ESP: 0x0018FB0C
+EFLAGS: 0x00010206
+
+Stack:
++0000: 0x006A2F20   0x004AE4F8   0x0018FB38   0x00000009
++0010: 0x05763218   0x0018FC54   0x057657C5   0x00000000
++0020: 0x0047F916   0x00000000   0x00000008   0x00000009
++0030: 0x0000000A   0x05763218   0x0048338F   0x00000008
++0040: 0x00000000   0x00652F34   0x00000000   0x0048BD9E
++0050: 0x0064E660   0x0205DBEC   0x00652F34   0x0402A8C0
++0060: 0x0018C7ED   0x0045273C   0x0018FC98   0x006501FA
++0070: 0x006501F8   0x0205D3E0   0x00000020   0x00000020
++0080: 0x00000018   0x00652F78   0x006A2F00   0x0018FBE8
++0090: 0x00000001   0x0000006C   0x00000000   0x004010B6
++00A0: 0x006A2F20   0x05573650   0x01FAFEE0   0x6531B1C4
++00B0: 0x006A2F20   0x0000006C   0x0018FC5C   0x0557363C
++00C0: 0x03A37F84   0x006A2F20   0x00000000   0x006A2F20
++00D0: 0x01AE933C   0x00034AC8   0x0000006C   0x0018FBFC
++00E0: 0x6532350A   0x0018FBD4   0x0018FC5C   0x6F6C6572
++00F0: 0x73666461   0x74737420   0x6F696475   0x00000000
++0100: 0x00000000   0x00000000   0x00000000   0x00000000
++0110: 0x00000000   0x00000000   0x00000000   0x00000000
++0120: 0x00000000   0x00000000   0x00000000   0x00000000
++0130: 0x00000000   0x00000000   0x00000000   0x00000000
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio-v1.3\samp-server.exe)
+ntdll.dll	A: 0x774E0000 - 0x77660000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x76110000 - 0x76220000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x76D40000 - 0x76D87000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x75340000 - 0x75F8A000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x76F70000 - 0x7701C000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x76D90000 - 0x76DE7000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x762C0000 - 0x76350000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x76E10000 - 0x76F10000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x76610000 - 0x766B0000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x76060000 - 0x76079000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x75230000 - 0x75320000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x74F10000 - 0x74F70000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x74F00000 - 0x74F0C000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x774B0000 - 0x774BA000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x75190000 - 0x7522D000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x6F400000 - 0x6F407000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x76350000 - 0x76385000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x76DF0000 - 0x76DF6000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x70760000 - 0x70792000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x76CE0000 - 0x76D40000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x75F90000 - 0x7605C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio-v1.3\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x55A00000 - 0x55ABF000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x652C0000 - 0x652FF000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio-v1.3\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x55970000 - 0x559D9000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x650C0000 - 0x6515C000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio-v1.3\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x64F40000 - 0x650B2000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio-v1.3\MSVCR100D.dll)
+mswsock.dll	A: 0x71FE0000 - 0x7201C000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x71FA0000 - 0x71FA5000	(C:\Windows\System32\wshtcpip.dll)
+DNSAPI.dll	A: 0x71F30000 - 0x71F74000	(C:\Windows\system32\DNSAPI.dll)
+WLIDNSP.DLL	A: 0x71640000 - 0x71667000	(C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live\WLIDNSP.DLL)
+PSAPI.DLL	A: 0x75330000 - 0x75335000	(C:\Windows\syswow64\PSAPI.DLL)
+NLAapi.dll	A: 0x6FF60000 - 0x6FF70000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x6FF50000 - 0x6FF60000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x6FF30000 - 0x6FF42000	(C:\Windows\system32\pnrpnsp.dll)
+IPHLPAPI.DLL	A: 0x71FC0000 - 0x71FDC000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x71FB0000 - 0x71FB7000	(C:\Windows\system32\WINNSI.DLL)
+winrnr.dll	A: 0x6FF20000 - 0x6FF28000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x71630000 - 0x71636000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x71F90000 - 0x71F96000	(C:\Windows\System32\wship6.dll)
+
+--------------------------
+SA-MP Server: 0.3z-R2
+
+Exception At Address: 0x00401696 Module: (samp-server.exe)
+
+Registers:
+EAX: 0x01F958C8	EBX: 0x0000FFFF	ECX: 0x00000000	EDX: 0x0000FFFF
+ESI: 0x00000000	EDI: 0x01F382A0	EBP: 0x00000000	ESP: 0x0018F9C8
+EFLAGS: 0x00010206
+
+Stack:
++0000: 0x00401726   0x01F958C8   0x0018F9E4   0x01F382A0
++0010: 0x00000000   0x00000000   0x0000FFFF   0x00000000
++0020: 0x00000000   0x00000000   0x00000000   0x00000000
++0030: 0x00000000   0x00453FED   0x0018FA14   0x00000010
++0040: 0x0046C16C   0x01F958C8   0x004AE7D0   0x0018FA34
++0050: 0x01F288B0   0x00000000   0x00000000   0x0018FA00
++0060: 0x00000000   0x0048EBF0   0x00000000   0x0000FFFF
++0070: 0x01EE3078   0x0018FB74   0x0018FC54   0x01EE2E01
++0080: 0x0000FFFF   0x00000018   0x00000018   0x00000010
++0090: 0x0018FB74   0x00000000   0x00000000   0x00000000
++00A0: 0x00000000   0x00000000   0x00000000   0x00000000
++00B0: 0x00000000   0x00000000   0x00000000   0x00000000
++00C0: 0x00000000   0x00000000   0x00000000   0x00000000
++00D0: 0x00000000   0x00000000   0x00000000   0x00000000
++00E0: 0x00000000   0x00000000   0x0048B6FE   0x0018FE10
++00F0: 0x0048B71B   0x0048B88C   0x02289560   0x01EE0138
++0100: 0x00000000   0xDC000000   0x4CBEBC20   0x00000010
++0110: 0x00000000   0x00000010   0x000000A8   0x000000A8
++0120: 0x000000A8   0x01EE0118   0x00004A00   0x02280000
++0130: 0x0584F7C0   0x00003BF8   0x000007FF   0x05750000
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004F5000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio-v1.3\samp-server.exe)
+ntdll.dll	A: 0x774E0000 - 0x77660000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x76110000 - 0x76220000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x76D40000 - 0x76D87000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x75340000 - 0x75F8A000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x76F70000 - 0x7701C000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x76D90000 - 0x76DE7000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x762C0000 - 0x76350000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x76E10000 - 0x76F10000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x76610000 - 0x766B0000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x76060000 - 0x76079000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x75230000 - 0x75320000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x74F10000 - 0x74F70000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x74F00000 - 0x74F0C000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x774B0000 - 0x774BA000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x75190000 - 0x7522D000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x6F400000 - 0x6F407000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x76350000 - 0x76385000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x76DF0000 - 0x76DF6000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x70760000 - 0x70792000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x76CE0000 - 0x76D40000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x75F90000 - 0x7605C000	(C:\Windows\syswow64\MSCTF.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio-v1.3\plugins\sscanf.DLL)
+MSVCR100.dll	A: 0x55A00000 - 0x55ABF000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x65770000 - 0x657AF000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio-v1.3\plugins\streamer.DLL)
+MSVCP100.dll	A: 0x55970000 - 0x559D9000	(C:\Windows\system32\MSVCP100.dll)
+MSVCP100D.dll	A: 0x650C0000 - 0x6515C000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio-v1.3\MSVCP100D.dll)
+MSVCR100D.dll	A: 0x64F40000 - 0x650B2000	(C:\Users\JEFF\Desktop\Saved SAMP Installs\Texture Studio-v1.3\MSVCR100D.dll)
+mswsock.dll	A: 0x71FE0000 - 0x7201C000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x71FA0000 - 0x71FA5000	(C:\Windows\System32\wshtcpip.dll)
+DNSAPI.dll	A: 0x71F30000 - 0x71F74000	(C:\Windows\system32\DNSAPI.dll)
+WLIDNSP.DLL	A: 0x71640000 - 0x71667000	(C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live\WLIDNSP.DLL)
+PSAPI.DLL	A: 0x75330000 - 0x75335000	(C:\Windows\syswow64\PSAPI.DLL)
+NLAapi.dll	A: 0x6FF60000 - 0x6FF70000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x6FF50000 - 0x6FF60000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x6FF30000 - 0x6FF42000	(C:\Windows\system32\pnrpnsp.dll)
+winrnr.dll	A: 0x6FF20000 - 0x6FF28000	(C:\Windows\System32\winrnr.dll)
+IPHLPAPI.DLL	A: 0x71FC0000 - 0x71FDC000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x71FB0000 - 0x71FB7000	(C:\Windows\system32\WINNSI.DLL)
+rasadhlp.dll	A: 0x71630000 - 0x71636000	(C:\Windows\system32\rasadhlp.dll)
+wship6.dll	A: 0x71F90000 - 0x71F96000	(C:\Windows\System32\wship6.dll)

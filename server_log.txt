@@ -1,0 +1,922 @@
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3z-R2, (C)2005-2014 SA-MP Team
+
+[19:29:58] 
+[19:29:58] Server Plugins
+[19:29:58] --------------
+[19:29:58]  Loading plugin: sscanf
+[19:29:58] 
+
+[19:29:58]  ===============================
+
+[19:29:58]       sscanf plugin loaded.     
+
+[19:29:58]          Version:  2.8.1        
+
+[19:29:58]    (c) 2012 Alex "Y_Less" Cole  
+
+[19:29:58]  ===============================
+
+[19:29:58]   Loaded.
+[19:29:58]  Loading plugin: streamer
+[19:29:58] 
+
+*** Streamer Plugin v2.7.2 by Incognito loaded ***
+
+[19:29:58]   Loaded.
+[19:29:58]  Loading plugin: filemanager
+[19:29:58] ******************
+[19:29:58] ** FILE MANAGER **
+[19:29:58] **    Loaded    **
+[19:29:58] ** Version 1.5 **
+[19:29:58] ******************
+[19:29:58]   Loaded.
+[19:29:58]  Loading plugin: crashdetect
+[19:29:58]   CrashDetect v4.10.1 is OK.
+[19:29:58]   Loaded.
+[19:29:58]  Loading plugin: mapandreas
+[19:29:58]   Failed.
+[19:29:58]  Loaded 4 plugins.
+
+[19:29:58] 
+[19:29:59] Filterscripts
+[19:29:59] ---------------
+[19:29:59]   Loading filterscript 'tstudio.amx'...
+[19:29:59]  
+[19:29:59]  
+[19:29:59]  
+[19:29:59]  ======================================= 
+[19:29:59]  |                                     | 
+[19:29:59]  |        YSI version 3.09.0684        | 
+[19:29:59]  |        By Alex "Y_Less" Cole        | 
+[19:29:59]  |                                     | 
+[19:29:59]  ======================================= 
+[19:29:59]  
+[19:29:59]  
+[19:29:59]  
+[19:29:59] LOADED 8370 texture definitions
+[19:29:59] ----------------------------------------------
+[19:29:59] ---------Texture Studio By [uL]Pottus---------
+[19:29:59] -------------------------------------Loaded---
+[19:29:59]   Loading filterscript 'fsdebug.amx'...
+[19:29:59] 
+  *********************
+  * SA:MP DEBUG 0.2   *
+[19:29:59]   * By Simon Campbell *
+  *********************
+[19:29:59]   * Version: 0.5d      *
+  *********************
+[19:29:59]   * -- LOADED         *
+  *********************
+
+[19:29:59]   Loaded 2 filterscripts.
+
+[19:29:59] *** Streamer Plugin: Warning: Include file version (0x26105) does not match plugin version (0x27201) (script might need to be recompiled with the latest include file)
+[19:29:59] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[19:29:59] LOADED 8370 texture definitions
+[19:29:59] 
+----------------------------------
+[19:29:59]   Bare Script
+
+[19:29:59] ----------------------------------
+
+[19:29:59] Number of vehicle models: 0
+[19:29:59]  
+[19:29:59]  ========================================== 
+[19:29:59]  |                                        | 
+[19:29:59]  |  A new version (v<html>
+  ) of YSI is  | 
+[19:29:59]  |            available from:             | 
+[19:29:59]  |                                        | 
+[19:29:59]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[19:29:59]  |                                        | 
+[19:29:59]  ========================================== 
+[19:29:59]  
+[19:30:53] Incoming connection: 192.168.2.2:60100
+[19:30:53] [join] [uL]Pottus has joined the server (0:192.168.2.2)
+[19:32:18] [part] [uL]Pottus has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3z-R2, (C)2005-2014 SA-MP Team
+
+[22:23:49] 
+[22:23:49] Server Plugins
+[22:23:49] --------------
+[22:23:49]  Loading plugin: sscanf
+[22:23:49] 
+
+[22:23:49]  ===============================
+
+[22:23:49]       sscanf plugin loaded.     
+
+[22:23:49]          Version:  2.8.1        
+
+[22:23:49]    (c) 2012 Alex "Y_Less" Cole  
+
+[22:23:49]  ===============================
+
+[22:23:49]   Loaded.
+[22:23:49]  Loading plugin: streamer
+[22:23:49] 
+
+*** Streamer Plugin v2.7.2 by Incognito loaded ***
+
+[22:23:49]   Loaded.
+[22:23:49]  Loading plugin: filemanager
+[22:23:49] ******************
+[22:23:49] ** FILE MANAGER **
+[22:23:49] **    Loaded    **
+[22:23:49] ** Version 1.5 **
+[22:23:49] ******************
+[22:23:49]   Loaded.
+[22:23:49]  Loading plugin: crashdetect
+[22:23:49]   CrashDetect v4.10.1 is OK.
+[22:23:49]   Loaded.
+[22:23:49]  Loading plugin: mapandreas
+[22:23:49]   Failed.
+[22:23:49]  Loaded 4 plugins.
+
+[22:23:49] 
+[22:23:49] Filterscripts
+[22:23:49] ---------------
+[22:23:49]   Loading filterscript 'tstudio.amx'...
+[22:23:49]  
+[22:23:49]  
+[22:23:49]  
+[22:23:49]  ======================================= 
+[22:23:49]  |                                     | 
+[22:23:49]  |        YSI version 3.09.0684        | 
+[22:23:49]  |        By Alex "Y_Less" Cole        | 
+[22:23:49]  |                                     | 
+[22:23:49]  ======================================= 
+[22:23:49]  
+[22:23:49]  
+[22:23:50]  
+[22:23:50] LOADED 8370 texture definitions
+[22:23:50] ----------------------------------------------
+[22:23:50] ---------Texture Studio By [uL]Pottus---------
+[22:23:50] -------------------------------------Loaded---
+[22:23:50]   Loading filterscript 'fsdebug.amx'...
+[22:23:50] 
+  *********************
+  * SA:MP DEBUG 0.2   *
+[22:23:50]   * By Simon Campbell *
+  *********************
+[22:23:50]   * Version: 0.5d      *
+  *********************
+[22:23:50]   * -- LOADED         *
+  *********************
+
+[22:23:50]   Loaded 2 filterscripts.
+
+[22:23:50] *** Streamer Plugin: Warning: Include file version (0x26105) does not match plugin version (0x27201) (script might need to be recompiled with the latest include file)
+[22:23:50] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[22:23:50] LOADED 8370 texture definitions
+[22:23:50] 
+----------------------------------
+[22:23:50]   Bare Script
+
+[22:23:50] ----------------------------------
+
+[22:23:50] Number of vehicle models: 0
+[22:23:50]  
+[22:23:50]  ========================================== 
+[22:23:50]  |                                        | 
+[22:23:50]  |  A new version (v<html>
+  ) of YSI is  | 
+[22:23:50]  |            available from:             | 
+[22:23:50]  |                                        | 
+[22:23:50]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[22:23:50]  |                                        | 
+[22:23:50]  ========================================== 
+[22:23:50]  
+[22:24:27] Incoming connection: 192.168.2.2:65275
+[22:24:27] [join] [uL]Pottus has joined the server (0:192.168.2.2)
+[22:45:40] [part] [uL]Pottus has left the server (0:1)
+[23:23:51] Incoming connection: 127.0.0.1:54373
+[23:23:55] Incoming connection: 127.0.0.1:54375
+[23:23:58] Incoming connection: 127.0.0.1:54377
+[23:23:58] Incoming connection: 127.0.0.1:54378
+[23:23:58] Incoming connection: 127.0.0.1:54379
+[23:23:58] Incoming connection: 127.0.0.1:54380
+[23:23:58] Incoming connection: 127.0.0.1:54381
+[23:23:58] Incoming connection: 127.0.0.1:54382
+[23:23:59] Incoming connection: 127.0.0.1:54383
+[23:23:59] Incoming connection: 127.0.0.1:54384
+[23:23:59] Incoming connection: 127.0.0.1:54385
+[23:23:59] Incoming connection: 127.0.0.1:54386
+[23:23:59] Incoming connection: 127.0.0.1:54387
+[23:23:59] Incoming connection: 127.0.0.1:54388
+[23:23:59] Incoming connection: 127.0.0.1:54389
+[23:23:59] Incoming connection: 127.0.0.1:54390
+[23:23:59] Incoming connection: 127.0.0.1:54391
+[23:23:59] Incoming connection: 127.0.0.1:54392
+[23:24:00] Incoming connection: 127.0.0.1:54393
+[23:24:00] Incoming connection: 127.0.0.1:54394
+[23:24:00] Incoming connection: 127.0.0.1:54395
+[23:24:00] Incoming connection: 127.0.0.1:54396
+[23:24:00] Incoming connection: 127.0.0.1:54397
+[23:24:00] Incoming connection: 127.0.0.1:54398
+[23:24:00] Incoming connection: 127.0.0.1:54399
+[23:24:00] Incoming connection: 127.0.0.1:54400
+[23:24:01] Incoming connection: 127.0.0.1:54401
+[23:24:01] Incoming connection: 127.0.0.1:54402
+[23:24:01] Incoming connection: 127.0.0.1:54403
+[23:24:01] Incoming connection: 127.0.0.1:54404
+[23:24:01] Incoming connection: 127.0.0.1:54405
+[23:24:01] Incoming connection: 127.0.0.1:54406
+[23:24:02] Incoming connection: 127.0.0.1:54407
+[23:24:02] Incoming connection: 127.0.0.1:54408
+[23:24:02] Incoming connection: 127.0.0.1:54409
+[23:24:02] Incoming connection: 127.0.0.1:54410
+[23:24:02] Incoming connection: 127.0.0.1:54411
+[23:24:02] Incoming connection: 127.0.0.1:54412
+[23:24:02] Incoming connection: 127.0.0.1:54413
+[23:24:02] Incoming connection: 127.0.0.1:54414
+[23:24:03] Incoming connection: 127.0.0.1:54415
+[23:24:03] Incoming connection: 127.0.0.1:54417
+[23:24:03] Incoming connection: 127.0.0.1:54418
+[23:24:03] Incoming connection: 127.0.0.1:54419
+[23:24:03] Incoming connection: 127.0.0.1:54420
+[23:24:03] Incoming connection: 127.0.0.1:54421
+[23:24:03] Incoming connection: 127.0.0.1:54422
+[23:24:03] Incoming connection: 127.0.0.1:54423
+[23:24:03] Incoming connection: 127.0.0.1:54424
+[23:24:04] Incoming connection: 127.0.0.1:54425
+[23:24:04] Incoming connection: 127.0.0.1:54426
+[23:24:04] Incoming connection: 127.0.0.1:54427
+[23:24:04] Incoming connection: 127.0.0.1:54428
+[23:24:04] Incoming connection: 127.0.0.1:54429
+[23:24:04] Incoming connection: 127.0.0.1:54430
+[23:24:04] Incoming connection: 127.0.0.1:54431
+[23:24:04] Incoming connection: 127.0.0.1:54432
+[23:24:04] Incoming connection: 127.0.0.1:54433
+[23:24:04] Incoming connection: 127.0.0.1:54434
+[23:24:04] Incoming connection: 127.0.0.1:54435
+[23:24:04] Incoming connection: 127.0.0.1:54436
+[23:24:04] Incoming connection: 127.0.0.1:54437
+[23:24:05] Incoming connection: 127.0.0.1:54438
+[23:24:05] Incoming connection: 127.0.0.1:54440
+[23:24:05] Incoming connection: 127.0.0.1:54439
+[23:24:05] Incoming connection: 127.0.0.1:54441
+[23:24:05] Incoming connection: 127.0.0.1:54442
+[23:24:05] Incoming connection: 127.0.0.1:54443
+[23:24:05] Incoming connection: 127.0.0.1:54444
+[23:24:05] Incoming connection: 127.0.0.1:54445
+[23:24:05] Incoming connection: 127.0.0.1:54446
+[23:24:05] Incoming connection: 127.0.0.1:54447
+[23:24:05] Incoming connection: 127.0.0.1:54448
+[23:24:05] Incoming connection: 127.0.0.1:54449
+[23:24:05] Incoming connection: 127.0.0.1:54450
+[23:24:06] Incoming connection: 127.0.0.1:54451
+[23:24:06] Incoming connection: 127.0.0.1:54452
+[23:24:06] Incoming connection: 127.0.0.1:54453
+[23:24:06] Incoming connection: 127.0.0.1:54454
+[23:24:06] Incoming connection: 127.0.0.1:54455
+[23:24:07] Incoming connection: 127.0.0.1:54456
+[23:24:07] Incoming connection: 127.0.0.1:54457
+[23:24:07] Incoming connection: 127.0.0.1:54458
+[23:24:07] Incoming connection: 127.0.0.1:54459
+[23:24:07] Incoming connection: 127.0.0.1:54460
+[23:24:08] Incoming connection: 127.0.0.1:54461
+[23:24:08] Incoming connection: 127.0.0.1:54462
+[23:24:08] Incoming connection: 127.0.0.1:54463
+[23:24:08] Incoming connection: 127.0.0.1:54464
+[23:24:08] Incoming connection: 127.0.0.1:54465
+[23:24:08] Incoming connection: 127.0.0.1:54467
+[23:24:08] Incoming connection: 127.0.0.1:54468
+[23:24:08] Incoming connection: 127.0.0.1:54470
+[23:24:08] Incoming connection: 127.0.0.1:54469
+[23:24:08] Incoming connection: 127.0.0.1:54471
+[23:24:08] Incoming connection: 127.0.0.1:54472
+[23:24:08] Incoming connection: 127.0.0.1:54473
+[23:24:09] Incoming connection: 127.0.0.1:54474
+[23:24:09] Incoming connection: 127.0.0.1:54475
+[23:24:09] Incoming connection: 127.0.0.1:54476
+[23:24:09] Incoming connection: 127.0.0.1:54477
+[23:24:09] Incoming connection: 127.0.0.1:54478
+[23:24:09] Incoming connection: 127.0.0.1:54479
+[23:24:09] Incoming connection: 127.0.0.1:54480
+[23:24:09] Incoming connection: 127.0.0.1:54481
+[23:24:09] Incoming connection: 127.0.0.1:54482
+[23:24:09] Incoming connection: 127.0.0.1:54483
+[23:24:09] Incoming connection: 127.0.0.1:54484
+[23:24:09] Incoming connection: 127.0.0.1:54485
+[23:24:09] Incoming connection: 127.0.0.1:54486
+[23:24:09] Incoming connection: 127.0.0.1:54487
+[23:24:09] Incoming connection: 127.0.0.1:54488
+[23:24:10] Incoming connection: 127.0.0.1:54489
+[23:24:10] Incoming connection: 127.0.0.1:54490
+[23:24:10] Incoming connection: 127.0.0.1:54491
+[23:24:10] Incoming connection: 127.0.0.1:54492
+[23:24:10] Incoming connection: 127.0.0.1:54494
+[23:24:10] Incoming connection: 127.0.0.1:54493
+[23:24:10] Incoming connection: 127.0.0.1:54496
+[23:24:10] Incoming connection: 127.0.0.1:54495
+[23:24:11] Incoming connection: 127.0.0.1:54497
+[23:24:11] Incoming connection: 127.0.0.1:54498
+[23:24:11] Incoming connection: 127.0.0.1:54499
+[23:24:11] Incoming connection: 127.0.0.1:54500
+[23:24:12] Incoming connection: 127.0.0.1:54501
+[23:24:12] Incoming connection: 127.0.0.1:54502
+[23:24:12] Incoming connection: 127.0.0.1:54503
+[23:24:12] Incoming connection: 127.0.0.1:54504
+[23:24:12] Incoming connection: 127.0.0.1:54505
+[23:24:12] Incoming connection: 127.0.0.1:54506
+[23:24:12] Incoming connection: 127.0.0.1:54508
+[23:24:12] Incoming connection: 127.0.0.1:54507
+[23:24:12] Incoming connection: 127.0.0.1:54509
+[23:24:12] Incoming connection: 127.0.0.1:54510
+[23:24:13] Incoming connection: 127.0.0.1:54511
+[23:24:13] Incoming connection: 127.0.0.1:54512
+[23:24:13] Incoming connection: 127.0.0.1:54513
+[23:24:13] Incoming connection: 127.0.0.1:54514
+[23:24:13] Incoming connection: 127.0.0.1:54516
+[23:24:13] Incoming connection: 127.0.0.1:54517
+[23:24:13] Incoming connection: 127.0.0.1:54518
+[23:24:13] Incoming connection: 127.0.0.1:54519
+[23:24:13] Incoming connection: 127.0.0.1:54520
+[23:24:13] Incoming connection: 127.0.0.1:54521
+[23:24:13] Incoming connection: 127.0.0.1:54522
+[23:24:13] Incoming connection: 127.0.0.1:54523
+[23:24:14] Incoming connection: 127.0.0.1:54524
+[23:24:14] Incoming connection: 127.0.0.1:54525
+[23:24:14] Incoming connection: 127.0.0.1:54526
+[23:24:14] Incoming connection: 127.0.0.1:54527
+[23:24:14] Incoming connection: 127.0.0.1:54528
+[23:24:14] Incoming connection: 127.0.0.1:54529
+[23:24:14] Incoming connection: 127.0.0.1:54530
+[23:24:14] Incoming connection: 127.0.0.1:54531
+[23:24:14] Incoming connection: 127.0.0.1:54532
+[23:24:14] Incoming connection: 127.0.0.1:54533
+[23:24:14] Incoming connection: 127.0.0.1:54534
+[23:24:14] Incoming connection: 127.0.0.1:54536
+[23:24:14] Incoming connection: 127.0.0.1:54535
+[23:24:15] Incoming connection: 127.0.0.1:54538
+[23:24:15] Incoming connection: 127.0.0.1:54537
+[23:24:15] Incoming connection: 127.0.0.1:54540
+[23:24:15] Incoming connection: 127.0.0.1:54539
+[23:24:15] Incoming connection: 127.0.0.1:54541
+[23:24:15] Incoming connection: 127.0.0.1:54542
+[23:24:15] Incoming connection: 127.0.0.1:54543
+[23:24:15] Incoming connection: 127.0.0.1:54544
+[23:24:15] Incoming connection: 127.0.0.1:54545
+[23:24:15] Incoming connection: 127.0.0.1:54546
+[23:24:15] Incoming connection: 127.0.0.1:54547
+[23:24:16] Incoming connection: 127.0.0.1:54549
+[23:24:16] Incoming connection: 127.0.0.1:54548
+[23:24:16] Incoming connection: 127.0.0.1:54550
+[23:24:16] Incoming connection: 127.0.0.1:54551
+[23:24:16] Incoming connection: 127.0.0.1:54552
+[23:24:16] Incoming connection: 127.0.0.1:54553
+[23:24:16] Incoming connection: 127.0.0.1:54554
+[23:24:16] Incoming connection: 127.0.0.1:54555
+[23:24:16] Incoming connection: 127.0.0.1:54556
+[23:24:16] Incoming connection: 127.0.0.1:54557
+[23:24:16] Incoming connection: 127.0.0.1:54558
+[23:24:16] Incoming connection: 127.0.0.1:54559
+[23:24:17] Incoming connection: 127.0.0.1:54560
+[23:24:17] Incoming connection: 127.0.0.1:54561
+[23:24:17] Incoming connection: 127.0.0.1:54562
+[23:24:17] Incoming connection: 127.0.0.1:54563
+[23:24:17] Incoming connection: 127.0.0.1:54564
+[23:24:17] Incoming connection: 127.0.0.1:54565
+[23:24:17] Incoming connection: 127.0.0.1:54566
+[23:24:17] Incoming connection: 127.0.0.1:54567
+[23:24:17] Incoming connection: 127.0.0.1:54568
+[23:24:17] Incoming connection: 127.0.0.1:54569
+[23:24:17] Incoming connection: 127.0.0.1:54570
+[23:24:17] Incoming connection: 127.0.0.1:54571
+[23:24:18] Incoming connection: 127.0.0.1:54572
+[23:24:18] Incoming connection: 127.0.0.1:54573
+[23:24:18] Incoming connection: 127.0.0.1:54574
+[23:24:18] Incoming connection: 127.0.0.1:54576
+[23:24:18] Incoming connection: 127.0.0.1:54577
+[23:24:18] Incoming connection: 127.0.0.1:54578
+[23:24:18] Incoming connection: 127.0.0.1:54580
+[23:24:18] Incoming connection: 127.0.0.1:54579
+[23:24:18] Incoming connection: 127.0.0.1:54581
+[23:24:18] Incoming connection: 127.0.0.1:54582
+[23:24:18] Incoming connection: 127.0.0.1:54583
+[23:24:19] Incoming connection: 127.0.0.1:54584
+[23:24:19] Incoming connection: 127.0.0.1:54585
+[23:24:19] Incoming connection: 127.0.0.1:54586
+[23:24:19] Incoming connection: 127.0.0.1:54587
+[23:24:19] Incoming connection: 127.0.0.1:54588
+[23:24:19] Incoming connection: 127.0.0.1:54589
+[23:24:19] Incoming connection: 127.0.0.1:54590
+[23:24:19] Incoming connection: 127.0.0.1:54591
+[23:24:19] Incoming connection: 127.0.0.1:54592
+[23:24:19] Incoming connection: 127.0.0.1:54593
+[23:24:19] Incoming connection: 127.0.0.1:54594
+[23:24:19] Incoming connection: 127.0.0.1:54595
+[23:24:20] Incoming connection: 127.0.0.1:54596
+[23:24:20] Incoming connection: 127.0.0.1:54597
+[23:24:20] Incoming connection: 127.0.0.1:54598
+[23:24:20] Incoming connection: 127.0.0.1:54601
+[23:24:20] Incoming connection: 127.0.0.1:54602
+[23:24:20] Incoming connection: 127.0.0.1:54599
+[23:24:20] Incoming connection: 127.0.0.1:54600
+[23:24:20] Incoming connection: 127.0.0.1:54603
+[23:24:20] Incoming connection: 127.0.0.1:54604
+[23:24:21] Incoming connection: 127.0.0.1:54605
+[23:24:21] Incoming connection: 127.0.0.1:54606
+[23:24:21] Incoming connection: 127.0.0.1:54608
+[23:24:21] Incoming connection: 127.0.0.1:54607
+[23:24:21] Incoming connection: 127.0.0.1:54609
+[23:24:21] Incoming connection: 127.0.0.1:54610
+[23:24:21] Incoming connection: 127.0.0.1:54611
+[23:24:21] Incoming connection: 127.0.0.1:54612
+[23:24:21] Incoming connection: 127.0.0.1:54613
+[23:24:21] Incoming connection: 127.0.0.1:54614
+[23:24:21] Incoming connection: 127.0.0.1:54615
+[23:24:22] Incoming connection: 127.0.0.1:54616
+[23:24:22] Incoming connection: 127.0.0.1:54617
+[23:24:22] Incoming connection: 127.0.0.1:54618
+[23:24:23] Incoming connection: 127.0.0.1:54622
+[23:24:23] Incoming connection: 127.0.0.1:54621
+[23:24:23] Incoming connection: 127.0.0.1:54620
+[23:24:23] Incoming connection: 127.0.0.1:54623
+[23:24:23] Incoming connection: 127.0.0.1:54624
+[23:24:23] Incoming connection: 127.0.0.1:54625
+[23:24:23] Incoming connection: 127.0.0.1:54626
+[23:24:23] Incoming connection: 127.0.0.1:54627
+[23:24:23] Incoming connection: 127.0.0.1:54628
+[23:24:23] Incoming connection: 127.0.0.1:54629
+[23:24:24] Incoming connection: 127.0.0.1:54630
+[23:24:24] Incoming connection: 127.0.0.1:54631
+[23:24:24] Incoming connection: 127.0.0.1:54632
+[23:24:24] Incoming connection: 127.0.0.1:54633
+[23:24:24] Incoming connection: 127.0.0.1:54634
+[23:24:24] Incoming connection: 127.0.0.1:54635
+[23:24:24] Incoming connection: 127.0.0.1:54636
+[23:24:24] Incoming connection: 127.0.0.1:54637
+[23:24:24] Incoming connection: 127.0.0.1:54638
+[23:24:24] Incoming connection: 127.0.0.1:54639
+[23:24:24] Incoming connection: 127.0.0.1:54640
+[23:24:24] Incoming connection: 127.0.0.1:54641
+[23:24:25] Incoming connection: 127.0.0.1:54642
+[23:24:25] Incoming connection: 127.0.0.1:54643
+[23:24:25] Incoming connection: 127.0.0.1:54645
+[23:24:25] Incoming connection: 127.0.0.1:54644
+[23:24:25] Incoming connection: 127.0.0.1:54646
+[23:24:25] Incoming connection: 127.0.0.1:54647
+[23:24:25] Incoming connection: 127.0.0.1:54649
+[23:24:25] Incoming connection: 127.0.0.1:54648
+[23:24:25] Incoming connection: 127.0.0.1:54650
+[23:24:25] Incoming connection: 127.0.0.1:54651
+[23:24:25] Incoming connection: 127.0.0.1:54653
+[23:24:25] Incoming connection: 127.0.0.1:54652
+[23:24:26] Incoming connection: 127.0.0.1:54654
+[23:24:26] Incoming connection: 127.0.0.1:54657
+[23:24:26] Incoming connection: 127.0.0.1:54658
+[23:24:26] Incoming connection: 127.0.0.1:54659
+[23:24:26] Incoming connection: 127.0.0.1:54660
+[23:24:26] Incoming connection: 127.0.0.1:54661
+[23:24:26] Incoming connection: 127.0.0.1:54663
+[23:24:26] Incoming connection: 127.0.0.1:54662
+[23:24:26] Incoming connection: 127.0.0.1:54664
+[23:24:26] Incoming connection: 127.0.0.1:54665
+[23:24:26] Incoming connection: 127.0.0.1:54667
+[23:24:26] Incoming connection: 127.0.0.1:54666
+[23:24:27] Incoming connection: 127.0.0.1:54668
+[23:24:27] Incoming connection: 127.0.0.1:54669
+[23:24:27] Incoming connection: 127.0.0.1:54670
+[23:24:27] Incoming connection: 127.0.0.1:54671
+[23:24:27] Incoming connection: 127.0.0.1:54672
+[23:24:27] Incoming connection: 127.0.0.1:54673
+[23:24:27] Incoming connection: 127.0.0.1:54674
+[23:24:27] Incoming connection: 127.0.0.1:54675
+[23:24:27] Incoming connection: 127.0.0.1:54676
+[23:24:28] Incoming connection: 127.0.0.1:54677
+[23:24:28] Incoming connection: 127.0.0.1:54678
+[23:24:28] Incoming connection: 127.0.0.1:54679
+[23:24:28] Incoming connection: 127.0.0.1:54680
+[23:24:28] Incoming connection: 127.0.0.1:54681
+[23:24:28] Incoming connection: 127.0.0.1:54683
+[23:24:28] Incoming connection: 127.0.0.1:54682
+[23:24:28] Incoming connection: 127.0.0.1:54684
+[23:24:28] Incoming connection: 127.0.0.1:54685
+[23:24:28] Incoming connection: 127.0.0.1:54686
+[23:24:29] Incoming connection: 127.0.0.1:54687
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3z-R2, (C)2005-2014 SA-MP Team
+
+[17:35:52] 
+[17:35:52] Server Plugins
+[17:35:52] --------------
+[17:35:52]  Loading plugin: sscanf
+[17:35:52] 
+
+[17:35:52]  ===============================
+
+[17:35:52]       sscanf plugin loaded.     
+
+[17:35:52]          Version:  2.8.1        
+
+[17:35:52]    (c) 2012 Alex "Y_Less" Cole  
+
+[17:35:52]  ===============================
+
+[17:35:52]   Loaded.
+[17:35:52]  Loading plugin: streamer
+[17:35:52] 
+
+*** Streamer Plugin v2.7.2 by Incognito loaded ***
+
+[17:35:52]   Loaded.
+[17:35:52]  Loading plugin: filemanager
+[17:35:52] ******************
+[17:35:52] ** FILE MANAGER **
+[17:35:52] **    Loaded    **
+[17:35:52] ** Version 1.5 **
+[17:35:52] ******************
+[17:35:52]   Loaded.
+[17:35:52]  Loading plugin: crashdetect
+[17:35:52]   CrashDetect v4.10.1 is OK.
+[17:35:52]   Loaded.
+[17:35:52]  Loading plugin: mapandreas
+[17:35:52]   Failed.
+[17:35:52]  Loaded 4 plugins.
+
+[17:35:53] 
+[17:35:53] Filterscripts
+[17:35:53] ---------------
+[17:35:53]   Loading filterscript 'tstudio.amx'...
+[17:35:53]  
+[17:35:53]  
+[17:35:53]  
+[17:35:53]  ======================================= 
+[17:35:53]  |                                     | 
+[17:35:53]  |        YSI version 3.09.0684        | 
+[17:35:53]  |        By Alex "Y_Less" Cole        | 
+[17:35:53]  |                                     | 
+[17:35:53]  ======================================= 
+[17:35:53]  
+[17:35:53]  
+[17:35:53]  
+[17:35:53] LOADED 8370 texture definitions
+[17:35:53] ----------------------------------------------
+[17:35:53] ---------Texture Studio By [uL]Pottus---------
+[17:35:53] -------------------------------------Loaded---
+[17:35:53]   Loading filterscript 'fsdebug.amx'...
+[17:35:53] 
+  *********************
+  * SA:MP DEBUG 0.2   *
+[17:35:53]   * By Simon Campbell *
+  *********************
+[17:35:53]   * Version: 0.5d      *
+  *********************
+[17:35:53]   * -- LOADED         *
+  *********************
+
+[17:35:53]   Loaded 2 filterscripts.
+
+[17:35:53] *** Streamer Plugin: Warning: Include file version (0x26105) does not match plugin version (0x27201) (script might need to be recompiled with the latest include file)
+[17:35:53] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[17:35:53] LOADED 8370 texture definitions
+[17:35:53] 
+----------------------------------
+[17:35:53]   Bare Script
+
+[17:35:53] ----------------------------------
+
+[17:35:53] Number of vehicle models: 0
+[17:35:53]  
+[17:35:53]  ========================================== 
+[17:35:53]  |                                        | 
+[17:35:53]  |  A new version (v<html>
+  ) of YSI is  | 
+[17:35:53]  |            available from:             | 
+[17:35:53]  |                                        | 
+[17:35:53]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[17:35:53]  |                                        | 
+[17:35:53]  ========================================== 
+[17:35:53]  
+[17:36:16] Incoming connection: 192.168.2.2:53819
+[17:36:16] [join] [uL]Pottus has joined the server (0:192.168.2.2)
+[17:51:17] [part] [uL]Pottus has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3z-R2, (C)2005-2014 SA-MP Team
+
+[09:30:53] 
+[09:30:53] Server Plugins
+[09:30:53] --------------
+[09:30:53]  Loading plugin: sscanf
+[09:30:53] 
+
+[09:30:53]  ===============================
+
+[09:30:53]       sscanf plugin loaded.     
+
+[09:30:53]          Version:  2.8.1        
+
+[09:30:53]    (c) 2012 Alex "Y_Less" Cole  
+
+[09:30:53]  ===============================
+
+[09:30:53]   Loaded.
+[09:30:53]  Loading plugin: streamer
+[09:30:53] 
+
+*** Streamer Plugin v2.7.2 by Incognito loaded ***
+
+[09:30:53]   Loaded.
+[09:30:53]  Loading plugin: filemanager
+[09:30:53] ******************
+[09:30:53] ** FILE MANAGER **
+[09:30:53] **    Loaded    **
+[09:30:53] ** Version 1.5 **
+[09:30:53] ******************
+[09:30:53]   Loaded.
+[09:30:53]  Loading plugin: crashdetect
+[09:30:54]   CrashDetect v4.10.1 is OK.
+[09:30:54]   Loaded.
+[09:30:54]  Loading plugin: mapandreas
+[09:30:54]   Failed.
+[09:30:54]  Loaded 4 plugins.
+
+[09:30:54] 
+[09:30:54] Filterscripts
+[09:30:54] ---------------
+[09:30:54]   Loading filterscript 'tstudio.amx'...
+[09:30:54]  
+[09:30:54]  
+[09:30:54]  
+[09:30:54]  ======================================= 
+[09:30:54]  |                                     | 
+[09:30:54]  |        YSI version 3.09.0684        | 
+[09:30:54]  |        By Alex "Y_Less" Cole        | 
+[09:30:54]  |                                     | 
+[09:30:54]  ======================================= 
+[09:30:54]  
+[09:30:54]  
+[09:30:54]  
+[09:30:54] LOADED 8370 texture definitions
+[09:30:54] ----------------------------------------------
+[09:30:54] ---------Texture Studio By [uL]Pottus---------
+[09:30:54] -------------------------------------Loaded---
+[09:30:54]   Loading filterscript 'fsdebug.amx'...
+[09:30:54] 
+  *********************
+  * SA:MP DEBUG 0.2   *
+[09:30:54]   * By Simon Campbell *
+  *********************
+[09:30:54]   * Version: 0.5d      *
+  *********************
+[09:30:54]   * -- LOADED         *
+  *********************
+
+[09:30:54]   Loaded 2 filterscripts.
+
+[09:30:54] *** Streamer Plugin: Warning: Include file version (0x26105) does not match plugin version (0x27201) (script might need to be recompiled with the latest include file)
+[09:30:54] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[09:30:54] LOADED 8370 texture definitions
+[09:30:54] 
+----------------------------------
+[09:30:54]   Bare Script
+
+[09:30:54] ----------------------------------
+
+[09:30:54] Number of vehicle models: 0
+[09:30:57]  
+[09:30:57]  ========================================== 
+[09:30:57]  |                                        | 
+[09:30:57]  |  A new version (v<html>
+  ) of YSI is  | 
+[09:30:57]  |            available from:             | 
+[09:30:57]  |                                        | 
+[09:30:57]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[09:30:58]  |                                        | 
+[09:30:58]  ========================================== 
+[09:30:58]  
+[09:31:31] Incoming connection: 192.168.2.2:56549
+[09:31:31] [join] [uL]Pottus has joined the server (0:192.168.2.2)
+[09:41:08] [part] [uL]Pottus has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3z-R2, (C)2005-2014 SA-MP Team
+
+[12:20:36] 
+[12:20:36] Server Plugins
+[12:20:36] --------------
+[12:20:36]  Loading plugin: sscanf
+[12:20:36] 
+
+[12:20:36]  ===============================
+
+[12:20:36]       sscanf plugin loaded.     
+
+[12:20:36]          Version:  2.8.1        
+
+[12:20:36]    (c) 2012 Alex "Y_Less" Cole  
+
+[12:20:36]  ===============================
+
+[12:20:36]   Loaded.
+[12:20:36]  Loading plugin: streamer
+[12:20:37] 
+
+*** Streamer Plugin v2.7.2 by Incognito loaded ***
+
+[12:20:37]   Loaded.
+[12:20:37]  Loading plugin: filemanager
+[12:20:37] ******************
+[12:20:37] ** FILE MANAGER **
+[12:20:37] **    Loaded    **
+[12:20:37] ** Version 1.5 **
+[12:20:37] ******************
+[12:20:37]   Loaded.
+[12:20:37]  Loading plugin: crashdetect
+[12:20:37]   CrashDetect v4.10.1 is OK.
+[12:20:37]   Loaded.
+[12:20:37]  Loading plugin: mapandreas
+[12:20:37]   Failed.
+[12:20:37]  Loaded 4 plugins.
+
+[12:20:37] 
+[12:20:37] Filterscripts
+[12:20:37] ---------------
+[12:20:37]   Loading filterscript 'tstudio.amx'...
+[12:20:37]  
+[12:20:37]  
+[12:20:37]  
+[12:20:37]  ======================================= 
+[12:20:37]  |                                     | 
+[12:20:37]  |        YSI version 3.09.0684        | 
+[12:20:37]  |        By Alex "Y_Less" Cole        | 
+[12:20:37]  |                                     | 
+[12:20:37]  ======================================= 
+[12:20:37]  
+[12:20:37]  
+[12:20:37]  
+[12:20:37] LOADED 8370 texture definitions
+[12:20:37] ----------------------------------------------
+[12:20:37] ---------Texture Studio By [uL]Pottus---------
+[12:20:37] -------------------------------------Loaded---
+[12:20:37]   Loading filterscript 'fsdebug.amx'...
+[12:20:37] 
+  *********************
+  * SA:MP DEBUG 0.2   *
+[12:20:37]   * By Simon Campbell *
+  *********************
+[12:20:37]   * Version: 0.5d      *
+  *********************
+[12:20:37]   * -- LOADED         *
+  *********************
+
+[12:20:37]   Loaded 2 filterscripts.
+
+[12:20:37] *** Streamer Plugin: Warning: Include file version (0x26105) does not match plugin version (0x27201) (script might need to be recompiled with the latest include file)
+[12:20:37] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[12:20:37] LOADED 8370 texture definitions
+[12:20:37] 
+----------------------------------
+[12:20:37]   Bare Script
+
+[12:20:37] ----------------------------------
+
+[12:20:37] Number of vehicle models: 0
+[12:20:37]  
+[12:20:37]  ========================================== 
+[12:20:37]  |                                        | 
+[12:20:37]  |  A new version (v<html>
+  ) of YSI is  | 
+[12:20:37]  |            available from:             | 
+[12:20:37]  |                                        | 
+[12:20:37]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[12:20:37]  |                                        | 
+[12:20:37]  ========================================== 
+[12:20:37]  
+[12:21:31] Incoming connection: 192.168.2.2:57451
+[12:21:31] [join] [uL]Pottus has joined the server (0:192.168.2.2)
+[12:26:51] RCON (In-Game): Player #0 ([uL]Pottus) has logged in.
+[12:26:54] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[12:26:54] ----------------------------------------------
+[12:26:54] ---------Texture Studio By [uL]Pottus---------
+[12:26:54] -----------------------------------Unloaded---
+[12:26:54] SQLitei Error: (db_free_persistent) Invalid persistent database given (80000000).
+[12:26:54]   Filterscript 'tstudio.amx' unloaded.
+[12:26:55]  
+[12:26:55]  
+[12:26:55]  
+[12:26:55]  ======================================= 
+[12:26:55]  |                                     | 
+[12:26:55]  |        YSI version 3.09.0684        | 
+[12:26:55]  |        By Alex "Y_Less" Cole        | 
+[12:26:55]  |                                     | 
+[12:26:55]  ======================================= 
+[12:26:55]  
+[12:26:55]  
+[12:26:55]  
+[12:26:55] LOADED 8370 texture definitions
+[12:26:55] ----------------------------------------------
+[12:26:55] ---------Texture Studio By [uL]Pottus---------
+[12:26:55] -------------------------------------Loaded---
+[12:26:55]   Filterscript 'tstudio.amx' loaded.
+[12:26:56]  
+[12:26:56]  ========================================== 
+[12:26:56]  |                                        | 
+[12:26:56]  |  A new version (v<html>
+  ) of YSI is  | 
+[12:26:56]  |            available from:             | 
+[12:26:56]  |                                        | 
+[12:26:56]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[12:26:56]  |                                        | 
+[12:26:56]  ========================================== 
+[12:26:56]  
+[13:02:58] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[13:02:58] ----------------------------------------------
+[13:02:58] ---------Texture Studio By [uL]Pottus---------
+[13:02:58] -----------------------------------Unloaded---
+[13:02:58] SQLitei Error: (db_free_persistent) Invalid persistent database given (80000000).
+[13:02:58]   Filterscript 'tstudio.amx' unloaded.
+[13:02:58]  
+[13:02:58]  
+[13:02:58]  
+[13:02:58]  ======================================= 
+[13:02:58]  |                                     | 
+[13:02:58]  |        YSI version 3.09.0684        | 
+[13:02:58]  |        By Alex "Y_Less" Cole        | 
+[13:02:58]  |                                     | 
+[13:02:58]  ======================================= 
+[13:02:58]  
+[13:02:58]  
+[13:02:58]  
+[13:02:58] LOADED 8370 texture definitions
+[13:02:58] ----------------------------------------------
+[13:02:58] ---------Texture Studio By [uL]Pottus---------
+[13:02:58] -------------------------------------Loaded---
+[13:02:58]   Filterscript 'tstudio.amx' loaded.
+[13:02:59]  
+[13:02:59]  ========================================== 
+[13:02:59]  |                                        | 
+[13:02:59]  |  A new version (v<html>
+  ) of YSI is  | 
+[13:02:59]  |            available from:             | 
+[13:02:59]  |                                        | 
+[13:02:59]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[13:02:59]  |                                        | 
+[13:02:59]  ========================================== 
+[13:02:59]  
+[13:08:30] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[13:08:30] ----------------------------------------------
+[13:08:30] ---------Texture Studio By [uL]Pottus---------
+[13:08:30] -----------------------------------Unloaded---
+[13:08:30]   Filterscript 'tstudio.amx' unloaded.
+[13:08:30]  
+[13:08:30]  
+[13:08:30]  
+[13:08:30]  ======================================= 
+[13:08:30]  |                                     | 
+[13:08:30]  |        YSI version 3.09.0684        | 
+[13:08:30]  |        By Alex "Y_Less" Cole        | 
+[13:08:30]  |                                     | 
+[13:08:30]  ======================================= 
+[13:08:30]  
+[13:08:30]  
+[13:08:30]  
+[13:08:30] LOADED 8370 texture definitions
+[13:08:30] ----------------------------------------------
+[13:08:30] ---------Texture Studio By [uL]Pottus---------
+[13:08:30] -------------------------------------Loaded---
+[13:08:30]   Filterscript 'tstudio.amx' loaded.
+[13:08:31]  
+[13:08:31]  ========================================== 
+[13:08:31]  |                                        | 
+[13:08:31]  |  A new version (v<html>
+  ) of YSI is  | 
+[13:08:31]  |            available from:             | 
+[13:08:31]  |                                        | 
+[13:08:31]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[13:08:31]  |                                        | 
+[13:08:31]  ========================================== 
+[13:08:31]  

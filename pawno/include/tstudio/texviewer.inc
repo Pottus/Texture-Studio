@@ -1,0 +1,1245 @@
+#include <YSI\y_hooks>
+
+#undef MAX_PLAYERS
+#define MAX_PLAYERS 10
+
+// 420 Colors
+#define         STEALTH_GREEN          0x33DD1100
+#define         STEALTH_ORANGE         0xFF880000
+#define         STEALTH_YELLOW         0xFFFF00AA
+
+// Define preview states
+#define         PREVIEW_STATE_NONE              0
+#define         PREVIEW_STATE_ALLTEXTURES       1
+#define         PREVIEW_STATE_THEME             2
+
+// Default player texture when slot is empty
+#define         DEFAULT_TEXTURE                 1000
+
+#define         MAX_THEME_TEXTURES              1000
+
+
+// enum for menu data
+enum MENU3DINFO
+{
+    TPreviewState,
+	CurrTextureIndex,
+    Menus3D,
+    CurrThemeIndex,
+    PlayerText:Menu3D_Model_Info,
+}
+
+// Menu Data
+new Menu3DData[MAX_PLAYERS][MENU3DINFO];
+
+static PlayerThemeIndex[MAX_PLAYERS][1000];
+
+
+static Text:Click_SetTexture[16];
+static Text:Click_ClearTexture[16];
+static Text:Click_SetColor[16];
+static Text:Click_CloseTexture;
+
+static PlayerText:Player_TextureInfo[MAX_PLAYERS][MAX_MATERIALS];
+static PlayerText:Click_TextureAll[MAX_PLAYERS];
+
+static bool:SelectingTexture[MAX_PLAYERS];
+static bool:TextureAll[MAX_PLAYERS];
+
+static CurrTexturingIndex[MAX_PLAYERS];
+
+
+Float: GetPlayerCameraFacingAngle(playerid)
+{
+    new Float: vX, Float: vY;
+    if(GetPlayerCameraFrontVector(playerid, vX, vY, Float: playerid))
+	{
+        if((vX = -atan2(vX, vY)) < 0.0) return vX + 360.0;
+        return vX;
+    }
+    return 0.0;
+}
+
+sqlite_ThemeSetup()
+{
+	new DBResult:r = db_query(ThemeDataDB, "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'default_theme'");
+
+	if(!db_num_rows(r))
+	{
+		db_query(ThemeDataDB, "CREATE TABLE IF NOT EXISTS `default_theme` (TIndex INTEGER)");
+		db_query(ThemeDataDB, "INSERT INTO `default_theme` (`TIndex`) VALUES(455)");
+		db_query(ThemeDataDB, "INSERT INTO `default_theme` (`TIndex`) VALUES(463)");
+	}
+	db_free_result(r);
+	
+	foreach(new i : Player)
+	{
+	    LoadPlayerTheme(i, "default_theme");
+	
+	}
+	
+	return 1;
+}
+
+// Delete for include
+hook OnFilterScriptInit()
+{
+	foreach(new i : Player)
+	{
+	    InitText3DDraw(i);
+		InitPlayerTextureInfo(i);
+	}
+
+	new Float:ypos = 100.0;
+
+	for(new i = 0; i < MAX_MATERIALS; i++)
+	{
+		// Will set the currently selected texture
+		Click_SetTexture[i] = TextDrawCreate(40.000000, ypos, "LD_BEAT:square");
+		TextDrawBackgroundColor(Click_SetTexture[i], 255);
+		TextDrawFont(Click_SetTexture[i], 4);
+		TextDrawLetterSize(Click_SetTexture[i], 0.500000, 1.000000);
+		TextDrawColor(Click_SetTexture[i], 16711935);
+		TextDrawSetOutline(Click_SetTexture[i], 0);
+		TextDrawSetProportional(Click_SetTexture[i], 1);
+		TextDrawSetShadow(Click_SetTexture[i], 1);
+		TextDrawUseBox(Click_SetTexture[i], 1);
+		TextDrawBoxColor(Click_SetTexture[i], 255);
+		TextDrawTextSize(Click_SetTexture[i], 10.000000, 10.000000);
+
+		TextDrawSetSelectable(Click_SetTexture[i], 1);
+
+		// Will set the currently selected color
+		Click_SetColor[i] = TextDrawCreate(25.000000, ypos, "LD_BEAT:square");
+		TextDrawBackgroundColor(Click_SetColor[i], 255);
+		TextDrawFont(Click_SetColor[i], 4);
+		TextDrawLetterSize(Click_SetColor[i], 0.500000, 1.000000);
+		TextDrawColor(Click_SetColor[i], 0x33CCFFFF);
+		TextDrawSetOutline(Click_SetColor[i], 0);
+		TextDrawSetProportional(Click_SetColor[i], 1);
+		TextDrawSetShadow(Click_SetColor[i], 1);
+		TextDrawUseBox(Click_SetColor[i], 1);
+		TextDrawBoxColor(Click_SetColor[i], 255);
+		TextDrawTextSize(Click_SetColor[i], 10.000000, 10.000000);
+
+		TextDrawSetSelectable(Click_SetColor[i], 1);
+
+		// Will set the currently selected color
+		Click_ClearTexture[i] = TextDrawCreate(10.000000, ypos, "LD_BEAT:square");
+		TextDrawBackgroundColor(Click_ClearTexture[i], 255);
+		TextDrawFont(Click_ClearTexture[i], 4);
+		TextDrawLetterSize(Click_ClearTexture[i], 0.500000, 1.000000);
+		TextDrawColor(Click_ClearTexture[i], 0xFF0000FF);
+		TextDrawSetOutline(Click_ClearTexture[i], 0);
+		TextDrawSetProportional(Click_ClearTexture[i], 1);
+		TextDrawSetShadow(Click_ClearTexture[i], 1);
+		TextDrawUseBox(Click_ClearTexture[i], 1);
+		TextDrawBoxColor(Click_ClearTexture[i], 255);
+		TextDrawTextSize(Click_ClearTexture[i], 10.000000, 10.000000);
+
+		TextDrawSetSelectable(Click_ClearTexture[i], 1);
+
+		ypos += 15.0;
+	}
+	
+	
+	Click_CloseTexture = TextDrawCreate(57.000000, ypos, "Close");
+	TextDrawBackgroundColor(Click_CloseTexture, 255);
+	TextDrawFont(Click_CloseTexture, 2);
+	TextDrawLetterSize(Click_CloseTexture, 0.200000, 1.000000);
+	TextDrawColor(Click_CloseTexture, -1);
+	TextDrawSetOutline(Click_CloseTexture, 1);
+	TextDrawSetProportional(Click_CloseTexture, 1);
+	TextDrawUseBox(Click_CloseTexture, 1);
+	TextDrawBoxColor(Click_CloseTexture, 0);
+	TextDrawTextSize(Click_CloseTexture, 80.000000, 10.000000);
+	TextDrawSetSelectable(Click_CloseTexture, 1);
+	return 1;
+}
+
+
+hook OnFilterScriptExit()
+{
+	foreach(new i : Player)
+	{
+    	// Close tool if it's open
+		if(Menu3DData[i][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
+		{
+			CancelSelect3DMenu(i);
+			Destroy3DMenu(Menu3DData[i][Menus3D]);
+			Menu3DData[i][TPreviewState] = PREVIEW_STATE_NONE;
+	    }
+	    
+		for(new j = 0; j < MAX_MATERIALS; j++)
+		{
+			PlayerTextDrawDestroy(i, Player_TextureInfo[i][j]);
+			PlayerTextDrawDestroy(i, Click_TextureAll[i]);
+		}
+
+		PlayerTextDrawDestroy(i, Menu3DData[i][Menu3D_Model_Info]);
+	}
+	
+	for(new i = 0; i < MAX_MATERIALS; i++)
+	{
+		TextDrawDestroy(Click_SetTexture[i]);
+		TextDrawDestroy(Click_ClearTexture[i]);
+		TextDrawDestroy(Click_SetColor[i]);
+	}
+	
+	TextDrawDestroy(Click_CloseTexture);
+	
+	return 1;
+
+}
+
+
+// Hook for include
+hook OnPlayerConnect(playerid)
+{
+	InitText3DDraw(playerid);
+	InitPlayerTextureInfo(playerid);
+	LoadPlayerTheme(playerid, "default_theme");
+	// Create texture editor
+
+	return 1;
+}
+
+InitText3DDraw(playerid)
+{
+	Menu3DData[playerid][Menu3D_Model_Info] = CreatePlayerTextDraw(playerid,630.000000, 400.000000, "Model: TXD: Texture:");
+	PlayerTextDrawAlignment(playerid,Menu3DData[playerid][Menu3D_Model_Info], 3);
+	PlayerTextDrawBackgroundColor(playerid,Menu3DData[playerid][Menu3D_Model_Info], 255);
+	PlayerTextDrawFont(playerid,Menu3DData[playerid][Menu3D_Model_Info], 2);
+	PlayerTextDrawLetterSize(playerid,Menu3DData[playerid][Menu3D_Model_Info], 0.300000, 1.000000);
+	PlayerTextDrawColor(playerid,Menu3DData[playerid][Menu3D_Model_Info], 16711935);
+	PlayerTextDrawSetOutline(playerid,Menu3DData[playerid][Menu3D_Model_Info], 1);
+	PlayerTextDrawSetProportional(playerid,Menu3DData[playerid][Menu3D_Model_Info], 1);
+	PlayerTextDrawSetSelectable(playerid,Menu3DData[playerid][Menu3D_Model_Info], 0);
+	return 1;
+}
+
+// Player disconnected
+hook OnPlayerDisconnect(playerid, reason)
+{
+	// Out of preview state
+    Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_NONE;
+	CancelSelect3DMenu(playerid);
+	
+	// Did the player have a menu?
+	if(Menu3DData[playerid][Menus3D] != INVALID_3DMENU)
+	{
+		// Destroy it
+        Destroy3DMenu(Menu3DData[playerid][Menus3D]);
+        Menu3DData[playerid][Menus3D] = INVALID_3DMENU;
+	}
+	
+	SelectingTexture[playerid] = false;
+	TextureAll[playerid] = false;
+    CurrTexturingIndex[playerid] = 0;
+	
+	return 1;
+}
+
+// All texture mode
+CMD:mtextures(playerid, arg[]) // in GUI
+{
+	new index = strval(arg);
+	if(index < 1 || index > sizeof(ObjectTextures) - 1) Menu3DData[playerid][CurrTextureIndex] = 1;
+	else Menu3DData[playerid][CurrTextureIndex] = index;
+
+	// No menu created yet
+	if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_NONE)
+	{
+	    CreateTexViewer(playerid);
+        Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_ALLTEXTURES;
+        
+		// Update textures
+		for(new i = 0; i < 16; i++)
+		{
+		    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0, 0xFF999999);
+		}
+
+		// Update the info texdraw
+		UpdateTextureInfo(playerid, SelectedBox[playerid]);
+
+   		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Texture selection tool cpened - All Textures");
+
+	}
+	
+	// Menu was open update to next slot
+	else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
+	{
+		if(index == 0) DestroyTexViewer(playerid);
+		else
+		{
+			for(new i = 0; i < 16; i++)
+			{
+			    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0, 0xFF999999);
+			}
+
+			UpdateTextureInfo(playerid, SelectedBox[playerid]);
+
+	   		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			SendClientMessage(playerid, STEALTH_GREEN, "Texture selection slot changed - All Textures");
+		}
+	}
+	else if(Menu3DData[playerid][TPreviewState] ==  PREVIEW_STATE_THEME)
+	{
+		for(new i = 0; i < 16; i++)
+		{
+		    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0, 0xFF999999);
+		}
+
+		Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_ALLTEXTURES;
+
+		UpdateTextureInfo(playerid, SelectedBox[playerid]);
+
+   		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Switched to viewing all textures");
+	}
+
+	return 1;
+}
+
+
+CMD:ttextures(playerid, arg[]) // in GUI
+{
+	new index = strval(arg);
+	if(index < 1 || index > MAX_THEME_TEXTURES - 1) Menu3DData[playerid][CurrThemeIndex] = 1;
+	else Menu3DData[playerid][CurrThemeIndex] = index;
+
+	// No menu created yet
+	if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_NONE)
+	{
+	    CreateTexViewer(playerid);
+        Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_THEME;
+
+        UpdateThemeTextures(playerid);
+
+		// Update the info texdraw
+		UpdateTextureInfo(playerid, SelectedBox[playerid]);
+
+   		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Texture selection tool cpened - Theme Textures");
+	}
+   	else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
+	{
+		if(index == 0) DestroyTexViewer(playerid);
+		else
+		{
+            UpdateThemeTextures(playerid);
+			UpdateTextureInfo(playerid, SelectedBox[playerid]);
+
+	   		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			SendClientMessage(playerid, STEALTH_GREEN, "Texture selection slot changed - All Textures");
+		}
+	}
+	else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
+	{
+        Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_THEME;
+
+        UpdateThemeTextures(playerid);
+   		UpdateTextureInfo(playerid, SelectedBox[playerid]);
+
+   		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Switched to viewing theme textures");
+	}
+
+	return 1;
+}
+
+
+static UpdateThemeTextures(playerid)
+{
+	for(new i = 0; i < 16; i++)
+	{
+	   	if(PlayerThemeIndex[playerid][Menu3DData[playerid][CurrThemeIndex]+i] >= sizeof(ObjectTextures) - 1) continue;
+
+		if(PlayerThemeIndex[playerid][Menu3DData[playerid][CurrThemeIndex]+i] == 0)
+		{
+	    	SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,
+				ObjectTextures[DEFAULT_TEXTURE][TModel],
+				ObjectTextures[DEFAULT_TEXTURE][TXDName],
+			   	ObjectTextures[DEFAULT_TEXTURE][TextureName],
+			   	0, 0xFF999999);
+
+		}
+		else
+		{
+	    	SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,
+				ObjectTextures[PlayerThemeIndex[playerid][i+Menu3DData[playerid][CurrThemeIndex]]][TModel],
+				ObjectTextures[PlayerThemeIndex[playerid][i+Menu3DData[playerid][CurrThemeIndex]]][TXDName],
+				ObjectTextures[PlayerThemeIndex[playerid][i+Menu3DData[playerid][CurrThemeIndex]]][TextureName],
+			   	0, 0xFF999999);
+		}
+	}
+}
+
+
+OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)
+{
+	#pragma unused oldkeys
+	
+	new line[128];
+	
+	if(newkeys & 16 || oldkeys & 16) return 0;
+	
+	// Scroll right
+	if(newkeys & KEY_ANALOG_RIGHT)
+	{
+		if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
+		{
+			// Next 16 entries
+			Menu3DData[playerid][CurrTextureIndex] += 16;
+
+			// Too high of entries set default
+			if(Menu3DData[playerid][CurrTextureIndex] >= sizeof(ObjectTextures) - 1) Menu3DData[playerid][CurrTextureIndex] = 1;
+			else if(sizeof(ObjectTextures) - 1 - Menu3DData[playerid][CurrTextureIndex] - 16 < 0) Menu3DData[playerid][CurrTextureIndex] = sizeof(ObjectTextures) - 16 - 1;
+
+			// Update the textures
+			for(new i = 0; i < 16; i++)
+			{
+			   if(i+Menu3DData[playerid][CurrTextureIndex] >= sizeof(ObjectTextures) - 1) continue;
+		       SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0, 0xFF999999);
+			}
+		}
+		else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
+		{
+			Menu3DData[playerid][CurrThemeIndex] += 16;
+
+		    if(Menu3DData[playerid][CurrThemeIndex] >= MAX_THEME_TEXTURES - 1) Menu3DData[playerid][CurrThemeIndex] = 1;
+		    else if(MAX_THEME_TEXTURES - 1 - Menu3DData[playerid][CurrThemeIndex] - 16 < 0) Menu3DData[playerid][CurrThemeIndex] = MAX_THEME_TEXTURES - 16 - 1;
+
+            UpdateThemeTextures(playerid);
+		}
+		// Update the info
+		UpdateTextureInfo(playerid, SelectedBox[playerid]);
+
+		return 1;
+	}
+
+	// Pressed left (Same as right almost)
+	else if(newkeys & KEY_ANALOG_LEFT)
+	{
+		if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
+		{
+	        // Last 16 entries
+			Menu3DData[playerid][CurrTextureIndex] -= 16;
+
+			// Too high of entries set default
+			if(Menu3DData[playerid][CurrTextureIndex] < 1) Menu3DData[playerid][CurrTextureIndex] = sizeof(ObjectTextures) - 16 - 1;
+
+            // Update the textures
+			if(Menu3DData[playerid][CurrTextureIndex] >= sizeof(ObjectTextures) - 1) Menu3DData[playerid][CurrTextureIndex] = sizeof(ObjectTextures) - 1;
+			for(new i = 0; i < 16; i++)
+			{
+			   if(i+Menu3DData[playerid][CurrTextureIndex] >= sizeof(ObjectTextures) - 1) continue;
+		       SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0, 0xFF999999);
+			}
+		}
+		else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
+		{
+	        Menu3DData[playerid][CurrThemeIndex] -= 16;
+
+		    if(Menu3DData[playerid][CurrThemeIndex] < 1) Menu3DData[playerid][CurrThemeIndex] = MAX_THEME_TEXTURES - 16 - 1;
+      		if(Menu3DData[playerid][CurrThemeIndex] >= MAX_THEME_TEXTURES - 1) Menu3DData[playerid][CurrThemeIndex] = MAX_THEME_TEXTURES - 1;
+
+			UpdateThemeTextures(playerid);
+		}
+			
+		// Update the info
+        UpdateTextureInfo(playerid, SelectedBox[playerid]);
+
+		return 1;
+	}
+
+	//
+	else if(newkeys & KEY_SPRINT && (FlyMode[playerid] || newkeys & KEY_HANDBRAKE))
+	{
+		// Add to your theme
+	    if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
+	    {
+			new addt = AddTextureToTheme(playerid, Menu3DData[playerid][CurrTextureIndex]+SelectedBox[playerid]);
+			if(addt >= 0)
+			{
+		   		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+				SendClientMessage(playerid, STEALTH_GREEN, "Texture added to theme selection");
+			}
+			else if(addt == -1)
+			{
+		   		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+				SendClientMessage(playerid, STEALTH_GREEN, "This texture is already added");
+			}
+			else if(addt == -2)
+			{
+		   		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+				SendClientMessage(playerid, STEALTH_GREEN, "Tried to add too many textures to your theme");
+			}
+			return 1;
+		}
+	}
+
+	// Set current select material to object
+	else if(newkeys & KEY_WALK)
+	{
+	    if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
+	    {
+			if(TextureAll[playerid])
+			{
+				format(line, sizeof(line), "/mtsetall %i %i", CurrTexturingIndex[playerid], Menu3DData[playerid][CurrTextureIndex]+SelectedBox[playerid]);
+				BroadcastCommand(playerid, line);
+			}
+			else
+			{
+				format(line, sizeof(line), "/mtset %i %i", CurrTexturingIndex[playerid], Menu3DData[playerid][CurrTextureIndex]+SelectedBox[playerid]);
+				BroadcastCommand(playerid, line);
+			}
+			return 1;
+	    }
+        else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
+        {
+			if(TextureAll[playerid])
+			{
+				format(line, sizeof(line), "/mtsetall %i %i", CurrTexturingIndex[playerid], PlayerThemeIndex[playerid][Menu3DData[playerid][CurrThemeIndex]+SelectedBox[playerid]]);
+				BroadcastCommand(playerid, line);
+			}
+			else
+			{
+				format(line, sizeof(line), "/mtset %i %i", CurrTexturingIndex[playerid], PlayerThemeIndex[playerid][Menu3DData[playerid][CurrThemeIndex]+SelectedBox[playerid]]);
+				BroadcastCommand(playerid, line);
+			}
+			return 1;
+        }
+	}
+	
+	return 0;
+}
+
+
+OnPlayerKeyStateChangeTex(playerid,newkeys,oldkeys)
+{
+	#pragma unused oldkeys
+	if( newkeys & KEY_NO || (IsFlyMode(playerid) && newkeys & KEY_JUMP) )
+	{
+	    if(GetEditMode(playerid) == EDIT_MODE_TEXTURING)
+		{
+			SelectTextDraw(playerid, 0xD9D919FF);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
+static AddTextureToTheme(playerid, index)
+{
+	for(new i = 1; i < MAX_THEME_TEXTURES; i++) { if(index == PlayerThemeIndex[playerid][i]) return -1; }
+    for(new i = 1; i < MAX_THEME_TEXTURES; i++)
+	{
+		if(PlayerThemeIndex[playerid][i] == 0)
+		{
+			PlayerThemeIndex[playerid][i] = index;
+			return i;
+		}
+	}
+	return -2;
+}
+
+// To menu change effects when changing selection
+public OnPlayerChange3DMenuBox(playerid,MenuID,boxid)
+{
+	UpdateTextureInfo(playerid, boxid);
+	return 1;
+}
+
+// Update selection info text
+static UpdateTextureInfo(playerid, boxid)
+{
+	// Standard texture viewer
+	if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
+	{
+		new line[128];
+		format(line, sizeof(line), "~n~~n~Model: %i TXD: %s Texture: %s~n~~r~Index: %i/%i", ObjectTextures[boxid+Menu3DData[playerid][CurrTextureIndex]][TModel],
+					ObjectTextures[boxid+Menu3DData[playerid][CurrTextureIndex]][TXDName],
+					ObjectTextures[boxid+Menu3DData[playerid][CurrTextureIndex]][TextureName],
+					Menu3DData[playerid][CurrTextureIndex]+boxid, sizeof(ObjectTextures) - 1);
+
+		PlayerTextDrawSetString(playerid, Menu3DData[playerid][Menu3D_Model_Info], line);
+	}
+	else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
+	{
+		new line[128];
+		
+		format(line, sizeof(line), "~n~~n~Model: %i TXD: %s Texture: %s~n~~r~Index: %i/%i~n~Theme Index: %i/%i",
+			ObjectTextures[PlayerThemeIndex[playerid][boxid+Menu3DData[playerid][CurrThemeIndex]]][TModel],
+			ObjectTextures[PlayerThemeIndex[playerid][boxid+Menu3DData[playerid][CurrThemeIndex]]][TXDName],
+			ObjectTextures[PlayerThemeIndex[playerid][boxid+Menu3DData[playerid][CurrThemeIndex]]][TextureName],
+			PlayerThemeIndex[playerid][boxid+Menu3DData[playerid][CurrThemeIndex]], sizeof(ObjectTextures) - 1,
+			boxid+Menu3DData[playerid][CurrThemeIndex], MAX_THEME_TEXTURES - 1);
+
+		PlayerTextDrawSetString(playerid, Menu3DData[playerid][Menu3D_Model_Info], line);
+	}
+
+	return 1;
+}
+
+static CreateTexViewer(playerid)
+{
+	// Get position
+	new Float:x, Float: y, Float:z, Float:fa;
+	GetPlayerPos(playerid, x, y, z);
+
+	if(FlyMode[playerid])
+	{
+		fa = GetPlayerCameraFacingAngle(playerid);
+		z -= 1.0;
+	}
+	else GetPlayerFacingAngle(playerid, fa);
+	
+	// Calculate position to left of player
+	x = (x + 1.75 * floatsin(-fa + -90,degrees));
+	y = (y + 1.75 * floatcos(-fa + -90,degrees));
+
+	// Calculate create offset
+	if(FlyMode[playerid])
+	{
+		x = (x + 4.0 * floatsin(-fa,degrees));
+		y = (y + 4.0 * floatcos(-fa,degrees));
+	}
+	else
+	{
+		x = (x + 2.0 * floatsin(-fa,degrees));
+		y = (y + 2.0 * floatcos(-fa,degrees));
+	}
+
+    Menu3DData[playerid][Menus3D] = Create3DMenu(playerid, x, y, z, fa, 16);
+	Select3DMenu(playerid, Menu3DData[playerid][Menus3D]);
+    PlayerTextDrawShow(playerid, Menu3DData[playerid][Menu3D_Model_Info]);
+
+	return 1;
+}
+
+static DestroyTexViewer(playerid)
+{
+	CancelSelect3DMenu(playerid);
+	Destroy3DMenu(Menu3DData[playerid][Menus3D]);
+	Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_NONE;
+	PlayerTextDrawHide(playerid, Menu3DData[playerid][Menu3D_Model_Info]);
+
+	return 1;
+}
+
+CMD:savetheme(playerid, arg[]) // in GUI
+{
+	new count;
+	new DBResult:r;
+
+	// Any theme to save?
+	for(new i = 0; i < MAX_THEME_TEXTURES; i++)
+	{
+		if(PlayerThemeIndex[playerid][i] != 0)
+		{
+			count++;
+			break;
+	    }
+	}
+	if(count == 0)
+	{
+  		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "You have no textures to save to theme!");
+	}
+	else
+	{
+	    inline SaveTheme(tpid, tdialogid, tresponse, tlistitem, string:ttext[])
+		{
+			#pragma unused tlistitem, tdialogid, tpid, ttext
+
+			if(tresponse)
+			{
+				if(isnull(ttext))
+				{
+			  		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+					SendClientMessage(playerid, STEALTH_YELLOW, "You must supply a theme name to save!");
+				}
+
+				r = db_query(ThemeDataDB, "SELECT * FROM sqlite_master");
+
+				if(db_num_rows(r) > 0)
+				{
+				    for(new i = 0; i < db_num_rows(r); i++)
+				    {
+						new Field[32];
+						
+						db_get_field_assoc(r, "name", Field, 64);
+
+				        if(!strcmp(Field, ttext))
+						{
+						    inline ReplaceTheme(rpid, rdialogid, rresponse, rlistitem, string:rtext[])
+							{
+							    #pragma unused rlistitem, rdialogid, rpid, rtext
+							    if(rresponse)
+								{
+									SavePlayerTheme(playerid, ttext,true);
+							  		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+									SendClientMessage(playerid, STEALTH_GREEN, "Theme has been saved!");
+								}
+						    }
+						    Dialog_ShowCallback(playerid, using inline ReplaceTheme, DIALOG_STYLE_MSGBOX, "Texture Studio", "There is a theme with this name aready replace?", "Ok", "Cancel");
+							return 1;
+						}
+						db_next_row(r);
+				    }
+				    
+   					SavePlayerTheme(playerid, ttext);
+			  		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+					SendClientMessage(playerid, STEALTH_GREEN, "Theme has been saved!");
+				    
+				}
+	   			db_free_result(r);
+			}
+		}
+		Dialog_ShowCallback(playerid, using inline SaveTheme, DIALOG_STYLE_INPUT, "Texture Studio", "Choose a theme name to save to", "Ok", "Cancel");
+
+	}
+	return 1;
+}
+
+
+CMD:deletetheme(playerid, arg[]) // in GUI
+{
+	new DBResult:r = db_query(ThemeDataDB, "SELECT * FROM sqlite_master");
+
+	if(db_num_rows(r))
+	{
+		new Field[64];
+		new line[1024];
+		for(new i = 0; i < db_num_rows(r); i++)
+		{
+			db_get_field_assoc(r, "name", Field, 64);
+			format(line, sizeof(line), "%s%s\n", line, Field);
+			db_next_row(r);
+		}
+
+		inline DeleteTheme(lpid, ldialogid, lresponse, llistitem, string:ltext[])
+		{
+			#pragma unused llistitem, ldialogid, lpid, ltext
+			if(lresponse)
+			{
+			    inline ClearTheme(cpid, cdialogid, cresponse, clistitem, string:ctext[])
+			    {
+					#pragma unused clistitem, cdialogid, cpid, ctext
+					if(cresponse)
+					{
+						if(strcmp("default_theme", ltext))
+						{
+							new q[128];
+							format(q, sizeof(q), "DROP TABLE `%s`", ltext);
+							db_free_result(db_query(ThemeDataDB, q));
+
+							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+							SendClientMessage(playerid, STEALTH_GREEN, "Theme deleted!");
+						}
+						else
+						{
+							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+							SendClientMessage(playerid, STEALTH_YELLOW, "You can not delete the default theme!");
+						}
+					}
+			    }
+                Dialog_ShowCallback(playerid, using inline ClearTheme, DIALOG_STYLE_MSGBOX, "Texture Studio", "Delete theme?", "Ok", "Cancel");
+			}
+		}
+        Dialog_ShowCallback(playerid, using inline DeleteTheme, DIALOG_STYLE_LIST, "Delete a theme", line, "Ok", "Cancel");
+	}
+	else
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "There are no themes to delete!");
+	}
+
+	db_free_result(r);
+
+	return 1;
+}
+
+
+CMD:loadtheme(playerid, arg[]) // in GUI
+{
+	new DBResult:r = db_query(ThemeDataDB, "SELECT * FROM sqlite_master");
+	
+	if(db_num_rows(r))
+	{
+		new Field[64];
+		new line[1024];
+		for(new i = 0; i < db_num_rows(r); i++)
+		{
+			db_get_field_assoc(r, "name", Field, 64);
+			format(line, sizeof(line), "%s%s\n", line, Field);
+			db_next_row(r);
+		}
+
+		inline LoadTheme(lpid, ldialogid, lresponse, llistitem, string:ltext[])
+		{
+			#pragma unused llistitem, ldialogid, lpid, ltext
+			if(lresponse)
+			{
+			    inline ClearTheme(cpid, cdialogid, cresponse, clistitem, string:ctext[])
+			    {
+			        #pragma unused clistitem, cdialogid, cpid, ctext
+			        if(cresponse) LoadPlayerTheme(playerid, ltext, true);
+			        else LoadPlayerTheme(playerid, ltext, false);
+
+			  		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+					SendClientMessage(playerid, STEALTH_GREEN, "Theme has been loaded!");
+			    }
+                Dialog_ShowCallback(playerid, using inline ClearTheme, DIALOG_STYLE_MSGBOX, "Texture Studio", "Clear existing theme?", "Ok", "Cancel");
+			}
+		}
+        Dialog_ShowCallback(playerid, using inline LoadTheme, DIALOG_STYLE_LIST, "Texture Studio - Load a theme", line, "Ok", "Cancel");
+	}
+	else
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "There are no themes to load!");
+	}
+	
+	db_free_result(r);
+	
+	return 1;
+}
+
+static SavePlayerTheme(playerid, name[], bool:deletedb=false)
+{
+	new q[128];
+
+	if(deletedb) format(q, sizeof(q), "DELETE FROM `%s`", name);
+	else format(q, sizeof(q), "CREATE TABLE IF NOT EXISTS `%s` (TIndex INTEGER)", name);
+	db_free_result(db_query(ThemeDataDB, q));
+	
+	for(new i = 0; i < MAX_THEME_TEXTURES; i++)
+	{
+		if(PlayerThemeIndex[playerid][i] != 0)
+		{
+		    format(q, sizeof(q), "INSERT INTO `%s` (`TIndex`) VALUES(%i)", name, PlayerThemeIndex[playerid][i]);
+		    db_free_result(db_query(ThemeDataDB, q));
+		}
+	}
+	
+	return 1;
+}
+
+static LoadPlayerTheme(playerid, name[], bool:cleararray=true)
+{
+	new q[128];
+	new DBResult:r;
+	format(q, sizeof(q), "SELECT * FROM `%s`", name);
+	r = db_query(ThemeDataDB, q);
+	
+	if(db_num_rows(r))
+	{
+		new currpos = 1;
+		if(cleararray) for(new i = 0; i < MAX_THEME_TEXTURES; i++) { PlayerThemeIndex[playerid][i] = 0; }
+
+	    for(new i = 0; i < db_num_rows(r); i++)
+	    {
+			for(new j = currpos; j < MAX_THEME_TEXTURES; j++)
+			{
+			    if(PlayerThemeIndex[playerid][j] == 0)
+			    {
+					currpos = j;
+					new Field[8];
+					db_get_field_assoc(r, "TIndex", Field, 8);
+					PlayerThemeIndex[playerid][currpos] = strval(Field);
+					break;
+			    }
+			}
+			db_next_row(r);
+		}
+		db_free_result(r);
+	}
+	return 1;
+}
+
+
+
+CMD:settindex(playerid, arg[]) // in GUI
+{
+    MapOpenCheck();
+
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+
+	new index = strval(arg);
+	if(index < 0 || index > 15) return SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /settindex <index> (0-15)");
+
+	CurrTexturingIndex[playerid] = index;
+	new line[128];
+	format(line, sizeof(line), "Current texturing index set to %i", index);
+	SendClientMessage(playerid, STEALTH_GREEN, line);
+
+	return 1;
+}
+
+
+CMD:stexture(playerid, arg[]) // in GUI
+{
+    MapOpenCheck();
+	EditCheck(playerid);
+
+	if(GetEditMode(playerid) == EDIT_MODE_TEXTURING)
+	{
+	    SetCurrTextDraw(playerid, TEXTDRAW_NONE);
+		SetEditMode(playerid, EDIT_MODE_NONE);
+		EditingMode[playerid] = false;
+
+		for(new i = 0; i < MAX_MATERIALS; i++)
+		{
+			TextDrawHideForPlayer(playerid, Click_SetTexture[i]);
+			TextDrawHideForPlayer(playerid, Click_ClearTexture[i]);
+			TextDrawHideForPlayer(playerid, Click_SetColor[i]);
+			TextDrawHideForPlayer(playerid, Click_CloseTexture);
+			PlayerTextDrawHide(playerid, Player_TextureInfo[playerid][i]);
+			PlayerTextDrawHide(playerid, Click_TextureAll[playerid]);
+		}
+        SetTimerEx("PlayerSetGUIPaused", 300, false, "ii", playerid, 0);
+	    CancelSelectTextDraw(playerid);
+	}
+	else
+	{
+		SetEditMode(playerid, EDIT_MODE_TEXTURING);
+		SetCurrTextDraw(playerid, TEXTDRAW_MATERIALS);
+        EditingMode[playerid] = true;
+		SelectTextDraw(playerid, 0xD9D919FF);
+		PlayerSetGUIPaused(playerid, true);
+
+		for(new i = 0; i < MAX_MATERIALS; i++)
+		{
+			TextDrawShowForPlayer(playerid, Click_SetTexture[i]);
+			TextDrawShowForPlayer(playerid, Click_ClearTexture[i]);
+			TextDrawShowForPlayer(playerid, Click_SetColor[i]);
+			TextDrawShowForPlayer(playerid, Click_CloseTexture);
+			UpdateTextureSlot(playerid, i);
+			PlayerTextDrawShow(playerid, Player_TextureInfo[playerid][i]);
+			PlayerTextDrawShow(playerid, Click_TextureAll[playerid]);
+		}
+	}
+	return 1;
+}
+
+static InitPlayerTextureInfo(playerid)
+{
+	new Float:ypos = 100.0;
+
+	for(new i = 0; i < MAX_MATERIALS; i++)
+	{
+		Player_TextureInfo[playerid][i] = CreatePlayerTextDraw(playerid,57.000000, ypos, "(0) None");
+		PlayerTextDrawBackgroundColor(playerid,Player_TextureInfo[playerid][i], 255);
+		PlayerTextDrawFont(playerid,Player_TextureInfo[playerid][i], 2);
+		PlayerTextDrawLetterSize(playerid,Player_TextureInfo[playerid][i], 0.200000, 1.000000);
+		PlayerTextDrawColor(playerid,Player_TextureInfo[playerid][i], -1);
+		PlayerTextDrawSetOutline(playerid,Player_TextureInfo[playerid][i], 1);
+		PlayerTextDrawSetProportional(playerid,Player_TextureInfo[playerid][i], 1);
+		PlayerTextDrawSetSelectable(playerid,Player_TextureInfo[playerid][i], 0);
+		ypos += 15.0;
+	}
+	
+	Click_TextureAll[playerid] = CreatePlayerTextDraw(playerid, 10.000000, ypos, "All");
+	PlayerTextDrawBackgroundColor(playerid, Click_TextureAll[playerid], 255);
+	PlayerTextDrawFont(playerid, Click_TextureAll[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, Click_TextureAll[playerid], 0.200000, 1.000000);
+	PlayerTextDrawColor(playerid, Click_TextureAll[playerid], 0xFF0000FF);
+	PlayerTextDrawSetOutline(playerid, Click_TextureAll[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, Click_TextureAll[playerid], 1);
+	PlayerTextDrawUseBox(playerid, Click_TextureAll[playerid], 1);
+	PlayerTextDrawBoxColor(playerid, Click_TextureAll[playerid], 0);
+	PlayerTextDrawTextSize(playerid, Click_TextureAll[playerid], 30.000000, 10.000000);
+	PlayerTextDrawSetSelectable(playerid, Click_TextureAll[playerid], 1);
+	
+	return 1;
+}
+
+ClickTextDrawEditMat(playerid, Text:clickedid)
+{
+	for(new i = 0; i < MAX_MATERIALS; i++)
+	{
+		// Player clicked set texture
+	    if(Click_SetTexture[i] == clickedid)
+	    {
+	        SelectingTexture[playerid] = true;
+			CurrTexturingIndex[playerid] = i;
+	        CancelSelectTextDraw(playerid);
+
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			new line[128];
+			format(line, sizeof(line), "Editing texture index %i use /mtextures - /ttextures to select a texture");
+			SendClientMessage(playerid, STEALTH_GREEN, line);
+
+	        return 1;
+	    }
+		// Player clicked set color
+	    else if(Click_SetColor[i] == clickedid)
+	    {
+	    	inline SelectColorMet(spid, sdialogid, sresponse, slistitem, string:stext[])
+			{
+				#pragma unused slistitem, sdialogid, spid, stext
+				if(sresponse)
+				{
+					new line[128];
+				    switch(slistitem)
+				    {
+				        case 0:
+						{
+                            inline SelectHexColor(hpid, hdialogid, hresponse, hlistitem, string:htext[])
+                            {
+								#pragma unused hlistitem, hdialogid, hpid, htext
+								if(hresponse)
+								{
+									if(TextureAll[playerid])
+									{
+										format(line, sizeof(line), "/mtcolorall %i %s", i, htext);
+										BroadcastCommand(playerid, line);
+									}
+									else
+									{
+										format(line, sizeof(line), "/mtcolor %i %s", i, htext);
+										BroadcastCommand(playerid, line);
+									}
+								}
+                            }
+                            Dialog_ShowCallback(playerid, using inline SelectHexColor, DIALOG_STYLE_INPUT, "Texture Studio - Input Hex Color", "Hex color ( 0x00000000 ) ARGB", "Ok", "Cancel");
+						}
+				        case 1:
+						{
+							new red, green, blue, alpha;
+                            inline SelectRed(redpid, reddialogid, redresponse, redlistitem, string:redtext[])
+                            {
+                                #pragma unused redlistitem, reddialogid, redpid, redtext
+								if(redresponse)
+								{
+									red = strval(redtext);
+									if(red < 0 || red > 255) Dialog_ShowCallback(playerid, using inline SelectRed, DIALOG_STYLE_INPUT, "Texture Studio - Color Combinator", "Enter Red Value <0 - 255>", "Ok", "Cancel");
+									else
+									{
+									    inline SelectGreen(greenpid, greendialogid, greenresponse, greenlistitem, string:greentext[])
+									    {
+									        #pragma unused greenlistitem, greendialogid, greenpid, greentext
+											if(greenresponse)
+											{
+												green = strval(greentext);
+												if(green < 0 || green > 255) Dialog_ShowCallback(playerid, using inline SelectGreen, DIALOG_STYLE_INPUT, "Texture Studio - Color Combinator", "Enter Green Value <0 - 255>", "Ok", "Cancel");
+												else
+												{
+												    inline SelectBlue(bluepid, bluedialogid, blueresponse, bluelistitem, string:bluetext[])
+												    {
+												        #pragma unused bluelistitem, bluedialogid, bluepid, bluetext
+														if(blueresponse)
+														{
+															blue = strval(bluetext);
+															if(blue < 0 || blue > 255) Dialog_ShowCallback(playerid, using inline SelectBlue, DIALOG_STYLE_INPUT, "Texture Studio - Color Combinator", "Enter Blue Value <0 - 255>", "Ok", "Cancel");
+															else
+															{
+															    inline SelectAlpha(alphapid, alphadialogid, alpharesponse, alphalistitem, string:alphatext[])
+															    {
+															        #pragma unused alphalistitem, alphadialogid, alphapid, alphatext
+																	if(alpharesponse)
+																	{
+																		if(isnull(alphatext)) alpha = 255;
+																		else alpha = strval(alphatext);
+																		if(alpha < 0 || alpha > 255) Dialog_ShowCallback(playerid, using inline SelectAlpha, DIALOG_STYLE_INPUT, "Texture Studio - Color Combinator", "Enter Alpha Value <0 - 255>\nNote: Leaving this empty is full alpha 255", "Ok", "Cancel");
+																		else
+																		{
+																		   	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+                                                                            new index = CurrObject[playerid];
+
+                                                                            if(TextureAll[playerid])
+																			{
+																				foreach(new j : Objects)
+																				{
+																				    if(ObjectData[j][oModel] == ObjectData[CurrObject[playerid]][oModel])
+																				    {
+																				        ObjectData[j][oColorIndex][i] = ARGB(alpha, red, green, blue);
+
+																						// Destroy the object
+																					    DestroyDynamicObject(ObjectData[j][oID]);
+
+																						// Re-create object
+																						ObjectData[j][oID] = CreateDynamicObject(ObjectData[j][oModel], ObjectData[j][oX], ObjectData[j][oY], ObjectData[j][oZ], ObjectData[j][oRX], ObjectData[j][oRY], ObjectData[j][oRZ], -1, -1, -1, 300.0);
+																						Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[j][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
+
+																						// Update the materials
+																						UpdateMaterial(j);
+
+																						// Save this material index to the data base
+																						sqlite_SaveColorIndex(j);
+																				    }
+
+																				}
+																				// Update the streamer
+																				foreach(new j : Player)
+																				{
+																				    if(IsPlayerInRangeOfPoint(j, 300.0, ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ])) Streamer_Update(j);
+																				}
+
+																				SendClientMessage(playerid, STEALTH_GREEN, "Changed All Color");
+
+																			}
+																			else
+																			{
+																				// Set the color
+																		        ObjectData[index][oColorIndex][i] = ARGB(alpha, red, green, blue);
+
+																				// Destroy the object
+																			    DestroyDynamicObject(ObjectData[index][oID]);
+
+																				// Re-create object
+																				ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+																				Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
+
+																				// Update the materials
+																				UpdateMaterial(index);
+
+																				// Save this material index to the data base
+																				sqlite_SaveColorIndex(index);
+
+																				// Update texture tool
+																		        UpdateTextureSlot(playerid, i);
+
+																				// Update the streamer
+																				foreach(new j : Player)
+																				{
+																				    if(IsPlayerInRangeOfPoint(j, 300.0, ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ])) Streamer_Update(j);
+																				}
+
+																				SendClientMessage(playerid, STEALTH_GREEN, "Changed Color");
+																			}
+																		}
+																	}
+																}
+																Dialog_ShowCallback(playerid, using inline SelectAlpha, DIALOG_STYLE_INPUT, "Texture Studio - Color Combinator", "Enter Alpha Value <0 - 255>\nNote: Leaving this empty is full alpha 255", "Ok", "Cancel");
+															}
+														}
+													}
+													Dialog_ShowCallback(playerid, using inline SelectBlue, DIALOG_STYLE_INPUT, "Texture Studio - Color Combinator", "Enter Blue Value <0 - 255>", "Ok", "Cancel");
+												}
+											}
+									    }
+									    Dialog_ShowCallback(playerid, using inline SelectGreen, DIALOG_STYLE_INPUT, "Texture Studio - Color Combinator", "Enter Green Value <0 - 255>", "Ok", "Cancel");
+									}
+								}
+                            }
+                            Dialog_ShowCallback(playerid, using inline SelectRed, DIALOG_STYLE_INPUT, "Texture Studio - Color Combinator", "Enter Red Value <0 - 255>", "Ok", "Cancel");
+						}
+				        case 2:
+						{
+                            inline SelectWebColor(wpid, wdialogid, wresponse, wlistitem, string:wtext[])
+							{
+							    #pragma unused wlistitem, wdialogid, wpid, wtext
+								if(wresponse)
+							    {
+									if(TextureAll[playerid])
+									{
+								        format(line, sizeof(line), "/mtcolorall %i %s", i, WebColorsARGB[wlistitem]);
+								        BroadcastCommand(playerid, line);
+									}
+									else
+									{
+								        format(line, sizeof(line), "/mtcolor %i %s", i, WebColorsARGB[wlistitem]);
+								        BroadcastCommand(playerid, line);
+									}
+							    }
+							}
+                            Dialog_ShowCallback(playerid, using inline SelectWebColor, DIALOG_STYLE_LIST, "Texture Studio - Select Web Color", webcolors, "Ok", "Cancel");
+						}
+						case 3:
+						{
+                            if(TextureAll[playerid])
+                            {
+	      						format(line, sizeof(line), "/mtcolorall %i 0x00000000", i);
+								BroadcastCommand(playerid, line);
+							}
+							else
+							{
+	      						format(line, sizeof(line), "/mtcolor %i 0x00000000", i);
+								BroadcastCommand(playerid, line);
+							}
+						}
+				    }
+				}
+			}
+			Dialog_ShowCallback(playerid, using inline SelectColorMet, DIALOG_STYLE_LIST, "Texture Studio - Select Color Method", "Hex Value\nCombinator\nWeb Colors\nReset Color", "Ok", "Cancel");
+			return 1;
+	    }
+    	// Player clicked clear texture/color
+	    else if(Click_ClearTexture[i] == clickedid)
+	    {
+			if(TextureAll[playerid])
+			{
+				new line[128];
+				format(line, sizeof(line), "/mtsetall %i 0", i);
+				BroadcastCommand(playerid, line);
+				format(line, sizeof(line), "/mtcolorall %i 0x00000000", i);
+				BroadcastCommand(playerid, line);
+				format(line, sizeof(line), "Cleared texture and color on slot %i for all objects", i);
+				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+				SendClientMessage(playerid, STEALTH_GREEN, line);
+			}
+			else
+			{
+				new line[128];
+				format(line, sizeof(line), "/mtset %i 0", i);
+				BroadcastCommand(playerid, line);
+				format(line, sizeof(line), "/mtcolor %i 0x00000000", i);
+				BroadcastCommand(playerid, line);
+				format(line, sizeof(line), "Cleared texture and color on slot %i", i);
+				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+				SendClientMessage(playerid, STEALTH_GREEN, line);
+			}
+			return 1;
+	    }
+	}
+
+	if(clickedid == Click_CloseTexture) BroadcastCommand(playerid, "/stexture");
+	return 0;
+}
+
+
+ClickPlayerTextDrawEditMat(playerid, PlayerText:playertextid)
+{
+	if(Click_TextureAll[playerid] == playertextid)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		if(TextureAll[playerid])
+		{
+		    TextureAll[playerid] = false;
+		    PlayerTextDrawHide(playerid, Click_TextureAll[playerid]);
+		    PlayerTextDrawColor(playerid, Click_TextureAll[playerid], 0xFF0000FF);
+		    PlayerTextDrawShow(playerid, Click_TextureAll[playerid]);
+		    SendClientMessage(playerid, STEALTH_GREEN, "Only the object you are currently editing will be textured");
+		}
+		else
+		{
+		    TextureAll[playerid] = true;
+		    PlayerTextDrawHide(playerid, Click_TextureAll[playerid]);
+		    PlayerTextDrawColor(playerid, Click_TextureAll[playerid], 0x00FF00FF);
+		    PlayerTextDrawShow(playerid, Click_TextureAll[playerid]);
+		    SendClientMessage(playerid, STEALTH_GREEN, "All like objects will now be textured");
+		}
+		return 1;
+    }
+	return 0;
+}
+
+UpdateTextureSlot(playerid, index)
+{
+	new line[128];
+	
+	if(ObjectData[CurrObject[playerid]][oTexIndex][index] != 0)
+	{
+		format(line, sizeof(line), "~g~Texture: %s ~r~Index: %i",
+			ObjectTextures[ObjectData[CurrObject[playerid]][oTexIndex][index]][TextureName],
+			ObjectData[CurrObject[playerid]][oTexIndex][index]);
+        PlayerTextDrawSetString(playerid, Player_TextureInfo[playerid][index], line);
+	}
+	else PlayerTextDrawSetString(playerid, Player_TextureInfo[playerid][index], "~g~None");
+
+}
