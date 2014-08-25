@@ -167,10 +167,17 @@ Roadmap:
 // Leave commented
 //#define			COMPILE_DAYZ_INCLUDES
 
+// Compile the GTA Object module for removing buildings
+#define COMPILE_GTA_OBJECTS
+
+// Compile vehicle module
+//#define COMPILE_VEHICLES
+
 #if defined DEBUG
 	#define DB_DEBUG true
 	#define DB_QUERY_ERRORS true
 #endif
+
 
 // Includes
 #include <a_samp>
@@ -493,7 +500,14 @@ new bool:MapOpen;
 #include <tstudio\propeditor>
 
 // GTA objects module
-#include <tstudio\gtaobjects>
+#if defined COMPILE_GTA_OBJECTS
+	#include <tstudio\gtaobjects>
+#endif
+
+// Vehicles
+#if defined COMPILE_VEHICLES
+	#include <tstudio\vehicles>
+#endif
 
 // Special includes
 #if defined COMPILE_DAYZ_INCLUDES
@@ -575,7 +589,7 @@ stock SetCurrObject(playerid, index)
 
 
 // player finished editing an object
-public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 	switch(GetEditMode(playerid))
 	{
@@ -875,6 +889,10 @@ sqlite_CreateNewMap()
 {
     sqlite_CreateMapDB();
     sqlite_CreateRBDB();
+    
+    #if defined COMPILE_VEHICLES
+	    sqlite_CreateVehicle();
+	#endif
 }
 
 new NewMapString[512];
@@ -936,6 +954,10 @@ sqlite_CreateRBDB()
 sqlite_UpdateDB()
 {
     sqlite_CreateRBDB();
+
+	#if defined COMPILE_VEHICLES
+	    sqlite_CreateVehicle();
+	#endif
     
     // Version 1.3
     if(!ColumnExists(EditMap, "Objects", "GroupID")) db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `GroupID` INTEGER DEFAULT 0");
@@ -1938,7 +1960,10 @@ stock ClearRemoveBuildings()
 	if(count)
 	{
 		SendClientMessageToAll(STEALTH_YELLOW, "Warning: The previous map had removed objects you will have to reconnect to see them");
-		ResetGTADeletedObjects();
+
+		#if defined COMPILE_GTA_OBJECTS
+			ResetGTADeletedObjects();
+		#endif
 	}
 	return 1;
 }
@@ -2097,11 +2122,11 @@ LoadMap(playerid)
 				// Perform any version updates
 				sqlite_UpdateDB();
 
-                // Load the maps objects
-                sqlite_LoadMapObjects();
-
 				// Load the maps remove buildings
 			    sqlite_LoadRemoveBuildings();
+
+                // Load the maps objects
+                sqlite_LoadMapObjects();
 
 				// Map is now open
                 MapOpen = true;

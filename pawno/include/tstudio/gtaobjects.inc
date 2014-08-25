@@ -31,7 +31,7 @@ CMD:gtaobjects(playerid, arg[])
  			colradius = GetColSphereRadius(SearchData[i][Search_Model]);
  			if(colradius < MIN_GTAOBJECT_LABEL_DIST) colradius = MIN_GTAOBJECT_LABEL_DIST;
 		    format(text, sizeof(text), "Index: %i\nName: %s", i, SearchData[i][Search_Model_Name]);
-            GTAObjectText[i] = CreateDynamic3DTextLabel(text, 0xFF69B4FF, SearchData[i][SearchX], SearchData[i][SearchY], SearchData[i][SearchZ], colradius+5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, -1, -1, -1, colradius+5.0);
+            GTAObjectText[i] = CreateDynamic3DTextLabel(text, 0xFF69B4FF, SearchData[i][SearchX], SearchData[i][SearchY], SearchData[i][SearchZ], colradius*2.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, -1, -1, -1, colradius*2.0);
 		}
 	    ObjectsShown = true;
 	    SendClientMessage(playerid, STEALTH_GREEN, "Showing GTA Objects");
@@ -81,17 +81,27 @@ CMD:swapbuilding(playerid, arg[])
 
 	if(GTAObjectSwapped[index] == true) return SendClientMessage(playerid, STEALTH_YELLOW, "That object is already swapped!");
 
-	// Swap object
-	AddDynamicObject(SearchData[index][Search_Model], SearchData[index][SearchX], SearchData[index][SearchY], SearchData[index][SearchZ], SearchData[index][SearchRX], SearchData[index][SearchRY], SearchData[index][SearchRZ]);
-    GTAObjectSwapped[index] = true;
-
 	if(GTAObjectDeleted[index] == false)
 	{
 		AddRemoveBuilding(SearchData[index][Search_Model], SearchData[index][SearchX], SearchData[index][SearchY], SearchData[index][SearchZ], 0.25, true);
 		if(SearchData[index][Search_LODModel] != INVALID_OBJECT_ID) AddRemoveBuilding(SearchData[index][Search_LODModel], SearchData[index][SearchX], SearchData[index][SearchY], SearchData[index][SearchZ], 0.25, true);
 	    GTAObjectDeleted[index] = true;
 	}
+
+	// Swap object
+	UpdateObject3DText(AddDynamicObject(SearchData[index][Search_Model], SearchData[index][SearchX], SearchData[index][SearchY], SearchData[index][SearchZ], SearchData[index][SearchRX], SearchData[index][SearchRY], SearchData[index][SearchRZ]), true);
+    GTAObjectSwapped[index] = true;
+
 	
 	SendClientMessage(playerid, STEALTH_YELLOW, "Object has been swapped!");
 	return 1;
+}
+
+public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+{
+    new szString[144];
+    format(szString, sizeof(szString), "Weapon %i fired. hittype: %i   hitid: %i   pos: %f, %f, %f", weaponid, hittype, hitid, fX, fY, fZ);
+    SendClientMessage(playerid, -1, szString);
+
+    return 1;
 }
