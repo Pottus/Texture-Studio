@@ -26,7 +26,7 @@ DDDDDDDDDDID~DDDDDDDD.O.,D8..$..?...     DD8Z...8.Z:,?...7I.
    | |/ _ \ \/ / __| | | | '__/ _ \  \___ \| __| | | |/ _` | |/ _ \
    | |  __/>  <| |_| |_| | | |  __/  ____) | |_| |_| | (_| | | (_) |
    |_|\___/_/\_\\__|\__,_|_|  \___| |_____/ \__|\__,_|\__,_|_|\___/
-	Texture Studio v1.4 by [uL]Pottus
+	Texture Studio v1.5 by [uL]Pottus
 
 You may modify and re-release this this script if you please just rememeber the
 mule who built it!
@@ -152,6 +152,7 @@ Change Log:
 	    - Fix a spelling mistake in the gui
 	    - Added /oprop command to directly edit all object properties
 	    - Map exporting now has a option for CreateDynamicObject() instead of CreateDynamicObjectEx()
+	v1.5 - Greatly enhanced /osearch command
 
 Roadmap:
 	- Refine functionality
