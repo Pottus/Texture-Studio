@@ -379,6 +379,7 @@ new bool:PivotPointOn[MAX_PLAYERS];
 #define         EDIT_MODE_OBJECTGROUP   7
 #define         EDIT_MODE_TEXTURING     8
 #define         EDIT_MODE_LISTSEL       9
+#define         EDIT_MODE_OSEARCH       10
 
 
 // Textdraw modes
@@ -386,6 +387,7 @@ new bool:PivotPointOn[MAX_PLAYERS];
 #define         TEXTDRAW_TEXTEDIT	    1
 #define         TEXTDRAW_MATERIALS      2
 #define         TEXTDRAW_LISTSEL        3
+#define         TEXTDRAW_OSEARCH        4
 
 // Set the players editing mode
 #define SetEditMode(%0,%1) CurrMode[%0] = %1
@@ -499,6 +501,9 @@ new bool:MapOpen;
 // Object property editor/viewer
 #include <tstudio\propeditor>
 
+// Object search
+#include <tstudio\osearch>
+
 // GTA objects module
 #if defined COMPILE_GTA_OBJECTS
 	#include <tstudio\gtaobjects>
@@ -511,7 +516,7 @@ new bool:MapOpen;
 
 // Special includes
 #if defined COMPILE_DAYZ_INCLUDES
-	#include <tstudio\420\mangle>
+//	#include <tstudio\420\mangle>
 #endif
 
 
@@ -711,7 +716,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 	if(GetCurrTextDraw(playerid) == TEXTDRAW_TEXTEDIT) if(ClickTextDrawEditText(playerid, Text:clickedid)) return 1;
     if(GetCurrTextDraw(playerid) == TEXTDRAW_MATERIALS) if(ClickTextDrawEditMat(playerid, Text:clickedid)) return 1;
     if(GetCurrTextDraw(playerid) == TEXTDRAW_LISTSEL) if(ClickTextDrawListSel(playerid, Text:clickedid)) return 1;
-    
+    if(GetCurrTextDraw(playerid) == TEXTDRAW_OSEARCH) if(ClickTextDrawOSearch(playerid, Text:clickedid)) return 1;
     
 	return 0;
 }
@@ -725,6 +730,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
     if(GetCurrTextDraw(playerid) == TEXTDRAW_TEXTEDIT) if(ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)) return 1;
     if(GetCurrTextDraw(playerid) == TEXTDRAW_MATERIALS) if(ClickPlayerTextDrawEditMat(playerid, PlayerText:playertextid)) return 1;
     if(GetCurrTextDraw(playerid) == TEXTDRAW_LISTSEL) if(ClickPlayerTextListSel(playerid, PlayerText:playertextid)) return 1;
+    if(GetCurrTextDraw(playerid) == TEXTDRAW_OSEARCH) if(ClickPlayerTextDrawOSearch(playerid, PlayerText:playertextid)) return 1;
 	return 0;
 }
 
@@ -3405,35 +3411,7 @@ CMD:robject(playerid, arg[]) // In GUI
 	return 1;
 }
 
-// Search for object names
-CMD:osearch(playerid, arg[]) // In GUI
-{
-	new line[128];
-	new totalobjectsfound;
-	for(new i; i < sizeof(ObjectList); i++)
-	{
-        if(strfind(ObjectList[i][oName],arg, true) != -1)
-		{
-			if(totalobjectsfound == 0) SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-	        format(line, sizeof(line), "Object Name: %s Object id: %i", ObjectList[i][oName],ObjectList[i][oID]);
-	        SendClientMessage(playerid, STEALTH_GREEN, line);
-	        totalobjectsfound++;
-		}
-	}
 
-	if(!totalobjectsfound)
-	{
-		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-		SendClientMessage(playerid, STEALTH_YELLOW, "No objects found try searching again");
-	}
-	else
-	{
-		format(line, sizeof(line), "Total Objects Found: %i", totalobjectsfound);
-		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-		SendClientMessage(playerid, STEALTH_GREEN, line);
-	}
-	return 1;
-}
 
 
 // Loops through all indexes and labels them with object text

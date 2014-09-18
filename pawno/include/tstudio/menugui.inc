@@ -686,6 +686,7 @@ OnGUIClick:ObjectMenu(playerid, group, gindex, pindex)
 				{
 					new line[128];
 					format(line, sizeof(line), "/osearch %s", text);
+					PlayerSetGUIPaused(playerid, true);
 					BroadcastCommand(playerid, line);
 				}
 			}

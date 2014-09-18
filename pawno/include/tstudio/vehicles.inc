@@ -6,10 +6,16 @@
 
 enum CARINFO
 {
+	CarID,
 	CarModel,
+	Text3D:CarText,
 	CarColor1,
 	CarColor2,
 	CarPaintJob,
+	Float:CarSpawnX,
+	Float:CarSpawnY,
+	Float:CarSpawnZ,
+	Float:CarSpawnFA,
 	CarComponents[14],
 	CarObjectRef[MAX_CAR_OBJECTS],
 	Float:COX[MAX_CAR_OBJECTS],
@@ -59,7 +65,13 @@ static VehicleList[4096];
 
 hook OnFilterScriptInit()
 {
-	for(new i = 0; i < 212; i++) format(VehicleList, sizeof(VehicleList), "%s%s\n", VehicleList, VehicleNames[i]);
+	for(new i = 0; i < 212; i++) format(VehicleList, sizeof(VehicleList), "(%i)%s%s\n", i+212, VehicleList, VehicleNames[i]);
+	return 1;
+}
+
+hook OnFilterScriptExit()
+{
+	DeleteAllCars();
 	return 1;
 }
 
@@ -75,11 +87,12 @@ CMD:newcar(playerid, arg[])
 		if(response)
 		{
 			new index = Iter_Free(Cars);
-
 			if(index > -1)
 			{
-			    Iter_Add(Cars, index);
-			    
+				GetPlayerPos(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ]);
+				GetXYInFrontOfPlayer(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], 2.0);
+				GetPlayerFacingAngle(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnFA]);
+				AddNewCar(listitem+212, index, true);
 			}
 			SendClientMessage(playerid, STEALTH_YELLOW, "Too many cars");
 		}
@@ -96,6 +109,8 @@ static AddNewCar(modelid, index = -1, bool:sqlsave = true)
 	if(index > -1)
 	{
 	    Iter_Add(Cars, index);
+	    CarData[index][CarID] = CreateVehicle(listitem+212, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ], CarData[index][CarSpawnFA], CarData[index][CarColor1], CarData[index][CarColor2], -1);
+		if(sqlsave) sqlite_InsertCar(index);
 	}
 	SendClientMessage(playerid, STEALTH_YELLOW, "Too many cars");
 	return 1;
@@ -114,7 +129,11 @@ sqlite_CreateVehicle()
 			"CarModel INTEGER,",
 			"CarColor1 INTEGER,",
 			"CarColor2 INTEGER,",
-			"ModelID INTEGER,",
+			"CarPaintJob INTEGER,",
+			"CarSpawnX REAL,",
+			"CarSpawnY REAL,",
+			"CarSpawnZ REAL,",
+			"CarSpawnFA REAL,",
 			"CarComponents TEXT,",
 			"CarObjectRef TEXT,",
 			"COX TEXT,",
@@ -134,7 +153,6 @@ new DBStatement:insertcarstmt;
 new InsertCarString[512];
 
 // Sqlite query functions
-/*
 sqlite_InsertCar(index)
 {
 	// Inserts a new index
@@ -145,43 +163,74 @@ sqlite_InsertCar(index)
 			InsertCarString,
 			sizeof(InsertCarString),
 			"INSERT INTO `Vehicles`",
-	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		);
 		// Prepare data base for writing
 		insertcarstmt = db_prepare(EditMap, InsertCarString);
 	}
 
-	// Bind values
-
-
 	// Bind our results
-    stmt_bind_value(insertstmt, 0, DB::TYPE_INT, index);
-    stmt_bind_value(insertstmt, 1, DB::TYPE_INT, ObjectData[index][oModel]);
-    stmt_bind_value(insertstmt, 2, DB::TYPE_FLOAT, ObjectData[index][oX]);
-    stmt_bind_value(insertstmt, 3, DB::TYPE_FLOAT, ObjectData[index][oY]);
-    stmt_bind_value(insertstmt, 4, DB::TYPE_FLOAT, ObjectData[index][oZ]);
-    stmt_bind_value(insertstmt, 5, DB::TYPE_FLOAT, ObjectData[index][oRX]);
-    stmt_bind_value(insertstmt, 6, DB::TYPE_FLOAT, ObjectData[index][oRY]);
-    stmt_bind_value(insertstmt, 7, DB::TYPE_FLOAT, ObjectData[index][oRZ]);
-    stmt_bind_value(insertstmt, 8, DB::TYPE_ARRAY, ObjectData[index][oTexIndex], MAX_MATERIALS);
-    stmt_bind_value(insertstmt, 9, DB::TYPE_ARRAY, ObjectData[index][oColorIndex], MAX_MATERIALS);
-    stmt_bind_value(insertstmt, 10, DB::TYPE_INT, ObjectData[index][ousetext]);
-    stmt_bind_value(insertstmt, 11, DB::TYPE_INT, ObjectData[index][oFontFace]);
-    stmt_bind_value(insertstmt, 12, DB::TYPE_INT, ObjectData[index][oFontSize]);
-    stmt_bind_value(insertstmt, 13, DB::TYPE_INT, ObjectData[index][oFontBold]);
-    stmt_bind_value(insertstmt, 14, DB::TYPE_INT, ObjectData[index][oFontColor]);
-    stmt_bind_value(insertstmt, 15, DB::TYPE_INT, ObjectData[index][oBackColor]);
-    stmt_bind_value(insertstmt, 16, DB::TYPE_INT, ObjectData[index][oAlignment]);
-    stmt_bind_value(insertstmt, 17, DB::TYPE_INT, ObjectData[index][oTextFontSize]);
-    stmt_bind_value(insertstmt, 18, DB::TYPE_STRING, ObjectData[index][oObjectText], MAX_TEXT_LENGTH);
-    stmt_bind_value(insertstmt, 19, DB::TYPE_INT, ObjectData[index][oGroup]);
+    stmt_bind_value(insertcarstmt, 0, DB::TYPE_INT, index);
+    stmt_bind_value(insertcarstmt, 1, DB::TYPE_INT, CarData[index][CarModel]);
+    stmt_bind_value(insertcarstmt, 2, DB::TYPE_INT, CarData[index][CarColor1]);
+    stmt_bind_value(insertcarstmt, 3, DB::TYPE_INT, CarData[index][CarColor2]);
+    stmt_bind_value(insertcarstmt, 4, DB::TYPE_INT, CarData[index][CarPaintJob]);
+    stmt_bind_value(insertcarstmt, 5, DB::TYPE_FLOAT, CarData[index][CarSpawnX]);
+    stmt_bind_value(insertcarstmt, 6, DB::TYPE_FLOAT, CarData[index][CarSpawnY]);
+    stmt_bind_value(insertcarstmt, 7, DB::TYPE_FLOAT, CarData[index][CarSpawnZ]);
+    stmt_bind_value(insertcarstmt, 8, DB::TYPE_FLOAT, CarData[index][CarSpawnFA]);
+    stmt_bind_value(insertcarstmt, 9, DB::TYPE_ARRAY, CarData[index][CarComponents], 14);
+    stmt_bind_value(insertcarstmt, 10, DB::TYPE_ARRAY, CarData[index][CarObjectRef], MAX_CAR_OBJECTS);
+    stmt_bind_value(insertcarstmt, 11, DB::TYPE_ARRAY, CarData[index][COX], MAX_CAR_OBJECTS);
+    stmt_bind_value(insertcarstmt, 12, DB::TYPE_ARRAY, CarData[index][COY], MAX_CAR_OBJECTS);
+    stmt_bind_value(insertcarstmt, 13, DB::TYPE_ARRAY, CarData[index][COZ], MAX_CAR_OBJECTS);
+    stmt_bind_value(insertcarstmt, 14, DB::TYPE_ARRAY, CarData[index][CORX], MAX_CAR_OBJECTS);
+    stmt_bind_value(insertcarstmt, 15, DB::TYPE_ARRAY, CarData[index][CORY], MAX_CAR_OBJECTS);
+    stmt_bind_value(insertcarstmt, 16, DB::TYPE_ARRAY, CarData[index][CORZ], MAX_CAR_OBJECTS);
 
     stmt_execute(insertcarstmt);
 }
-*/
 
+DeleteAllCars()
+{
+	foreach(new i : Cars)
+	{
+		DestoryEditCar(i, false);
+	}
+	return 1;
+}
 
-
+DestroyEditCar(index, bool:sqldelete=true)
+{
+    DestroyVehicle(CarData[index][CarID]);
+    CarData[index][CarModel] = -1;
+    CarData[index][CarColor1]);
+    CarData[index][CarColor2]);
+    CarData[index][CarPaintJob]);
+    CarData[index][CarSpawnX]);
+    CarData[index][CarSpawnY]);
+    CarData[index][CarSpawnZ]);
+    CarData[index][CarSpawnFA]);
+    
+    for(new i = 0; i < 14; i++) CarData[index][CarComponents][i] = 0;
+	for(new i = 0; i < MAX_CAR_OBJECTS; i++)
+	{
+	    CarData[index][CarObjectRef][i] = -1;
+	    CarData[index][COX][i] = -1;
+	    CarData[index][COY][i] = -1;
+	    CarData[index][COZ][i] = -1;
+	    CarData[index][CORX][i] = -1;
+	    CarData[index][CORY][i] = -1;
+	    CarData[index][CORZ][i] = -1;
+	}
+	if(sqldelete)
+	{
+	    new q[128];
+	    format(q, sizeof(q), "DELETE FROM `Vehicles` WHERE `IndexID` = %i", index);
+	    db_query(EditMap, q);
+	}
+	return 1;
+}
 
 
 CMD:editcar(playerid, arg[])

@@ -1348,6 +1348,41 @@ CMD:prefab(playerid, arg[]) // in GUI
 	return 1;
 }
 
+CMD:0group(playerid, arg[])
+{
+    MapOpenCheck();
+
+	new Float:gCenterX, Float:gCenterY, Float:gCenterZ;
+	GetGroupCenter(playerid, gCenterX, gCenterY, gCenterZ);
+
+	new bool:hasgroup;
+	
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+
+	foreach(new i : Objects)
+	{
+   		if(GroupedObjects[playerid][i])
+		{
+			ObjectData[i][oX] -= gCenterX;
+			ObjectData[i][oY] -= gCenterY;
+			ObjectData[i][oZ] -= gCenterZ;
+
+			SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
+
+		    sqlite_UpdateObjectPos(i);
+
+		    UpdateObject3DText(i);
+
+			hasgroup = true;
+		}
+	}
+	
+	if(hasgroup) SendClientMessage(playerid, STEALTH_GREEN, "Moved grouped objects to 0,0,0");
+	else SendClientMessage(playerid, STEALTH_YELLOW, "You don't have any objects grouped");
+	
+	return 1;
+}
+
 stock ShowPrefabs(playerid)
 {
 	new dir:dHandle = dir_open("./scriptfiles/tstudio/PreFabs/");
