@@ -105,6 +105,7 @@ Commands: (Currently 65 commands)
 	/gprefab - Export a group of objects to a loadable prefab file
 	/prefabsetz - Set the load offset of a prefab file
 	/prefab <LoadName"> - Load a prefab file, /prefab will show all prefabs
+	/0group - This will move all grouped objects center to 0,0,0 useful for getting attached object offsets (Not in the GUI yet)
 
 	Bind Editor:
 	/bindeditor - Open the bind editor you can enter a series of commands to execute
@@ -153,6 +154,8 @@ Change Log:
 	    - Added /oprop command to directly edit all object properties
 	    - Map exporting now has a option for CreateDynamicObject() instead of CreateDynamicObjectEx()
 	v1.5 - Greatly enhanced /osearch command
+	v1.5a - Added a feature to clone in edit object mode simply press 'walk' to clone the object
+	    - You can press enter/exit vehicle to save a objects position in edit object mode
 
 Roadmap:
 	- Refine functionality
@@ -368,6 +371,9 @@ new PivotPoint[MAX_PLAYERS][XYZ];
 
 // Turns pivot point on/off
 new bool:PivotPointOn[MAX_PLAYERS];
+
+// Save the current editing position
+new Float:CurrEditPos[MAX_PLAYERS][6];
 
 // Currmode
 #define 		EDIT_MODE_NONE          0
@@ -593,6 +599,29 @@ stock SetCurrObject(playerid, index)
 	return 1;
 }
 
+OnPlayerKeyStateChangeOEdit(playerid,newkeys,oldkeys)
+{
+	#pragma unused oldkeys
+	if(GetEditMode(playerid) == EDIT_MODE_OBJECT)
+	{
+		// Clone object
+	    if(newkeys & KEY_WALK)
+		{
+			Edit_SetObjectPos(CurrObject[playerid], CurrEditPos[playerid][0], CurrEditPos[playerid][1], CurrEditPos[playerid][2], CurrEditPos[playerid][3], CurrEditPos[playerid][4], CurrEditPos[playerid][5], true);
+            SetCurrObject(playerid, CloneObject(CurrObject[playerid]));
+            EditDynamicObject(playerid, ObjectData[CurrObject[playerid]][oID]);
+            SendClientMessage(playerid, STEALTH_GREEN, "Object has been cloned");
+	    }
+
+		// Update object position
+	    else if(newkeys & KEY_SECONDARY_ATTACK)
+	    {
+			Edit_SetObjectPos(CurrObject[playerid], CurrEditPos[playerid][0], CurrEditPos[playerid][1], CurrEditPos[playerid][2], CurrEditPos[playerid][3], CurrEditPos[playerid][4], CurrEditPos[playerid][5], true);
+			SendClientMessage(playerid, STEALTH_GREEN, "Object position updated and saved");
+	    }
+	}
+	return 0;
+}
 
 // player finished editing an object
 hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
@@ -612,6 +641,16 @@ hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, F
 				EditingMode[playerid] = false;
 				SetEditMode(playerid, EDIT_MODE_NONE);
 			}
+			else if(response == EDIT_RESPONSE_UPDATE)
+			{
+				CurrEditPos[playerid][0] = x;
+				CurrEditPos[playerid][1] = y;
+				CurrEditPos[playerid][2] = z;
+				CurrEditPos[playerid][3] = rx;
+				CurrEditPos[playerid][4] = ry;
+				CurrEditPos[playerid][5] = rz;
+			}
+			
 			// Cancel editing
 			else if(response == EDIT_RESPONSE_CANCEL)
 			{
@@ -738,6 +777,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
 {
+	if(OnPlayerKeyStateChangeOEdit(playerid,newkeys,oldkeys)) return 1;
     if(OnPlayerKeyStateChange3DMenu(playerid,newkeys,oldkeys)) return 1;
     if(OnPlayerKeyStateGroupChange(playerid, newkeys, oldkeys)) return 1;
     if(OnPlayerKeyStateMenuChange(playerid, newkeys, oldkeys)) return 1;
