@@ -18,25 +18,22 @@
  			   The functions below will not work unless streamer plugin is included in your script.
 			   There are total 6 different types of functions -
 
-				 • CreateDynamicObjectCircle(playerid,modelid,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:sep,bool:facecenter=false)
-				 • CreateDynamicObjectSpiral(playerid,modelid,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:hsep,Float:vsep,bool:facecenter=false)
-				 • CreateDynamicObjectCylinder(playerid,modelid,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:hsep,Float:vsep,parts,bool:facecenter=false)
-				 • CreateDynamicObjectWhirl(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,bool:facecenter=false)
-				 • CreateDynamicCircleIn(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,parts,bool:facecenter=false)
-				 • CreateDynamicCircleOut(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,parts,bool:facecenter=false)
+CreateDynamicObjectCircle(playerid,modelid,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:sep,bool:facecenter=false)
+CreateDynamicObjectSpiral(playerid,modelid,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:hsep,Float:vsep,bool:facecenter=false)
+CreateDynamicObjectCylinder(playerid,modelid,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:hsep,Float:vsep,parts,bool:facecenter=false)
+CreateDynamicObjectWhirl(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,bool:facecenter=false)
+CreateDynamicCircleIn(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,parts,bool:facecenter=false)
+CreateDynamicCircleOut(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,parts,bool:facecenter=false)
 
 
 Dependencies: Streamer Plugin (Incognito)
 
-
-
 Bugs: None yet.
 
-
 Source Code: www.github.com/codectile
-
-
 Credits: Incognito
+
+Note: This include has been modified and integrated for use in Texture Studio
 */
 
 
@@ -136,15 +133,14 @@ static AddOBMObject(playerid,modelid,Float:x,Float:y,Float:z,Float:rx,Float:ry,F
 	return 1;
 }
 
-
-CreateDynamicObjectCircle(playerid,modelid,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:sep,bool:facecenter=false)
+CreateDynamicObjectCircle(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:sep,bool:facecenter=false)
 {
 	if(facecenter == false)
 	{
     	new Float:angle = 0.0,Float:x = 0.0,Float:y = 0.0;
-    	for(new i = 0;i < 360;i += 1)
+    	for(new i = 0;i < deg;i += 1)
     	{
-    	    if(angle <= 360)
+    	    if(angle <= float(deg))
     	    {
 				x = posx+radius*floatcos(angle,degrees);
       			y = posy+radius*floatsin(angle,degrees);
@@ -156,14 +152,22 @@ CreateDynamicObjectCircle(playerid,modelid,Float:posx,Float:posy,Float:posz, Flo
 	}
 	else
 	{
-		new Float:angle = 0.0,Float:x = 0.0,Float:y = 0.0;
-	    for(new i = 0;i < 360;i += 1)
+		new Float:angle = 0.0,Float:x = 0.0,Float:y = 0.0,Float:z,Float:detrx,Float:detry,Float:detrz;
+	    for(new i = 0;i < float(deg);i += 1)
         {
- 	   		if(angle <= 360)
+ 	   		if(angle <= deg)
     	    {
 		   		x=posx+radius*floatcos(angle,degrees);
 			   	y=posy+radius*floatsin(angle,degrees);
-			   	AddOBMObject(playerid,modelid, x, y, posz,0.0,0.0,angle-180.0);
+			   	
+				// Translate to rotation
+                AttachPoint(x, y, posz,
+                    0.0, 0.0, angle-180.0,
+                    posx, posy, posz, rx, ry, rz,
+					x, y, z,
+                    detrx, detry, detrz
+				);
+                AddOBMObject(playerid,modelid, x, y, z, detrx, detry, detrz);
 			   	angle = angle+sep;
            	}
 	       	else break;
@@ -174,14 +178,14 @@ CreateDynamicObjectCircle(playerid,modelid,Float:posx,Float:posy,Float:posz, Flo
 }
 
 /* Creates objects in a Helical path */
-CreateDynamicObjectSpiral(playerid,modelid,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:hsep,Float:vsep,bool:facecenter=false)
+CreateDynamicObjectSpiral(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:hsep,Float:vsep,bool:facecenter=false)
 {
 	if(facecenter == false)
 	{
     	new Float:angle = 0.0,Float:x = 0.0,Float:y = 0.0,Float:c = 0.0;
-   		for(new i = 0;i < 360;i += 1)
+   		for(new i = 0;i < deg;i += 1)
    		{
-   		    if(angle <= 360)
+   		    if(angle <= float(deg))
    		    {
 				x=posx+radius*floatcos(angle,degrees);
 				y=posy+radius*floatsin(angle,degrees);
@@ -194,14 +198,24 @@ CreateDynamicObjectSpiral(playerid,modelid,Float:posx,Float:posy,Float:posz, Flo
 	}
 	else
 	{
-	    new Float:angle = 0.0,Float:x = 0.0,Float:y = 0.0,Float:c = 0.0;
-   		for(new i = 0;i < 360;i += 1)
+	    new Float:angle = 0.0,Float:x = 0.0,Float:y = 0.0,Float:z, Float:c = 0.0, Float:detrx,Float:detry,Float:detrz;
+   		for(new i = 0;i < deg;i += 1)
    		{
-   		    if(angle <= 360)
+   		    if(angle <= float(deg))
    		    {
 				x=posx+radius*floatcos(angle,degrees);
 				y=posy+radius*floatsin(angle,degrees);
-				AddOBMObject(playerid,modelid, x, y, posz+c,0.0,0.0,angle+180.0);
+
+
+				// Translate to rotation
+                AttachPoint(x, y, posz+c,
+                    0.0, 0.0, angle+180.0,
+                    posx, posy, posz, rx, ry, rz,
+					x, y, z,
+                    detrx, detry, detrz
+				);
+                AddOBMObject(playerid,modelid, x, y, z, detrx, detry, detrz);
+
 				c=c+vsep;
 				angle = angle+hsep;
 			}
@@ -213,7 +227,7 @@ CreateDynamicObjectSpiral(playerid,modelid,Float:posx,Float:posy,Float:posz, Flo
 }
 
 /* Creates objects in a Cylinderical path */
-CreateDynamicObjectCylinder(playerid,modelid,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:hsep,Float:vsep,parts,bool:facecenter=false)
+CreateDynamicObjectCylinder(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz,Float:radius,Float:hsep,Float:vsep,parts,bool:facecenter=false)
 {
 	if(facecenter == false)
 	{
@@ -221,9 +235,9 @@ CreateDynamicObjectCylinder(playerid,modelid,Float:posx,Float:posy,Float:posz, F
     	for(new j=0;j<parts;j++)
     	{
     	    angle = 0.0,x = 0.0,y = 0.0;
-			for(new i=0;i<360;i+=1)
+			for(new i=0;i<deg;i+=1)
 			{
-			    if(angle <= 360)
+			    if(angle <= float(deg))
 			    {
 					x=posx+radius*floatcos(angle,degrees);
 					y=posy+radius*floatsin(angle,degrees);
@@ -237,17 +251,25 @@ CreateDynamicObjectCylinder(playerid,modelid,Float:posx,Float:posy,Float:posz, F
 	}
 	else
 	{
-	    new Float:angle=0.0,Float:x=0.0,Float:y=0.0,Float:c=0.0;
+	    new Float:angle = 0.0,Float:x = 0.0,Float:y = 0.0,Float:z, Float:c = 0.0, Float:detrx,Float:detry,Float:detrz;
     	for(new j=0;j<parts;j++)
     	{
     	    angle = 0.0,x = 0.0,y = 0.0;
-   			for(new i=0;i<360;i+=1)
+   			for(new i=0;i<deg;i+=1)
    			{
-   			    if(angle <= 360)
+   			    if(angle <= float(deg))
    			    {
 					x=posx+radius*floatcos(angle,degrees);
 					y=posy+radius*floatsin(angle,degrees);
-					AddOBMObject(playerid,modelid, x, y, posz+c,0.0,0.0,angle+180.0);
+					
+					// Translate to rotation
+	                AttachPoint(x, y, posz+c,
+	                    0.0, 0.0, angle+180.0,
+	                    posx, posy, posz, rx, ry, rz,
+						x, y, z,
+	                    detrx, detry, detrz
+					);
+	                AddOBMObject(playerid,modelid, x, y, z, detrx, detry, detrz);
 					angle=angle+hsep;
 				}
 				else break;
@@ -261,29 +283,14 @@ CreateDynamicObjectCylinder(playerid,modelid,Float:posx,Float:posy,Float:posz, F
 
 
 /* Creates objects in a reversed "6" type of path */
-CreateDynamicObjectWhirl(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,bool:facecenter=false)
+CreateDynamicObjectWhirl(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,bool:facecenter=false)
 {
-	if(facecenter == true)
-	{
-    	new Float:angle = 0.0, Float:x = 0.0,Float:y = 0.0;
-    	for(new i = 0;i < 360;i += 1)
-    	{
-        	if(angle <= 360)
-        	{
-				x=posx+(radius-i)*floatcos(angle,degrees);
-				y=posy+(radius-i)*floatsin(angle,degrees);
-				AddOBMObject(playerid,modelid, x, y, posz,0.0,0.0,angle+180.0);
-				angle=angle+sep;
-			}
-			else break;
-		}
-	}
-	else
+	if(facecenter == false)
 	{
 	    new Float:angle=0.0,Float:x=0.0,Float:y=0.0;
-    	for(new i=0;i<360;i+=1)
+    	for(new i=0;i<deg;i+=1)
     	{
-        	if(angle <= 360)
+        	if(angle <= float(deg))
         	{
 				x=posx+(radius-i)*floatcos(angle,degrees);
 				y=posy+(radius-i)*floatsin(angle,degrees);
@@ -293,26 +300,50 @@ CreateDynamicObjectWhirl(playerid,modelid,Float:posx,Float:posy,Float:posz,Float
 			else break;
 		}
 	}
+	else
+	{
+    	new Float:angle = 0.0,Float:x = 0.0,Float:y = 0.0,Float:z,Float:detrx,Float:detry,Float:detrz;
+    	for(new i = 0;i < deg;i += 1)
+    	{
+        	if(angle <= float(deg))
+        	{
+				x=posx+(radius-i)*floatcos(angle,degrees);
+				y=posy+(radius-i)*floatsin(angle,degrees);
+
+				// Translate to rotation
+                AttachPoint(x, y, posz,
+                    0.0, 0.0, angle+180.0,
+                    posx, posy, posz, rx, ry, rz,
+					x, y, z,
+                    detrx, detry, detrz
+				);
+                AddOBMObject(playerid,modelid, x, y, z, detrx, detry, detrz);
+				angle=angle+sep;
+			}
+			else break;
+		}
+	}
+
 	Streamer_Update(playerid);
     return 1;
 }
 
 /* Creates objects in a circular path within a circular pathed object */
-CreateDynamicCircleIn(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,parts,bool:facecenter=false)
+CreateDynamicCircleIn(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,parts,bool:facecenter=false)
 {
-	if(facecenter == true)
+	if(facecenter == false)
 	{
-    	new Float:angle=0.0,Float:x=0.0,Float:y=0.0;
+	    new Float:angle=0.0,Float:x=0.0,Float:y=0.0;
     	for(new j=0;j<parts;j++)
     	{
         	angle=0.0,x=0.0,y=0.0;
-    		for(new i=0;i<360;i+=1)
+    		for(new i=0;i<deg;i+=1)
     		{
-        		if(angle <= 360)
+        		if(angle <= float(deg))
         		{
 					x=posx+(radius)*floatcos(angle,degrees);
 					y=posy+(radius)*floatsin(angle,degrees);
-					AddOBMObject(playerid,modelid, x, y, posz,0.0,0.0,angle+180.0);
+					AddOBMObject(playerid,modelid, x, y, posz,rx,ry,rz);
 					angle=angle+sep;
 				}
 				else break;
@@ -322,17 +353,25 @@ CreateDynamicCircleIn(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:rx
 	}
 	else
 	{
-	    new Float:angle=0.0,Float:x=0.0,Float:y=0.0;
+		new Float:angle = 0.0,Float:x = 0.0,Float:y = 0.0,Float:z,Float:detrx,Float:detry,Float:detrz;
     	for(new j=0;j<parts;j++)
     	{
         	angle=0.0,x=0.0,y=0.0;
-    		for(new i=0;i<360;i+=1)
+    		for(new i=0;i<deg;i+=1)
     		{
-        		if(angle <= 360)
+        		if(angle <= float(deg))
         		{
 					x=posx+(radius)*floatcos(angle,degrees);
 					y=posy+(radius)*floatsin(angle,degrees);
-					AddOBMObject(playerid,modelid, x, y, posz,rx,ry,rz);
+
+					// Translate to rotation
+	                AttachPoint(x, y, posz,
+	                    0.0, 0.0, angle+180.0,
+	                    posx, posy, posz, rx, ry, rz,
+						x, y, z,
+	                    detrx, detry, detrz
+					);
+	                AddOBMObject(playerid,modelid, x, y, z, detrx, detry, detrz);
 					angle=angle+sep;
 				}
 				else break;
@@ -345,37 +384,17 @@ CreateDynamicCircleIn(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:rx
 }
 
 /* Creates objects in a circular path outside a circular pathed object */
-CreateDynamicCircleOut(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,parts,bool:facecenter=false)
+CreateDynamicCircleOut(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz,Float:radius,Float:sep,parts,bool:facecenter=false)
 {
-    if(facecenter == true)
-	{
-    	new Float:angle=0.0,Float:x=0.0,Float:y=0.0;
-    	for(new j=0;j<parts;j++)
-    	{
-        	angle=0.0,x=0.0,y=0.0;
-    		for(new i=0;i<360;i+=1)
-    		{
-        		if(angle <= 360)
-        		{
-					x=posx+(radius)*floatcos(angle,degrees);
-					y=posy+(radius)*floatsin(angle,degrees);
-					AddOBMObject(playerid,modelid, x, y, posz,0.0,0.0,angle+180.0);
-					angle=angle+sep;
-				}
-				else break;
-			}
-			radius+=2.5;
-		}
-	}
-	else
+    if(facecenter == false)
 	{
 	    new Float:angle=0.0,Float:x=0.0,Float:y=0.0;
     	for(new j=0;j<parts;j++)
     	{
         	angle=0.0,x=0.0,y=0.0;
-    		for(new i=0;i<360;i+=1)
+    		for(new i=0;i<deg;i+=1)
     		{
-        		if(angle <= 360)
+        		if(angle <= float(deg))
         		{
 					x=posx+(radius)*floatcos(angle,degrees);
 					y=posy+(radius)*floatsin(angle,degrees);
@@ -387,6 +406,34 @@ CreateDynamicCircleOut(playerid,modelid,Float:posx,Float:posy,Float:posz,Float:r
 			radius+=2.5;
 		}
 	}
+	else
+	{
+    	new Float:angle = 0.0,Float:x = 0.0,Float:y = 0.0,Float:z,Float:detrx,Float:detry,Float:detrz;
+    	for(new j=0;j<parts;j++)
+    	{
+        	angle=0.0,x=0.0,y=0.0;
+    		for(new i=0;i<deg;i+=1)
+    		{
+        		if(angle <= float(deg))
+        		{
+					x=posx+(radius)*floatcos(angle,degrees);
+					y=posy+(radius)*floatsin(angle,degrees);
+					// Translate to rotation
+	                AttachPoint(x, y, posz,
+	                    0.0, 0.0, angle+180.0,
+	                    posx, posy, posz, rx, ry, rz,
+						x, y, z,
+	                    detrx, detry, detrz
+					);
+	                AddOBMObject(playerid,modelid, x, y, z, detrx, detry, detrz);
+					angle=angle+sep;
+				}
+				else break;
+			}
+			radius+=2.5;
+		}
+	}
+
 	Streamer_Update(playerid);
     return 1;
 }

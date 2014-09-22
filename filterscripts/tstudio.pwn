@@ -157,6 +157,8 @@ Change Log:
 	v1.5a - Added a feature to clone in edit object mode simply press 'walk' to clone the object
 	    - You can press enter/exit vehicle to save a objects position in edit object mode
 	v1.5b - Added /obmedit command an object metric tool
+	v1.5c - Improved object metric tool to include rotation translations
+	    - Added degree option to object metric tool
 
 Roadmap:
 	- Refine functionality
@@ -165,7 +167,7 @@ Roadmap:
 #define FILTERSCRIPT
 
 // Uncomment to turn on DEBUG mode
-// #define DEBUG
+//#define DEBUG
 
 // #define GUI_DEBUG
 

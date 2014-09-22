@@ -7,96 +7,93 @@ SA-MP Dedicated Server
 ----------------------
 v0.3z-R2, (C)2005-2014 SA-MP Team
 
-[00:59:36] 
-[00:59:36] Server Plugins
-[00:59:36] --------------
-[00:59:36]  Loading plugin: sscanf
-[00:59:36] 
+[18:53:04] 
+[18:53:04] Server Plugins
+[18:53:04] --------------
+[18:53:04]  Loading plugin: sscanf
+[18:53:04] 
 
-[00:59:36]  ===============================
+[18:53:04]  ===============================
 
-[00:59:36]       sscanf plugin loaded.     
+[18:53:04]       sscanf plugin loaded.     
 
-[00:59:36]          Version:  2.8.1        
+[18:53:04]          Version:  2.8.1        
 
-[00:59:36]    (c) 2012 Alex "Y_Less" Cole  
+[18:53:04]    (c) 2012 Alex "Y_Less" Cole  
 
-[00:59:36]  ===============================
+[18:53:04]  ===============================
 
-[00:59:36]   Loaded.
-[00:59:36]  Loading plugin: streamer
-[00:59:36] 
+[18:53:04]   Loaded.
+[18:53:04]  Loading plugin: streamer
+[18:53:04] 
 
 *** Streamer Plugin v2.7.2 by Incognito loaded ***
 
-[00:59:36]   Loaded.
-[00:59:36]  Loading plugin: filemanager
-[00:59:36] ******************
-[00:59:36] ** FILE MANAGER **
-[00:59:36] **    Loaded    **
-[00:59:36] ** Version 1.5 **
-[00:59:36] ******************
-[00:59:36]   Loaded.
-[00:59:36]  Loading plugin: crashdetect
-[00:59:36]   CrashDetect v4.10.1 is OK.
-[00:59:36]   Loaded.
-[00:59:36]  Loading plugin: mapandreas
-[00:59:36]   Failed.
-[00:59:36]  Loaded 4 plugins.
+[18:53:04]   Loaded.
+[18:53:04]  Loading plugin: filemanager
+[18:53:04] ******************
+[18:53:04] ** FILE MANAGER **
+[18:53:04] **    Loaded    **
+[18:53:04] ** Version 1.5 **
+[18:53:04] ******************
+[18:53:04]   Loaded.
+[18:53:04]  Loading plugin: crashdetect
+[18:53:04]   CrashDetect v4.10.1 is OK.
+[18:53:04]   Loaded.
+[18:53:04]  Loading plugin: mapandreas
+[18:53:04]   Failed.
+[18:53:04]  Loaded 4 plugins.
 
-[00:59:36] 
-[00:59:36] Filterscripts
-[00:59:36] ---------------
-[00:59:36]   Loading filterscript 'tstudio.amx'...
-[00:59:37]  
-[00:59:37]  
-[00:59:37]  
-[00:59:37]  ======================================= 
-[00:59:37]  |                                     | 
-[00:59:37]  |        YSI version 3.09.0684        | 
-[00:59:37]  |        By Alex "Y_Less" Cole        | 
-[00:59:37]  |                                     | 
-[00:59:37]  ======================================= 
-[00:59:37]  
-[00:59:37]  
-[00:59:37]  
-[00:59:37] LOADED 8370 texture definitions
-[00:59:37] ----------------------------------------------
-[00:59:37] ---------Texture Studio By [uL]Pottus---------
-[00:59:37] -------------------------------------Loaded---
-[00:59:37]   Loading filterscript 'fsdebug.amx'...
-[00:59:37] 
+[18:53:04] 
+[18:53:04] Filterscripts
+[18:53:04] ---------------
+[18:53:04]   Loading filterscript 'tstudio.amx'...
+[18:53:04]  
+[18:53:04]  
+[18:53:04]  
+[18:53:04]  ======================================= 
+[18:53:04]  |                                     | 
+[18:53:04]  |        YSI version 3.09.0684        | 
+[18:53:04]  |        By Alex "Y_Less" Cole        | 
+[18:53:04]  |                                     | 
+[18:53:04]  ======================================= 
+[18:53:04]  
+[18:53:04]  
+[18:53:04]  
+[18:53:04] LOADED 8370 texture definitions
+[18:53:04] ----------------------------------------------
+[18:53:04] ---------Texture Studio By [uL]Pottus---------
+[18:53:04] -------------------------------------Loaded---
+[18:53:04]   Loading filterscript 'fsdebug.amx'...
+[18:53:04] 
   *********************
   * SA:MP DEBUG 0.2   *
-[00:59:37]   * By Simon Campbell *
+[18:53:04]   * By Simon Campbell *
   *********************
-[00:59:37]   * Version: 0.5d      *
+[18:53:04]   * Version: 0.5d      *
   *********************
-[00:59:37]   * -- LOADED         *
+[18:53:04]   * -- LOADED         *
   *********************
 
-[00:59:37]   Loaded 2 filterscripts.
+[18:53:04]   Loaded 2 filterscripts.
 
-[00:59:37] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
-[00:59:37] LOADED 8370 texture definitions
-[00:59:37] 
+[18:53:04] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[18:53:04] LOADED 8370 texture definitions
+[18:53:04] 
 ----------------------------------
-[00:59:37]   Bare Script
+[18:53:04]   Bare Script
 
-[00:59:37] ----------------------------------
+[18:53:04] ----------------------------------
 
-[00:59:37] Number of vehicle models: 0
-[00:59:37]  
-[00:59:37]  ========================================== 
-[00:59:37]  |                                        | 
-[00:59:37]  |  A new version (v<html>
+[18:53:04] Number of vehicle models: 0
+[18:53:04]  
+[18:53:04]  ========================================== 
+[18:53:04]  |                                        | 
+[18:53:04]  |  A new version (v<html>
   ) of YSI is  | 
-[00:59:37]  |            available from:             | 
-[00:59:37]  |                                        | 
-[00:59:37]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
-[00:59:37]  |                                        | 
-[00:59:37]  ========================================== 
-[00:59:37]  
-[00:59:57] Incoming connection: 127.0.0.1:55007
-[00:59:57] [join] [uL]Pottus has joined the server (0:127.0.0.1)
-[01:01:10] [part] [uL]Pottus has left the server (0:1)
+[18:53:04]  |            available from:             | 
+[18:53:04]  |                                        | 
+[18:53:04]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[18:53:04]  |                                        | 
+[18:53:04]  ========================================== 
+[18:53:04]  

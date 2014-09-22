@@ -27,6 +27,7 @@ enum pOBMINFO
 	pOBMType,
 	pOBMModel,
 	pOBMParts,
+	pOBMDegrees,
 	Float:pOBMOriginX,
 	Float:pOBMOriginY,
 	Float:pOBMOriginZ,
@@ -48,6 +49,7 @@ hook OnFilterScriptInit()
 	for(new i = 0; i < MAX_PLAYERS; i++)
 	{
 	    OBMData[i][pOBMParts] = 10;
+	    OBMData[i][pOBMDegrees] = 360;
 	}
 	return 1;
 }
@@ -79,6 +81,7 @@ static ResetOBMValues(playerid)
     OBMData[playerid][pOBMType] = 0;
     OBMData[playerid][pOBMModel] = 0;
     OBMData[playerid][pOBMParts] = 10;
+    OBMData[playerid][pOBMDegrees] = 360;
     OBMData[playerid][pOBMOriginX] = 0.0;
     OBMData[playerid][pOBMOriginY] = 0.0;
     OBMData[playerid][pOBMOriginZ] = 0.0;
@@ -162,8 +165,32 @@ static OBMEditor(playerid)
 					Dialog_ShowCallback(playerid, using inline OBMParts, DIALOG_STYLE_INPUT, "Texture Studio", "Number of parts", "Ok", "Cancel");
 			    }
 			    
-				// Horizontal seperation
+			    // Degrees
 			    case 3:
+			    {
+					inline OBMDegrees(degpid, degdialogid, degresponse, deglistitem, string:degtext[])
+					{
+						#pragma unused deglistitem, degdialogid, degpid, degtext
+						if(degresponse)
+						{
+							new deg = strval(degtext);
+							if(deg < 1) SendClientMessage(playerid, STEALTH_GREEN, "You must have at least 1 degree");
+							else if(deg > 3600) SendClientMessage(playerid, STEALTH_GREEN, "Excessive degrees");
+							else
+							{
+							    OBMData[playerid][pOBMDegrees] = deg;
+							    UpdateOBM(playerid);
+							}
+						}
+						OBMEditor(playerid);
+					}
+					Dialog_ShowCallback(playerid, using inline OBMDegrees, DIALOG_STYLE_INPUT, "Texture Studio", "Degrees (Integer)", "Ok", "Cancel");
+			    }
+
+
+			    
+				// Horizontal seperation
+			    case 4:
 			    {
 					inline OBMHS(hpid, hdialogid, hresponse, hlistitem, string:htext[])
 					{
@@ -179,7 +206,7 @@ static OBMEditor(playerid)
 			    }
 			
 				// Vertical Seperation
-			    case 4:
+			    case 5:
 			    {
 					inline OBMVS(vpid, vdialogid, vresponse, vlistitem, string:vtext[])
 					{
@@ -195,7 +222,7 @@ static OBMEditor(playerid)
 			    }
 			    
 			    // Face Center
-				case 5:
+				case 6:
 				{
 					inline OBMFaceCenter(fpid, fdialogid, fresponse, flistitem, string:ftext[])
 					{
@@ -209,7 +236,7 @@ static OBMEditor(playerid)
 				}
 				
 				// OriginX
-				case 6:
+				case 7:
 				{
 					inline OBMOX(oxpid, oxdialogid, oxresponse, oxlistitem, string:oxtext[])
 					{
@@ -225,7 +252,7 @@ static OBMEditor(playerid)
 				}
 				
                 // OriginY
-				case 7:
+				case 8:
 				{
 					inline OBMOY(oypid, oydialogid, oyresponse, oylistitem, string:oytext[])
 					{
@@ -241,7 +268,7 @@ static OBMEditor(playerid)
 				}
 
                 // OriginZ
-				case 8:
+				case 9:
 				{
 					inline OBMOZ(ozpid, ozdialogid, ozresponse, ozlistitem, string:oztext[])
 					{
@@ -257,7 +284,7 @@ static OBMEditor(playerid)
 				}
 
 				// OriginRX
-				case 9:
+				case 10:
 				{
 					inline OBMORX(orxpid, orxdialogid, orxresponse, orxlistitem, string:orxtext[])
 					{
@@ -275,7 +302,7 @@ static OBMEditor(playerid)
 				}
 
                 // OriginRY
-				case 10:
+				case 11:
 				{
 					inline OBMORY(orypid, orydialogid, oryresponse, orylistitem, string:orytext[])
 					{
@@ -291,7 +318,7 @@ static OBMEditor(playerid)
 				}
 
                 // OriginRZ
-				case 11:
+				case 12:
 				{
 					inline OBMORZ(orzpid, orzdialogid, orzresponse, orzlistitem, string:orztext[])
 					{
@@ -308,7 +335,7 @@ static OBMEditor(playerid)
 				}
 
                 // Radius
-				case 12:
+				case 13:
 				{
 					inline OBMRadius(rpid, rdialogid, rresponse, rlistitem, string:rtext[])
 					{
@@ -325,7 +352,7 @@ static OBMEditor(playerid)
 
 
                 // Set origin
-				case 13:
+				case 14:
 				{
 					if(!OBMData[playerid][OriginSet])
 					{
@@ -355,7 +382,7 @@ static OBMEditor(playerid)
 				}
 
 				// Apply objects to map
-				case 14:
+				case 15:
 				{
 					inline OBMApply(apid, adialogid, aresponse, alistitem, string:atext[])
 					{
@@ -372,7 +399,7 @@ static OBMEditor(playerid)
 				}
 
 				// Reset values
-				case 15:
+				case 16:
 				{
 					inline OBMReset(epid, edialogid, eresponse, elistitem, string:etext[])
 					{
@@ -388,7 +415,7 @@ static OBMEditor(playerid)
 				}
 				
 				// Hide object stack
-				case 16:
+				case 17:
 				{
 					inline OBMHideStack(hpid, hdialogid, hresponse, hlistitem, string:htext[])
 					{
@@ -407,10 +434,11 @@ static OBMEditor(playerid)
 		}
 	}
 	
-	format(line, sizeof(line), "Set Type: %s\nModel: %i\nParts: %i\nHorizontal Seperation: %f\nVertical Seperation: %f\nFace Center: %s\nOriginX: %f\nOriginY: %f\nOriginZ: %f\nOriginRX: %f\nOriginRY: %f\nOriginRZ: %f\nRadius: %f\nSet Origin\nApply Objects to map\nReset Values\nHide Objects",
+	format(line, sizeof(line), "Set Type: %s\nModel: %i\nParts: %i\nDegrees: %i\nHorizontal Seperation: %f\nVertical Seperation: %f\nFace Center: %s\nOriginX: %f\nOriginY: %f\nOriginZ: %f\nOriginRX: %f\nOriginRY: %f\nOriginRZ: %f\nRadius: %f\nSet Origin\nApply Objects to map\nReset Values\nHide Objects",
 	    OBMTypes[OBMData[playerid][pOBMType]],
 	    OBMData[playerid][pOBMModel],
 	    OBMData[playerid][pOBMParts],
+	    OBMData[playerid][pOBMDegrees],
 	    OBMData[playerid][pOBMhsep],
 	    OBMData[playerid][pOBMvsep],
    	    OBMData[playerid][pOBMfacecenter] ? FaceCenterOnOff[0] : FaceCenterOnOff[1],
@@ -442,6 +470,7 @@ static UpdateOBM(playerid)
 	 		case OBM_NONE: { }
 		    case OBM_CIRCLE: { CreateDynamicObjectCircle(playerid,
 				OBMData[playerid][pOBMModel],
+				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
 				OBMData[playerid][pOBMRadius],
@@ -452,6 +481,7 @@ static UpdateOBM(playerid)
 
 		    case OBM_SPIRAL: { CreateDynamicObjectSpiral(playerid,
 				OBMData[playerid][pOBMModel],
+				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
 				OBMData[playerid][pOBMRadius],
@@ -463,6 +493,7 @@ static UpdateOBM(playerid)
 
 		    case OBM_CLYINDER: { CreateDynamicObjectCylinder(playerid,
 				OBMData[playerid][pOBMModel],
+				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
 				OBMData[playerid][pOBMRadius],
@@ -474,6 +505,7 @@ static UpdateOBM(playerid)
 
 		    case OBM_WHIRL: { CreateDynamicObjectWhirl(playerid,
 				OBMData[playerid][pOBMModel],
+				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
 				OBMData[playerid][pOBMRadius],
@@ -484,6 +516,7 @@ static UpdateOBM(playerid)
 
 		    case OBM_CIRCLEIN: { CreateDynamicCircleIn(playerid,
 				OBMData[playerid][pOBMModel],
+				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
 				OBMData[playerid][pOBMRadius],
@@ -494,6 +527,7 @@ static UpdateOBM(playerid)
 			
 		    case OBM_CIRCLEOUT: { CreateDynamicCircleOut(playerid,
 				OBMData[playerid][pOBMModel],
+				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
 				OBMData[playerid][pOBMRadius],
