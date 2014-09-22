@@ -125,6 +125,7 @@ static bool:DeltaMapMovement[MAX_PLAYERS];
 #define         CLICK_PIVOTG_MENU           2142
 #define         CLICK_TOGPIVOTG_MENU        2143
 #define			CLICK_ZEROGROUP_MENU        2144
+#define         CLICK_OBJECTMETRY_MENU      2145
 
 // Group selection sub
 #define         CLICK_GROUP_CSEL            2211
@@ -385,6 +386,11 @@ hook OnFilterScriptInit()
 	LoadGUIMenu(GroupMenu,MenuButton,435.0, 195.0, CLICK_ZEROGROUP_MENU, E_INDEX);
 	GUISetPlayerText(GroupMenu, E_INDEX[1], "Group to 0,0,0");
 	GUISetPlayerText(GroupMenu, E_INDEX[2], "LD_BEAT:square");
+	
+	LoadGUIMenu(GroupMenu,MenuButton,435.0, 195.0, CLICK_OBJECTMETRY_MENU, E_INDEX);
+	GUISetPlayerText(GroupMenu, E_INDEX[1], "Objectmetry");
+	GUISetPlayerText(GroupMenu, E_INDEX[2], "LD_BEAT:square");
+
 
 	LoadGUIMenu(GroupMenu,MovementMenu,-100.0, 0.0, CLICK_MOVEMENTG_MENU, E_INDEX);
 	GUISetPlayerText(GroupMenu, E_INDEX[12], "_");
@@ -1052,6 +1058,10 @@ OnGUIClick:GroupMenu(playerid, group, gindex, pindex)
 			}
 			Dialog_ShowCallback(playerid, using inline ZeroGroup, DIALOG_STYLE_MSGBOX, "Texture Studio", "This will set your currently grouped\nobjects to the 0,0,0 postion", "Ok", "Cancel");
 		}
+
+		// Objectmetry editor
+        case CLICK_OBJECTMETRY_MENU: { BroadcastCommand(playerid, "/obmedit"); }
+
 		case CLICK_MOVEMENTG_MENU:
 		{
             // +x:0 +y:1 +z:2 +rx:3 +ry:4 +rz:5 -x:6 -y:7 -z:8 -rx:9 -ry:10 -rz:11

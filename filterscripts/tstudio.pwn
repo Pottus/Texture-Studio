@@ -156,6 +156,7 @@ Change Log:
 	v1.5 - Greatly enhanced /osearch command
 	v1.5a - Added a feature to clone in edit object mode simply press 'walk' to clone the object
 	    - You can press enter/exit vehicle to save a objects position in edit object mode
+	v1.5b - Added /obmedit command an object metric tool
 
 Roadmap:
 	- Refine functionality
@@ -387,6 +388,7 @@ new Float:CurrEditPos[MAX_PLAYERS][6];
 #define         EDIT_MODE_TEXTURING     8
 #define         EDIT_MODE_LISTSEL       9
 #define         EDIT_MODE_OSEARCH       10
+#define         EDIT_MODE_OBM           11
 
 
 // Textdraw modes
@@ -510,6 +512,11 @@ new bool:MapOpen;
 
 // Object search
 #include <tstudio\osearch>
+
+// Objectmetry module
+#include <tstudio\objm>
+#include <tstudio\obmedit>
+
 
 // GTA objects module
 #if defined COMPILE_GTA_OBJECTS
@@ -694,8 +701,9 @@ hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, F
 
 			}
 		}
+		case EDIT_MODE_OBJECTGROUP: OnPlayerEditDOGroup(playerid, objectid, response, x, y, z, rx, ry, rz);
+		case EDIT_MODE_OBM: OnPlayerEditDOOBM(playerid, objectid, response, x, y, z, rx, ry, rz);
 	}
-//	OnPlayerEditDynamicObjectGroup(playerid, objectid, response, x, y, z, rx, ry, rz);
 	return 1;
 }
 

@@ -168,114 +168,112 @@ OnPlayerKeyStateGroupChange(playerid, newkeys, oldkeys)
     return 0;
 }
 
-hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+OnPlayerEditDOGroup(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
-	if(GetEditMode(playerid) == EDIT_MODE_OBJECTGROUP)
+	#pragma unused objectid
+	if(response == EDIT_RESPONSE_FINAL)
 	{
-		if(response == EDIT_RESPONSE_FINAL)
-		{
-			// Get the center (never changes)
-			new Float:gCenterX, Float:gCenterY, Float:gCenterZ;
-			GetGroupCenter(playerid, gCenterX, gCenterY, gCenterZ);
+		// Get the center (never changes)
+		new Float:gCenterX, Float:gCenterY, Float:gCenterZ;
+		GetGroupCenter(playerid, gCenterX, gCenterY, gCenterZ);
 
+		foreach(new i : Objects)
+		{
+	   		if(GroupedObjects[playerid][i])
+			{
+				new Float:offx, Float:offy, Float:offz;
+				offx = (ObjectData[i][oX] + (x - gCenterX)) - PivotOffset[playerid][xPos];
+				offy = (ObjectData[i][oY] + (y - gCenterY)) - PivotOffset[playerid][yPos];
+				offz = (ObjectData[i][oZ] + (z - gCenterZ)) - PivotOffset[playerid][zPos];
+
+                AttachObjectToPoint_GroupEdit(i, offx, offy, offz, x, y, z, rx, ry, rz, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+				SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
+  				SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+
+			    sqlite_UpdateObjectPos(i);
+
+			    UpdateObject3DText(i);
+			}
+		}
+
+		EditingMode[playerid] = false;
+		SetEditMode(playerid, EDIT_MODE_NONE);
+				
+		DestroyDynamicObject(PivotObject[playerid]);
+	}
+	else if(response == EDIT_RESPONSE_UPDATE)
+	{
+
+		// Get the center (never changes)
+		new Float:gCenterX, Float:gCenterY, Float:gCenterZ;
+		GetGroupCenter(playerid, gCenterX, gCenterY, gCenterZ);
+
+	    new Keys,ud,lr;
+	    GetPlayerKeys(playerid,Keys,ud,lr);
+
+		if(Keys & KEY_WALK)
+		{
+			if(!PivotReset[playerid])
+			{
+		       	SetDynamicObjectPos(PivotObject[playerid], LastGroupPosition[playerid][xPos], LastGroupPosition[playerid][yPos], LastGroupPosition[playerid][zPos]);
+				SendClientMessage(playerid, STEALTH_YELLOW, "Save your object before changing the pivot again");
+			}
+			else
+			{
+				PivotOffset[playerid][xPos] = x - LastPivot[playerid][xPos];
+				PivotOffset[playerid][yPos] = y - LastPivot[playerid][yPos];
+				PivotOffset[playerid][zPos] = z - LastPivot[playerid][zPos];
+
+				SetDynamicObjectRot(PivotObject[playerid], 0.0, 0.0, 0.0);
+			}
+		}
+
+		else
+		{
 			foreach(new i : Objects)
 			{
 		   		if(GroupedObjects[playerid][i])
 				{
-					new Float:offx, Float:offy, Float:offz;
+					new Float:offx, Float:offy, Float:offz, Float:newx, Float:newy, Float:newz, Float:newrx, Float:newry, Float:newrz;
 					offx = (ObjectData[i][oX] + (x - gCenterX)) - PivotOffset[playerid][xPos];
 					offy = (ObjectData[i][oY] + (y - gCenterY)) - PivotOffset[playerid][yPos];
 					offz = (ObjectData[i][oZ] + (z - gCenterZ)) - PivotOffset[playerid][zPos];
 
-                    AttachObjectToPoint_GroupEdit(i, offx, offy, offz, x, y, z, rx, ry, rz, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
-					SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
-	  				SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
-
-				    sqlite_UpdateObjectPos(i);
-
-				    UpdateObject3DText(i);
+                    AttachObjectToPoint_GroupEdit(i, offx, offy, offz, x, y, z, rx, ry, rz, newx, newy, newz, newrx, newry, newrz);
+					SetDynamicObjectPos(ObjectData[i][oID], newx, newy, newz);
+	  				SetDynamicObjectRot(ObjectData[i][oID], newrx, newry, newrz);
 				}
 			}
 
-			EditingMode[playerid] = false;
-			SetEditMode(playerid, EDIT_MODE_NONE);
-					
-			DestroyDynamicObject(PivotObject[playerid]);
+			LastGroupPosition[playerid][xPos] = x - PivotOffset[playerid][xPos];
+			LastGroupPosition[playerid][yPos] = y - PivotOffset[playerid][yPos];
+			LastGroupPosition[playerid][zPos] = z - PivotOffset[playerid][zPos];
+			
+			LastPivot[playerid][xPos] = x;
+			LastPivot[playerid][yPos] = y;
+			LastPivot[playerid][zPos] = z;
+
+			LastPivot[playerid][xPos] = rx;
+			LastPivot[playerid][yPos] = ry;
+			LastPivot[playerid][zPos] = rz;
+
+			
+			PivotReset[playerid] = false;
 		}
-		else if(response == EDIT_RESPONSE_UPDATE)
+	}
+
+	else if(response == EDIT_RESPONSE_CANCEL)
+	{
+		foreach(new i : Objects)
 		{
-
-			// Get the center (never changes)
-			new Float:gCenterX, Float:gCenterY, Float:gCenterZ;
-			GetGroupCenter(playerid, gCenterX, gCenterY, gCenterZ);
-
-		    new Keys,ud,lr;
-		    GetPlayerKeys(playerid,Keys,ud,lr);
-
-			if(Keys & KEY_WALK)
+	   		if(GroupedObjects[playerid][i])
 			{
-				if(!PivotReset[playerid])
-				{
-			       	SetDynamicObjectPos(PivotObject[playerid], LastGroupPosition[playerid][xPos], LastGroupPosition[playerid][yPos], LastGroupPosition[playerid][zPos]);
-					SendClientMessage(playerid, STEALTH_YELLOW, "Save your object before changing the pivot again");
-				}
-				else
-				{
-					PivotOffset[playerid][xPos] = x - LastPivot[playerid][xPos];
-					PivotOffset[playerid][yPos] = y - LastPivot[playerid][yPos];
-					PivotOffset[playerid][zPos] = z - LastPivot[playerid][zPos];
+				SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
+  				SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 
-					SetDynamicObjectRot(PivotObject[playerid], 0.0, 0.0, 0.0);
-				}
-			}
-
-			else
-			{
-				foreach(new i : Objects)
-				{
-			   		if(GroupedObjects[playerid][i])
-					{
-						new Float:offx, Float:offy, Float:offz, Float:newx, Float:newy, Float:newz, Float:newrx, Float:newry, Float:newrz;
-						offx = (ObjectData[i][oX] + (x - gCenterX)) - PivotOffset[playerid][xPos];
-						offy = (ObjectData[i][oY] + (y - gCenterY)) - PivotOffset[playerid][yPos];
-						offz = (ObjectData[i][oZ] + (z - gCenterZ)) - PivotOffset[playerid][zPos];
-
-	                    AttachObjectToPoint_GroupEdit(i, offx, offy, offz, x, y, z, rx, ry, rz, newx, newy, newz, newrx, newry, newrz);
-						SetDynamicObjectPos(ObjectData[i][oID], newx, newy, newz);
-		  				SetDynamicObjectRot(ObjectData[i][oID], newrx, newry, newrz);
-					}
-				}
-
-				LastGroupPosition[playerid][xPos] = x - PivotOffset[playerid][xPos];
-				LastGroupPosition[playerid][yPos] = y - PivotOffset[playerid][yPos];
-				LastGroupPosition[playerid][zPos] = z - PivotOffset[playerid][zPos];
-				
-				LastPivot[playerid][xPos] = x;
-				LastPivot[playerid][yPos] = y;
-				LastPivot[playerid][zPos] = z;
-
-				LastPivot[playerid][xPos] = rx;
-				LastPivot[playerid][yPos] = ry;
-				LastPivot[playerid][zPos] = rz;
-
-				
-				PivotReset[playerid] = false;
-			}
-		}
-
-		else if(response == EDIT_RESPONSE_CANCEL)
-		{
-			foreach(new i : Objects)
-			{
-		   		if(GroupedObjects[playerid][i])
-				{
-					SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
-	  				SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
-
-					EditingMode[playerid] = false;
-					SetEditMode(playerid, EDIT_MODE_NONE);
-					DestroyDynamicObject(PivotObject[playerid]);
-				}
+				EditingMode[playerid] = false;
+				SetEditMode(playerid, EDIT_MODE_NONE);
+				DestroyDynamicObject(PivotObject[playerid]);
 			}
 		}
 	}

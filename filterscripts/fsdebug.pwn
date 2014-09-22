@@ -438,7 +438,7 @@ dcmd_debug(playerid, params[]) {
 	    SendClientMessage(playerid, COLOR_BLUE, "[DEBUG]: Debug Mode 0.2 - COMMANDS");
 	    SendClientMessage(playerid, COLOR_CYAN, "[WORLD]: /w, /weather, /t, /time, /wsel, /g, /gravity");
 	    SendClientMessage(playerid, COLOR_CYAN, "[VEHICLES]: /v, /vehicle, /vsel");
-	    SendClientMessage(playerid, COLOR_CYAN, "[PLAYER]: /s, /skin, /ssel, /weapon, /w2");
+	    SendClientMessage(playerid, COLOR_CYAN, "[PLAYER]: /s, /skin, /skinsel, /weapon, /w2");
 	    SendClientMessage(playerid, COLOR_CYAN, "[PLAYER]: /goto, /warpto, /bring, /setloc");
 	    SendClientMessage(playerid, COLOR_CYAN, "[CAMERA]: /camera, /csel");
 
@@ -947,7 +947,7 @@ dcmd_vsel(playerid, params[])
 
 #if SKIN_SELECT == true
 
-dcmd_ssel(playerid, params[])
+dcmd_skinsel(playerid, params[])
 {
 	// /ssel allows players to select a skin using playerkeys.
 	#pragma unused params
@@ -1285,7 +1285,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 	#if SKIN_SELECT == true
 	dcmd(s, 1, cmdtext);
-	dcmd(ssel, 4, cmdtext);
+	dcmd(skinsel, 7, cmdtext);
 	dcmd(skin, 4, cmdtext);
 	#endif
 
