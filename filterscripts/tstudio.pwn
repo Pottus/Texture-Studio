@@ -159,6 +159,7 @@ Change Log:
 	v1.5b - Added /obmedit command an object metric tool
 	v1.5c - Improved object metric tool to include rotation translations
 	    - Added degree option to object metric tool
+	v1.5d - Minor update to object metric tool to set object orientation for rotation translation
 
 Roadmap:
 	- Refine functionality

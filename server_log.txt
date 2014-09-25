@@ -97,3 +97,346 @@ v0.3z-R2, (C)2005-2014 SA-MP Team
 [18:53:04]  |                                        | 
 [18:53:04]  ========================================== 
 [18:53:04]  
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3z-R2, (C)2005-2014 SA-MP Team
+
+[21:59:01] 
+[21:59:01] Server Plugins
+[21:59:01] --------------
+[21:59:01]  Loading plugin: sscanf
+[21:59:01] 
+
+[21:59:01]  ===============================
+
+[21:59:01]       sscanf plugin loaded.     
+
+[21:59:01]          Version:  2.8.1        
+
+[21:59:01]    (c) 2012 Alex "Y_Less" Cole  
+
+[21:59:01]  ===============================
+
+[21:59:01]   Loaded.
+[21:59:01]  Loading plugin: streamer
+[21:59:01] 
+
+*** Streamer Plugin v2.7.2 by Incognito loaded ***
+
+[21:59:01]   Loaded.
+[21:59:01]  Loading plugin: filemanager
+[21:59:01] ******************
+[21:59:01] ** FILE MANAGER **
+[21:59:01] **    Loaded    **
+[21:59:01] ** Version 1.5 **
+[21:59:01] ******************
+[21:59:01]   Loaded.
+[21:59:01]  Loading plugin: crashdetect
+[21:59:01]   CrashDetect v4.10.1 is OK.
+[21:59:01]   Loaded.
+[21:59:01]  Loading plugin: mapandreas
+[21:59:01]   Failed.
+[21:59:01]  Loaded 4 plugins.
+
+[21:59:01] 
+[21:59:01] Filterscripts
+[21:59:01] ---------------
+[21:59:01]   Loading filterscript 'tstudio.amx'...
+[21:59:01]  
+[21:59:01]  
+[21:59:01]  
+[21:59:01]  ======================================= 
+[21:59:01]  |                                     | 
+[21:59:01]  |        YSI version 3.09.0684        | 
+[21:59:01]  |        By Alex "Y_Less" Cole        | 
+[21:59:01]  |                                     | 
+[21:59:01]  ======================================= 
+[21:59:01]  
+[21:59:01]  
+[21:59:01]  
+[21:59:01] LOADED 8370 texture definitions
+[21:59:01] ----------------------------------------------
+[21:59:01] ---------Texture Studio By [uL]Pottus---------
+[21:59:01] -------------------------------------Loaded---
+[21:59:01]   Loading filterscript 'fsdebug.amx'...
+[21:59:01] 
+  *********************
+  * SA:MP DEBUG 0.2   *
+[21:59:01]   * By Simon Campbell *
+  *********************
+[21:59:01]   * Version: 0.5d      *
+  *********************
+[21:59:01]   * -- LOADED         *
+  *********************
+
+[21:59:01]   Loaded 2 filterscripts.
+
+[21:59:01] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[21:59:01] LOADED 8370 texture definitions
+[21:59:01] 
+----------------------------------
+[21:59:01]   Bare Script
+
+[21:59:01] ----------------------------------
+
+[21:59:01] Number of vehicle models: 0
+[21:59:01]  
+[21:59:01]  ========================================== 
+[21:59:01]  |                                        | 
+[21:59:01]  |  A new version (v<html>
+  ) of YSI is  | 
+[21:59:01]  |            available from:             | 
+[21:59:01]  |                                        | 
+[21:59:01]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[21:59:01]  |                                        | 
+[21:59:01]  ========================================== 
+[21:59:01]  
+[21:59:24] Incoming connection: 127.0.0.1:52990
+[21:59:25] [join] [uL]Pottus has joined the server (0:127.0.0.1)
+[22:00:58] Incoming connection: 66.177.101.45:49766
+[22:00:59] [join] [uL]Kanada42O has joined the server (1:66.177.101.45)
+[22:19:49] Incoming connection: 178.223.141.254:15367
+[22:19:50] [join] deN42O has joined the server (2:178.223.141.254)
+[22:20:04] Incoming connection: 39.50.243.113:1220
+[22:20:05] [join] Blaze has joined the server (3:39.50.243.113)
+[22:21:01] [part] Blaze has left the server (3:0)
+[22:23:05] Incoming connection: 39.50.175.69:1244
+[22:23:06] [join] Blaze has joined the server (3:39.50.175.69)
+[22:27:43] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4222) Limit: 3000/sec
+[22:27:43] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4222) Limit: 3000/sec
+[22:27:43] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4222) Limit: 3000/sec
+[22:27:43] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4222) Limit: 3000/sec
+[22:27:43] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4222) Limit: 3000/sec
+[22:27:43] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4222) Limit: 3000/sec
+[22:27:44] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4222) Limit: 3000/sec
+[22:27:44] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4222) Limit: 3000/sec
+[22:27:44] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4222) Limit: 3000/sec
+[22:27:44] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4222) Limit: 3000/sec
+[22:27:47] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3571) Limit: 3000/sec
+[22:27:47] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3571) Limit: 3000/sec
+[22:27:48] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3571) Limit: 3000/sec
+[22:27:48] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3571) Limit: 3000/sec
+[22:27:48] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3571) Limit: 3000/sec
+[22:27:48] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3571) Limit: 3000/sec
+[22:27:48] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3571) Limit: 3000/sec
+[22:27:48] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3571) Limit: 3000/sec
+[22:27:48] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3571) Limit: 3000/sec
+[22:27:48] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3571) Limit: 3000/sec
+[22:27:49] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3984) Limit: 3000/sec
+[22:27:49] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3984) Limit: 3000/sec
+[22:27:49] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3984) Limit: 3000/sec
+[22:27:49] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3984) Limit: 3000/sec
+[22:27:49] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3984) Limit: 3000/sec
+[22:27:49] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3984) Limit: 3000/sec
+[22:27:49] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3984) Limit: 3000/sec
+[22:27:49] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3984) Limit: 3000/sec
+[22:27:49] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3984) Limit: 3000/sec
+[22:27:49] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3984) Limit: 3000/sec
+[22:27:50] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4305) Limit: 3000/sec
+[22:27:50] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4305) Limit: 3000/sec
+[22:27:51] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4305) Limit: 3000/sec
+[22:27:51] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4305) Limit: 3000/sec
+[22:27:51] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (4305) Limit: 3000/sec
+[22:28:58] [part] Blaze has left the server (3:0)
+[22:33:12] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3225) Limit: 3000/sec
+[22:33:12] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3225) Limit: 3000/sec
+[22:33:12] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3225) Limit: 3000/sec
+[22:33:12] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3225) Limit: 3000/sec
+[22:33:12] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3225) Limit: 3000/sec
+[22:33:12] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3225) Limit: 3000/sec
+[22:33:13] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3225) Limit: 3000/sec
+[22:33:13] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3225) Limit: 3000/sec
+[22:33:13] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3225) Limit: 3000/sec
+[22:33:13] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3225) Limit: 3000/sec
+[22:33:13] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3225) Limit: 3000/sec
+[22:33:22] Warning: client exceeded 'ackslimit' 66.177.101.45:49766 (3562) Limit: 3000/sec
+[22:33:32] [part] [uL]Kanada42O has left the server (1:0)
+[22:34:32] Incoming connection: 66.177.101.45:49648
+[22:34:32] [join] [uL]Kanada42O has joined the server (1:66.177.101.45)
+[22:36:24] RCON (In-Game): Player #0 ([uL]Pottus) has logged in.
+[22:36:24] RCON (In-Game): Player [[uL]Pottus] sent command: loadfs 420zoom
+[22:36:24]  
+[22:36:24]  
+[22:36:24]  
+[22:36:24]  ======================================= 
+[22:36:24]  |                                     | 
+[22:36:24]  |        YSI version 3.09.0684        | 
+[22:36:24]  |        By Alex "Y_Less" Cole        | 
+[22:36:24]  |                                     | 
+[22:36:24]  ======================================= 
+[22:36:24]  
+[22:36:24]   Filterscript '420zoom.amx' loaded.
+[22:36:25]  
+[22:36:25]  ========================================== 
+[22:36:25]  |                                        | 
+[22:36:25]  |  A new version (v<html>
+  ) of YSI is  | 
+[22:36:25]  |            available from:             | 
+[22:36:25]  |                                        | 
+[22:36:25]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[22:36:25]  |                                        | 
+[22:36:25]  ========================================== 
+[22:36:25]  
+[22:37:31] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs 420zoom
+[22:37:31]   Filterscript '420zoom.amx' unloaded.
+[22:37:31]  
+[22:37:31]  
+[22:37:31]  
+[22:37:31]  ======================================= 
+[22:37:31]  |                                     | 
+[22:37:31]  |        YSI version 3.09.0684        | 
+[22:37:31]  |        By Alex "Y_Less" Cole        | 
+[22:37:31]  |                                     | 
+[22:37:31]  ======================================= 
+[22:37:31]  
+[22:37:31]   Filterscript '420zoom.amx' loaded.
+[22:37:31]  
+[22:37:31]  ========================================== 
+[22:37:31]  |                                        | 
+[22:37:31]  |  A new version (v<html>
+  ) of YSI is  | 
+[22:37:31]  |            available from:             | 
+[22:37:31]  |                                        | 
+[22:37:31]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[22:37:31]  |                                        | 
+[22:37:31]  ========================================== 
+[22:37:31]  
+[22:39:05] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3052) Limit: 3000/sec
+[22:39:05] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3052) Limit: 3000/sec
+[22:39:05] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3052) Limit: 3000/sec
+[22:39:05] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3052) Limit: 3000/sec
+[22:39:05] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3052) Limit: 3000/sec
+[22:39:05] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3052) Limit: 3000/sec
+[22:39:05] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3052) Limit: 3000/sec
+[22:39:06] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3052) Limit: 3000/sec
+[22:39:06] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3052) Limit: 3000/sec
+[22:39:06] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3052) Limit: 3000/sec
+[22:39:09] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3036) Limit: 3000/sec
+[22:39:09] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3036) Limit: 3000/sec
+[22:39:09] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3036) Limit: 3000/sec
+[22:39:09] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3036) Limit: 3000/sec
+[22:39:09] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3036) Limit: 3000/sec
+[22:39:09] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3036) Limit: 3000/sec
+[22:39:10] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3036) Limit: 3000/sec
+[22:39:10] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3036) Limit: 3000/sec
+[22:39:44] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3034) Limit: 3000/sec
+[22:39:44] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3034) Limit: 3000/sec
+[22:39:44] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3034) Limit: 3000/sec
+[22:39:44] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3034) Limit: 3000/sec
+[22:39:44] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3034) Limit: 3000/sec
+[22:40:07] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3040) Limit: 3000/sec
+[22:40:07] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3040) Limit: 3000/sec
+[22:40:07] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3040) Limit: 3000/sec
+[22:40:08] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3040) Limit: 3000/sec
+[22:40:08] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3040) Limit: 3000/sec
+[22:41:23] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3054) Limit: 3000/sec
+[22:41:23] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3054) Limit: 3000/sec
+[22:41:23] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3054) Limit: 3000/sec
+[22:41:23] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3054) Limit: 3000/sec
+[22:41:23] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3054) Limit: 3000/sec
+[22:41:23] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3054) Limit: 3000/sec
+[22:41:24] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3054) Limit: 3000/sec
+[22:41:24] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3054) Limit: 3000/sec
+[22:43:29] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3144) Limit: 3000/sec
+[22:43:29] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3144) Limit: 3000/sec
+[22:43:30] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3144) Limit: 3000/sec
+[22:43:30] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3144) Limit: 3000/sec
+[22:43:30] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3144) Limit: 3000/sec
+[22:43:30] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3144) Limit: 3000/sec
+[22:43:30] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3144) Limit: 3000/sec
+[22:43:30] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3144) Limit: 3000/sec
+[22:43:30] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3144) Limit: 3000/sec
+[22:43:30] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3144) Limit: 3000/sec
+[22:45:09] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:45:09] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:45:09] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:45:10] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:45:10] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:45:10] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:45:10] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:45:10] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:45:10] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:45:10] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:45:10] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:45:10] Warning: client exceeded 'ackslimit' 127.0.0.1:52990 (3221) Limit: 3000/sec
+[22:51:37] [part] deN42O has left the server (2:1)
+[22:51:37] Incoming connection: 178.223.141.254:15420
+[22:51:37] [join] deN42O has joined the server (2:178.223.141.254)
+[22:51:38] [part] deN42O has left the server (2:0)
+[22:53:13] [part] [uL]Kanada42O has left the server (1:1)
+[22:54:30] [part] [uL]Pottus has left the server (0:1)
+[13:20:35] Incoming connection: 127.0.0.1:61995
+[13:20:36] [join] [uL]Pottus has joined the server (0:127.0.0.1)
+[13:20:54] RCON (In-Game): Player #0 ([uL]Pottus) has logged in.
+[13:20:58] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[13:20:58] ----------------------------------------------
+[13:20:58] ---------Texture Studio By [uL]Pottus---------
+[13:20:58] -----------------------------------Unloaded---
+[13:20:58]   Filterscript 'tstudio.amx' unloaded.
+[13:20:58]  
+[13:20:58]  
+[13:20:58]  
+[13:20:58]  ======================================= 
+[13:20:58]  |                                     | 
+[13:20:58]  |        YSI version 3.09.0684        | 
+[13:20:58]  |        By Alex "Y_Less" Cole        | 
+[13:20:58]  |                                     | 
+[13:20:58]  ======================================= 
+[13:20:58]  
+[13:20:58]  
+[13:20:58]  
+[13:20:59] LOADED 8370 texture definitions
+[13:20:59] ----------------------------------------------
+[13:20:59] ---------Texture Studio By [uL]Pottus---------
+[13:20:59] -------------------------------------Loaded---
+[13:20:59]   Filterscript 'tstudio.amx' loaded.
+[13:20:59]  
+[13:20:59]  ========================================== 
+[13:20:59]  |                                        | 
+[13:20:59]  |  A new version (v<html>
+  ) of YSI is  | 
+[13:20:59]  |            available from:             | 
+[13:20:59]  |                                        | 
+[13:20:59]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[13:20:59]  |                                        | 
+[13:20:59]  ========================================== 
+[13:20:59]  
+[13:32:37] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[13:32:37] ----------------------------------------------
+[13:32:37] ---------Texture Studio By [uL]Pottus---------
+[13:32:37] -----------------------------------Unloaded---
+[13:32:37]   Filterscript 'tstudio.amx' unloaded.
+[13:32:37]  
+[13:32:37]  
+[13:32:37]  
+[13:32:37]  ======================================= 
+[13:32:37]  |                                     | 
+[13:32:37]  |        YSI version 3.09.0684        | 
+[13:32:37]  |        By Alex "Y_Less" Cole        | 
+[13:32:37]  |                                     | 
+[13:32:37]  ======================================= 
+[13:32:37]  
+[13:32:37]  
+[13:32:37]  
+[13:32:37] LOADED 8370 texture definitions
+[13:32:37] ----------------------------------------------
+[13:32:37] ---------Texture Studio By [uL]Pottus---------
+[13:32:37] -------------------------------------Loaded---
+[13:32:37]   Filterscript 'tstudio.amx' loaded.
+[13:32:37]  
+[13:32:37]  ========================================== 
+[13:32:37]  |                                        | 
+[13:32:37]  |  A new version (v<html>
+  ) of YSI is  | 
+[13:32:37]  |            available from:             | 
+[13:32:37]  |                                        | 
+[13:32:37]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[13:32:37]  |                                        | 
+[13:32:37]  ========================================== 
+[13:32:37]  
+[14:28:50] [part] [uL]Pottus has left the server (0:1)

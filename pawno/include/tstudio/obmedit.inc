@@ -34,6 +34,8 @@ enum pOBMINFO
 	Float:pOBMOriginRX,
 	Float:pOBMOriginRY,
 	Float:pOBMOriginRZ,
+	Float:pOBMOrientationRX,
+	Float:pOBMOrientationRY,
 	Float:pOBMRadius,
 	Float:pOBMhsep,
 	Float:pOBMvsep,
@@ -88,6 +90,8 @@ static ResetOBMValues(playerid)
     OBMData[playerid][pOBMOriginRX] = 0.0;
     OBMData[playerid][pOBMOriginRY] = 0.0;
     OBMData[playerid][pOBMOriginRZ] = 0.0;
+    OBMData[playerid][pOBMOrientationRX] = 0.0;
+    OBMData[playerid][pOBMOrientationRY] = 0.0;
     OBMData[playerid][pOBMRadius] = 0.0;
     OBMData[playerid][pOBMhsep] = 0.0;
     OBMData[playerid][pOBMvsep] = 0.0;
@@ -334,8 +338,40 @@ static OBMEditor(playerid)
 
 				}
 
-                // Radius
+                // OrientationRX
 				case 13:
+				{
+					inline OBMORTRX(ortrxpid, ortrxdialogid, ortrxresponse, ortrxlistitem, string:ortrxtext[])
+					{
+						#pragma unused ortrxlistitem, ortrxdialogid, ortrxpid, ortrxtext
+						if(ortrxresponse)
+						{
+						    OBMData[playerid][pOBMOrientationRX] = floatstr(ortrxtext);
+						    UpdateOBM(playerid);
+						}
+						OBMEditor(playerid);
+					}
+					Dialog_ShowCallback(playerid, using inline OBMORTRX, DIALOG_STYLE_INPUT, "Texture Studio", "Orientation RX", "Ok", "Cancel");
+				}
+
+                // OrientationRY
+				case 14:
+				{
+					inline OBMORTRY(ortrypid, ortrydialogid, ortryresponse, ortrylistitem, string:ortrytext[])
+					{
+						#pragma unused ortrylistitem, ortrydialogid, ortrypid, ortrytext
+						if(ortryresponse)
+						{
+						    OBMData[playerid][pOBMOrientationRY] = floatstr(ortrytext);
+						    UpdateOBM(playerid);
+						}
+						OBMEditor(playerid);
+					}
+					Dialog_ShowCallback(playerid, using inline OBMORTRY, DIALOG_STYLE_INPUT, "Texture Studio", "Orientation RY", "Ok", "Cancel");
+				}
+
+                // Radius
+				case 15:
 				{
 					inline OBMRadius(rpid, rdialogid, rresponse, rlistitem, string:rtext[])
 					{
@@ -352,7 +388,7 @@ static OBMEditor(playerid)
 
 
                 // Set origin
-				case 14:
+				case 16:
 				{
 					if(!OBMData[playerid][OriginSet])
 					{
@@ -382,7 +418,7 @@ static OBMEditor(playerid)
 				}
 
 				// Apply objects to map
-				case 15:
+				case 17:
 				{
 					inline OBMApply(apid, adialogid, aresponse, alistitem, string:atext[])
 					{
@@ -399,7 +435,7 @@ static OBMEditor(playerid)
 				}
 
 				// Reset values
-				case 16:
+				case 18:
 				{
 					inline OBMReset(epid, edialogid, eresponse, elistitem, string:etext[])
 					{
@@ -415,7 +451,7 @@ static OBMEditor(playerid)
 				}
 				
 				// Hide object stack
-				case 17:
+				case 19:
 				{
 					inline OBMHideStack(hpid, hdialogid, hresponse, hlistitem, string:htext[])
 					{
@@ -434,7 +470,7 @@ static OBMEditor(playerid)
 		}
 	}
 	
-	format(line, sizeof(line), "Set Type: %s\nModel: %i\nParts: %i\nDegrees: %i\nHorizontal Seperation: %f\nVertical Seperation: %f\nFace Center: %s\nOriginX: %f\nOriginY: %f\nOriginZ: %f\nOriginRX: %f\nOriginRY: %f\nOriginRZ: %f\nRadius: %f\nSet Origin\nApply Objects to map\nReset Values\nHide Objects",
+	format(line, sizeof(line), "Set Type: %s\nModel: %i\nParts: %i\nDegrees: %i\nHorizontal Seperation: %f\nVertical Seperation: %f\nFace Center: %s\nOriginX: %f\nOriginY: %f\nOriginZ: %f\nOriginRX: %f\nOriginRY: %f\nOriginRZ: %f\nOrientationRX: %f\nOrientationRY: %f\nRadius: %f\nSet Origin\nApply Objects to map\nReset Values\nHide Objects",
 	    OBMTypes[OBMData[playerid][pOBMType]],
 	    OBMData[playerid][pOBMModel],
 	    OBMData[playerid][pOBMParts],
@@ -448,6 +484,8 @@ static OBMEditor(playerid)
    	    OBMData[playerid][pOBMOriginRX],
  		OBMData[playerid][pOBMOriginRY],
  		OBMData[playerid][pOBMOriginRZ],
+ 		OBMData[playerid][pOBMOrientationRX],
+ 		OBMData[playerid][pOBMOrientationRY],
         OBMData[playerid][pOBMRadius]
 	);
 	    
@@ -473,6 +511,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMfacecenter]
@@ -484,6 +523,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMvsep],
@@ -496,6 +536,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMvsep],
@@ -508,6 +549,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMfacecenter]
@@ -519,6 +561,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMParts],
@@ -530,6 +573,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMParts],
