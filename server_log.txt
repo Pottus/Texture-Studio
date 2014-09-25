@@ -440,3 +440,105 @@ v0.3z-R2, (C)2005-2014 SA-MP Team
 [13:32:37]  ========================================== 
 [13:32:37]  
 [14:28:50] [part] [uL]Pottus has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3z-R2, (C)2005-2014 SA-MP Team
+
+[00:37:12] 
+[00:37:12] Server Plugins
+[00:37:12] --------------
+[00:37:12]  Loading plugin: sscanf
+[00:37:12] 
+
+[00:37:12]  ===============================
+
+[00:37:12]       sscanf plugin loaded.     
+
+[00:37:12]          Version:  2.8.1        
+
+[00:37:12]    (c) 2012 Alex "Y_Less" Cole  
+
+[00:37:12]  ===============================
+
+[00:37:12]   Loaded.
+[00:37:12]  Loading plugin: streamer
+[00:37:12] 
+
+*** Streamer Plugin v2.7.2 by Incognito loaded ***
+
+[00:37:12]   Loaded.
+[00:37:12]  Loading plugin: filemanager
+[00:37:12] ******************
+[00:37:12] ** FILE MANAGER **
+[00:37:12] **    Loaded    **
+[00:37:12] ** Version 1.5 **
+[00:37:12] ******************
+[00:37:12]   Loaded.
+[00:37:12]  Loading plugin: crashdetect
+[00:37:12]   CrashDetect v4.10.1 is OK.
+[00:37:12]   Loaded.
+[00:37:12]  Loading plugin: mapandreas
+[00:37:12]   Failed.
+[00:37:12]  Loaded 4 plugins.
+
+[00:37:12] 
+[00:37:12] Filterscripts
+[00:37:12] ---------------
+[00:37:12]   Loading filterscript 'tstudio.amx'...
+[00:37:13]  
+[00:37:13]  
+[00:37:13]  
+[00:37:13]  ======================================= 
+[00:37:13]  |                                     | 
+[00:37:13]  |        YSI version 3.09.0684        | 
+[00:37:13]  |        By Alex "Y_Less" Cole        | 
+[00:37:13]  |                                     | 
+[00:37:13]  ======================================= 
+[00:37:13]  
+[00:37:13]  
+[00:37:13]  
+[00:37:13] LOADED 8370 texture definitions
+[00:37:13] ----------------------------------------------
+[00:37:13] ---------Texture Studio By [uL]Pottus---------
+[00:37:13] -------------------------------------Loaded---
+[00:37:13]   Loading filterscript 'fsdebug.amx'...
+[00:37:13] 
+  *********************
+  * SA:MP DEBUG 0.2   *
+[00:37:13]   * By Simon Campbell *
+  *********************
+[00:37:13]   * Version: 0.5d      *
+  *********************
+[00:37:13]   * -- LOADED         *
+  *********************
+
+[00:37:13]   Loaded 2 filterscripts.
+
+[00:37:13] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[00:37:13] LOADED 8370 texture definitions
+[00:37:13] 
+----------------------------------
+[00:37:13]   Bare Script
+
+[00:37:13] ----------------------------------
+
+[00:37:13] Number of vehicle models: 0
+[00:37:13]  
+[00:37:13]  ========================================== 
+[00:37:13]  |                                        | 
+[00:37:13]  |  A new version (v<html>
+  ) of YSI is  | 
+[00:37:13]  |            available from:             | 
+[00:37:13]  |                                        | 
+[00:37:13]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[00:37:13]  |                                        | 
+[00:37:13]  ========================================== 
+[00:37:13]  
+[00:37:47] Incoming connection: 127.0.0.1:63428
+[00:37:47] [join] [uL]Pottus has joined the server (0:127.0.0.1)
+[00:45:35] [part] [uL]Pottus has left the server (0:1)

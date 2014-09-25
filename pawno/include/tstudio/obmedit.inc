@@ -8,6 +8,9 @@
 #define         OBM_CIRCLEIN    5
 #define         OBM_CIRCLEOUT   6
 
+#define         OBME_ORIGIN     0
+#define         OMBE_ORIENT     1
+
 static const OBMTypes[][] = {
 	"None",
 	"Objectmetry Circle",
@@ -45,6 +48,8 @@ enum pOBMINFO
 
 static OBMData[MAX_PLAYERS][pOBMINFO];
 static Float:OBMOriginSave[MAX_PLAYERS][6];
+static Float:OBMOrientationSave[MAX_PLAYERS][2];
+static OBMEditMode[MAX_PLAYERS];
 
 hook OnFilterScriptInit()
 {
@@ -413,12 +418,44 @@ static OBMEditor(playerid)
 
 					EditDynamicObject(playerid, OBMObject[playerid]);
 
+                    OBMEditMode[playerid] = OBME_ORIGIN;
+
 					SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 				    SendClientMessage(playerid, STEALTH_GREEN, "Editing your objectmetry origin");
 				}
+				
+				// Set rotation orientation
+				case 17:
+				{
+					if(!OBMData[playerid][OriginSet]) 
+					{
+					    SendClientMessage(playerid, STEALTH_YELLOW, "Please set your origin first");
+					    OBMEditor(playerid);
+					}
+					else
+					{
+						OBMObject[playerid] = CreateDynamicObject(1974, OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ], OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ], -1, -1, playerid);
+
+	                    OBMOrientationSave[playerid][0] = OBMData[playerid][pOBMOrientationRX];
+	                    OBMOrientationSave[playerid][1] = OBMData[playerid][pOBMOrientationRY];
+
+						Streamer_SetFloatData(STREAMER_TYPE_OBJECT, OBMObject[playerid], E_STREAMER_DRAW_DISTANCE, 300.0);
+
+						SetDynamicObjectMaterial(OBMObject[playerid], 0, 10765, "airportgnd_sfse", "white", -256);
+
+						Streamer_Update(playerid);
+
+						EditDynamicObject(playerid, OBMObject[playerid]);
+
+						OBMEditMode[playerid] = OMBE_ORIENT;
+
+						SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+					    SendClientMessage(playerid, STEALTH_GREEN, "Editing your RX/RY orientation");
+					}
+				}
 
 				// Apply objects to map
-				case 17:
+				case 18:
 				{
 					inline OBMApply(apid, adialogid, aresponse, alistitem, string:atext[])
 					{
@@ -435,7 +472,7 @@ static OBMEditor(playerid)
 				}
 
 				// Reset values
-				case 18:
+				case 19:
 				{
 					inline OBMReset(epid, edialogid, eresponse, elistitem, string:etext[])
 					{
@@ -451,7 +488,7 @@ static OBMEditor(playerid)
 				}
 				
 				// Hide object stack
-				case 19:
+				case 20:
 				{
 					inline OBMHideStack(hpid, hdialogid, hresponse, hlistitem, string:htext[])
 					{
@@ -470,7 +507,7 @@ static OBMEditor(playerid)
 		}
 	}
 	
-	format(line, sizeof(line), "Set Type: %s\nModel: %i\nParts: %i\nDegrees: %i\nHorizontal Seperation: %f\nVertical Seperation: %f\nFace Center: %s\nOriginX: %f\nOriginY: %f\nOriginZ: %f\nOriginRX: %f\nOriginRY: %f\nOriginRZ: %f\nOrientationRX: %f\nOrientationRY: %f\nRadius: %f\nSet Origin\nApply Objects to map\nReset Values\nHide Objects",
+	format(line, sizeof(line), "Set Type: %s\nModel: %i\nParts: %i\nDegrees: %i\nHorizontal Seperation: %f\nVertical Seperation: %f\nFace Center: %s\nOriginX: %f\nOriginY: %f\nOriginZ: %f\nOriginRX: %f\nOriginRY: %f\nOriginRZ: %f\nOrientationRX: %f\nOrientationRY: %f\nRadius: %f\nSet Origin\nSet Rotation Orientation\nApply Objects to map\nReset Values\nHide Objects",
 	    OBMTypes[OBMData[playerid][pOBMType]],
 	    OBMData[playerid][pOBMModel],
 	    OBMData[playerid][pOBMParts],
@@ -591,44 +628,79 @@ static UpdateOBM(playerid)
 OnPlayerEditDOOBM(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 	#pragma unused objectid
-	if(response == EDIT_RESPONSE_FINAL)
-	{
-   	    OBMData[playerid][pOBMOriginX] = x;
- 		OBMData[playerid][pOBMOriginY] = y;
- 		OBMData[playerid][pOBMOriginZ] = z;
-   	    OBMData[playerid][pOBMOriginRX] = rx;
- 		OBMData[playerid][pOBMOriginRY] = ry;
- 		OBMData[playerid][pOBMOriginRZ] = rz;
-		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-	    SendClientMessage(playerid, STEALTH_GREEN, "Objectmetry origin set");
-		DestroyDynamicObject(OBMObject[playerid]);
-        OBMData[playerid][OriginSet] = true;
-		UpdateOBM(playerid);
-        OBMEditor(playerid);
-	}
-	else if(response == EDIT_RESPONSE_UPDATE)
-	{
-   	    OBMData[playerid][pOBMOriginX] = x;
- 		OBMData[playerid][pOBMOriginY] = y;
- 		OBMData[playerid][pOBMOriginZ] = z;
-   	    OBMData[playerid][pOBMOriginRX] = rx;
- 		OBMData[playerid][pOBMOriginRY] = ry;
- 		OBMData[playerid][pOBMOriginRZ] = rz;
- 		UpdateOBM(playerid);
 	
-	}
-	else if(response == EDIT_RESPONSE_CANCEL)
+	// Edit origin
+	if(OBMEditMode[playerid] == OBME_ORIGIN)
 	{
-		OBMData[playerid][pOBMOriginX] = OBMOriginSave[playerid][0];
-		OBMData[playerid][pOBMOriginY] = OBMOriginSave[playerid][1];
-		OBMData[playerid][pOBMOriginZ] = OBMOriginSave[playerid][2];
-		OBMData[playerid][pOBMOriginRX] = OBMOriginSave[playerid][3];
-		OBMData[playerid][pOBMOriginRY] = OBMOriginSave[playerid][4];
-		OBMData[playerid][pOBMOriginRZ] = OBMOriginSave[playerid][5];
-		
-		DestroyDynamicObject(OBMObject[playerid]);
-		UpdateOBM(playerid);
-		OBMEditor(playerid);
+		if(response == EDIT_RESPONSE_FINAL)
+		{
+	   	    OBMData[playerid][pOBMOriginX] = x;
+	 		OBMData[playerid][pOBMOriginY] = y;
+	 		OBMData[playerid][pOBMOriginZ] = z;
+	   	    OBMData[playerid][pOBMOriginRX] = rx;
+	 		OBMData[playerid][pOBMOriginRY] = ry;
+	 		OBMData[playerid][pOBMOriginRZ] = rz;
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		    SendClientMessage(playerid, STEALTH_GREEN, "Objectmetry origin set");
+			DestroyDynamicObject(OBMObject[playerid]);
+	        OBMData[playerid][OriginSet] = true;
+			UpdateOBM(playerid);
+	        OBMEditor(playerid);
+		}
+		else if(response == EDIT_RESPONSE_UPDATE)
+		{
+	   	    OBMData[playerid][pOBMOriginX] = x;
+	 		OBMData[playerid][pOBMOriginY] = y;
+	 		OBMData[playerid][pOBMOriginZ] = z;
+	   	    OBMData[playerid][pOBMOriginRX] = rx;
+	 		OBMData[playerid][pOBMOriginRY] = ry;
+	 		OBMData[playerid][pOBMOriginRZ] = rz;
+	 		UpdateOBM(playerid);
+
+		}
+		else if(response == EDIT_RESPONSE_CANCEL)
+		{
+			OBMData[playerid][pOBMOriginX] = OBMOriginSave[playerid][0];
+			OBMData[playerid][pOBMOriginY] = OBMOriginSave[playerid][1];
+			OBMData[playerid][pOBMOriginZ] = OBMOriginSave[playerid][2];
+			OBMData[playerid][pOBMOriginRX] = OBMOriginSave[playerid][3];
+			OBMData[playerid][pOBMOriginRY] = OBMOriginSave[playerid][4];
+			OBMData[playerid][pOBMOriginRZ] = OBMOriginSave[playerid][5];
+
+			DestroyDynamicObject(OBMObject[playerid]);
+			UpdateOBM(playerid);
+			OBMEditor(playerid);
+		}
+	}
+	
+	// Edit orientation
+	else if(OBMEditMode[playerid] == OMBE_ORIENT)
+	{
+		if(response == EDIT_RESPONSE_FINAL)
+		{
+	   	    OBMData[playerid][pOBMOrientationRX] = rx;
+	 		OBMData[playerid][pOBMOrientationRY] = ry;
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		    SendClientMessage(playerid, STEALTH_GREEN, "Objectmetry orientation set");
+			DestroyDynamicObject(OBMObject[playerid]);
+			UpdateOBM(playerid);
+	        OBMEditor(playerid);
+		}
+		else if(response == EDIT_RESPONSE_UPDATE)
+		{
+	   	    OBMData[playerid][pOBMOrientationRX] = rx;
+	 		OBMData[playerid][pOBMOrientationRY] = ry;
+	 		UpdateOBM(playerid);
+		}
+		else if(response == EDIT_RESPONSE_CANCEL)
+		{
+			OBMData[playerid][pOBMOrientationRX] = OBMOriginSave[playerid][0];
+			OBMData[playerid][pOBMOrientationRY] = OBMOriginSave[playerid][1];
+
+			DestroyDynamicObject(OBMObject[playerid]);
+			UpdateOBM(playerid);
+			OBMEditor(playerid);
+		}
 	}
 	return 1;
 }
