@@ -147,7 +147,7 @@ static OBMEditor(playerid)
 							}
 							else SendClientMessage(playerid, STEALTH_GREEN, "Invalid model id!");
 						}
-						OBMEditor(playerid);
+      					OBMEditor(playerid);
 					}
 					Dialog_ShowCallback(playerid, using inline OBMModel, DIALOG_STYLE_INPUT, "Texture Studio", "Select a model", "Ok", "Cancel");
 			    }

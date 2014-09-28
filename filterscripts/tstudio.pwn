@@ -160,7 +160,8 @@ Change Log:
 	v1.5c - Improved object metric tool to include rotation translations
 	    - Added degree option to object metric tool
 	v1.5d - Minor update to object metric tool to set object orientation for rotation translation
-
+	v1.5e - Important fix
+	
 Roadmap:
 	- Refine functionality
 */
@@ -1955,6 +1956,15 @@ stock CloneObject(index)
 		
 		// Update 3D text
 		UpdateObject3DText(cindex, true);
+		
+		// Save materials to material database
+		sqlite_SaveMaterialIndex(cindex);
+
+		// Save colors to material database
+		sqlite_SaveColorIndex(cindex);
+		
+		// Save any text
+		sqlite_SaveAllObjectText(cindex);
 
 		return cindex;
   	}
@@ -3303,10 +3313,16 @@ CMD:editobject(playerid, arg[]) // In GUI
    	
    	if(!EditingMode[playerid])
 	{
-       EditingMode[playerid] = true;
-       SetEditMode(playerid, EDIT_MODE_OBJECT);
-	   EditDynamicObject(playerid, ObjectData[CurrObject[playerid]][oID]);
-       SendClientMessage(playerid, STEALTH_GREEN, "Entered Edit Object Mode");
+		EditingMode[playerid] = true;
+		SetEditMode(playerid, EDIT_MODE_OBJECT);
+		EditDynamicObject(playerid, ObjectData[CurrObject[playerid]][oID]);
+		SendClientMessage(playerid, STEALTH_GREEN, "Entered Edit Object Mode");
+		CurrEditPos[playerid][0] = ObjectData[CurrObject[playerid]][oX];
+		CurrEditPos[playerid][1] = ObjectData[CurrObject[playerid]][oY];
+		CurrEditPos[playerid][2] = ObjectData[CurrObject[playerid]][oZ];
+		CurrEditPos[playerid][3] = ObjectData[CurrObject[playerid]][oRX];
+		CurrEditPos[playerid][4] = ObjectData[CurrObject[playerid]][oRY];
+		CurrEditPos[playerid][5] = ObjectData[CurrObject[playerid]][oRZ];
 	}
 	else SendClientMessage(playerid, STEALTH_YELLOW, "You are in editing mode already");
 	return 1;
