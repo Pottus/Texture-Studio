@@ -164,6 +164,8 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
 		
         UpdateObjectText(index);
 
+       	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
+
 		return 1;
 	}
 	
@@ -185,6 +187,8 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
                         sqlite_ObjObjectText(index);
 
 						UpdateObjectText(index);
+
+			        	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
 					}
 					else
 					{
@@ -218,6 +222,8 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
 		sqlite_ObjFontFace(index);
 		
 		UpdateObjectText(index);
+
+       	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
 		
         return 1;
 	}
@@ -233,6 +239,8 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
         sqlite_ObjFontSize(index);
         
         UpdateObjectText(index);
+
+       	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
         
 		return 1;
 	}
@@ -254,7 +262,9 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
 		sqlite_ObjFontBold(index);
 		
 		UpdateObjectText(index);
-		
+
+       	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
+        
 		return 1;
     }
     
@@ -272,6 +282,8 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
         
         UpdateObjectText(index);
 
+       	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
+        
 		return 1;
 	}
 	
@@ -293,6 +305,8 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
 					sqlite_ObjFontTextSize(index);
 					
 					UpdateObjectText(index);
+
+		        	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
 				}
 				else
 				{
@@ -328,6 +342,8 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
 					sqlite_ObjFontColor(index);
 					
 					UpdateObjectText(index);
+
+		        	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
 						
 				    new tmp[12];
 					valstr(tmp, hexcolor);
@@ -362,6 +378,8 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
 					sqlite_ObjBackColor(index);
 
 					UpdateObjectText(index);
+
+		        	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
 
 				    new tmp[12];
 					valstr(tmp, hexcolor);

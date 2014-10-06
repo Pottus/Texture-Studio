@@ -24,6 +24,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 public OnPlayerSpawn(playerid)
 {
 	SetPlayerInterior(playerid,0);
+	SetPlayerVirtualWorld(playerid, 0);
 	TogglePlayerClock(playerid,0);
 	return 1;
 }

@@ -46,7 +46,7 @@ Commands: (Currently 65 commands)
 	/loadmap - Load a map
 	/newmap - Create a new map
 	/importmap - Import CreateObject() or CreateDynamicObject() raw code
-	/exportmap - Export a map to code
+	/export - Export a map to code or vehicle
 
 
 	Objects:
@@ -107,6 +107,22 @@ Commands: (Currently 65 commands)
 	/prefab <LoadName"> - Load a prefab file, /prefab will show all prefabs
 	/0group - This will move all grouped objects center to 0,0,0 useful for getting attached object offsets (Not in the GUI yet)
 
+	Vehicles:
+	/avmodcar - Mod a car it will teleport the vehicle to the correct mod garage if modable
+	/avsetspawn - Set the spawn position of a vehicle
+	/avnewcar - Create a new car
+	/avdeletecar - Delete an unwanted car
+	/avcarcolor - Set vehicle car color
+	/avpaint - Set a vehicles paintjob
+	/avattach - Attach currently selected object to currently selected vehicle
+	/avdetach - Detach currently selected object from vehicle
+	/avsel - Select a vehicle to edit
+	/avexport - Export a car to filterscript
+	/avexportall - Export all cars to filterscript
+	/avox - /avoy - /avoz - Standard vehicle object movement commands
+	/avrx - /avry - /avrz - Standard vehicle object rotation commands
+	(Special note: using /editobject on an attached object will edit the object on the vehicle)
+
 	Bind Editor:
 	/bindeditor - Open the bind editor you can enter a series of commands to execute
 	/runbind <index> - Runs a bind
@@ -161,6 +177,8 @@ Change Log:
 	    - Added degree option to object metric tool
 	v1.5d - Minor update to object metric tool to set object orientation for rotation translation
 	v1.5e - Important fix
+	v1.6 - Editable vehicles
+	    - A few bug fixes with texturing and overlapping key presses with other systems
 	
 Roadmap:
 	- Refine functionality
@@ -169,7 +187,7 @@ Roadmap:
 #define FILTERSCRIPT
 
 // Uncomment to turn on DEBUG mode
-//#define DEBUG
+#define DEBUG
 
 // #define GUI_DEBUG
 
@@ -178,9 +196,6 @@ Roadmap:
 
 // Compile the GTA Object module for removing buildings
 #define COMPILE_GTA_OBJECTS
-
-// Compile vehicle module
-//#define COMPILE_VEHICLES
 
 #if defined DEBUG
 	#define DB_DEBUG true
@@ -262,6 +277,9 @@ Roadmap:
 // 3D Text drawdistance
 new             Float:TEXT3D_DRAW_DIST  =   100.0;
 
+// Vehicle attach update types
+#define         VEHICLE_ATTACH_UPDATE           0
+#define         VEHICLE_REATTACH_UPDATE         1
 
 forward OnPlayerObjectSelectChange(playerid, index);
 forward OnObjectUpdatePos(playerid, index);
@@ -328,6 +346,7 @@ enum OBJECTINFO
 	oAlignment,   								// Font alignment
 	oTextFontSize, 							 	// Font text size
 	oObjectText[MAX_TEXT_LENGTH],              	// Font text
+	oAttachedVehicle,                           // Vehicle object is attached to
 }
 
 // Copy object material / color
@@ -393,6 +412,8 @@ new Float:CurrEditPos[MAX_PLAYERS][6];
 #define         EDIT_MODE_LISTSEL       9
 #define         EDIT_MODE_OSEARCH       10
 #define         EDIT_MODE_OBM           11
+#define         EDIT_MODE_VOBJECT 		12
+#define         EDIT_MODE_MODCAR        13
 
 
 // Textdraw modes
@@ -505,9 +526,6 @@ new bool:MapOpen;
 // Group editing
 #include <tstudio\groups>
 
-// Menu GUI
-#include <tstudio\menugui>
-
 // List selection
 #include <tstudio\listsel>
 
@@ -528,14 +546,16 @@ new bool:MapOpen;
 #endif
 
 // Vehicles
-#if defined COMPILE_VEHICLES
-	#include <tstudio\vehicles>
-#endif
+#include <tstudio\vehiclecolors>
+#include <tstudio\vehicles>
 
 // Special includes
 #if defined COMPILE_DAYZ_INCLUDES
 //	#include <tstudio\420\mangle>
 #endif
+
+// Menu GUI
+#include <tstudio\menugui>
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -707,6 +727,8 @@ hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, F
 		}
 		case EDIT_MODE_OBJECTGROUP: OnPlayerEditDOGroup(playerid, objectid, response, x, y, z, rx, ry, rz);
 		case EDIT_MODE_OBM: OnPlayerEditDOOBM(playerid, objectid, response, x, y, z, rx, ry, rz);
+		
+		case EDIT_MODE_VOBJECT: OnPlayerEditVObject(playerid, objectid, response, x, y, z, rx, ry, rz);
 	}
 	return 1;
 }
@@ -948,10 +970,7 @@ sqlite_CreateNewMap()
 {
     sqlite_CreateMapDB();
     sqlite_CreateRBDB();
-    
-    #if defined COMPILE_VEHICLES
-	    sqlite_CreateVehicle();
-	#endif
+    sqlite_CreateVehicle();
 }
 
 new NewMapString[512];
@@ -1013,10 +1032,7 @@ sqlite_CreateRBDB()
 sqlite_UpdateDB()
 {
     sqlite_CreateRBDB();
-
-	#if defined COMPILE_VEHICLES
-	    sqlite_CreateVehicle();
-	#endif
+    sqlite_CreateVehicle();
     
     // Version 1.3
     if(!ColumnExists(EditMap, "Objects", "GroupID")) db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `GroupID` INTEGER DEFAULT 0");
@@ -1123,7 +1139,7 @@ sqlite_UpdateObjectPos(index)
     
 	foreach(new i : Player)
 	{
-		if(CurrObject[i] == index) CallLocalFunction("OnObjectUpdatePos", "ii", i, index);
+		if(CurrObject[i] == index) OnObjectUpdatePos(i, index);
 	}
 
     return 1;
@@ -1620,7 +1636,7 @@ Edit_SetObjectPos(index, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz
 
 UpdateObject3DText(index, bool:newobject=false)
 {
-	CallLocalFunction("OnUpdateGroup3DText", "i", index);
+	OnUpdateGroup3DText(index);
 
 	if(!newobject) DestroyDynamic3DTextLabel(ObjectData[index][oTextID]);
 
@@ -1628,8 +1644,14 @@ UpdateObject3DText(index, bool:newobject=false)
 	new line[64];
 	format(line, sizeof(line), "Ind: {33DD11}%i {FF8800}Grp:{33DD11} %i", index, ObjectData[index][oGroup]);
 
-	// Shows the models index
-    ObjectData[index][oTextID] = CreateDynamic3DTextLabel(line, 0xFF8800FF, ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], TEXT3D_DRAW_DIST);
+
+		// Shows the models index
+	if(ObjectData[index][oAttachedVehicle] > -1)
+	{
+		ObjectData[index][oTextID] = CreateDynamic3DTextLabel(line, 0xFF8800FF, ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], TEXT3D_DRAW_DIST, INVALID_PLAYER_ID, CarData[ObjectData[index][oAttachedVehicle]][CarID]);
+		Update3DAttachCarPos(index, ObjectData[index][oAttachedVehicle]);
+	}
+	else ObjectData[index][oTextID] = CreateDynamic3DTextLabel(line, 0xFF8800FF, ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], TEXT3D_DRAW_DIST);
 
 	// Update the streamer
 	foreach(new i : Player)
@@ -1876,7 +1898,9 @@ stock AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, F
 		ObjectData[index][oRX] = rx;
 		ObjectData[index][oRY] = ry;
 		ObjectData[index][oRZ] = rz;
-
+		
+		ObjectData[index][oAttachedVehicle] = -1;
+		
 		if(sqlsave)
 		{
 	   		ObjectData[index][ousetext] = 0;
@@ -1902,11 +1926,13 @@ stock AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, F
 
 stock DeleteDynamicObject(index, bool:sqlsave = true)
 {
-	CallLocalFunction("OnDeleteGroup3DText", "i", index);
+	OnDeleteGroup3DText(index);
 
 	new next;
 	if(Iter_Contains(Objects, index))
 	{
+		if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedObjectRef(ObjectData[index][oAttachedVehicle], index);
+
 	    DestroyDynamicObject(ObjectData[index][oID]);
 	    DestroyDynamic3DTextLabel(ObjectData[index][oTextID]);
 
@@ -1915,7 +1941,7 @@ stock DeleteDynamicObject(index, bool:sqlsave = true)
 		ResetObjectIndex(index);
 		
 		GroupUpdate(index);
-
+		
 		if(sqlsave) sqlite_RemoveObject(index);
 
 		return next;
@@ -2127,6 +2153,9 @@ CMD:loadmap(playerid, arg[])    // In GUI
 				// Load map
 				LoadMap(playerid);
 				
+				// Clean up vehicles
+				ClearVehicles();
+				
 				// Clear copy buffer
 	            foreach(new i : Player)
 				{
@@ -2195,6 +2224,9 @@ LoadMap(playerid)
 
                 // Load the maps objects
                 sqlite_LoadMapObjects();
+                
+				// Load any vehicles
+			    sqlite_LoadCars();
 
 				// Map is now open
                 MapOpen = true;
@@ -2241,6 +2273,9 @@ CMD:newmap(playerid, arg[]) // In GUI
 				// Clear all removed buildings
 				ClearRemoveBuildings();
 
+				// Clean up vehicles
+				ClearVehicles();
+				
 				// No map open
                 MapOpen = false;
 
@@ -2430,6 +2465,30 @@ ImportMap(playerid)
 	return 1;
 }
 
+
+CMD:export(playerid, arg[])
+{
+	MapOpenCheck();
+	
+	inline Export(epid, edialogid, eresponse, elistitem, string:etext[])
+	{
+        #pragma unused elistitem, edialogid, epid, etext
+		if(eresponse)
+		{
+		    switch(elistitem)
+		    {
+		        case 0: BroadcastCommand(playerid, "/exportmap");
+		        case 1: BroadcastCommand(playerid, "/avexport");
+		        case 2: BroadcastCommand(playerid, "/avexportall");
+		    }
+		}
+	}
+	
+	Dialog_ShowCallback(playerid, using inline Export, DIALOG_STYLE_LIST, "Texture Studio (Export Mode)", "Export Map\nExport Current Car\nExport All Cars", "Ok", "Cancel");
+	return 1;
+}
+
+
 // Export map to create object
 CMD:exportmap(playerid, arg[]) // In GUI
 {
@@ -2545,6 +2604,8 @@ MapExport(playerid, mapname[], Float:drawdist)
 			// Write all objects with materials first
 			foreach(new i : Objects)
 			{
+			    if(ObjectData[i][oAttachedVehicle] > -1) continue;
+
 				new bool:writeobject;
 
 				// Does the object have materials?
@@ -2658,6 +2719,8 @@ MapExport(playerid, mapname[], Float:drawdist)
 			// We need to write all of the objects that didn't have materials set now
 			foreach(new i : Objects)
 			{
+			    if(ObjectData[i][oAttachedVehicle] > -1) continue;
+
 				new bool:writeobject = true;
 
 				// Does the object have materials?
@@ -2858,7 +2921,12 @@ CMD:mtset(playerid, arg[]) // In GUI
 	if(GetMaterials(playerid, arg, mindex, tref))
 	{
 		SetMaterials(index, mindex, tref);
+
+		UpdateObjectText(index);
+
         UpdateTextureSlot(playerid, mindex);
+        
+       	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
         
 		// Update the streamer
 		foreach(new i : Player)
@@ -2888,7 +2956,13 @@ CMD:mtsetall(playerid, arg[]) // In GUI
 	{
 		foreach(new i : Objects)
 		{
-			if(ObjectData[i][oModel] == ObjectData[CurrObject[playerid]][oModel]) SetMaterials(i, mindex, tref);
+			if(ObjectData[i][oModel] == ObjectData[CurrObject[playerid]][oModel])
+			{
+				SetMaterials(i, mindex, tref);
+				UpdateObjectText(i);
+				
+	        	if(ObjectData[i][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[i][oAttachedVehicle], i, VEHICLE_REATTACH_UPDATE);
+			}
 		}
 		
         SendClientMessage(playerid, STEALTH_GREEN, "Changed All Materials");
@@ -3066,6 +3140,8 @@ stock PasteCopyBuffer(playerid, index)
 	// Update object text
 	UpdateObjectText(index);
 
+   	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
+
 	// Save materials to material database
 	sqlite_SaveMaterialIndex(index);
 
@@ -3211,6 +3287,10 @@ CMD:mtcolor(playerid, arg[]) // In GUI
 		// Update the materials
 		UpdateMaterial(index);
 
+		UpdateObjectText(index);
+
+       	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
+
 		// Save this material index to the data base
 		sqlite_SaveColorIndex(index);
 		
@@ -3278,6 +3358,10 @@ CMD:mtcolorall(playerid, arg[]) // In GUI
 
 				// Update the materials
 				UpdateMaterial(i);
+				
+				UpdateObjectText(i);
+				
+	        	if(ObjectData[i][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[i][oAttachedVehicle], i, VEHICLE_REATTACH_UPDATE);
 
 				// Save this material index to the data base
 				sqlite_SaveColorIndex(i);
@@ -3310,6 +3394,8 @@ CMD:editobject(playerid, arg[]) // In GUI
 	EditCheck(playerid);
 
    	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+   	
+   	if(ObjectData[CurrObject[playerid]][oAttachedVehicle] > -1) return EditVehicleObject(playerid);
    	
    	if(!EditingMode[playerid])
 	{
@@ -3565,6 +3651,8 @@ CMD:rindex(playerid, arg[]) // in gui
 	// Update object text
 	UpdateObjectText(index);
 
+   	if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[index][oAttachedVehicle], index, VEHICLE_REATTACH_UPDATE);
+
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
     SendClientMessage(playerid, STEALTH_GREEN, "Reset current objects labels");
 
@@ -3700,10 +3788,20 @@ CMD:rx(playerid, arg[])  // In GUI
 
 	rot = floatstr(arg);
 	if(rot == 0) rot = 5.0;
-
-    ObjectData[CurrObject[playerid]][oRX] += rot;
-
-    SetDynamicObjectRot(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
+	
+	if(PivotPointOn[playerid])
+	{
+		new i = CurrObject[playerid];
+		AttachObjectToPoint(i, PivotPoint[playerid][xPos], PivotPoint[playerid][yPos], PivotPoint[playerid][zPos], rot, 0.0, 0.0, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+		SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
+		SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+		UpdateObject3DText(CurrObject[playerid]);
+	}
+	else
+	{
+	    ObjectData[CurrObject[playerid]][oRX] += rot;
+	    SetDynamicObjectRot(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
+	}
 
     sqlite_UpdateObjectPos(CurrObject[playerid]);
 
@@ -3721,10 +3819,21 @@ CMD:ry(playerid, arg[])  // In GUI
 
 	rot = floatstr(arg);
 	if(rot == 0) rot = 5.0;
-
-    ObjectData[CurrObject[playerid]][oRY] += rot;
-
-    SetDynamicObjectRot(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
+	
+	
+	if(PivotPointOn[playerid])
+	{
+		new i = CurrObject[playerid];
+		AttachObjectToPoint(i, PivotPoint[playerid][xPos], PivotPoint[playerid][yPos], PivotPoint[playerid][zPos], 0.0, rot, 0.0, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+		SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
+		SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+		UpdateObject3DText(CurrObject[playerid]);
+	}
+	else
+	{
+	    ObjectData[CurrObject[playerid]][oRY] += rot;
+	    SetDynamicObjectRot(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
+	}
 
     sqlite_UpdateObjectPos(CurrObject[playerid]);
 
@@ -3743,10 +3852,20 @@ CMD:rz(playerid, arg[])  // In GUI
 	rot = floatstr(arg);
 	if(rot == 0) rot = 5.0;
 
-    ObjectData[CurrObject[playerid]][oRZ] += rot;
-
-    SetDynamicObjectRot(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
-
+	if(PivotPointOn[playerid])
+	{
+		new i = CurrObject[playerid];
+		AttachObjectToPoint(i, PivotPoint[playerid][xPos], PivotPoint[playerid][yPos], PivotPoint[playerid][zPos], 0.0, 0.0, rot, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+		SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
+		SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+		UpdateObject3DText(CurrObject[playerid]);
+	}
+	else
+	{
+	    ObjectData[CurrObject[playerid]][oRZ] += rot;
+	    SetDynamicObjectRot(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
+	}
+	
     sqlite_UpdateObjectPos(CurrObject[playerid]);
 
 	return 1;

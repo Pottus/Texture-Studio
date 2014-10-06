@@ -321,7 +321,7 @@ CMD:ttextures(playerid, arg[]) // in GUI
 		UpdateTextureInfo(playerid, SelectedBox[playerid]);
 
    		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-		SendClientMessage(playerid, STEALTH_GREEN, "Texture selection tool cpened - Theme Textures");
+		SendClientMessage(playerid, STEALTH_GREEN, "Texture selection tool opened - Theme Textures");
 	}
    	else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
 	{
@@ -384,7 +384,8 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)
 	new line[128];
 	
 	if(newkeys & 16 || oldkeys & 16) return 0;
-	
+	if(EditingMode[playerid] && GetEditMode(playerid) != EDIT_MODE_TEXTURING) return 0;
+
 	// Scroll right
 	if(newkeys & KEY_ANALOG_RIGHT)
 	{

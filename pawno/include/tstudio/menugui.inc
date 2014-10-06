@@ -194,7 +194,7 @@ hook OnFilterScriptInit()
 	GUISetPlayerText(MainMenu, E_INDEX[2], "LD_BEAT:square");
 
 	LoadGUIMenu(MainMenu,MenuButton,535.0, 180.0, CLICK_EXPORT_MAP, E_INDEX);
-	GUISetPlayerText(MainMenu, E_INDEX[1], "Export Map");
+	GUISetPlayerText(MainMenu, E_INDEX[1], "Export");
 	GUISetPlayerText(MainMenu, E_INDEX[2], "LD_BEAT:square");
 
 	LoadGUIElement(MainMenu,MainMenuText[2],0.0,-200.0);
@@ -595,7 +595,7 @@ OnGUIClick:MainMenu(playerid, group, gindex, pindex)
 	    case CLICK_NEW_MAP: { BroadcastCommand(playerid, "/newmap"); }
 	    case CLICK_LOAD_MAP: { BroadcastCommand(playerid, "/loadmap"); }
 	    case CLICK_IMPORT_MAP: { BroadcastCommand(playerid, "/importmap"); }
-	    case CLICK_EXPORT_MAP: { BroadcastCommand(playerid, "/exportmap"); }
+	    case CLICK_EXPORT_MAP: { BroadcastCommand(playerid, "/export"); }
 
 		// Mode commands
 	    case CLICK_OBJECT_MODE:
@@ -715,78 +715,127 @@ OnGUIClick:ObjectMenu(playerid, group, gindex, pindex)
 		
 		case CLICK_MOVEMENT_MENU:
 		{
+			if(CurrObject[playerid] == -1) return 1;
             // +x:0 +y:1 +z:2 +rx:3 +ry:4 +rz:5 -x:6 -y:7 -z:8 -rx:9 -ry:10 -rz:11
 			new line[128];
 			if(ObjectMovementIndex[0] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/dox %0.3f", CurrMovementInc[playerid]);
-				else format(line, sizeof(line), "/ox %0.3f", CurrMovementInc[playerid]);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/dox %0.3f", CurrMovementInc[playerid]);
+					else format(line, sizeof(line), "/ox %0.3f", CurrMovementInc[playerid]);
+				}
+				else format(line, sizeof(line), "/avox %0.3f", CurrMovementInc[playerid]);
 				BroadcastCommand(playerid, line);
 			}
 			else if(ObjectMovementIndex[1] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/doy %0.3f", CurrMovementInc[playerid]);
-				else format(line, sizeof(line), "/oy %0.3f", CurrMovementInc[playerid]);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/doy %0.3f", CurrMovementInc[playerid]);
+					else format(line, sizeof(line), "/oy %0.3f", CurrMovementInc[playerid]);
+				}
+                else format(line, sizeof(line), "/avoy %0.3f", CurrMovementInc[playerid]);
 				BroadcastCommand(playerid, line);
 			}
 			else if(ObjectMovementIndex[2] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/doz %0.3f", CurrMovementInc[playerid]);
-				else format(line, sizeof(line), "/oz %0.3f", CurrMovementInc[playerid]);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/doz %0.3f", CurrMovementInc[playerid]);
+					else format(line, sizeof(line), "/oz %0.3f", CurrMovementInc[playerid]);
+				}
+				else format(line, sizeof(line), "/avoz %0.3f", CurrMovementInc[playerid]);
 				BroadcastCommand(playerid, line);
 			}
 			else if(ObjectMovementIndex[3] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/drx %0.3f", CurrRotationInc[playerid]);
-				else format(line, sizeof(line), "/rx %0.3f", CurrRotationInc[playerid]);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/drx %0.3f", CurrRotationInc[playerid]);
+					else format(line, sizeof(line), "/rx %0.3f", CurrRotationInc[playerid]);
+				}
+				else format(line, sizeof(line), "/avrx %0.3f", CurrRotationInc[playerid]);
 				BroadcastCommand(playerid, line);
 			}
 			else if(ObjectMovementIndex[4] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/dry %0.3f", CurrRotationInc[playerid]);
-				else format(line, sizeof(line), "/ry %0.3f", CurrRotationInc[playerid]);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/dry %0.3f", CurrRotationInc[playerid]);
+					else format(line, sizeof(line), "/ry %0.3f", CurrRotationInc[playerid]);
+				}
+				else format(line, sizeof(line), "/avry %0.3f", CurrRotationInc[playerid]);
 				BroadcastCommand(playerid, line);
 			}
 			else if(ObjectMovementIndex[5] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/drz %0.3f", CurrRotationInc[playerid]);
-				else format(line, sizeof(line), "/rz %0.3f", CurrRotationInc[playerid]);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/drz %0.3f", CurrRotationInc[playerid]);
+					else format(line, sizeof(line), "/rz %0.3f", CurrRotationInc[playerid]);
+				}
+				else format(line, sizeof(line), "/avrz %0.3f", CurrRotationInc[playerid]);
 				BroadcastCommand(playerid, line);
 			}
 			else if(ObjectMovementIndex[6] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/dox %0.3f", CurrMovementInc[playerid]*-1);
-				else format(line, sizeof(line), "/ox %0.3f", CurrRotationInc[playerid]*-1);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/dox %0.3f", CurrMovementInc[playerid]*-1);
+					else format(line, sizeof(line), "/ox %0.3f", CurrMovementInc[playerid]*-1);
+				}
+				else format(line, sizeof(line), "/avox %0.3f", CurrMovementInc[playerid]*-1);
 				BroadcastCommand(playerid, line);
 			}
 			else if(ObjectMovementIndex[7] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/doy %0.3f", CurrMovementInc[playerid]*-1);
-				else format(line, sizeof(line), "/oy %0.3f", CurrRotationInc[playerid]*-1);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/doy %0.3f", CurrMovementInc[playerid]*-1);
+					else format(line, sizeof(line), "/oy %0.3f", CurrMovementInc[playerid]*-1);
+				}
+				else format(line, sizeof(line), "/avoy %0.3f", CurrMovementInc[playerid]*-1);
 				BroadcastCommand(playerid, line);
 			}
 			else if(ObjectMovementIndex[8] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/doz %0.3f", CurrMovementInc[playerid]*-1);
-				else format(line, sizeof(line), "/oz %0.3f", CurrRotationInc[playerid]*-1);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/doz %0.3f", CurrMovementInc[playerid]*-1);
+					else format(line, sizeof(line), "/oz %0.3f", CurrMovementInc[playerid]*-1);
+				}
+				else format(line, sizeof(line), "/avoz %0.3f", CurrMovementInc[playerid]*-1);
 				BroadcastCommand(playerid, line);
 			}
 			else if(ObjectMovementIndex[9] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/drx %0.3f", CurrRotationInc[playerid]*-1);
-				else format(line, sizeof(line), "/rx %0.3f", CurrRotationInc[playerid]*-1);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/drx %0.3f", CurrRotationInc[playerid]*-1);
+					else format(line, sizeof(line), "/rx %0.3f", CurrRotationInc[playerid]*-1);
+				}
+				else format(line, sizeof(line), "/avrx %0.3f", CurrRotationInc[playerid]*-1);
 				BroadcastCommand(playerid, line);
 			}
 			else if(ObjectMovementIndex[10] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/dry %0.3f", CurrRotationInc[playerid]*-1);
-				else format(line, sizeof(line), "/ry %0.3f", CurrRotationInc[playerid]*-1);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/dry %0.3f", CurrRotationInc[playerid]*-1);
+					else format(line, sizeof(line), "/ry %0.3f", CurrRotationInc[playerid]*-1);
+				}
+				else format(line, sizeof(line), "/avry %0.3f", CurrRotationInc[playerid]*-1);
 				BroadcastCommand(playerid, line);
 			}
 			else if(ObjectMovementIndex[11] == pindex)
 			{
-				if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/drz %0.3f", CurrRotationInc[playerid]*-1);
-				else format(line, sizeof(line), "/rz %0.3f", CurrRotationInc[playerid]*-1);
+				if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+				{
+					if(DeltaMapMovement[playerid]) format(line, sizeof(line), "/drz %0.3f", CurrRotationInc[playerid]*-1);
+					else format(line, sizeof(line), "/rz %0.3f", CurrRotationInc[playerid]*-1);
+				}
+				else format(line, sizeof(line), "/avrz %0.3f", CurrRotationInc[playerid]*-1);
 				BroadcastCommand(playerid, line);
 			}
 			// Delta mode on/off
@@ -1412,23 +1461,51 @@ stock UpdatePlayerOSelText(playerid)
 	else
 	{
 	    new line[16];
-		format(line, sizeof(line), "X:%0.2f", ObjectData[CurrObject[playerid]][oX]);
-		PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][0], line);
+		if(ObjectData[CurrObject[playerid]][oAttachedVehicle] == -1)
+		{
+			format(line, sizeof(line), "X:%0.2f", ObjectData[CurrObject[playerid]][oX]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][0], line);
 
-		format(line, sizeof(line), "Y:%0.2f", ObjectData[CurrObject[playerid]][oY]);
-		PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][1], line);
+			format(line, sizeof(line), "Y:%0.2f", ObjectData[CurrObject[playerid]][oY]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][1], line);
 
-		format(line, sizeof(line), "Z:%0.2f", ObjectData[CurrObject[playerid]][oZ]);
-		PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][2], line);
+			format(line, sizeof(line), "Z:%0.2f", ObjectData[CurrObject[playerid]][oZ]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][2], line);
 
-		format(line, sizeof(line), "RX:%0.2f", ObjectData[CurrObject[playerid]][oRX]);
-		PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][3], line);
+			format(line, sizeof(line), "RX:%0.2f", ObjectData[CurrObject[playerid]][oRX]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][3], line);
 
-		format(line, sizeof(line), "RY:%0.2f", ObjectData[CurrObject[playerid]][oRY]);
-		PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][4], line);
+			format(line, sizeof(line), "RY:%0.2f", ObjectData[CurrObject[playerid]][oRY]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][4], line);
 
-		format(line, sizeof(line), "RZ:%0.2f", ObjectData[CurrObject[playerid]][oRZ]);
-		PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][5], line);
+			format(line, sizeof(line), "RZ:%0.2f", ObjectData[CurrObject[playerid]][oRZ]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][5], line);
+		}
+		else
+		{
+			new index = ObjectData[CurrObject[playerid]][oAttachedVehicle];
+			new refindex = GetCarObjectRefIndex(index, CurrObject[playerid]);
+			
+			format(line, sizeof(line), "X:%0.2f", CarData[index][COX][refindex]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][0], line);
+
+			format(line, sizeof(line), "Y:%0.2f", CarData[index][COY][refindex]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][1], line);
+
+			format(line, sizeof(line), "Z:%0.2f", CarData[index][COZ][refindex]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][2], line);
+
+			format(line, sizeof(line), "RX:%0.2f", CarData[index][CORX][refindex]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][3], line);
+
+			format(line, sizeof(line), "RY:%0.2f", CarData[index][CORY][refindex]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][4], line);
+
+			format(line, sizeof(line), "RZ:%0.2f", CarData[index][CORZ][refindex]);
+			PlayerGUISetPlayerText(playerid, PlayerObjectMenu[playerid], CurrObjectPosition[playerid][5], line);
+		
+		
+		}
 	}
 	return 1;
 }

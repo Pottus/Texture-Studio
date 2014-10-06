@@ -173,7 +173,7 @@ OnPlayerKeyStateChange3DMenu(playerid,newkeys,oldkeys)
 
 			MoveDynamicObject(MenuInfo[MenuID][Objects][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosX][SelectedBox[playerid]]+MenuInfo[MenuID][AddingX],MenuInfo[MenuID][OrigPosY][SelectedBox[playerid]]+MenuInfo[MenuID][AddingY],MenuInfo[MenuID][OrigPosZ][SelectedBox[playerid]],1.0);
 
-			if(funcidx("OnPlayerChange3DMenuBox") != -1) CallLocalFunction("OnPlayerChange3DMenuBox","ddd",playerid,MenuID,SelectedBox[playerid]);
+			if(funcidx("OnPlayerChange3DMenuBox") != -1) OnPlayerChange3DMenuBox(playerid,MenuID,SelectedBox[playerid]);
 
 			return 1;
 		}
@@ -193,7 +193,7 @@ OnPlayerKeyStateChange3DMenu(playerid,newkeys,oldkeys)
 
 			MoveDynamicObject(MenuInfo[MenuID][Objects][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosX][SelectedBox[playerid]]+MenuInfo[MenuID][AddingX],MenuInfo[MenuID][OrigPosY][SelectedBox[playerid]]+MenuInfo[MenuID][AddingY],MenuInfo[MenuID][OrigPosZ][SelectedBox[playerid]],1.0);
 
-			if(funcidx("OnPlayerChange3DMenuBox") != -1) CallLocalFunction("OnPlayerChange3DMenuBox","ddd",playerid,MenuID,SelectedBox[playerid]);
+			if(funcidx("OnPlayerChange3DMenuBox") != -1) OnPlayerChange3DMenuBox(playerid,MenuID,SelectedBox[playerid]);
 
 			return 1;
 		}

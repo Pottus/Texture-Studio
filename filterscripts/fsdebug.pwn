@@ -437,7 +437,7 @@ dcmd_debug(playerid, params[]) {
 	if(strcmp(params, "commands", true, 8) == 0) {
 	    SendClientMessage(playerid, COLOR_BLUE, "[DEBUG]: Debug Mode 0.2 - COMMANDS");
 	    SendClientMessage(playerid, COLOR_CYAN, "[WORLD]: /w, /weather, /t, /time, /wsel, /g, /gravity");
-	    SendClientMessage(playerid, COLOR_CYAN, "[VEHICLES]: /v, /vehicle, /vsel");
+	    SendClientMessage(playerid, COLOR_CYAN, "[VEHICLES]: /v, /vehicle, /vs");
 	    SendClientMessage(playerid, COLOR_CYAN, "[PLAYER]: /s, /skin, /skinsel, /weapon, /w2");
 	    SendClientMessage(playerid, COLOR_CYAN, "[PLAYER]: /goto, /warpto, /bring, /setloc");
 	    SendClientMessage(playerid, COLOR_CYAN, "[CAMERA]: /camera, /csel");
@@ -902,7 +902,7 @@ dcmd_v(playerid, params[])
 dcmd_vehicle(playerid, params[])
 	return dcmd_v(playerid, params);
 
-dcmd_vsel(playerid, params[])
+dcmd_vs(playerid, params[])
 {
 	// /vsel allows players to select a vehicle using playerkeys.
 	#pragma unused params
@@ -1291,7 +1291,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 	#if VEHI_SELECT == true
 	dcmd(v, 1, cmdtext);
-	dcmd(vsel, 4, cmdtext);
+	dcmd(vs, 4, cmdtext);
 	dcmd(vehicle, 7, cmdtext);
 	#endif
 
