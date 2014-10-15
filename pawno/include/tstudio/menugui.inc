@@ -105,6 +105,7 @@ static bool:DeltaMapMovement[MAX_PLAYERS];
 #define         CLICK_TEXTURE_VIEWER        2129
 #define         CLICK_TEXTURE_THEMEV        2130
 #define         CLICK_TEXTURE_THEMET        2131
+#define         CLICK_TEXTURE_SEARCH        2132
 
 // Search for object
 #define			CLICK_SEARCH_MENU           2141
@@ -366,7 +367,11 @@ hook OnFilterScriptInit()
 	GUISetPlayerText(TextureSubMenu, E_INDEX[1], "Texture Themes");
 	GUISetPlayerText(TextureSubMenu, E_INDEX[2], "LD_BEAT:square");
 
-// Load Group Menu
+   	LoadGUIMenu(TextureSubMenu,MenuButton,335.0, 315.0, CLICK_TEXTURE_SEARCH, E_INDEX);
+	GUISetPlayerText(TextureSubMenu, E_INDEX[1], "Texture Search");
+	GUISetPlayerText(TextureSubMenu, E_INDEX[2], "LD_BEAT:square");
+
+	// Load Group Menu
 	LoadGUIMenu(GroupMenu,MainMenuText,-100.0, 0.0, CLICK_NO_GROUP, E_INDEX);
 
 	LoadGUIMenu(GroupMenu,MenuButton,435.0, 135.0, CLICK_GROUPSEL_MENU, E_INDEX);
@@ -1039,6 +1044,17 @@ OnGUIClick:SubMenuTex(playerid, group, gindex, pindex)
 			}
 			Dialog_ShowCallback(playerid, using inline ThemeMenu, DIALOG_STYLE_LIST, "Texture Studio", "Save Theme\nLoad Theme\nDelete Theme", "Ok", "Cancel");
 
+		}
+		case CLICK_TEXTURE_SEARCH:
+		{
+			inline TextureSearch(pid, dialogid, response, listitem, string:text[])
+			{
+				#pragma unused listitem, dialogid, pid, text
+				new line[128];
+				format(line, sizeof(line), "/tsearch %s", text);
+				if(response) { BroadcastCommand(playerid, line); }
+			}
+			Dialog_ShowCallback(playerid, using inline TextureSearch, DIALOG_STYLE_INPUT, "Texture Studio", "Search for a texture name", "Ok", "Cancel");
 		}
 	}
 	return 1;

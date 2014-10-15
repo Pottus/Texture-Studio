@@ -88,6 +88,7 @@ Commands: (Currently 65 commands)
 	/loadtheme - Load a texture theme
 	/savetheme - Saves a texture theme
 	/deletetheme - Delete a texture theme
+	/tsearch - Find a texture by part of name
 
 	Groups/Prefabs:
 	/setgroup - Sets a group id for a group objects
@@ -179,6 +180,7 @@ Change Log:
 	v1.5e - Important fix
 	v1.6 - Editable vehicles
 	    - A few bug fixes with texturing and overlapping key presses with other systems
+	v1.6a - New command /tsearch search for textures useful for finding the index of a known texture
 	
 Roadmap:
 	- Refine functionality
@@ -187,7 +189,7 @@ Roadmap:
 #define FILTERSCRIPT
 
 // Uncomment to turn on DEBUG mode
-#define DEBUG
+// #define DEBUG
 
 // #define GUI_DEBUG
 

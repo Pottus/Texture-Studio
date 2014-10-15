@@ -240,6 +240,50 @@ hook OnPlayerDisconnect(playerid, reason)
 	return 1;
 }
 
+
+static FoundTextures[4096];
+
+CMD:tsearch(playerid, arg[])
+{
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must supply a texture search string");
+
+    new line[128];
+
+	inline TexSearch(pid, dialogid, response, listitem, string:text[])
+	{
+        #pragma unused listitem, dialogid, pid, text
+		if(response)
+		{
+			new index;
+		    sscanf(text, "p<:>%i", index);
+		    format(line, sizeof(line), "/mtextures %i", index);
+		    BroadcastCommand(playerid, line);
+		}
+	}
+
+
+    FoundTextures[0] = '\0';
+	new numfound;
+	for(new i = 0; i < sizeof(ObjectTextures); i++)
+	{
+	    if(strfind(ObjectTextures[i][TextureName], arg, true) > -1)
+ 	    {
+			format(FoundTextures, sizeof(FoundTextures), "%s%i:%s\n", FoundTextures, i, ObjectTextures[i][TextureName]);
+	        numfound++;
+	        if(numfound == 100) break;
+	    }
+	}
+	if(numfound)
+	{
+		format(line, sizeof(line), "Found %i textures", numfound);
+		SendClientMessage(playerid, STEALTH_GREEN, line);
+		Dialog_ShowCallback(playerid, using inline TexSearch, DIALOG_STYLE_LIST, "Texture Studio - Texture Search", FoundTextures, "Ok", "Cancel");
+	}
+	else SendClientMessage(playerid, STEALTH_YELLOW, "No textures found with that string");
+	return 1;
+}
+
 // All texture mode
 CMD:mtextures(playerid, arg[]) // in GUI
 {
