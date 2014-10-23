@@ -122,6 +122,7 @@ Commands: (Currently 65 commands)
 	/avexportall - Export all cars to filterscript
 	/avox - /avoy - /avoz - Standard vehicle object movement commands
 	/avrx - /avry - /avrz - Standard vehicle object rotation commands
+	/avmirror - Mirror currently selected object on vehicle
 	(Special note: using /editobject on an attached object will edit the object on the vehicle)
 
 	Bind Editor:
@@ -181,6 +182,9 @@ Change Log:
 	v1.6 - Editable vehicles
 	    - A few bug fixes with texturing and overlapping key presses with other systems
 	v1.6a - New command /tsearch search for textures useful for finding the index of a known texture
+	v1.6b - Added feature to export map including cars to filterscript
+	    - New command /avmirror mirror objects on a car
+	    - Completely rebuild the all objects array some where missing it should be complete now
 	
 Roadmap:
 	- Refine functionality
@@ -2480,13 +2484,14 @@ CMD:export(playerid, arg[])
 		    switch(elistitem)
 		    {
 		        case 0: BroadcastCommand(playerid, "/exportmap");
-		        case 1: BroadcastCommand(playerid, "/avexport");
-		        case 2: BroadcastCommand(playerid, "/avexportall");
+				case 1: BroadcastCommand(playerid, "/exportallmap");
+		        case 2: BroadcastCommand(playerid, "/avexport");
+		        case 3: BroadcastCommand(playerid, "/avexportall");
 		    }
 		}
 	}
 	
-	Dialog_ShowCallback(playerid, using inline Export, DIALOG_STYLE_LIST, "Texture Studio (Export Mode)", "Export Map\nExport Current Car\nExport All Cars", "Ok", "Cancel");
+	Dialog_ShowCallback(playerid, using inline Export, DIALOG_STYLE_LIST, "Texture Studio (Export Mode)", "Export Map\nExport All Map To Filerscript\nExport Current Car\nExport All Cars", "Ok", "Cancel");
 	return 1;
 }
 
@@ -2765,6 +2770,395 @@ MapExport(playerid, mapname[], Float:drawdist)
 		}
 	}
     Dialog_ShowCallback(playerid, using inline ExportType, DIALOG_STYLE_LIST, "Texture Studio (Export Map)", "Type 1 - CreateObject()\nType 2 - CreateDynamicObjectEx()\nType 3 - CreateDyanmicObject", "Ok", "Cancel");
+
+	return 1;
+}
+
+// Export map to create object
+CMD:exportallmap(playerid, arg[]) // In GUI
+{
+	MapOpenCheck();
+
+	// Ask for a map name
+	inline ExportMap(epid, edialogid, eresponse, elistitem, string:etext[])
+	{
+	    #pragma unused elistitem, edialogid, epid
+	    if(eresponse)
+	    {
+			// Was a map name supplied ?
+			if(!isnull(etext))
+			{
+				// Get the draw distance
+	            inline DrawDist(dpid, ddialogid, dresponse, dlistitem, string:dtext[])
+	            {
+	                #pragma unused dlistitem, ddialogid, dpid
+					new Float:dist;
+
+					// Set the drawdistance
+					if(dresponse)
+					{
+                        if(sscanf(dtext, "f", dist)) dist = 300.0;
+					}
+					else dist = 300.0;
+
+					new exportmap[256];
+
+					// Check map name length
+					if(strlen(etext) >= 20)
+					{
+						SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+						SendClientMessage(playerid, STEALTH_YELLOW, "Choose a shorter map name to export to...");
+						return 1;
+					}
+
+					// Format the output name
+					format(exportmap, sizeof(exportmap), "tstudio/ExportMaps/%s.pwn", etext);
+
+					// Map exists ask to remove
+				    if(fexist(exportmap))
+					{
+						inline RemoveMap(rpid, rdialogid, rresponse, rlistitem, string:rtext[])
+						{
+					        #pragma unused rlistitem, rdialogid, rpid, rtext
+
+							// Remove map and export
+					        if(rresponse)
+					        {
+					            fremove(exportmap);
+					            MapExportAll(playerid, exportmap, dist);
+					        }
+						}
+						Dialog_ShowCallback(playerid, using inline RemoveMap, DIALOG_STYLE_MSGBOX, "Texture Studio (Export Map)", "A export exists with this name replace?", "Ok", "Cancel");
+					}
+					// We can start the export
+					else MapExportAll(playerid, exportmap, dist);
+				}
+            	Dialog_ShowCallback(playerid, using inline DrawDist, DIALOG_STYLE_INPUT, "Texture Studio (Map Export)", "Enter the draw distance for objects\n(Note: Default draw distance is 300.0)", "Ok", "Cancel");
+			}
+			else
+			{
+				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+				SendClientMessage(playerid, STEALTH_YELLOW, "You can't export a map with no name");
+				Dialog_ShowCallback(playerid, using inline ExportMap, DIALOG_STYLE_INPUT, "Texture Studio (Map All Export)", "Enter a export map name", "Ok", "Cancel");
+			}
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline ExportMap, DIALOG_STYLE_INPUT, "Texture Studio (Map All Export)", "Enter a export map name", "Ok", "Cancel");
+	return 1;
+}
+
+static MapExportAll(playerid, name[], Float:drawdist)
+{
+	new File:f = fopen(name, io_write);
+	new templine[256];
+	new mobjects;
+
+	// Header
+	fwrite(f,"//Map Filterscript Exported with Texture Studio By: [uL]Pottus///////////////////////////////////////////////////\r\n");
+	fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+	fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+
+	// Includes
+	fwrite(f, "#include <a_samp>\r\n");
+	fwrite(f, "#include <streamer>\r\n\n");
+
+	new CarCount = Iter_Count(Cars);
+	new CurrCar;
+
+	// Car id
+	for(new i = 0; i < CarCount; i++)
+	{
+		format(templine, sizeof(templine), "new carvid_%i;\r\n", i);
+		fwrite(f, templine);
+	}
+
+	fwrite(f, "\n");
+
+	// Init script
+    fwrite(f, "public OnFilterScriptInit()\r\n");
+    fwrite(f, "{ \r\n");
+    fwrite(f,"    new tmpobjid;\r\n\n");
+
+	foreach(new i : Cars)
+	{
+		format(templine, sizeof(templine), "    carvid_%i = CreateVehicle(%i,%.3f,%.3f,%.3f,%.3f,%i,%i,-1);\r\n",
+	        CurrCar++, CarData[i][CarModel], CarData[i][CarSpawnX], CarData[i][CarSpawnY], CarData[i][CarSpawnZ], CarData[i][CarSpawnFA], CarData[i][CarColor1], CarData[i][CarColor2]
+		);
+        fwrite(f, templine);
+	}
+
+	CurrCar = 0;
+
+    fwrite(f, "\n");
+
+	foreach(new i : Cars)
+	{
+		// Mod components
+		for(new j = 0; j < MAX_CAR_COMPONENTS; j++)
+		{
+		    if(CarData[i][CarComponents][j] > 0)
+		    {
+		        format(templine, sizeof(templine), "    AddVehicleComponent(carvid_%i, %i);\r\n", CurrCar, CarData[i][CarComponents][j]);
+				fwrite(f, templine);
+		    }
+		}
+		CurrCar++;
+	}
+
+    CurrCar = 0;
+
+    fwrite(f, "\n");
+
+	foreach(new i : Cars)
+	{
+		// Paintjob
+		if(CarData[i][CarPaintJob] < 3)
+		{
+	        format(templine, sizeof(templine), "    ChangeVehiclePaintjob(carvid_%i, %i);\r\n", CurrCar, CarData[i][CarPaintJob]);
+			fwrite(f, templine);
+		}
+		CurrCar++;
+	}
+
+    CurrCar = 0;
+
+    fwrite(f, "\n");
+
+	foreach(new i : Cars)
+	{
+		// Objects
+	    for(new j = 0; j < MAX_CAR_OBJECTS; j++)
+	    {
+			// No object
+	        if(CarData[i][CarObjectRef][j] == -1) continue;
+	        new oindex = CarData[i][CarObjectRef][j];
+
+			// Create object
+			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i,0.0,0.0,-1000.0,0.0,0.0,0.0,-1,-1,-1,300.0,300.0);\r\n",ObjectData[oindex][oModel]);
+	        fwrite(f,templine);
+
+
+			// Write all materials and colors
+			for(new k = 0; k < MAX_MATERIALS; k++)
+	    	{
+				// Does object have a texture set?
+	            if(ObjectData[oindex][oTexIndex][k] != 0)
+	            {
+					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, %i, %c%s%c, %c%s%c, %i);\r\n",
+						k, GetTModel(ObjectData[oindex][oTexIndex][k]), 34, GetTXDName(ObjectData[oindex][oTexIndex][k]), 34, 34,GetTextureName(ObjectData[oindex][oTexIndex][k]), 34, ObjectData[oindex][oColorIndex][k]
+					);
+
+					fwrite(f,templine);
+	            }
+
+	            // No texture how about a color?
+	            else if(ObjectData[oindex][oColorIndex][k] != 0)
+	            {
+					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, -1, %c%s%c, %c%s%c, %i);\r\n", j, 34, "none", 34, 34,"none", 34, ObjectData[oindex][oColorIndex][k]);
+					fwrite(f,templine);
+				}
+			}
+
+			// Write any text
+			if(ObjectData[oindex][ousetext])
+			{
+				format(templine,sizeof(templine),"    SetDynamicObjectMaterialText(tmpobjid, 0, %c%s%c, %i, %c%s%c, %i, %i, %i, %i, %i);\r\n",
+					34, ObjectData[oindex][oObjectText], 34,
+					FontSizes[ObjectData[oindex][oFontSize]],
+					34, FontNames[ObjectData[oindex][oFontFace]], 34,
+					ObjectData[oindex][oTextFontSize],
+					ObjectData[oindex][oFontBold],
+					ObjectData[oindex][oFontColor],
+					ObjectData[oindex][oBackColor],
+					ObjectData[oindex][oAlignment]
+				);
+				fwrite(f,templine);
+			}
+
+			// Attach object to vehicle
+			format(templine, sizeof(templine), "    AttachDynamicObjectToVehicle(tmpobjid, carvid_%i, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f);\r\n",
+				CurrCar, CarData[i][COX], CarData[i][COY][j], CarData[i][COZ][j], CarData[i][CORX][j], CarData[i][CORY][j], CarData[i][CORZ][j]
+			);
+
+			fwrite(f,templine);
+		}
+		CurrCar++;
+
+		fwrite(f, "\n");
+	}
+
+	// Write Objects
+
+	// Write all objects with materials first
+	foreach(new i : Objects)
+	{
+	    if(ObjectData[i][oAttachedVehicle] > -1) continue;
+
+		new bool:writeobject;
+
+		// Does the object have materials?
+        for(new j = 0; j < MAX_MATERIALS; j++)
+        {
+            if(ObjectData[i][oTexIndex][j] != 0 || ObjectData[i][oColorIndex][j] != 0 || ObjectData[i][ousetext])
+            {
+				writeobject = true;
+				break;
+			}
+		}
+
+		// Object had materials we will write them to the export file
+		if(writeobject)
+		{
+			mobjects++;
+
+			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,-1,-1,-1,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+	        fwrite(f,templine);
+
+			// Write all materials and colors
+  			for(new j = 0; j < MAX_MATERIALS; j++)
+        	{
+				// Does object have a texture set?
+	            if(ObjectData[i][oTexIndex][j] != 0)
+	            {
+					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, %i, %c%s%c, %c%s%c, %i);\r\n", j, GetTModel(ObjectData[i][oTexIndex][j]), 34, GetTXDName(ObjectData[i][oTexIndex][j]), 34, 34,GetTextureName(ObjectData[i][oTexIndex][j]), 34, ObjectData[i][oColorIndex][j]);
+					fwrite(f,templine);
+	            }
+	            // No texture how about a color?
+	            else if(ObjectData[i][oColorIndex][j] != 0)
+	            {
+					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, -1, %c%s%c, %c%s%c, %i);\r\n", j, 34, "none", 34, 34,"none", 34, ObjectData[i][oColorIndex][j]);
+					fwrite(f,templine);
+				}
+			}
+
+			// Write any text
+			if(ObjectData[i][ousetext])
+			{
+				format(templine,sizeof(templine),"    SetDynamicObjectMaterialText(tmpobjid, 0, %c%s%c, %i, %c%s%c, %i, %i, %i, %i, %i);\r\n",
+					34, ObjectData[i][oObjectText], 34,
+					FontSizes[ObjectData[i][oFontSize]],
+					34, FontNames[ObjectData[i][oFontFace]], 34,
+					ObjectData[i][oTextFontSize],
+					ObjectData[i][oFontBold],
+					ObjectData[i][oFontColor],
+					ObjectData[i][oBackColor],
+					ObjectData[i][oAlignment]
+				);
+				fwrite(f,templine);
+			}
+		}
+	}
+
+	// We need to write all of the objects that didn't have materials set now
+	foreach(new i : Objects)
+	{
+	    if(ObjectData[i][oAttachedVehicle] > -1) continue;
+
+		new bool:writeobject = true;
+
+		// Does the object have materials?
+        for(new j = 0; j < MAX_MATERIALS; j++)
+        {
+			// This object has already been written
+            if(ObjectData[i][oTexIndex][j] != 0 || ObjectData[i][oColorIndex][j] != 0 || ObjectData[i][ousetext])
+            {
+				writeobject = false;
+				break;
+			}
+		}
+
+		// Object has not been exported yet export
+		if(writeobject)
+		{
+			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,-1,-1,-1,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+	        fwrite(f,templine);
+		}
+	}
+	
+	fwrite(f, "\r\n");
+
+	fwrite(f, "    for(new i = 0; i < MAX_PLAYERS; i++)\r\n");
+    fwrite(f, "    { \r\n");
+    fwrite(f, "        if(!IsPlayerConnected(i)) continue; \r\n");
+    fwrite(f, "        OnPlayerConnect(i); \r\n");
+	fwrite(f, "    } \r\n\n");
+	fwrite(f, "    return 1; \r\n\n");
+    fwrite(f, "} \r\n\n");
+
+	CurrCar = 0;
+
+	// Exit script
+    fwrite(f, "public OnFilterScriptExit()\r\n");
+    fwrite(f, "{ \r\n");
+
+	foreach(new i : Cars)
+	{
+		format(templine, sizeof(templine), "    DestroyVehicle(carvid_%i);\r\n", CurrCar);
+    	fwrite(f, templine);
+        CurrCar++;
+	}
+
+    fwrite(f, "} \r\n\n");
+
+	// Remove building script
+    fwrite(f, "public OnPlayerConnect(playerid)\r\n");
+    fwrite(f, "{ \r\n");
+
+	for(new i = 0; i < MAX_REMOVE_BUILDING; i++)
+	{
+	    if(RemoveData[i][rModel] != 0)
+	    {
+			format(templine, sizeof(templine), "	RemoveBuildingForPlayer(playerid, %i, %.3f, %.3f, %.3f, %.3f);\r\n", RemoveData[i][rModel], RemoveData[i][rX], RemoveData[i][rY], RemoveData[i][rZ], RemoveData[i][rRange]);
+            fwrite(f,templine);
+		}
+	}
+
+    fwrite(f, "} \r\n\n");
+
+    CurrCar = 0;
+
+	// Vehicle respawn
+    fwrite(f, "public OnVehicleSpawn(vehicleid)\r\n");
+
+    fwrite(f, "{ \r\n");
+    foreach(new i : Cars)
+    {
+		if(CurrCar == 0) format(templine, sizeof(templine), "    if(vehicleid == carvid_%i)\r\n", CurrCar);
+		else format(templine, sizeof(templine), "    else if(vehicleid == carvid_%i)\r\n", CurrCar);
+        fwrite(f, templine);
+
+		fwrite(f, "    {\r\n");
+
+		// Mod components
+		for(new j = 0; j < MAX_CAR_COMPONENTS; j++)
+		{
+		    if(CarData[i][CarComponents][j] > 0)
+		    {
+		        format(templine, sizeof(templine), "        AddVehicleComponent(carvid_%i, %i);\r\n", CurrCar, CarData[i][CarComponents][i]);
+				fwrite(f, templine);
+		    }
+		}
+
+		// Paintjob
+		if(CarData[i][CarPaintJob] < 3)
+		{
+	        format(templine, sizeof(templine), "        ChangeVehiclePaintjob(carvid_%i, %i);\r\n", CurrCar, CarData[i][CarPaintJob]);
+			fwrite(f, templine);
+		}
+
+	    fwrite(f, "    }\r\n");
+
+        CurrCar++;
+	}
+
+    fwrite(f, "} \r\n");
+
+    fclose(f);
+
+	format(templine, sizeof(templine), "Exported vehicles to filterscript %s", name);
+
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+	SendClientMessage(playerid, STEALTH_GREEN, templine);
 
 	return 1;
 }
@@ -4118,6 +4512,11 @@ CMD:thelp(playerid, arg[])
 	SendClientMessage(playerid, STEALTH_GREEN, "Objects: /cobject - /dobject - /robject - /osearch");
 	SendClientMessage(playerid, STEALTH_GREEN, "Objects: /sel - /csel - /lsel - /flymode - /ogoto");
 	SendClientMessage(playerid, STEALTH_GREEN, "Objects/Pivot: /pivot - /togpivot");
+	SendClientMessage(playerid, STEALTH_GREEN, "Removebuildings: /gtaobjects - /gtashow - /gtahide - /remobject - /swapbuilding");
+	SendClientMessage(playerid, STEALTH_GREEN, "Vehicles: /avmodcar - /avsetspawn - /avnewcar - /avdeletecar - /avcarcolor");
+	SendClientMessage(playerid, STEALTH_GREEN, "Vehicles: /avpaint - /avattach - /avmirror - /avdetach - /avsel");
+	SendClientMessage(playerid, STEALTH_GREEN, "Vehicles: /editobject - /avox - /avoy - /avoz - /avrx - /avry - avrz");
+	SendClientMessage(playerid, STEALTH_GREEN, "Vehicles: /avexport - /avexportall");
 	SendClientMessage(playerid, STEALTH_GREEN, "Movement: /editobject - /ox - /oy - /oz - /rx - ry - /rz");
 	SendClientMessage(playerid, STEALTH_GREEN, "Movement: /dox - /doy - /doz - /drx - /dry - /drz");
 	SendClientMessage(playerid, STEALTH_GREEN, "Textures: /mtextures - /ttextures - /stexture - /mtset - /mtcolor - /mtsetall");

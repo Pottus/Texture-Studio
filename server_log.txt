@@ -1145,3 +1145,1208 @@ v0.3z-R2, (C)2005-2014 SA-MP Team
 [00:41:25] sscanf warning: sscanf specifiers do not require '' before them.
 [00:41:32] sscanf warning: sscanf specifiers do not require '' before them.
 [00:42:06] [part] [uL]Pottus has left the server (0:1)
+[01:51:29] Incoming connection: 192.168.2.2:60020
+[01:51:29] [join] [uL]Pottus has joined the server (0:192.168.2.2)
+[01:51:29] SQLitei Debug: (db_query) Running query: SELECT * FROM `default_theme`
+[01:51:29] SQLitei Debug: (db_autofree_result) Will autofree 0x02140300.
+[01:51:29] SQLitei Debug: (db_free_result) Freeing 0x02140300.
+[01:51:29] SQLitei Debug: (db_free_result) The result being freed was inside the autorelease pool.
+[01:51:33] [part] [uL]Pottus has left the server (0:1)
+[01:52:59] Incoming connection: 192.168.2.2:53493
+[01:52:59] [join] [uL]Pottus has joined the server (0:192.168.2.2)
+[01:52:59] SQLitei Debug: (db_query) Running query: SELECT * FROM `default_theme`
+[01:52:59] SQLitei Debug: (db_autofree_result) Will autofree 0x021401A0.
+[01:52:59] SQLitei Debug: (db_free_result) Freeing 0x021401A0.
+[01:52:59] SQLitei Debug: (db_free_result) The result being freed was inside the autorelease pool.
+[01:53:02] [part] [uL]Pottus has left the server (0:1)
+[01:55:09] Incoming connection: 192.168.2.2:51254
+[01:55:09] [join] [uL]Pottus has joined the server (0:192.168.2.2)
+[01:55:09] SQLitei Debug: (db_query) Running query: SELECT * FROM `default_theme`
+[01:55:09] SQLitei Debug: (db_autofree_result) Will autofree 0x02140280.
+[01:55:09] SQLitei Debug: (db_free_result) Freeing 0x02140280.
+[01:55:09] SQLitei Debug: (db_free_result) The result being freed was inside the autorelease pool.
+[01:55:11] [part] [uL]Pottus has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3z-R2, (C)2005-2014 SA-MP Team
+
+[22:25:08] 
+[22:25:08] Server Plugins
+[22:25:08] --------------
+[22:25:08]  Loading plugin: sscanf
+[22:25:08] 
+
+[22:25:08]  ===============================
+
+[22:25:08]       sscanf plugin loaded.     
+
+[22:25:08]          Version:  2.8.1        
+
+[22:25:08]    (c) 2012 Alex "Y_Less" Cole  
+
+[22:25:08]  ===============================
+
+[22:25:08]   Loaded.
+[22:25:08]  Loading plugin: streamer
+[22:25:08] 
+
+*** Streamer Plugin v2.7.2 by Incognito loaded ***
+
+[22:25:08]   Loaded.
+[22:25:08]  Loading plugin: filemanager
+[22:25:08] ******************
+[22:25:08] ** FILE MANAGER **
+[22:25:08] **    Loaded    **
+[22:25:08] ** Version 1.5 **
+[22:25:08] ******************
+[22:25:08]   Loaded.
+[22:25:08]  Loading plugin: crashdetect
+[22:25:08]   CrashDetect v4.10.1 is OK.
+[22:25:08]   Loaded.
+[22:25:08]  Loading plugin: mapandreas
+[22:25:08]   Failed.
+[22:25:08]  Loaded 4 plugins.
+
+[22:25:08] 
+[22:25:08] Filterscripts
+[22:25:08] ---------------
+[22:25:08]   Loading filterscript 'tstudio.amx'...
+[22:25:08]  
+[22:25:08]  
+[22:25:08]  
+[22:25:08]  ======================================= 
+[22:25:08]  |                                     | 
+[22:25:08]  |        YSI version 3.09.0684        | 
+[22:25:08]  |        By Alex "Y_Less" Cole        | 
+[22:25:08]  |                                     | 
+[22:25:08]  ======================================= 
+[22:25:08]  
+[22:25:08]  
+[22:25:08]  
+[22:25:08] LOADED 8370 texture definitions
+[22:25:08] ----------------------------------------------
+[22:25:08] ---------Texture Studio By [uL]Pottus---------
+[22:25:08] -------------------------------------Loaded---
+[22:25:08]   Loading filterscript 'fsdebug.amx'...
+[22:25:08] 
+  *********************
+  * SA:MP DEBUG 0.2   *
+[22:25:08]   * By Simon Campbell *
+  *********************
+[22:25:08]   * Version: 0.5d      *
+  *********************
+[22:25:08]   * -- LOADED         *
+  *********************
+
+[22:25:08]   Loaded 2 filterscripts.
+
+[22:25:08] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[22:25:08] LOADED 8370 texture definitions
+[22:25:08] 
+----------------------------------
+[22:25:08]   Bare Script
+
+[22:25:08] ----------------------------------
+
+[22:25:08] Number of vehicle models: 0
+[22:25:17]  
+[22:25:17]  ========================================== 
+[22:25:17]  |                                        | 
+[22:25:17]  |  A new version (v<html>
+  ) of YSI is  | 
+[22:25:17]  |            available from:             | 
+[22:25:17]  |                                        | 
+[22:25:17]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[22:25:17]  |                                        | 
+[22:25:17]  ========================================== 
+[22:25:17]  
+[22:27:48] Incoming connection: 127.0.0.1:61880
+[22:27:49] [join] [uL]Pottus has joined the server (0:127.0.0.1)
+[22:29:57] Incoming connection: 89.181.69.13:16670
+[22:29:58] [join] PT_Player has joined the server (1:89.181.69.13)
+[22:31:32] avoa::1, 2
+[22:33:34] avoa::0, 3
+[22:35:08] [part] [uL]Pottus has left the server (0:1)
+[22:35:12] [part] PT_Player has left the server (1:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3z-R2, (C)2005-2014 SA-MP Team
+
+[23:52:34] 
+[23:52:34] Server Plugins
+[23:52:34] --------------
+[23:52:34]  Loading plugin: sscanf
+[23:52:34] 
+
+[23:52:34]  ===============================
+
+[23:52:34]       sscanf plugin loaded.     
+
+[23:52:34]          Version:  2.8.1        
+
+[23:52:34]    (c) 2012 Alex "Y_Less" Cole  
+
+[23:52:34]  ===============================
+
+[23:52:34]   Loaded.
+[23:52:34]  Loading plugin: streamer
+[23:52:34] 
+
+*** Streamer Plugin v2.7.2 by Incognito loaded ***
+
+[23:52:34]   Loaded.
+[23:52:34]  Loading plugin: filemanager
+[23:52:34] ******************
+[23:52:34] ** FILE MANAGER **
+[23:52:34] **    Loaded    **
+[23:52:34] ** Version 1.5 **
+[23:52:34] ******************
+[23:52:34]   Loaded.
+[23:52:34]  Loading plugin: crashdetect
+[23:52:34]   CrashDetect v4.10.1 is OK.
+[23:52:34]   Loaded.
+[23:52:34]  Loading plugin: mapandreas
+[23:52:34]   Failed.
+[23:52:34]  Loaded 4 plugins.
+
+[23:52:34] 
+[23:52:34] Filterscripts
+[23:52:34] ---------------
+[23:52:34]   Loading filterscript 'tstudio.amx'...
+[23:52:34]  
+[23:52:34]  
+[23:52:34]  
+[23:52:34]  ======================================= 
+[23:52:34]  |                                     | 
+[23:52:34]  |        YSI version 3.09.0684        | 
+[23:52:34]  |        By Alex "Y_Less" Cole        | 
+[23:52:34]  |                                     | 
+[23:52:34]  ======================================= 
+[23:52:34]  
+[23:52:34]  
+[23:52:34]  
+[23:52:34] LOADED 8370 texture definitions
+[23:52:34] ----------------------------------------------
+[23:52:34] ---------Texture Studio By [uL]Pottus---------
+[23:52:34] -------------------------------------Loaded---
+[23:52:34]   Loading filterscript 'fsdebug.amx'...
+[23:52:34] 
+  *********************
+  * SA:MP DEBUG 0.2   *
+[23:52:34]   * By Simon Campbell *
+  *********************
+[23:52:34]   * Version: 0.5d      *
+  *********************
+[23:52:34]   * -- LOADED         *
+  *********************
+
+[23:52:34]   Loaded 2 filterscripts.
+
+[23:52:34] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[23:52:34] LOADED 8370 texture definitions
+[23:52:34] 
+----------------------------------
+[23:52:34]   Bare Script
+
+[23:52:34] ----------------------------------
+
+[23:52:34] Number of vehicle models: 0
+[23:52:35]  
+[23:52:35]  ========================================== 
+[23:52:35]  |                                        | 
+[23:52:35]  |  A new version (v<html>
+  ) of YSI is  | 
+[23:52:35]  |            available from:             | 
+[23:52:35]  |                                        | 
+[23:52:35]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[23:52:35]  |                                        | 
+[23:52:35]  ========================================== 
+[23:52:35]  
+[23:53:00] Incoming connection: 127.0.0.1:60286
+[23:53:00] [join] [uL]Pottus has joined the server (0:127.0.0.1)
+[23:53:40] avoa::0, 4
+[23:54:45] avoa::2, 5
+[00:24:29] RCON (In-Game): Player #0 ([uL]Pottus) has logged in.
+[00:24:30] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[00:24:30] ----------------------------------------------
+[00:24:30] ---------Texture Studio By [uL]Pottus---------
+[00:24:30] -----------------------------------Unloaded---
+[00:24:30]   Filterscript 'tstudio.amx' unloaded.
+[00:24:30]  
+[00:24:30]  
+[00:24:30]  
+[00:24:30]  ======================================= 
+[00:24:30]  |                                     | 
+[00:24:30]  |        YSI version 3.09.0684        | 
+[00:24:30]  |        By Alex "Y_Less" Cole        | 
+[00:24:30]  |                                     | 
+[00:24:30]  ======================================= 
+[00:24:30]  
+[00:24:30]  
+[00:24:30]  
+[00:24:30] LOADED 8370 texture definitions
+[00:24:30] ----------------------------------------------
+[00:24:30] ---------Texture Studio By [uL]Pottus---------
+[00:24:30] -------------------------------------Loaded---
+[00:24:30]   Filterscript 'tstudio.amx' loaded.
+[00:24:31]  
+[00:24:31]  ========================================== 
+[00:24:31]  |                                        | 
+[00:24:31]  |  A new version (v<html>
+  ) of YSI is  | 
+[00:24:31]  |            available from:             | 
+[00:24:31]  |                                        | 
+[00:24:31]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[00:24:31]  |                                        | 
+[00:24:31]  ========================================== 
+[00:24:31]  
+[00:25:06] [debug] Run time error 4: "Array index out of bounds"
+[00:25:06] [debug]  Accessing element at negative index -1
+[00:25:06] [debug] AMX backtrace:
+[00:25:06] [debug] #0 0007e470 in ?? () from tstudio.amx
+[00:25:06] [debug] #1 00077b00 in ?? () from tstudio.amx
+[00:25:06] [debug] #2 000248a4 in ?? () from tstudio.amx
+[00:25:06] [debug] #3 00026a5c in ?? () from tstudio.amx
+[00:25:06] [debug] #4 000201bc in public OnDialogResponse () from tstudio.amx
+[00:27:27] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[00:27:27] ----------------------------------------------
+[00:27:27] ---------Texture Studio By [uL]Pottus---------
+[00:27:27] -----------------------------------Unloaded---
+[00:27:27]   Filterscript 'tstudio.amx' unloaded.
+[00:27:27]  
+[00:27:27]  
+[00:27:27]  
+[00:27:27]  ======================================= 
+[00:27:27]  |                                     | 
+[00:27:27]  |        YSI version 3.09.0684        | 
+[00:27:27]  |        By Alex "Y_Less" Cole        | 
+[00:27:27]  |                                     | 
+[00:27:27]  ======================================= 
+[00:27:27]  
+[00:27:27]  
+[00:27:27]  
+[00:27:28] LOADED 8370 texture definitions
+[00:27:28] ----------------------------------------------
+[00:27:28] ---------Texture Studio By [uL]Pottus---------
+[00:27:28] -------------------------------------Loaded---
+[00:27:28]   Filterscript 'tstudio.amx' loaded.
+[00:27:28]  
+[00:27:28]  ========================================== 
+[00:27:28]  |                                        | 
+[00:27:28]  |  A new version (v<html>
+  ) of YSI is  | 
+[00:27:28]  |            available from:             | 
+[00:27:28]  |                                        | 
+[00:27:28]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[00:27:28]  |                                        | 
+[00:27:28]  ========================================== 
+[00:27:28]  
+[00:27:51] [debug] Run time error 4: "Array index out of bounds"
+[00:27:51] [debug]  Accessing element at negative index -1
+[00:27:51] [debug] AMX backtrace:
+[00:27:51] [debug] #0 0007e488 in ?? () from tstudio.amx
+[00:27:51] [debug] #1 00077b00 in ?? () from tstudio.amx
+[00:27:51] [debug] #2 000248a4 in ?? () from tstudio.amx
+[00:27:51] [debug] #3 00026a5c in ?? () from tstudio.amx
+[00:27:51] [debug] #4 000201bc in public OnDialogResponse () from tstudio.amx
+[00:30:11] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[00:30:11] ----------------------------------------------
+[00:30:11] ---------Texture Studio By [uL]Pottus---------
+[00:30:11] -----------------------------------Unloaded---
+[00:30:11]   Filterscript 'tstudio.amx' unloaded.
+[00:30:11]  
+[00:30:11]  
+[00:30:11]  
+[00:30:11]  ======================================= 
+[00:30:11]  |                                     | 
+[00:30:11]  |        YSI version 3.09.0684        | 
+[00:30:11]  |        By Alex "Y_Less" Cole        | 
+[00:30:11]  |                                     | 
+[00:30:11]  ======================================= 
+[00:30:11]  
+[00:30:11]  
+[00:30:11]  
+[00:30:11] LOADED 8370 texture definitions
+[00:30:11] ----------------------------------------------
+[00:30:11] ---------Texture Studio By [uL]Pottus---------
+[00:30:11] -------------------------------------Loaded---
+[00:30:11]   Filterscript 'tstudio.amx' loaded.
+[00:30:12]  
+[00:30:12]  ========================================== 
+[00:30:12]  |                                        | 
+[00:30:12]  |  A new version (v<html>
+  ) of YSI is  | 
+[00:30:12]  |            available from:             | 
+[00:30:12]  |                                        | 
+[00:30:12]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[00:30:12]  |                                        | 
+[00:30:12]  ========================================== 
+[00:30:12]  
+[00:30:32] avmirror::1
+[00:30:32] [debug] Run time error 4: "Array index out of bounds"
+[00:30:32] [debug]  Accessing element at negative index -1
+[00:30:32] [debug] AMX backtrace:
+[00:30:32] [debug] #0 0007e518 in ?? () from tstudio.amx
+[00:30:32] [debug] #1 00077b24 in ?? () from tstudio.amx
+[00:30:32] [debug] #2 000248a4 in ?? () from tstudio.amx
+[00:30:32] [debug] #3 00026a5c in ?? () from tstudio.amx
+[00:30:32] [debug] #4 000201bc in public OnDialogResponse () from tstudio.amx
+[00:31:41] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[00:31:41] ----------------------------------------------
+[00:31:41] ---------Texture Studio By [uL]Pottus---------
+[00:31:41] -----------------------------------Unloaded---
+[00:31:41]   Filterscript 'tstudio.amx' unloaded.
+[00:31:41]  
+[00:31:41]  
+[00:31:41]  
+[00:31:41]  ======================================= 
+[00:31:41]  |                                     | 
+[00:31:41]  |        YSI version 3.09.0684        | 
+[00:31:41]  |        By Alex "Y_Less" Cole        | 
+[00:31:41]  |                                     | 
+[00:31:41]  ======================================= 
+[00:31:41]  
+[00:31:41]  
+[00:31:41]  
+[00:31:41] LOADED 8370 texture definitions
+[00:31:41] ----------------------------------------------
+[00:31:41] ---------Texture Studio By [uL]Pottus---------
+[00:31:41] -------------------------------------Loaded---
+[00:31:41]   Filterscript 'tstudio.amx' loaded.
+[00:31:41]  
+[00:31:41]  ========================================== 
+[00:31:41]  |                                        | 
+[00:31:41]  |  A new version (v<html>
+  ) of YSI is  | 
+[00:31:41]  |            available from:             | 
+[00:31:41]  |                                        | 
+[00:31:41]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[00:31:41]  |                                        | 
+[00:31:41]  ========================================== 
+[00:31:41]  
+[00:31:57] avmirror::1
+[00:31:57] avmirror::2
+[00:31:57] [debug] Run time error 4: "Array index out of bounds"
+[00:31:57] [debug]  Accessing element at negative index -1
+[00:31:57] [debug] AMX backtrace:
+[00:31:57] [debug] #0 00077b98 in ?? () from tstudio.amx
+[00:31:57] [debug] #1 000248a4 in ?? () from tstudio.amx
+[00:31:57] [debug] #2 00026a5c in ?? () from tstudio.amx
+[00:31:57] [debug] #3 000201bc in public OnDialogResponse () from tstudio.amx
+[00:34:31] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[00:34:31] ----------------------------------------------
+[00:34:31] ---------Texture Studio By [uL]Pottus---------
+[00:34:31] -----------------------------------Unloaded---
+[00:34:31]   Filterscript 'tstudio.amx' unloaded.
+[00:34:31]  
+[00:34:31]  
+[00:34:31]  
+[00:34:31]  ======================================= 
+[00:34:31]  |                                     | 
+[00:34:31]  |        YSI version 3.09.0684        | 
+[00:34:31]  |        By Alex "Y_Less" Cole        | 
+[00:34:31]  |                                     | 
+[00:34:31]  ======================================= 
+[00:34:31]  
+[00:34:31]  
+[00:34:31]  
+[00:34:31] LOADED 8370 texture definitions
+[00:34:31] ----------------------------------------------
+[00:34:31] ---------Texture Studio By [uL]Pottus---------
+[00:34:31] -------------------------------------Loaded---
+[00:34:31]   Filterscript 'tstudio.amx' loaded.
+[00:34:31]  
+[00:34:31]  ========================================== 
+[00:34:31]  |                                        | 
+[00:34:31]  |  A new version (v<html>
+  ) of YSI is  | 
+[00:34:31]  |            available from:             | 
+[00:34:31]  |                                        | 
+[00:34:31]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[00:34:31]  |                                        | 
+[00:34:31]  ========================================== 
+[00:34:31]  
+[00:34:45] avmirror::1
+[00:34:45] avmirror::2
+[00:34:45] [debug] Run time error 4: "Array index out of bounds"
+[00:34:45] [debug]  Accessing element at negative index -1
+[00:34:45] [debug] AMX backtrace:
+[00:34:45] [debug] #0 00077b80 in ?? () from tstudio.amx
+[00:34:45] [debug] #1 000248a4 in ?? () from tstudio.amx
+[00:34:45] [debug] #2 00026a5c in ?? () from tstudio.amx
+[00:34:45] [debug] #3 000201bc in public OnDialogResponse () from tstudio.amx
+[00:36:59] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[00:36:59] ----------------------------------------------
+[00:36:59] ---------Texture Studio By [uL]Pottus---------
+[00:36:59] -----------------------------------Unloaded---
+[00:36:59]   Filterscript 'tstudio.amx' unloaded.
+[00:36:59]  
+[00:36:59]  
+[00:36:59]  
+[00:36:59]  ======================================= 
+[00:36:59]  |                                     | 
+[00:36:59]  |        YSI version 3.09.0684        | 
+[00:36:59]  |        By Alex "Y_Less" Cole        | 
+[00:36:59]  |                                     | 
+[00:36:59]  ======================================= 
+[00:36:59]  
+[00:36:59]  
+[00:36:59]  
+[00:37:00] LOADED 8370 texture definitions
+[00:37:00] ----------------------------------------------
+[00:37:00] ---------Texture Studio By [uL]Pottus---------
+[00:37:00] -------------------------------------Loaded---
+[00:37:00]   Filterscript 'tstudio.amx' loaded.
+[00:37:00]  
+[00:37:00]  ========================================== 
+[00:37:00]  |                                        | 
+[00:37:00]  |  A new version (v<html>
+  ) of YSI is  | 
+[00:37:00]  |            available from:             | 
+[00:37:00]  |                                        | 
+[00:37:00]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[00:37:00]  |                                        | 
+[00:37:00]  ========================================== 
+[00:37:00]  
+[00:37:12] avmirror::1
+[00:37:12] avmirror::2
+[00:37:12] avmirror::3
+[00:37:12] avmirror::4
+[00:37:12] avmirror::3
+[00:37:12] avmirror::4
+[00:37:12] avmirror::3
+[00:37:12] avmirror::4
+[00:37:12] avmirror::3
+[00:37:12] avmirror::4
+[00:37:12] avmirror::3
+[00:37:12] avmirror::4
+[00:37:13] avmirror::3
+[00:37:13] avmirror::4
+[00:37:13] avmirror::3
+[00:37:13] avmirror::4
+[00:37:13] avmirror::3
+[00:37:13] avmirror::4
+[00:37:13] avmirror::3
+[00:37:13] avmirror::4
+[00:37:13] avmirror::3
+[00:37:13] avmirror::4
+[00:37:13] avmirror::3
+[00:37:13] avmirror::4
+[00:37:13] avmirror::3
+[00:37:13] avmirror::4
+[00:37:13] avmirror::3
+[00:37:13] avmirror::4
+[00:37:13] avmirror::3
+[00:37:13] avmirror::4
+[00:37:13] avmirror::3
+[00:37:13] avmirror::4
+[00:37:14] avmirror::3
+[00:37:14] avmirror::4
+[00:37:14] avmirror::3
+[00:37:14] avmirror::4
+[00:37:14] avmirror::3
+[00:37:14] avmirror::4
+[00:37:14] avmirror::3
+[00:37:14] avmirror::4
+[00:37:14] avmirror::3
+[00:37:14] avmirror::4
+[00:37:14] avmirror::3
+[00:37:14] avmirror::4
+[00:37:14] avmirror::3
+[00:37:14] avmirror::4
+[00:37:14] avmirror::3
+[00:37:14] avmirror::4
+[00:37:14] avmirror::3
+[00:37:14] avmirror::4
+[00:37:14] avmirror::3
+[00:37:14] avmirror::4
+[00:37:15] avmirror::3
+[00:37:15] avmirror::4
+[00:37:15] avmirror::3
+[00:37:15] avmirror::4
+[00:37:15] avmirror::3
+[00:37:15] avmirror::4
+[00:37:15] avmirror::3
+[00:37:15] avmirror::4
+[00:41:29] avmirror::1
+[00:41:29] avmirror::2
+[00:41:55] avmirror::1
+[00:41:55] avmirror::2
+[00:48:29] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[00:48:29] ----------------------------------------------
+[00:48:29] ---------Texture Studio By [uL]Pottus---------
+[00:48:29] -----------------------------------Unloaded---
+[00:48:29]   Filterscript 'tstudio.amx' unloaded.
+[00:48:29]  
+[00:48:29]  
+[00:48:29]  
+[00:48:29]  ======================================= 
+[00:48:29]  |                                     | 
+[00:48:29]  |        YSI version 3.09.0684        | 
+[00:48:29]  |        By Alex "Y_Less" Cole        | 
+[00:48:29]  |                                     | 
+[00:48:29]  ======================================= 
+[00:48:29]  
+[00:48:29]  
+[00:48:29]  
+[00:48:29] LOADED 8370 texture definitions
+[00:48:29] ----------------------------------------------
+[00:48:29] ---------Texture Studio By [uL]Pottus---------
+[00:48:29] -------------------------------------Loaded---
+[00:48:29]   Filterscript 'tstudio.amx' loaded.
+[00:48:31]  
+[00:48:31]  ========================================== 
+[00:48:31]  |                                        | 
+[00:48:31]  |  A new version (v<html>
+  ) of YSI is  | 
+[00:48:31]  |            available from:             | 
+[00:48:31]  |                                        | 
+[00:48:31]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[00:48:31]  |                                        | 
+[00:48:31]  ========================================== 
+[00:48:31]  
+[00:49:01] avoa::0, 1
+[00:56:24] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[00:56:24] ----------------------------------------------
+[00:56:24] ---------Texture Studio By [uL]Pottus---------
+[00:56:24] -----------------------------------Unloaded---
+[00:56:24]   Filterscript 'tstudio.amx' unloaded.
+[00:56:25]  
+[00:56:25]  
+[00:56:25]  
+[00:56:25]  ======================================= 
+[00:56:25]  |                                     | 
+[00:56:25]  |        YSI version 3.09.0684        | 
+[00:56:25]  |        By Alex "Y_Less" Cole        | 
+[00:56:25]  |                                     | 
+[00:56:25]  ======================================= 
+[00:56:25]  
+[00:56:25]  
+[00:56:25]  
+[00:56:25] LOADED 8370 texture definitions
+[00:56:25] ----------------------------------------------
+[00:56:25] ---------Texture Studio By [uL]Pottus---------
+[00:56:25] -------------------------------------Loaded---
+[00:56:25]   Filterscript 'tstudio.amx' loaded.
+[00:56:25]  
+[00:56:25]  ========================================== 
+[00:56:25]  |                                        | 
+[00:56:25]  |  A new version (v<html>
+  ) of YSI is  | 
+[00:56:25]  |            available from:             | 
+[00:56:25]  |                                        | 
+[00:56:25]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[00:56:25]  |                                        | 
+[00:56:25]  ========================================== 
+[00:56:25]  
+[00:56:43] SQLitei Error: (db_query) Invalid persistent database given (80000002).
+[00:56:54] [debug] Run time error 4: "Array index out of bounds"
+[00:56:54] [debug]  Accessing element at negative index -1
+[00:56:54] [debug] AMX backtrace:
+[00:56:54] [debug] #0 00077d80 in ?? () from tstudio.amx
+[00:56:54] [debug] #1 000248a4 in ?? () from tstudio.amx
+[00:56:54] [debug] #2 00026a5c in ?? () from tstudio.amx
+[00:56:54] [debug] #3 000201bc in public OnDialogResponse () from tstudio.amx
+[01:00:06] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[01:00:06] ----------------------------------------------
+[01:00:06] ---------Texture Studio By [uL]Pottus---------
+[01:00:06] -----------------------------------Unloaded---
+[01:00:06]   Filterscript 'tstudio.amx' unloaded.
+[01:00:06]  
+[01:00:06]  
+[01:00:06]  
+[01:00:06]  ======================================= 
+[01:00:06]  |                                     | 
+[01:00:06]  |        YSI version 3.09.0684        | 
+[01:00:06]  |        By Alex "Y_Less" Cole        | 
+[01:00:06]  |                                     | 
+[01:00:06]  ======================================= 
+[01:00:06]  
+[01:00:06]  
+[01:00:06]  
+[01:00:06] LOADED 8370 texture definitions
+[01:00:06] ----------------------------------------------
+[01:00:06] ---------Texture Studio By [uL]Pottus---------
+[01:00:06] -------------------------------------Loaded---
+[01:00:06]   Filterscript 'tstudio.amx' loaded.
+[01:00:07]  
+[01:00:07]  ========================================== 
+[01:00:07]  |                                        | 
+[01:00:07]  |  A new version (v<html>
+  ) of YSI is  | 
+[01:00:07]  |            available from:             | 
+[01:00:07]  |                                        | 
+[01:00:07]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[01:00:07]  |                                        | 
+[01:00:07]  ========================================== 
+[01:00:07]  
+[01:00:20] avmirror::1
+[01:00:21] avmirror::2
+[01:00:21] [debug] Run time error 4: "Array index out of bounds"
+[01:00:21] [debug]  Accessing element at negative index -1
+[01:00:21] [debug] AMX backtrace:
+[01:00:21] [debug] #0 00077dc8 in ?? () from tstudio.amx
+[01:00:21] [debug] #1 000248a4 in ?? () from tstudio.amx
+[01:00:21] [debug] #2 00026a5c in ?? () from tstudio.amx
+[01:00:21] [debug] #3 000201bc in public OnDialogResponse () from tstudio.amx
+[01:03:29] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[01:03:29] ----------------------------------------------
+[01:03:29] ---------Texture Studio By [uL]Pottus---------
+[01:03:29] -----------------------------------Unloaded---
+[01:03:29]   Filterscript 'tstudio.amx' unloaded.
+[01:03:29]  
+[01:03:29]  
+[01:03:29]  
+[01:03:29]  ======================================= 
+[01:03:29]  |                                     | 
+[01:03:29]  |        YSI version 3.09.0684        | 
+[01:03:29]  |        By Alex "Y_Less" Cole        | 
+[01:03:29]  |                                     | 
+[01:03:29]  ======================================= 
+[01:03:29]  
+[01:03:29]  
+[01:03:29]  
+[01:03:29] LOADED 8370 texture definitions
+[01:03:29] ----------------------------------------------
+[01:03:29] ---------Texture Studio By [uL]Pottus---------
+[01:03:29] -------------------------------------Loaded---
+[01:03:29]   Filterscript 'tstudio.amx' loaded.
+[01:03:29]  
+[01:03:29]  ========================================== 
+[01:03:29]  |                                        | 
+[01:03:29]  |  A new version (v<html>
+  ) of YSI is  | 
+[01:03:29]  |            available from:             | 
+[01:03:29]  |                                        | 
+[01:03:29]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[01:03:29]  |                                        | 
+[01:03:29]  ========================================== 
+[01:03:29]  
+[01:03:40] avmirror::1
+[01:03:40] avmirror::2
+[01:03:40] avmirror::3
+[01:05:25] SQLitei Error: (db_query) Invalid persistent database given (80000002).
+[01:05:25] SQLitei Error: (db_query) Invalid persistent database given (80000002).
+[01:05:59] avmirror::1
+[01:05:59] avmirror::2
+[01:05:59] avmirror::3
+[01:11:11] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[01:11:11] ----------------------------------------------
+[01:11:11] ---------Texture Studio By [uL]Pottus---------
+[01:11:11] -----------------------------------Unloaded---
+[01:11:11]   Filterscript 'tstudio.amx' unloaded.
+[01:11:11]  
+[01:11:11]  
+[01:11:11]  
+[01:11:11]  ======================================= 
+[01:11:11]  |                                     | 
+[01:11:11]  |        YSI version 3.09.0684        | 
+[01:11:11]  |        By Alex "Y_Less" Cole        | 
+[01:11:11]  |                                     | 
+[01:11:11]  ======================================= 
+[01:11:11]  
+[01:11:11]  
+[01:11:11]  
+[01:11:11] LOADED 8370 texture definitions
+[01:11:11] ----------------------------------------------
+[01:11:11] ---------Texture Studio By [uL]Pottus---------
+[01:11:11] -------------------------------------Loaded---
+[01:11:11]   Filterscript 'tstudio.amx' loaded.
+[01:11:11]  
+[01:11:11]  ========================================== 
+[01:11:11]  |                                        | 
+[01:11:11]  |  A new version (v<html>
+  ) of YSI is  | 
+[01:11:11]  |            available from:             | 
+[01:11:11]  |                                        | 
+[01:11:11]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[01:11:11]  |                                        | 
+[01:11:11]  ========================================== 
+[01:11:11]  
+[01:11:28] avmirror::1
+[01:11:29] avmirror::2
+[01:12:33] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[01:12:33] ----------------------------------------------
+[01:12:33] ---------Texture Studio By [uL]Pottus---------
+[01:12:33] -----------------------------------Unloaded---
+[01:12:33]   Filterscript 'tstudio.amx' unloaded.
+[01:12:33]  
+[01:12:33]  
+[01:12:33]  
+[01:12:33]  ======================================= 
+[01:12:33]  |                                     | 
+[01:12:33]  |        YSI version 3.09.0684        | 
+[01:12:33]  |        By Alex "Y_Less" Cole        | 
+[01:12:33]  |                                     | 
+[01:12:33]  ======================================= 
+[01:12:33]  
+[01:12:33]  
+[01:12:33]  
+[01:12:33] LOADED 8370 texture definitions
+[01:12:33] ----------------------------------------------
+[01:12:33] ---------Texture Studio By [uL]Pottus---------
+[01:12:33] -------------------------------------Loaded---
+[01:12:33]   Filterscript 'tstudio.amx' loaded.
+[01:12:33]  
+[01:12:33]  ========================================== 
+[01:12:33]  |                                        | 
+[01:12:33]  |  A new version (v<html>
+  ) of YSI is  | 
+[01:12:33]  |            available from:             | 
+[01:12:33]  |                                        | 
+[01:12:33]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[01:12:33]  |                                        | 
+[01:12:33]  ========================================== 
+[01:12:33]  
+[01:12:46] avmirror::1
+[01:12:46] avmirror::2
+[01:13:40] SQLitei Error: (db_query) Invalid persistent database given (80000002).
+[01:13:40] SQLitei Error: (db_query) Invalid persistent database given (80000002).
+[01:16:32] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[01:16:32] ----------------------------------------------
+[01:16:32] ---------Texture Studio By [uL]Pottus---------
+[01:16:32] -----------------------------------Unloaded---
+[01:16:32]   Filterscript 'tstudio.amx' unloaded.
+[01:16:32]  
+[01:16:32]  
+[01:16:32]  
+[01:16:32]  ======================================= 
+[01:16:32]  |                                     | 
+[01:16:32]  |        YSI version 3.09.0684        | 
+[01:16:32]  |        By Alex "Y_Less" Cole        | 
+[01:16:32]  |                                     | 
+[01:16:32]  ======================================= 
+[01:16:32]  
+[01:16:32]  
+[01:16:32]  
+[01:16:32] LOADED 8370 texture definitions
+[01:16:32] ----------------------------------------------
+[01:16:32] ---------Texture Studio By [uL]Pottus---------
+[01:16:32] -------------------------------------Loaded---
+[01:16:32]   Filterscript 'tstudio.amx' loaded.
+[01:16:32]  
+[01:16:32]  ========================================== 
+[01:16:32]  |                                        | 
+[01:16:32]  |  A new version (v<html>
+  ) of YSI is  | 
+[01:16:32]  |            available from:             | 
+[01:16:32]  |                                        | 
+[01:16:32]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[01:16:32]  |                                        | 
+[01:16:32]  ========================================== 
+[01:16:32]  
+[01:16:43] avmirror::1
+[01:16:43] avmirror::2
+[01:17:38] avmirror::1
+[01:17:38] avmirror::2
+[01:18:47] [part] [uL]Pottus has left the server (0:1)
+[21:56:13] Incoming connection: 127.0.0.1:56676
+[21:56:13] [join] [uL]Pottus has joined the server (0:127.0.0.1)
+[21:56:23] RCON (In-Game): Player #0 ([uL]Pottus) failed login.
+[21:56:27] RCON (In-Game): Player #0 ([uL]Pottus) has logged in.
+[21:56:30] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[21:56:30] ----------------------------------------------
+[21:56:30] ---------Texture Studio By [uL]Pottus---------
+[21:56:30] -----------------------------------Unloaded---
+[21:56:30]   Filterscript 'tstudio.amx' unloaded.
+[21:56:30]  
+[21:56:30]  
+[21:56:30]  
+[21:56:30]  ======================================= 
+[21:56:30]  |                                     | 
+[21:56:30]  |        YSI version 3.09.0684        | 
+[21:56:30]  |        By Alex "Y_Less" Cole        | 
+[21:56:30]  |                                     | 
+[21:56:30]  ======================================= 
+[21:56:30]  
+[21:56:30]  
+[21:56:30]  
+[21:56:30] LOADED 8370 texture definitions
+[21:56:30] ----------------------------------------------
+[21:56:30] ---------Texture Studio By [uL]Pottus---------
+[21:56:30] -------------------------------------Loaded---
+[21:56:30]   Filterscript 'tstudio.amx' loaded.
+[21:56:30]  
+[21:56:30]  ========================================== 
+[21:56:30]  |                                        | 
+[21:56:30]  |  A new version (v<html>
+  ) of YSI is  | 
+[21:56:30]  |            available from:             | 
+[21:56:30]  |                                        | 
+[21:56:30]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[21:56:30]  |                                        | 
+[21:56:30]  ========================================== 
+[21:56:30]  
+[22:02:43] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[22:02:43] ----------------------------------------------
+[22:02:43] ---------Texture Studio By [uL]Pottus---------
+[22:02:43] -----------------------------------Unloaded---
+[22:02:43]   Filterscript 'tstudio.amx' unloaded.
+[22:02:43]  
+[22:02:43]  
+[22:02:43]  
+[22:02:43]  ======================================= 
+[22:02:43]  |                                     | 
+[22:02:43]  |        YSI version 3.09.0684        | 
+[22:02:43]  |        By Alex "Y_Less" Cole        | 
+[22:02:43]  |                                     | 
+[22:02:43]  ======================================= 
+[22:02:43]  
+[22:02:43]  
+[22:02:43]  
+[22:02:44] LOADED 8370 texture definitions
+[22:02:44] ----------------------------------------------
+[22:02:44] ---------Texture Studio By [uL]Pottus---------
+[22:02:44] -------------------------------------Loaded---
+[22:02:44]   Filterscript 'tstudio.amx' loaded.
+[22:02:44]  
+[22:02:44]  ========================================== 
+[22:02:44]  |                                        | 
+[22:02:44]  |  A new version (v<html>
+  ) of YSI is  | 
+[22:02:44]  |            available from:             | 
+[22:02:44]  |                                        | 
+[22:02:44]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[22:02:44]  |                                        | 
+[22:02:44]  ========================================== 
+[22:02:44]  
+[23:59:02] sscanf warning: sscanf specifiers do not require '' before them.
+[23:59:07] sscanf warning: sscanf specifiers do not require '' before them.
+[23:59:10] sscanf warning: sscanf specifiers do not require '' before them.
+[00:03:28] [part] [uL]Pottus has left the server (0:1)
+[00:28:19] Incoming connection: 127.0.0.1:60001
+[00:28:20] [join] [uL]Pottus has joined the server (0:127.0.0.1)
+[00:28:29] RCON (In-Game): Player #0 ([uL]Pottus) has logged in.
+[00:28:32] RCON (In-Game): Player [[uL]Pottus] sent command: loadfs test
+[00:28:32]   Filterscript 'test.amx' loaded.
+[00:29:26] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs test
+[00:29:26]   Filterscript 'test.amx' unloaded.
+[00:29:26]   Filterscript 'test.amx' loaded.
+[00:35:36] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs test
+[00:35:36]   Filterscript 'test.amx' unloaded.
+[00:35:36]   Filterscript 'test.amx' loaded.
+[00:37:20] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs test
+[00:37:20]   Filterscript 'test.amx' unloaded.
+[00:37:20]   Filterscript 'test.amx' loaded.
+[00:41:48] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs test
+[00:41:48]   Filterscript 'test.amx' unloaded.
+[00:41:48]   Filterscript 'test.amx' loaded.
+[00:43:29] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs test
+[00:43:29]   Filterscript 'test.amx' unloaded.
+[00:43:29]   Filterscript 'test.amx' loaded.
+[04:37:42] [part] [uL]Pottus has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3z-R2, (C)2005-2014 SA-MP Team
+
+[19:40:12] 
+[19:40:12] Server Plugins
+[19:40:12] --------------
+[19:40:12]  Loading plugin: sscanf
+[19:40:12] 
+
+[19:40:12]  ===============================
+
+[19:40:12]       sscanf plugin loaded.     
+
+[19:40:12]          Version:  2.8.1        
+
+[19:40:12]    (c) 2012 Alex "Y_Less" Cole  
+
+[19:40:12]  ===============================
+
+[19:40:12]   Loaded.
+[19:40:12]  Loading plugin: streamer
+[19:40:12] 
+
+*** Streamer Plugin v2.7.2 by Incognito loaded ***
+
+[19:40:12]   Loaded.
+[19:40:12]  Loading plugin: filemanager
+[19:40:12] ******************
+[19:40:12] ** FILE MANAGER **
+[19:40:12] **    Loaded    **
+[19:40:12] ** Version 1.5 **
+[19:40:12] ******************
+[19:40:12]   Loaded.
+[19:40:12]  Loading plugin: crashdetect
+[19:40:12]   CrashDetect v4.10.1 is OK.
+[19:40:12]   Loaded.
+[19:40:12]  Loading plugin: mapandreas
+[19:40:12]   Failed.
+[19:40:12]  Loaded 4 plugins.
+
+[19:40:12] 
+[19:40:12] Filterscripts
+[19:40:12] ---------------
+[19:40:12]   Loading filterscript 'tstudio.amx'...
+[19:40:12]  
+[19:40:12]  
+[19:40:12]  
+[19:40:12]  ======================================= 
+[19:40:12]  |                                     | 
+[19:40:12]  |        YSI version 3.09.0684        | 
+[19:40:12]  |        By Alex "Y_Less" Cole        | 
+[19:40:12]  |                                     | 
+[19:40:12]  ======================================= 
+[19:40:12]  
+[19:40:12]  
+[19:40:13]  
+[19:40:13] LOADED 8370 texture definitions
+[19:40:13] ----------------------------------------------
+[19:40:13] ---------Texture Studio By [uL]Pottus---------
+[19:40:13] -------------------------------------Loaded---
+[19:40:13]   Loading filterscript 'fsdebug.amx'...
+[19:40:13] 
+  *********************
+  * SA:MP DEBUG 0.2   *
+[19:40:13]   * By Simon Campbell *
+  *********************
+[19:40:13]   * Version: 0.5d      *
+  *********************
+[19:40:13]   * -- LOADED         *
+  *********************
+
+[19:40:13]   Loaded 2 filterscripts.
+
+[19:40:13] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[19:40:13] LOADED 8370 texture definitions
+[19:40:13] 
+----------------------------------
+[19:40:13]   Bare Script
+
+[19:40:13] ----------------------------------
+
+[19:40:13] Number of vehicle models: 0
+[19:40:13]  
+[19:40:13]  ========================================== 
+[19:40:13]  |                                        | 
+[19:40:13]  |  A new version (v<html>
+  ) of YSI is  | 
+[19:40:13]  |            available from:             | 
+[19:40:13]  |                                        | 
+[19:40:13]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[19:40:13]  |                                        | 
+[19:40:13]  ========================================== 
+[19:40:13]  
+[19:43:55] Incoming connection: 127.0.0.1:63662
+[19:43:55] [join] [uL]Pottus has joined the server (0:127.0.0.1)
+[20:16:15] RCON (In-Game): Player #0 ([uL]Pottus) has logged in.
+[20:16:16] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[20:16:16] ----------------------------------------------
+[20:16:16] ---------Texture Studio By [uL]Pottus---------
+[20:16:16] -----------------------------------Unloaded---
+[20:16:16]   Filterscript 'tstudio.amx' unloaded.
+[20:16:16]  
+[20:16:16]  
+[20:16:16]  
+[20:16:16]  ======================================= 
+[20:16:16]  |                                     | 
+[20:16:16]  |        YSI version 3.09.0684        | 
+[20:16:16]  |        By Alex "Y_Less" Cole        | 
+[20:16:16]  |                                     | 
+[20:16:16]  ======================================= 
+[20:16:16]  
+[20:16:16]  
+[20:16:16]  
+[20:16:17] LOADED 8370 texture definitions
+[20:16:17] ----------------------------------------------
+[20:16:17] ---------Texture Studio By [uL]Pottus---------
+[20:16:17] -------------------------------------Loaded---
+[20:16:17]   Filterscript 'tstudio.amx' loaded.
+[20:16:17]  
+[20:16:17]  ========================================== 
+[20:16:17]  |                                        | 
+[20:16:17]  |  A new version (v<html>
+  ) of YSI is  | 
+[20:16:17]  |            available from:             | 
+[20:16:17]  |                                        | 
+[20:16:17]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[20:16:17]  |                                        | 
+[20:16:17]  ========================================== 
+[20:16:17]  
+[21:07:21] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[21:07:21] ----------------------------------------------
+[21:07:21] ---------Texture Studio By [uL]Pottus---------
+[21:07:21] -----------------------------------Unloaded---
+[21:07:21]   Filterscript 'tstudio.amx' unloaded.
+[21:07:21]  
+[21:07:21]  
+[21:07:21]  
+[21:07:21]  ======================================= 
+[21:07:21]  |                                     | 
+[21:07:21]  |        YSI version 3.09.0684        | 
+[21:07:21]  |        By Alex "Y_Less" Cole        | 
+[21:07:21]  |                                     | 
+[21:07:21]  ======================================= 
+[21:07:21]  
+[21:07:21]  
+[21:07:21]  
+[21:07:22] LOADED 8370 texture definitions
+[21:07:22] ----------------------------------------------
+[21:07:22] ---------Texture Studio By [uL]Pottus---------
+[21:07:22] -------------------------------------Loaded---
+[21:07:22]   Filterscript 'tstudio.amx' loaded.
+[21:07:22]  
+[21:07:22]  ========================================== 
+[21:07:22]  |                                        | 
+[21:07:22]  |  A new version (v<html>
+  ) of YSI is  | 
+[21:07:22]  |            available from:             | 
+[21:07:22]  |                                        | 
+[21:07:22]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[21:07:22]  |                                        | 
+[21:07:22]  ========================================== 
+[21:07:22]  
+[21:09:40] [part] [uL]Pottus has left the server (0:1)
+[21:16:25] Incoming connection: 127.0.0.1:52857
+[21:16:26] [join] [uL]Pottus has joined the server (0:127.0.0.1)
+[21:18:44] RCON (In-Game): Player #0 ([uL]Pottus) has logged in.
+[21:18:45] RCON (In-Game): Player [[uL]Pottus] sent command: reloadfs tstudio
+[21:18:45] ----------------------------------------------
+[21:18:45] ---------Texture Studio By [uL]Pottus---------
+[21:18:45] -----------------------------------Unloaded---
+[21:18:45]   Filterscript 'tstudio.amx' unloaded.
+[21:18:45]  
+[21:18:45]  
+[21:18:45]  
+[21:18:45]  ======================================= 
+[21:18:45]  |                                     | 
+[21:18:45]  |        YSI version 3.09.0684        | 
+[21:18:45]  |        By Alex "Y_Less" Cole        | 
+[21:18:45]  |                                     | 
+[21:18:45]  ======================================= 
+[21:18:45]  
+[21:18:45]  
+[21:18:45]  
+[21:18:45] LOADED 8370 texture definitions
+[21:18:45] ----------------------------------------------
+[21:18:45] ---------Texture Studio By [uL]Pottus---------
+[21:18:45] -------------------------------------Loaded---
+[21:18:45]   Filterscript 'tstudio.amx' loaded.
+[21:18:46]  
+[21:18:46]  ========================================== 
+[21:18:46]  |                                        | 
+[21:18:46]  |  A new version (v<html>
+  ) of YSI is  | 
+[21:18:46]  |            available from:             | 
+[21:18:46]  |                                        | 
+[21:18:46]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[21:18:46]  |                                        | 
+[21:18:46]  ========================================== 
+[21:18:46]  
+[21:19:10] [part] [uL]Pottus has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3z-R2, (C)2005-2014 SA-MP Team
+
+[21:23:29] 
+[21:23:29] Server Plugins
+[21:23:29] --------------
+[21:23:29]  Loading plugin: sscanf
+[21:23:29] 
+
+[21:23:29]  ===============================
+
+[21:23:29]       sscanf plugin loaded.     
+
+[21:23:29]          Version:  2.8.1        
+
+[21:23:29]    (c) 2012 Alex "Y_Less" Cole  
+
+[21:23:29]  ===============================
+
+[21:23:29]   Loaded.
+[21:23:29]  Loading plugin: streamer
+[21:23:29] 
+
+*** Streamer Plugin v2.7.2 by Incognito loaded ***
+
+[21:23:29]   Loaded.
+[21:23:29]  Loading plugin: filemanager
+[21:23:29] ******************
+[21:23:29] ** FILE MANAGER **
+[21:23:29] **    Loaded    **
+[21:23:29] ** Version 1.5 **
+[21:23:29] ******************
+[21:23:29]   Loaded.
+[21:23:29]  Loading plugin: crashdetect
+[21:23:29]   CrashDetect v4.10.1 is OK.
+[21:23:29]   Loaded.
+[21:23:29]  Loading plugin: mapandreas
+[21:23:29]   Failed.
+[21:23:29]  Loaded 4 plugins.
+
+[21:23:29] 
+[21:23:29] Filterscripts
+[21:23:29] ---------------
+[21:23:29]   Loading filterscript 'tstudio.amx'...
+[21:23:30]  
+[21:23:30]  
+[21:23:30]  
+[21:23:30]  ======================================= 
+[21:23:30]  |                                     | 
+[21:23:30]  |        YSI version 3.09.0684        | 
+[21:23:30]  |        By Alex "Y_Less" Cole        | 
+[21:23:30]  |                                     | 
+[21:23:30]  ======================================= 
+[21:23:30]  
+[21:23:30]  
+[21:23:30]  
+[21:23:30] LOADED 8370 texture definitions
+[21:23:30] ----------------------------------------------
+[21:23:30] ---------Texture Studio By [uL]Pottus---------
+[21:23:30] -------------------------------------Loaded---
+[21:23:30]   Loading filterscript 'fsdebug.amx'...
+[21:23:30] 
+  *********************
+  * SA:MP DEBUG 0.2   *
+[21:23:30]   * By Simon Campbell *
+  *********************
+[21:23:30]   * Version: 0.5d      *
+  *********************
+[21:23:30]   * -- LOADED         *
+  *********************
+
+[21:23:30]   Loaded 2 filterscripts.
+
+[21:23:30] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[21:23:30] LOADED 8370 texture definitions
+[21:23:30] 
+----------------------------------
+[21:23:30]   Bare Script
+
+[21:23:30] ----------------------------------
+
+[21:23:30] Number of vehicle models: 0
+[21:23:30]  
+[21:23:30]  ========================================== 
+[21:23:30]  |                                        | 
+[21:23:30]  |  A new version (v<html>
+  ) of YSI is  | 
+[21:23:30]  |            available from:             | 
+[21:23:30]  |                                        | 
+[21:23:30]  |     www.y-less.com/YSI/YSI_1.0.zip     | 
+[21:23:30]  |                                        | 
+[21:23:30]  ========================================== 
+[21:23:30]  
