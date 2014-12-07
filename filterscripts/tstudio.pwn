@@ -185,6 +185,8 @@ Change Log:
 	v1.6b - Added feature to export map including cars to filterscript
 	    - New command /avmirror mirror objects on a car
 	    - Completely rebuild the all objects array some where missing it should be complete now
+	v1.6c - Text length is now 128 characters and will accept \n for new line
+	    - Fixed a issue with folders now showing on github
 	
 Roadmap:
 	- Refine functionality
@@ -277,7 +279,7 @@ Roadmap:
 #define         HIGHLIGHT_OBJECT_COLOR      0xFFFF0000
 
 // Maximum text length
-#define         MAX_TEXT_LENGTH             64
+#define         MAX_TEXT_LENGTH             128
 
 
 // 3D Text drawdistance
@@ -1599,11 +1601,16 @@ HighlightObject(index)
 // Updates any text for an object
 UpdateObjectText(index)
 {
+	// Dialogs return literal values this will fix that issue to display correctly
+	new tmptext[MAX_TEXT_LENGTH];
+	strcat(tmptext, ObjectData[index][oObjectText], MAX_TEXT_LENGTH);
+    FixText(tmptext);
+
 	if(ObjectData[index][ousetext])
 	{
 		SetDynamicObjectMaterialText(ObjectData[index][oID],
 			0,
-			ObjectData[index][oObjectText],
+			tmptext,
 			FontSizes[ObjectData[index][oFontSize]],
 			FontNames[ObjectData[index][oFontFace]],
 			ObjectData[index][oTextFontSize],
@@ -1615,6 +1622,45 @@ UpdateObjectText(index)
 	}
 	return 0;
 }
+
+// Fixes new line and tabs in material text
+FixText(text[])
+{
+	new len = strlen(text);
+	if(len > 1)
+	{
+		for(new i = 0; i < len; i++)
+		{
+			if(text[i] == 92)
+			{
+				// New line
+			    if(text[i+1] == 'n')
+			    {
+					text[i] = '\n';
+					for(new j = i+1; j < len; j++) text[j] = text[j+1], text[j+1] = 0;
+					continue;
+			    }
+
+				// Tab
+			    if(text[i+1] == 't')
+			    {
+					text[i] = '\t';
+					for(new j = i+1; j < len-1; j++) text[j] = text[j+1], text[j+1] = 0;
+					continue;
+			    }
+
+				// Literal
+			    if(text[i+1] == 92)
+			    {
+					text[i] = 92;
+					for(new j = i+1; j < len-1; j++) text[j] = text[j+1], text[j+1] = 0;
+			    }
+			}
+		}
+	}
+	return 1;
+}
+
 
 Edit_SetObjectPos(index, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, bool:save)
 {

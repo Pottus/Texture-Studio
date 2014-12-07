@@ -80,7 +80,7 @@ UpdateTextEditor(playerid)
 
 	// Update text
 	if(isnull(GetObjectObjectText(index))) PlayerTextDrawSetString(playerid, Click_SetText[playerid], "None");
-	else PlayerTextDrawSetString(playerid, Click_SetText[playerid], GetObjectObjectText(index));
+	else PlayerTextDrawSetString(playerid, Click_SetText[playerid], "Click To Edit");
 
 	// Update font
 	PlayerTextDrawSetString(playerid, Click_SetFont[playerid], FontNames[GetObjectFontFace(index)]);
@@ -179,10 +179,10 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
 			{
 				if(strlen(text) > 0)
 				{
-					if(strlen(text) < 64)
+					if(strlen(text) < MAX_TEXT_LENGTH)
 					{
 						SetObjectObjectText(index, text);
-						PlayerTextDrawSetString(playerid, Click_SetText[playerid], GetObjectObjectText(index));
+						PlayerTextDrawSetString(playerid, Click_SetText[playerid], "Click To Edit");
 
                         sqlite_ObjObjectText(index);
 
@@ -193,7 +193,7 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
 					else
 					{
 					    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-					    SendClientMessage(playerid, STEALTH_YELLOW, "Text length must no exceed 64 characters.");
+					    SendClientMessage(playerid, STEALTH_YELLOW, "Text length is too long");
 					}
 				}
 				else
@@ -204,7 +204,12 @@ public ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)
                 return 1;
 			}
 		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Set Material Text", "Type The Material Text You Wish To Use", "Ok", "Cancel");
+		new tmptext[MAX_TEXT_LENGTH];
+		strcat(tmptext, ObjectData[index][oObjectText], MAX_TEXT_LENGTH);
+	    FixText(tmptext);
+
+
+		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Set Material Text", tmptext, "Ok", "Cancel");
 		return 1;
 	}
 	
