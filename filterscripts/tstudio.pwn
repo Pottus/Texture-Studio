@@ -187,9 +187,9 @@ Change Log:
 	    - Completely rebuild the all objects array some where missing it should be complete now
 	v1.6c - Text length is now 128 characters and will accept \n for new line
 	    - Fixed a issue with folders now showing on github
-	
-Roadmap:
-	- Refine functionality
+	v1.6d - Fixed an issue with exporting objects if an object had text the parameters were out of order
+	    - Any object should be able to be created now there even LOD
+	    - Re-organized the project slightly
 */
 
 #define FILTERSCRIPT
@@ -234,7 +234,7 @@ Roadmap:
 #include <YSI\y_iterate>
 
 // GUI System
-#include <tstudio\gui\guisys>
+#include "tstudio\gui\guisys.pwn"
 
 // YSI
 #include <YSI\y_inline>
@@ -244,19 +244,19 @@ Roadmap:
 
 // All SA textures
 #if defined COMPILE_DAYZ_INCLUDES
-	#include <tstudio\alltextures420>
+	#include "tstudio\alltextures420.pwn"
 #else
-	#include <tstudio\alltextures>
+	#include "tstudio\alltextures.pwn"
 #endif
 
 // Valid SA models
-#include <tstudio\validmodels>
+#include "tstudio\validmodels.pwn"
 
 // Model sizes
-#include <tstudio\modelsizes>
+#include "tstudio\modelsizes.pwn"
 
 // Include 3D Menus (By SDraw)
-#include <tstudio\3dmenu>
+#include "tstudio\3dmenu.pwn"
 
 // Common functions
 #include <functions>
@@ -520,50 +520,50 @@ new DB: ThemeDataDB;
 new bool:MapOpen;
 
 // Webcolor list
-#include <tstudio\webcolors>
+#include "tstudio\webcolors.pwn"
 
 // Flymode
-#include <tstudio\flymode>
+#include "tstudio\flymode.pwn"
 
 // Text editor module
-#include <tstudio\texteditor>
+#include "tstudio\texteditor.pwn"
 
 // Texture viewer
-#include <tstudio\texviewer>
+#include "tstudio\texviewer.pwn"
 
 // Group editing
-#include <tstudio\groups>
+#include "tstudio\groups.pwn"
 
 // List selection
-#include <tstudio\listsel>
+#include "tstudio\listsel.pwn"
 
 // Object property editor/viewer
-#include <tstudio\propeditor>
+#include "tstudio\propeditor.pwn"
 
 // Object search
-#include <tstudio\osearch>
+#include "tstudio\osearch.pwn"
 
 // Objectmetry module
-#include <tstudio\objm>
-#include <tstudio\obmedit>
+#include "tstudio\objm.pwn"
+#include "tstudio\obmedit.pwn"
 
 
 // GTA objects module
 #if defined COMPILE_GTA_OBJECTS
-	#include <tstudio\gtaobjects>
+	#include "tstudio\gtaobjects.pwn"
 #endif
 
 // Vehicles
-#include <tstudio\vehiclecolors>
-#include <tstudio\vehicles>
+#include "tstudio\vehiclecolors.pwn"
+#include "tstudio\vehicles.pwn"
 
 // Special includes
 #if defined COMPILE_DAYZ_INCLUDES
-//	#include <tstudio\420\mangle>
+//	#include "tstudio\420\mangle.pwn"
 #endif
 
 // Menu GUI
-#include <tstudio\menugui>
+#include "tstudio\menugui.pwn"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2733,7 +2733,7 @@ MapExport(playerid, mapname[], Float:drawdist)
 					{
 						if(elistitem == 0)
 						{
-							format(templine,sizeof(templine),"SetObjectMaterialText(tmpobjid, 0, %c%s%c, %i, %c%s%c, %i, %i, %i, %i, %i);\r\n",
+							format(templine,sizeof(templine),"SetObjectMaterialText(tmpobjid, %c%s%c, 0, %i, %c%s%c, %i, %i, %i, %i, %i);\r\n",
 								34, ObjectData[i][oObjectText], 34,
 								FontSizes[ObjectData[i][oFontSize]],
 								34, FontNames[ObjectData[i][oFontFace]], 34,
@@ -3897,7 +3897,9 @@ CMD:cobject(playerid, arg[]) // In gui
 
 		// Show output message
 		new line[128];
-		format(line, sizeof(line), "Created Object Index: %i Model Name: %s", CurrObject[playerid], GetModelName(GetModelArray(modelid)));
+		new modelarray = GetModelArray(modelid);
+		if(modelarray > -1) format(line, sizeof(line), "Created Object Index: %i Model Name: %s", CurrObject[playerid], GetModelName(modelarray));
+		else format(line, sizeof(line), "Created Object Index: %i Model Name: Unknown", CurrObject[playerid]); 
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, line);
 
