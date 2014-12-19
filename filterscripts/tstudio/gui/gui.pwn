@@ -99,7 +99,7 @@ static GUIData[MAX_GUI][GUIMENUINFO];
 	#else
 		#define _ALS_OnGameModeExit
 	#endif
-	#define OnFilterScriptExit GUI_OnGameModeExit
+	#define OnGameModeExit GUI_OnGameModeExit
 	forward GUI_OnGameModeExit();
 #endif
 
