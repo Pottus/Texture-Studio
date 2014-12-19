@@ -149,7 +149,7 @@ static bool:SelectionOn[MAX_PLAYERS];
 	#else
 		#define _ALS_OnGameModeInit
 	#endif
-	#define OnFilterScriptInit GUIP_OnGameModeInit
+	#define OnGameModeInit GUIP_OnGameModeInit
 	forward GUIP_OnGameModeInit();
 
 #endif
@@ -200,7 +200,7 @@ static bool:SelectionOn[MAX_PLAYERS];
 	#else
 		#define _ALS_OnGameModeExit
 	#endif
-	#define OnFilterScriptExit GUIP_OnGameModeExit
+	#define OnGameModeExit GUIP_OnGameModeExit
 	forward GUIP_OnGameModeExit();
 
 #endif
