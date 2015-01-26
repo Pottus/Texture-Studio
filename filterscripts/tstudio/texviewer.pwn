@@ -256,7 +256,7 @@ CMD:tsearch(playerid, arg[])
 		if(response)
 		{
 			new index;
-		    sscanf(text, "p<:>%i", index);
+		    sscanf(text, "p<:>i", index);
 		    format(line, sizeof(line), "/mtextures %i", index);
 		    BroadcastCommand(playerid, line);
 		}

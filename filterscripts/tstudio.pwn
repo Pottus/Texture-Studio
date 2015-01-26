@@ -3870,7 +3870,7 @@ CMD:cobject(playerid, arg[]) // In gui
 		return 1;
 	}
 
-	ModelIsValid(modelid);
+	// ModelIsValid(modelid);
 
 	// Set the initial object position
 	new Float:px, Float:py, Float:pz, Float:fa;
