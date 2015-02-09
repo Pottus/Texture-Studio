@@ -33,6 +33,7 @@ ShowPropMenu(playerid)
 						{
 							if(!isnull(etext))
 							{
+								SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 								new groupid = strval(etext);
 								ObjectData[CurrObject[playerid]][oGroup] = groupid;
 								OnUpdateGroup3DText(CurrObject[playerid]);
@@ -64,6 +65,7 @@ ShowPropMenu(playerid)
 
                             if(IsValidModel(model))
 							{
+								SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 							    ObjectData[CurrObject[playerid]][oModel] = model;
 								sqlite_ObjModel(CurrObject[playerid]);
 								RebuildObject(CurrObject[playerid]);
@@ -95,6 +97,7 @@ ShowPropMenu(playerid)
 	                            SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 								if(slistitem == 2)
 								{
+									SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 									ObjectData[CurrObject[playerid]][oX] = floatstr(etext);
 									SetDynamicObjectPos(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oX], ObjectData[CurrObject[playerid]][oY], ObjectData[CurrObject[playerid]][oZ]);
 									sqlite_UpdateObjectPos(CurrObject[playerid]);
@@ -103,6 +106,7 @@ ShowPropMenu(playerid)
 								}
 								if(slistitem == 3)
 								{
+								    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 									ObjectData[CurrObject[playerid]][oY] = floatstr(etext);
 									SetDynamicObjectPos(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oX], ObjectData[CurrObject[playerid]][oY], ObjectData[CurrObject[playerid]][oZ]);
 									sqlite_UpdateObjectPos(CurrObject[playerid]);
@@ -111,6 +115,7 @@ ShowPropMenu(playerid)
 								}
 								if(slistitem == 4)
 								{
+								    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 									ObjectData[CurrObject[playerid]][oZ] = floatstr(etext);
 									SetDynamicObjectPos(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oX], ObjectData[CurrObject[playerid]][oY], ObjectData[CurrObject[playerid]][oZ]);
 									sqlite_UpdateObjectPos(CurrObject[playerid]);
@@ -120,6 +125,7 @@ ShowPropMenu(playerid)
 								
 								if(slistitem == 5)
 								{
+								    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 									ObjectData[CurrObject[playerid]][oRX] = floatstr(etext);
 									SetDynamicObjectPos(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
 									sqlite_UpdateObjectPos(CurrObject[playerid]);
@@ -129,6 +135,7 @@ ShowPropMenu(playerid)
 
 								if(slistitem == 6)
 								{
+								    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 									ObjectData[CurrObject[playerid]][oRY] = floatstr(etext);
 									SetDynamicObjectPos(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
 									sqlite_UpdateObjectPos(CurrObject[playerid]);
@@ -138,6 +145,7 @@ ShowPropMenu(playerid)
 								
 								if(slistitem == 7)
 								{
+								    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 									ObjectData[CurrObject[playerid]][oRZ] = floatstr(etext);
 									SetDynamicObjectPos(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
 									sqlite_UpdateObjectPos(CurrObject[playerid]);
@@ -208,6 +216,7 @@ ShowPropMenu(playerid)
 						{
 							if(!ObjectData[CurrObject[playerid]][ousetext])
 							{
+								SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 							    ObjectData[CurrObject[playerid]][ousetext] = 1;
 							    RebuildObject(CurrObject[playerid]);
 								sqlite_ObjUseText(CurrObject[playerid]);
@@ -254,6 +263,7 @@ ShowPropMenu(playerid)
 						#pragma unused elistitem, edialogid, epid, etext
 						if(eresponse)
 						{
+                            SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 						    ObjectData[CurrObject[playerid]][oFontFace] = elistitem;
 						    RebuildObject(CurrObject[playerid]);
 							sqlite_ObjFontFace(CurrObject[playerid]);
@@ -276,6 +286,7 @@ ShowPropMenu(playerid)
 						#pragma unused elistitem, edialogid, epid, etext
 						if(eresponse)
 						{
+						    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 						    ObjectData[CurrObject[playerid]][oFontSize] = elistitem;
 						    RebuildObject(CurrObject[playerid]);
 						    sqlite_ObjFontSize(CurrObject[playerid]);
@@ -300,6 +311,7 @@ ShowPropMenu(playerid)
 						{
 							if(!ObjectData[CurrObject[playerid]][oFontBold])
 							{
+							    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 							    ObjectData[CurrObject[playerid]][oFontBold] = 1;
 							    RebuildObject(CurrObject[playerid]);
 							    sqlite_ObjFontBold(CurrObject[playerid]);
@@ -319,6 +331,7 @@ ShowPropMenu(playerid)
 						{
 							if(ObjectData[CurrObject[playerid]][oFontBold])
 							{
+							    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 							    ObjectData[CurrObject[playerid]][oFontBold] = 0;
 							    RebuildObject(CurrObject[playerid]);
 								sqlite_ObjFontBold(CurrObject[playerid]);
@@ -350,6 +363,7 @@ ShowPropMenu(playerid)
 						{
                             if(IsHexValue(etext))
                             {
+                                SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 	     						sscanf(etext, "h", ObjectData[CurrObject[playerid]][oFontColor]);
 							    RebuildObject(CurrObject[playerid]);
 							    sqlite_ObjFontColor(CurrObject[playerid]);
@@ -378,6 +392,7 @@ ShowPropMenu(playerid)
 						{
                             if(IsHexValue(etext))
                             {
+                                SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 	     						sscanf(etext, "h", ObjectData[CurrObject[playerid]][oBackColor]);
 							    RebuildObject(CurrObject[playerid]);
 							    sqlite_ObjBackColor(CurrObject[playerid]);
@@ -405,6 +420,7 @@ ShowPropMenu(playerid)
 						#pragma unused elistitem, edialogid, epid, etext
 						if(eresponse)
 						{
+						    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 						    ObjectData[CurrObject[playerid]][oAlignment] = elistitem;
 						    RebuildObject(CurrObject[playerid]);
 							sqlite_ObjAlignment(CurrObject[playerid]);
@@ -431,6 +447,7 @@ ShowPropMenu(playerid)
 							
 							if(size > 0 && size < 201)
 							{
+							    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 							    ObjectData[CurrObject[playerid]][oTextFontSize] = size;
 							    RebuildObject(CurrObject[playerid]);
 							    sqlite_ObjFontTextSize(CurrObject[playerid]);
@@ -455,6 +472,7 @@ ShowPropMenu(playerid)
 						{
 							if(!isnull(etext))
 							{
+							    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 							    format(ObjectData[CurrObject[playerid]][oObjectText], MAX_TEXT_LENGTH, "%s", etext);
 							    RebuildObject(CurrObject[playerid]);
                                 sqlite_ObjObjectText(CurrObject[playerid]);

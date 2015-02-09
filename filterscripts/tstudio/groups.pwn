@@ -177,10 +177,14 @@ OnPlayerEditDOGroup(playerid, objectid, response, Float:x, Float:y, Float:z, Flo
 		new Float:gCenterX, Float:gCenterY, Float:gCenterZ;
 		GetGroupCenter(playerid, gCenterX, gCenterY, gCenterZ);
 
+		new time = GetTickCount();
+
 		foreach(new i : Objects)
 		{
 	   		if(GroupedObjects[playerid][i])
 			{
+				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+				
 				new Float:offx, Float:offy, Float:offz;
 				offx = (ObjectData[i][oX] + (x - gCenterX)) - PivotOffset[playerid][xPos];
 				offy = (ObjectData[i][oY] + (y - gCenterY)) - PivotOffset[playerid][yPos];
@@ -364,6 +368,8 @@ CMD:setgroup(playerid, arg[]) // in GUI
     NoEditingMode(playerid);
     
     new groupid = strval(arg);
+    
+    new time = GetTickCount();
 
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 
@@ -373,6 +379,7 @@ CMD:setgroup(playerid, arg[]) // in GUI
 		{
 			if(GroupedObjects[playerid][i])
 			{
+				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
 				ObjectData[i][oGroup] = groupid;
 				OnUpdateGroup3DText(i);
 				UpdateObject3DText(i);
@@ -582,14 +589,15 @@ CMD:gclone(playerid, arg[]) // in  GUI
 
 	new index;
 	new count;
-	
+	new time = GetTickCount();
+
 	for(new i = 0; i < MAX_TEXTURE_OBJECTS; i++) { tmpgrp[i] = false; }
 	
     foreach(new i : Objects)
     {
         if(GroupedObjects[playerid][i])
         {
-			index = CloneObject(i);
+			index = CloneObject(i, time);
             GroupedObjects[playerid][i] = false;
             tmpgrp[index] = true;
 			OnUpdateGroup3DText(i);
@@ -626,11 +634,13 @@ CMD:gdelete(playerid, arg[]) // in  GUI
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 
 	new count;
+	new time = GetTickCount();
 
     foreach(new i : Objects)
     {
         if(GroupedObjects[playerid][i])
         {
+			SaveUndoInfo(i, UNDO_TYPE_DELETED, time);
 			i = DeleteDynamicObject(i);
         	count++;
         }
@@ -685,6 +695,7 @@ CMD:gox(playerid, arg[])
     MapOpenCheck();
 
 	new Float:dist;
+	new time = GetTickCount();
 
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
@@ -693,6 +704,8 @@ CMD:gox(playerid, arg[])
 	{
 		if(GroupedObjects[playerid][i])
 		{
+			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+			
 		    ObjectData[i][oX] += dist;
 
 		    SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
@@ -714,6 +727,7 @@ CMD:goy(playerid, arg[])
     MapOpenCheck();
 
 	new Float:dist;
+    new time = GetTickCount();
 
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
@@ -722,6 +736,8 @@ CMD:goy(playerid, arg[])
 	{
 		if(GroupedObjects[playerid][i])
 		{
+			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+			
 		    ObjectData[i][oY] += dist;
 
 		    SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
@@ -746,6 +762,7 @@ CMD:goz(playerid, arg[])
     MapOpenCheck();
 
 	new Float:dist;
+	new time = GetTickCount();
 
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
@@ -754,6 +771,8 @@ CMD:goz(playerid, arg[])
 	{
 		if(GroupedObjects[playerid][i])
 		{
+			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+
 		    ObjectData[i][oZ] += dist;
 
 		    SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
@@ -774,7 +793,7 @@ CMD:goz(playerid, arg[])
 CMD:grx(playerid, arg[])
 {
     MapOpenCheck();
-
+	new time = GetTickCount();
 	new Float:Delta;
 	if(sscanf(arg, "f", Delta))
 	{
@@ -816,6 +835,7 @@ CMD:grx(playerid, arg[])
 		{
 			if(GroupedObjects[playerid][i])
 			{
+				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
 				AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, Delta, 0.0, 0.0, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 				SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
 				SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
@@ -846,7 +866,7 @@ CMD:grx(playerid, arg[])
 CMD:gry(playerid, arg[])
 {
     MapOpenCheck();
-
+	new time = GetTickCount();
 	new Float:Delta;
 	if(sscanf(arg, "f", Delta))
 	{
@@ -888,6 +908,7 @@ CMD:gry(playerid, arg[])
 		{
 			if(GroupedObjects[playerid][i])
 			{
+				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
 				AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, 0.0, Delta, 0.0, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 				SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
 				SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
@@ -917,7 +938,7 @@ CMD:gry(playerid, arg[])
 CMD:grz(playerid, arg[])
 {
     MapOpenCheck();
-
+	new time = GetTickCount();
 	new Float:Delta;
 	if(sscanf(arg, "f", Delta))
 	{
@@ -959,6 +980,7 @@ CMD:grz(playerid, arg[])
 		{
 			if(GroupedObjects[playerid][i])
 			{
+				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
 				AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, 0.0, 0.0, Delta, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 				SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
 				SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
@@ -1354,6 +1376,7 @@ CMD:0group(playerid, arg[])
 	GetGroupCenter(playerid, gCenterX, gCenterY, gCenterZ);
 
 	new bool:hasgroup;
+	new time = GetTickCount();
 	
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 
@@ -1361,6 +1384,8 @@ CMD:0group(playerid, arg[])
 	{
    		if(GroupedObjects[playerid][i])
 		{
+			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+			
 			ObjectData[i][oX] -= gCenterX;
 			ObjectData[i][oY] -= gCenterY;
 			ObjectData[i][oZ] -= gCenterZ;
@@ -1469,6 +1494,7 @@ sqlite_LoadPrefab(playerid, offset = true)
 	db_free_result(r);
 
 	new Float:px, Float:py, Float:pz, Float:fa;
+	new time = GetTickCount();
 
 	if(offset) GetPosFaInFrontOfPlayer(playerid, 2.0, px, py, pz, fa);
 	else GetPlayerPos(playerid, px, py, pz);
@@ -1525,6 +1551,8 @@ sqlite_LoadPrefab(playerid, offset = true)
 
 			// Save all text
 			sqlite_SaveAllObjectText(index);
+			
+			SaveUndoInfo(index, UNDO_TYPE_CREATED, time);
         }
 
    		// Update the Group GUI

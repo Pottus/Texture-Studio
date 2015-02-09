@@ -97,6 +97,7 @@ ApplyOBM(playerid)
 {
 	ClearGroup(playerid);
 	new index;
+	new time = GetTickCount();
 	for(new i = 0; i < MAX_OBM; i++)
 	{
 	    if(OBMStack[playerid][i][OMBID] != -1)
@@ -105,6 +106,7 @@ ApplyOBM(playerid)
 				OBMStack[playerid][i][OBMX], OBMStack[playerid][i][OBMY], OBMStack[playerid][i][OBMZ],
 				OBMStack[playerid][i][OBMRX], OBMStack[playerid][i][OBMRY], OBMStack[playerid][i][OBMRZ]
 			);
+			SaveUndoInfo(index, UNDO_TYPE_CREATED, time);
 			GroupedObjects[playerid][index] = true;
 			UpdateObject3DText(index, true);
 			OnUpdateGroup3DText(index);

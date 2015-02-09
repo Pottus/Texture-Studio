@@ -1743,6 +1743,7 @@ CMD:avexportall(playerid, arg[]) // In GUI
 	{
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_YELLOW, "There are no cars to export.");
+		return 1;
 	}
 
 	// Ask for a map name

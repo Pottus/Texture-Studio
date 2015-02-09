@@ -190,6 +190,7 @@ Change Log:
 	v1.6d - Fixed an issue with exporting objects if an object had text the parameters were out of order
 	    - Any object should be able to be created now there even LOD
 	    - Re-organized the project slightly
+	v1.7 - /undo command (Note you can't undo edits on vehicles currently)
 */
 
 #define FILTERSCRIPT
@@ -519,6 +520,9 @@ new DB: ThemeDataDB;
 // Checks if a map is open
 new bool:MapOpen;
 
+// Undo module
+#include "tstudio\undo.pwn"
+
 // Webcolor list
 #include "tstudio\webcolors.pwn"
 
@@ -546,7 +550,6 @@ new bool:MapOpen;
 // Objectmetry module
 #include "tstudio\objm.pwn"
 #include "tstudio\obmedit.pwn"
-
 
 // GTA objects module
 #if defined COMPILE_GTA_OBJECTS
@@ -631,7 +634,7 @@ public OnPlayerDisconnect(playerid, reason)
 	return 1;
 }
 
-stock SetCurrObject(playerid, index)
+SetCurrObject(playerid, index)
 {
     CurrObject[playerid] = index;
 	CallLocalFunction("OnPlayerObjectSelectChange", "ii", playerid, index);
@@ -1158,7 +1161,7 @@ sqlite_UpdateObjectPos(index)
 new DBStatement:objecttextallsave;
 new ObjectTextSave[512];
 
-stock sqlite_SaveAllObjectText(index)
+sqlite_SaveAllObjectText(index)
 {
 	if(!ObjectTextSave[0])
 	{
@@ -1201,7 +1204,7 @@ stock sqlite_SaveAllObjectText(index)
 new DBStatement:usetextupdatestmt;
 new UseTextString[512];
 
-stock sqlite_ObjUseText(index)
+sqlite_ObjUseText(index)
 {
 	if(!UseTextString[0])
 	{
@@ -1228,7 +1231,7 @@ stock sqlite_ObjUseText(index)
 new DBStatement:fontfaceupdatestmt;
 new FontFaceString[512];
 
-stock sqlite_ObjFontFace(index)
+sqlite_ObjFontFace(index)
 {
 	if(!FontFaceString[0])
 	{
@@ -1255,7 +1258,7 @@ stock sqlite_ObjFontFace(index)
 new DBStatement:fontsizeupdatestmt;
 new FontSizeString[512];
 
-stock sqlite_ObjFontSize(index)
+sqlite_ObjFontSize(index)
 {
 	if(!FontSizeString[0])
 	{
@@ -1284,7 +1287,7 @@ stock sqlite_ObjFontSize(index)
 new DBStatement:fontboldupdatestmt;
 new FontBoldString[512];
 
-stock sqlite_ObjFontBold(index)
+sqlite_ObjFontBold(index)
 {
 	if(!FontBoldString[0])
 	{
@@ -1311,7 +1314,7 @@ stock sqlite_ObjFontBold(index)
 new DBStatement:fontcolorupdatestmt;
 new FontColorString[512];
 
-stock sqlite_ObjFontColor(index)
+sqlite_ObjFontColor(index)
 {
 	if(!FontColorString[0])
 	{
@@ -1338,7 +1341,7 @@ stock sqlite_ObjFontColor(index)
 new DBStatement:backcolorupdatestmt;
 new BackColorString[512];
 
-stock sqlite_ObjBackColor(index)
+sqlite_ObjBackColor(index)
 {
 	if(!BackColorString[0])
 	{
@@ -1366,7 +1369,7 @@ new DBStatement:alignmentupdatestmt;
 new AlignmentString[512];
 
 
-stock sqlite_ObjAlignment(index)
+sqlite_ObjAlignment(index)
 {
 	if(!AlignmentString[0])
 	{
@@ -1393,7 +1396,7 @@ stock sqlite_ObjAlignment(index)
 new DBStatement:textsizeupdatestmt;
 new TextSizeString[512];
 
-stock sqlite_ObjFontTextSize(index)
+sqlite_ObjFontTextSize(index)
 {
 	if(!TextSizeString[0])
 	{
@@ -1420,7 +1423,7 @@ stock sqlite_ObjFontTextSize(index)
 new DBStatement:objecttextupdatestmt;
 new ObjectTextString[512];
 
-stock sqlite_ObjObjectText(index)
+sqlite_ObjObjectText(index)
 {
 	if(!ObjectTextString[0])
 	{
@@ -1447,7 +1450,7 @@ stock sqlite_ObjObjectText(index)
 new DBStatement:objectgroupupdatestmt;
 new ObjectGroupString[512];
 
-stock sqlite_ObjGroup(index)
+sqlite_ObjGroup(index)
 {
 	if(!ObjectTextString[0])
 	{
@@ -1475,7 +1478,7 @@ stock sqlite_ObjGroup(index)
 new DBStatement:objectmodelupdatestmt;
 new ObjectModelString[512];
 
-stock sqlite_ObjModel(index)
+sqlite_ObjModel(index)
 {
 	if(!ObjectModelString[0])
 	{
@@ -1506,7 +1509,7 @@ stock sqlite_ObjModel(index)
 new DBStatement:insertremovebuldingstmt;
 new InsertRemoveBuildingString[256];
 
-stock sqlite_InsertRemoveBuilding(index)
+sqlite_InsertRemoveBuilding(index)
 {
 	// Inserts a new index
 	if(!InsertRemoveBuildingString[0])
@@ -1535,7 +1538,7 @@ stock sqlite_InsertRemoveBuilding(index)
 // Load any remove buildings
 new DBStatement:loadremovebuldingstmt;
 
-stock sqlite_LoadRemoveBuildings()
+sqlite_LoadRemoveBuildings()
 {
 	new tmpremove[REMOVEINFO];
 
@@ -1664,6 +1667,9 @@ FixText(text[])
 
 Edit_SetObjectPos(index, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, bool:save)
 {
+
+    SaveUndoInfo(index, UNDO_TYPE_EDIT);
+    
 	ObjectData[index][oX] = x;
     ObjectData[index][oY] = y;
     ObjectData[index][oZ] = z;
@@ -1913,16 +1919,8 @@ GetMapCenter(&Float:X, &Float:Y, &Float:Z)
 
 	return 1;
 }
-////////////////////////////////////////////////////////////////////////////////
-/// Support functions end///////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////
-/// Stock functions ////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-
-stock AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, index = -1, bool:sqlsave = true)
+AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, index = -1, bool:sqlsave = true)
 {
 	// Index was not specified get a free index
 	if(index == -1) index = Iter_Free(Objects);
@@ -1976,7 +1974,7 @@ stock AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, F
 	return index;
 }
 
-stock DeleteDynamicObject(index, bool:sqlsave = true)
+DeleteDynamicObject(index, bool:sqlsave = true)
 {
 	OnDeleteGroup3DText(index);
 
@@ -2002,7 +2000,7 @@ stock DeleteDynamicObject(index, bool:sqlsave = true)
 	return -1;
 }
 
-stock CloneObject(index)
+CloneObject(index, grouptask=0)
 {
 	if(Iter_Contains(Objects, index))
 	{
@@ -2043,6 +2041,9 @@ stock CloneObject(index)
 		
 		// Save any text
 		sqlite_SaveAllObjectText(cindex);
+		
+		if(grouptask > 0) SaveUndoInfo(cindex, UNDO_TYPE_CREATED, grouptask);
+		else SaveUndoInfo(cindex, UNDO_TYPE_CREATED);
 
 		return cindex;
   	}
@@ -2052,7 +2053,7 @@ stock CloneObject(index)
 
 
 // Deletes all map objects
-stock DeleteMapObjects(bool:sqlsave)
+DeleteMapObjects(bool:sqlsave)
 {
 	foreach(new i : Objects)
 	{
@@ -2068,7 +2069,7 @@ stock DeleteMapObjects(bool:sqlsave)
 }
 
 // Add a remove building
-stock AddRemoveBuilding(model, Float:x, Float:y, Float:z, Float:range, savesql = true)
+AddRemoveBuilding(model, Float:x, Float:y, Float:z, Float:range, savesql = true)
 {
 	for(new i = 0; i < MAX_REMOVE_BUILDING; i++)
 	{
@@ -2092,7 +2093,7 @@ stock AddRemoveBuilding(model, Float:x, Float:y, Float:z, Float:range, savesql =
 	return 0;
 }
 
-stock ClearRemoveBuildings()
+ClearRemoveBuildings()
 {
 	new count;
 	for(new i = 0; i < MAX_REMOVE_BUILDING; i++)
@@ -2114,7 +2115,7 @@ stock ClearRemoveBuildings()
 	return 1;
 }
 
-stock RemoveAllBuildings(playerid)
+RemoveAllBuildings(playerid)
 {
 	for(new i = 0; i < MAX_REMOVE_BUILDING; i++)
 	{
@@ -2126,7 +2127,7 @@ stock RemoveAllBuildings(playerid)
 }
 
 // Is string a hexvalue
-stock IsHexValue(hstring[])
+IsHexValue(hstring[])
 {
 	if(strlen(hstring) < 10) return 0;
 	if(hstring[0] == 48 && hstring[1] == 120)
@@ -2145,7 +2146,7 @@ stock IsHexValue(hstring[])
 }
 
 // Get position in front of player also returns facing angle
-stock GetPosFaInFrontOfPlayer(playerid, Float:OffDist, &Float:Pxx, &Float:Pyy, &Float:Pzz, &Float:Fa, Float:rotoff = 0.0)
+GetPosFaInFrontOfPlayer(playerid, Float:OffDist, &Float:Pxx, &Float:Pyy, &Float:Pzz, &Float:Fa, Float:rotoff = 0.0)
 {
 	if(!IsPlayerConnected(playerid)) return 0;
 	new
@@ -2163,8 +2164,9 @@ stock GetPosFaInFrontOfPlayer(playerid, Float:OffDist, &Float:Pxx, &Float:Pyy, &
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/// Stock functions ////////////////////////////////////////////////////////////
+/// Support functions end///////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2262,6 +2264,8 @@ LoadMap(playerid)
 			// Player selected map to load
             if(sresponse)
             {
+				ClearAllUndoInfo();
+				
 				new mapname[128];
 				format(mapname, sizeof(mapname), "tstudio/SavedMaps/%s", stext);
 
@@ -2318,6 +2322,8 @@ CMD:newmap(playerid, arg[]) // In GUI
 			{
 				// Close map
 				db_free_persistent(EditMap);
+				
+				ClearAllUndoInfo();
 
 				// Delete all map objects
                 DeleteMapObjects(false);
@@ -3229,12 +3235,7 @@ CMD:sel(playerid, arg[]) // In GUI
 		
 		SetCurrObject(playerid, index);
 	}
-	else
-	{
-		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-		SendClientMessage(playerid, STEALTH_YELLOW, "That object does not exist!");
-	}
-
+	else SendClientMessage(playerid, STEALTH_YELLOW, "That object does not exist!");
 	return 1;
 }
 
@@ -3305,6 +3306,8 @@ CMD:dcsel(playerid, arg[]) // In GUI
     SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	if(index > -1)
 	{
+		SaveUndoInfo(index, UNDO_TYPE_DELETED);
+
 		DeleteDynamicObject(index);
 
 		foreach(new i : Player)
@@ -3346,7 +3349,7 @@ CMD:csel(playerid, arg[]) // In GUI
 
 
 // Set a material of an object
-CMD:mtset(playerid, arg[]) // In GUI
+CMD:mtset(playerid, arg[]) // In GUI - Undo
 {
     MapOpenCheck();
 
@@ -3362,6 +3365,8 @@ CMD:mtset(playerid, arg[]) // In GUI
 
 	if(GetMaterials(playerid, arg, mindex, tref))
 	{
+		SaveUndoInfo(index, UNDO_TYPE_EDIT);
+
 		SetMaterials(index, mindex, tref);
 
 		UpdateObjectText(index);
@@ -3382,7 +3387,7 @@ CMD:mtset(playerid, arg[]) // In GUI
 }
 
 // Set all materials of a certain type
-CMD:mtsetall(playerid, arg[]) // In GUI
+CMD:mtsetall(playerid, arg[]) // In GUI - Undo
 {
     MapOpenCheck();
 
@@ -3393,6 +3398,7 @@ CMD:mtsetall(playerid, arg[]) // In GUI
 	new index = CurrObject[playerid];
 	new mindex;
 	new tref;
+	new time = GetTickCount();
 
 	if(GetMaterials(playerid, arg, mindex, tref))
 	{
@@ -3400,6 +3406,7 @@ CMD:mtsetall(playerid, arg[]) // In GUI
 		{
 			if(ObjectData[i][oModel] == ObjectData[CurrObject[playerid]][oModel])
 			{
+				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
 				SetMaterials(i, mindex, tref);
 				UpdateObjectText(i);
 				
@@ -3427,6 +3434,8 @@ CMD:ogroup(playerid, arg[]) // In GUI
 	NoEditingMode(playerid);
 	
     new index = CurrObject[playerid];
+
+	SaveUndoInfo(index, UNDO_TYPE_EDIT);
 
     ObjectData[index][oGroup] = strval(arg);
     
@@ -3503,7 +3512,7 @@ CMD:copy(playerid, arg[]) // in GUI
 
 }
 
-stock CopyCopyBuffer(playerid, index)
+CopyCopyBuffer(playerid, index)
 {
     for(new i = 0; i < MAX_MATERIALS; i++)
     {
@@ -3545,7 +3554,7 @@ CMD:paste(playerid, arg[]) // in GUI
 	return 1;
 }
 
-stock PasteCopyBuffer(playerid, index)
+PasteCopyBuffer(playerid, index)
 {
     for(new i = 0; i < MAX_MATERIALS; i++)
     {
@@ -3596,7 +3605,7 @@ stock PasteCopyBuffer(playerid, index)
 	return 1;
 }
 
-stock ClearCopyBuffer(playerid)
+ClearCopyBuffer(playerid)
 {
     for(new i = 0; i < MAX_MATERIALS; i++)
     {
@@ -3616,7 +3625,7 @@ stock ClearCopyBuffer(playerid)
 }
 
 // Gets the mindex and tref from command arguments
-stock GetMaterials(playerid, arg[], &mindex, &tref)
+GetMaterials(playerid, arg[], &mindex, &tref)
 {
 	if(sscanf(arg, "ii", mindex, tref))
 	{
@@ -3690,7 +3699,7 @@ CMD:ogoto(playerid, arg[])   // In GUI
 
 
 // Set a color of an object
-CMD:mtcolor(playerid, arg[]) // In GUI
+CMD:mtcolor(playerid, arg[]) // In GUI - Undo
 {
     MapOpenCheck();
 
@@ -3716,6 +3725,8 @@ CMD:mtcolor(playerid, arg[]) // In GUI
 		
 	if(IsHexValue(HexColor))
 	{
+		SaveUndoInfo(index, UNDO_TYPE_EDIT);
+
 		// Set the color
         sscanf(HexColor, "h", ObjectData[index][oColorIndex][mindex]);
 
@@ -3758,7 +3769,7 @@ CMD:mtcolor(playerid, arg[]) // In GUI
 }
 
 // Set a color of an object
-CMD:mtcolorall(playerid, arg[]) // In GUI
+CMD:mtcolorall(playerid, arg[]) // In GUI - Undo
 {
     MapOpenCheck();
 
@@ -3785,10 +3796,14 @@ CMD:mtcolorall(playerid, arg[]) // In GUI
 		new hcolor;
 		sscanf(HexColor, "h", hcolor);
 		
+		new time = GetTickCount();
+		
 		foreach(new i : Objects)
 		{
 		    if(ObjectData[i][oModel] == ObjectData[CurrObject[playerid]][oModel])
 		    {
+				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+
 		        ObjectData[i][oColorIndex][mindex] = hcolor;
 		    
 				// Destroy the object
@@ -3895,6 +3910,8 @@ CMD:cobject(playerid, arg[]) // In gui
 		// Update the streamer for this player
         Streamer_Update(playerid);
 
+		SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_CREATED);
+
 		// Show output message
 		new line[128];
 		new modelarray = GetModelArray(modelid);
@@ -3919,6 +3936,8 @@ CMD:dobject(playerid, arg[])  // In gui
     MapOpenCheck();
     EditCheck(playerid);
     NoEditingMode(playerid);
+    
+    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_DELETED);
     
 	DeleteDynamicObject(CurrObject[playerid]);
 
@@ -4153,7 +4172,7 @@ CMD:togpivot(playerid, arg[])
 
 
 // Move object on X axis
-CMD:ox(playerid, arg[])  // In GUI
+CMD:ox(playerid, arg[])  // In GUI - Undo
 {
     MapOpenCheck();
     EditCheck(playerid);
@@ -4163,6 +4182,8 @@ CMD:ox(playerid, arg[])  // In GUI
 	
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
+
+    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 
     ObjectData[CurrObject[playerid]][oX] += dist;
     
@@ -4176,7 +4197,7 @@ CMD:ox(playerid, arg[])  // In GUI
 }
 
 // Move object on Y axis
-CMD:oy(playerid, arg[])  // In GUI
+CMD:oy(playerid, arg[])  // In GUI - Undo
 {
     MapOpenCheck();
     EditCheck(playerid);
@@ -4186,6 +4207,8 @@ CMD:oy(playerid, arg[])  // In GUI
 
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
+
+    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 
     ObjectData[CurrObject[playerid]][oY] += dist;
 
@@ -4199,7 +4222,7 @@ CMD:oy(playerid, arg[])  // In GUI
 }
 
 // Move object on Z axis
-CMD:oz(playerid, arg[])  // In GUI
+CMD:oz(playerid, arg[])  // In GUI - Undo
 {
     MapOpenCheck();
     EditCheck(playerid);
@@ -4209,6 +4232,8 @@ CMD:oz(playerid, arg[])  // In GUI
 
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
+
+    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 
     ObjectData[CurrObject[playerid]][oZ] += dist;
 
@@ -4222,7 +4247,7 @@ CMD:oz(playerid, arg[])  // In GUI
 }
 
 // Move object on RX rot
-CMD:rx(playerid, arg[])  // In GUI
+CMD:rx(playerid, arg[])  // In GUI - Undo
 {
     MapOpenCheck();
     EditCheck(playerid);
@@ -4233,6 +4258,8 @@ CMD:rx(playerid, arg[])  // In GUI
 	rot = floatstr(arg);
 	if(rot == 0) rot = 5.0;
 	
+    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
+
 	if(PivotPointOn[playerid])
 	{
 		new i = CurrObject[playerid];
@@ -4253,7 +4280,7 @@ CMD:rx(playerid, arg[])  // In GUI
 }
 
 // Move object on RX rot
-CMD:ry(playerid, arg[])  // In GUI
+CMD:ry(playerid, arg[])  // In GUI - Undo
 {
     MapOpenCheck();
     EditCheck(playerid);
@@ -4264,6 +4291,7 @@ CMD:ry(playerid, arg[])  // In GUI
 	rot = floatstr(arg);
 	if(rot == 0) rot = 5.0;
 	
+	SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 	
 	if(PivotPointOn[playerid])
 	{
@@ -4285,7 +4313,7 @@ CMD:ry(playerid, arg[])  // In GUI
 }
 
 // Move object on RX rot
-CMD:rz(playerid, arg[])  // In GUI
+CMD:rz(playerid, arg[])  // In GUI - Undo
 {
     MapOpenCheck();
     EditCheck(playerid);
@@ -4295,6 +4323,8 @@ CMD:rz(playerid, arg[])  // In GUI
 
 	rot = floatstr(arg);
 	if(rot == 0) rot = 5.0;
+
+    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 
 	if(PivotPointOn[playerid])
 	{
@@ -4316,18 +4346,21 @@ CMD:rz(playerid, arg[])  // In GUI
 }
 
 // Move all objects on X axis
-CMD:dox(playerid, arg[])  // In GUI
+CMD:dox(playerid, arg[])  // In GUI - Undo
 {
     MapOpenCheck();
     NoEditingMode(playerid);
 
-	new Float:dist;
+	new Float:dist, time;
+	time = GetTickCount();
 
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
 
 	foreach(new i : Objects)
 	{
+		SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+		
 	    ObjectData[i][oX] += dist;
 
 	    SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
@@ -4341,18 +4374,21 @@ CMD:dox(playerid, arg[])  // In GUI
 }
 
 // Move all objects on Y axis
-CMD:doy(playerid, arg[])  // In GUI
+CMD:doy(playerid, arg[])  // In GUI - Undo
 {
     MapOpenCheck();
     NoEditingMode(playerid);
 
-	new Float:dist;
+	new Float:dist, time;
+	time = GetTickCount();
 
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
 
 	foreach(new i : Objects)
 	{
+		SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+		
 	    ObjectData[i][oY] += dist;
 
 	    SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
@@ -4366,18 +4402,21 @@ CMD:doy(playerid, arg[])  // In GUI
 }
 
 // Move all objects on Z axis
-CMD:doz(playerid, arg[])  // In GUI
+CMD:doz(playerid, arg[])  // In GUI - Undo
 {
     MapOpenCheck();
     NoEditingMode(playerid);
 
-	new Float:dist;
+	new Float:dist, time;
+	time = GetTickCount();
 
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
 
 	foreach(new i : Objects)
 	{
+		SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+
 	    ObjectData[i][oZ] += dist;
 
 	    SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
@@ -4391,11 +4430,13 @@ CMD:doz(playerid, arg[])  // In GUI
 }
 
 // Rotate map on RX
-CMD:drx(playerid, arg[])  // In GUI
+CMD:drx(playerid, arg[])  // In GUI - Undo
 {
 	MapOpenCheck();
 	
-	new Float:Delta;
+	new Float:Delta, time;
+	time = GetTickCount();
+
 	if(isnull(arg)) Delta = 1.0;
 	else if(sscanf(arg, "f", Delta))
 	{
@@ -4411,6 +4452,8 @@ CMD:drx(playerid, arg[])  // In GUI
 		// Loop through all objects and perform rotation calculations
 		foreach(new i : Objects)
 		{
+			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+			
 			AttachObjectToPoint(i, mCenterX, mCenterY, mCenterZ, Delta, 0.0, 0.0, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 			SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
 			SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
@@ -4433,10 +4476,13 @@ CMD:drx(playerid, arg[])  // In GUI
 }
 
 // Rotate map on RY
-CMD:dry(playerid, arg[])  // In GUI
+CMD:dry(playerid, arg[])  // In GUI - Undo
 {
 	MapOpenCheck();
-	new Float:Delta;
+	
+	new Float:Delta, time;
+	time = GetTickCount();
+
 	if(isnull(arg)) Delta = 1.0;
 	else if(sscanf(arg, "f", Delta))
 	{
@@ -4452,6 +4498,8 @@ CMD:dry(playerid, arg[])  // In GUI
 		// Loop through all objects and perform rotation calculations
 		foreach(new i : Objects)
 		{
+			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+			
 			AttachObjectToPoint(i, mCenterX, mCenterY, mCenterZ, 0.0, Delta, 0.0, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 			SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
 			SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
@@ -4474,10 +4522,13 @@ CMD:dry(playerid, arg[])  // In GUI
 }
 
 // Rotate map on RZ
-CMD:drz(playerid, arg[])  // In GUI
+CMD:drz(playerid, arg[])  // In GUI - Undo
 {
 	MapOpenCheck();
-	new Float:Delta;
+
+	new Float:Delta, time;
+	time = GetTickCount();
+
 	if(isnull(arg)) Delta = 1.0;
 	else if(sscanf(arg, "f", Delta))
 	{
@@ -4493,6 +4544,8 @@ CMD:drz(playerid, arg[])  // In GUI
 		// Loop through all objects and perform rotation calculations
 		foreach(new i : Objects)
 		{
+			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+			
 			AttachObjectToPoint(i, mCenterX, mCenterY, mCenterZ, 0.0, 0.0, Delta, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 			SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
 			SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
