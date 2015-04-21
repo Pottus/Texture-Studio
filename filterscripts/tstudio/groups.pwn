@@ -1451,17 +1451,15 @@ stock ShowPrefabs(playerid)
 	return 1;
 }
 
-
-
-// Load query stmt
 static DBStatement:loadprefabstmt;
 
 // Loads map objects from a data base
 sqlite_LoadPrefab(playerid, offset = true)
 {
-	new tmpobject[OBJECTINFO];
-
+	// Load query stmt
 	loadprefabstmt = db_prepare(PrefabDB, "SELECT * FROM `Objects`");
+
+	new tmpobject[OBJECTINFO];
 
 	// Bind our results
     stmt_bind_result_field(loadprefabstmt, 0, DB::TYPE_INT, tmpobject[oModel]);
@@ -1557,9 +1555,10 @@ sqlite_LoadPrefab(playerid, offset = true)
 
    		// Update the Group GUI
 		UpdatePlayerGSelText(playerid);
-
+		stmt_close(loadprefabstmt);
         return 1;
     }
+	stmt_close(loadprefabstmt);
     return 0;
 }
 

@@ -43,7 +43,6 @@ static Float:CurrRotationGInc[MAX_PLAYERS];
 // Turn delta map movements on/off
 static bool:DeltaMapMovement[MAX_PLAYERS];
 
-
 #define         EXIT_GUI_MENU 		1
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -470,7 +469,6 @@ hook OnFilterScriptInit()
 	{
 	    CreatePlayerMenus(i);
 	}
-	
 	return 1;
 }
 
@@ -1335,6 +1333,7 @@ OnGUIClick:SubMenuGroupPF(playerid, group, gindex, pindex)
 			new item[40], type;
 			new extension[3];
 			new total;
+			list[0] = '\0';
 
 			// Create a load list
 			while(dir_list(dHandle, item, type))
@@ -1722,9 +1721,8 @@ CMD:bindeditor(playerid, arg[])
 	return 1;
 }
 
-// Load query stmt
-static DBStatement:loadkeybindsstmt;
 new LoadBindString[512];
+static DBStatement:loadkeybindsstmt;
 
 sqlite_LoadBindString()
 {
@@ -1754,7 +1752,6 @@ sqlite_LoadBindString()
 	db_exec(SystemDB, LoadBindString);
 
 	loadkeybindsstmt = db_prepare(SystemDB, "SELECT * FROM `KeyBinds`");
-
 	new index;
 
 	// Bind our results
@@ -1782,8 +1779,10 @@ sqlite_LoadBindString()
 
 			for(new i = 0; i < MAX_BINDS_PER_BIND; i++) { CommandBindData[index][i] = tmpCommandBindData[i]; }
         }
+		stmt_close(loadkeybindsstmt);
         return 1;
     }
+	stmt_close(loadkeybindsstmt);
     return 0;
 }
 

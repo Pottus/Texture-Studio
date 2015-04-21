@@ -92,7 +92,6 @@ static CarModShops[212] = {
 
 static Float:ModCarPos[MAX_PLAYERS][4];
 
-
 CMD:avmodcar(playerid, arg[])
 {
 	new vid = GetPlayerVehicleID(playerid);
@@ -278,6 +277,51 @@ public OnVehicleSpawn(vehicleid)
 		}
 	}
 
+	return 1;
+}
+
+CMD:avselectcar(playerid, arg[])
+{
+    inline SelectID(pid, dialogid, response, listitem, string:text[])
+    {
+        #pragma unused listitem, dialogid, pid, text
+		if(response)
+		{
+			new id = strval(text);
+			foreach(new i : Cars)
+			{
+			    if(CarData[i][CarID] == id)
+			    {
+					SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+					SendClientMessage(playerid, STEALTH_YELLOW, "This vehicle is already in Texture Studio!");
+					return 1;
+			    }
+			}
+			new index = Iter_Free(Cars);
+			if(index > -1)
+			{
+				Iter_Add(Cars, id);
+			    GetVehiclePos(id, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ]);
+			    GetVehicleZAngle(id, CarData[index][CarSpawnFA]);
+	            CarData[index][CarID] = id;
+			    CarData[index][CarModel] = GetVehicleModel(id);
+
+				new line[32];
+				format(line, sizeof(line), "Car Index: %i", index);
+				CarData[index][CarText] = CreateDynamic3DTextLabel(line, -1, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ], 20.0, INVALID_PLAYER_ID, CarData[index][CarID]);
+		        Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, CarData[index][CarText], E_STREAMER_ATTACH_OFFSET_Z, 2.0);
+
+				for(new i = 0; i < MAX_CAR_OBJECTS; i++) CarData[index][CarObjectRef][i] = -1;
+				CarData[index][CarPaintJob] = 3;
+
+				sqlite_InsertCar(index);
+
+				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+				SendClientMessage(playerid, STEALTH_GREEN, "Vehicle can now be edited!");
+			}
+		}
+	}
+    Dialog_ShowCallback(playerid, using inline SelectID, DIALOG_STYLE_INPUT, "Texture Studio", "Input vehicle ID to select", "Ok", "Cancel");
 	return 1;
 }
 
@@ -514,7 +558,6 @@ sqlite_SaveVehicleObjectData(index)
 	return 1;
 }
 
-
 // Load query stmt
 static DBStatement:loadcarstmt;
 
@@ -523,7 +566,7 @@ sqlite_LoadCars()
 {
 	new tmpcar[CARINFO];
 	new currindex;
-	
+
 	loadcarstmt = db_prepare(EditMap, "SELECT * FROM `Vehicles`");
 	
 	// Bind our results
@@ -593,6 +636,7 @@ sqlite_LoadCars()
 		 	}
 	 	}
 	}
+	stmt_close(loadcarstmt);
 }
 
 ClearVehicles()

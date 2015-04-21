@@ -552,7 +552,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     case 1: // Move it
                     {
                         new string[512];
-                        string = "~n~~n~~n~~n~~n~~n~~n~~n~~w~";
+                        string = "~w~";
                         if(!IsPlayerInAnyVehicle(playerid))	format(string, sizeof(string), "%s~k~~GO_FORWARD~, ~k~~GO_BACK~, ~k~~GO_LEFT~, ~k~~GO_RIGHT~~n~", string);
 						else								format(string, sizeof(string), "%s~k~~VEHICLE_STEERUP~, ~k~~VEHICLE_STEERDOWN~, ~k~~VEHICLE_STEERLEFT~, ~k~~VEHICLE_STEERRIGHT~~n~", string);
 						format(string, sizeof(string), "%sand ~k~~PED_SPRINT~ to move. ", string);
@@ -560,7 +560,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						else								format(string, sizeof(string), "%s~k~~VEHICLE_FIREWEAPON_ALT~", string);
 						format(string, sizeof(string), "%s to finish.~n~", string);
 						
-						GameTextForPlayer(playerid, string, 9999999, 3);
+						ShowInfoDraw(playerid, string, 3000);
+						
 						SendClientMessage(playerid, MSG_COLOR, "Use [up], [down], [left] and [right] keys to move the textdraw. [sprint] to boost and [enter car] to finish.");
 						
 						TogglePlayerControllable(playerid, 0);
@@ -905,7 +906,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     case 1: // Resize it
                     {
                         new string[512];
-                        string = "~n~~n~~n~~n~~n~~n~~n~~n~~w~";
+                        string = "~w~";
                         if(!IsPlayerInAnyVehicle(playerid))	format(string, sizeof(string), "%s~k~~GO_FORWARD~, ~k~~GO_BACK~, ~k~~GO_LEFT~, ~k~~GO_RIGHT~~n~", string);
 						else								format(string, sizeof(string), "%s~k~~VEHICLE_STEERUP~, ~k~~VEHICLE_STEERDOWN~, ~k~~VEHICLE_STEERLEFT~, ~k~~VEHICLE_STEERRIGHT~~n~", string);
 						format(string, sizeof(string), "%sand ~k~~PED_SPRINT~ to resize. ", string);
@@ -913,7 +914,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						else								format(string, sizeof(string), "%s~k~~VEHICLE_FIREWEAPON_ALT~", string);
 						format(string, sizeof(string), "%s to finish.~n~", string);
 
-						GameTextForPlayer(playerid, string, 9999999, 3);
+						ShowInfoDraw(playerid, string, 3000);
 						SendClientMessage(playerid, MSG_COLOR, "Use [up], [down], [left] and [right] keys to resize the textdraw. [sprint] to boost and [enter car] to finish.");
 
 						TogglePlayerControllable(playerid, 0);
@@ -1107,7 +1108,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     case 1: // box size
                     {
 						new string[512];
-                        string = "~n~~n~~n~~n~~n~~n~~n~~n~~w~";
+                        string = "~w~";
                         if(!IsPlayerInAnyVehicle(playerid))	format(string, sizeof(string), "%s~k~~GO_FORWARD~, ~k~~GO_BACK~, ~k~~GO_LEFT~, ~k~~GO_RIGHT~~n~", string);
 						else								format(string, sizeof(string), "%s~k~~VEHICLE_STEERUP~, ~k~~VEHICLE_STEERDOWN~, ~k~~VEHICLE_STEERLEFT~, ~k~~VEHICLE_STEERRIGHT~~n~", string);
 						format(string, sizeof(string), "%sand ~k~~PED_SPRINT~ to resize. ", string);
@@ -1115,7 +1116,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						else								format(string, sizeof(string), "%s~k~~VEHICLE_FIREWEAPON_ALT~", string);
 						format(string, sizeof(string), "%s to finish.~n~", string);
 
-						GameTextForPlayer(playerid, string, 9999999, 3);
+                        ShowInfoDraw(playerid, string, 3000);
 						SendClientMessage(playerid, MSG_COLOR, "Use [up], [down], [left] and [right] keys to resize the box. [sprint] to boost and [enter car] to finish.");
 
 						TogglePlayerControllable(playerid, 0);
@@ -1945,7 +1946,7 @@ public KeyEdit( playerid )
 				if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_Y] -= 10.0;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_Y] -= 1.0;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Position: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "~y~~h~Position: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_X], tData[pData[playerid][P_CurrentTextdraw]][T_Y]);
 	        }
 	        
@@ -1954,7 +1955,7 @@ public KeyEdit( playerid )
 	            if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_YSize] -= 1.0;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_YSize] -= 0.1;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_XSize], tData[pData[playerid][P_CurrentTextdraw]][T_YSize]);
 	        }
 	        
@@ -1963,7 +1964,7 @@ public KeyEdit( playerid )
 	            if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeY] -= 10.0;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeY] -= 1.0;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeX], tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeY]);
 	        }
 	    }
@@ -1977,7 +1978,7 @@ public KeyEdit( playerid )
                 if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_Y] += 10.0;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_Y] += 1.0;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Position: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "~y~~h~Position: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_X], tData[pData[playerid][P_CurrentTextdraw]][T_Y]);
 	        }
 	        
@@ -1986,7 +1987,7 @@ public KeyEdit( playerid )
 	            if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_YSize] += 1.0;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_YSize] += 0.1;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_XSize], tData[pData[playerid][P_CurrentTextdraw]][T_YSize]);
 	        }
 	        
@@ -1995,7 +1996,7 @@ public KeyEdit( playerid )
 	            if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeY] += 10.0;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeY] += 1.0;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeX], tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeY]);
 	        }
 	    }
@@ -2010,7 +2011,7 @@ public KeyEdit( playerid )
                 if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_X] -= 10.0;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_X] -= 1.0;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Position: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "~y~~h~Position: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_X], tData[pData[playerid][P_CurrentTextdraw]][T_Y]);
 	        }
 	        
@@ -2019,7 +2020,7 @@ public KeyEdit( playerid )
 	            if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_XSize] -= 0.1;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_XSize] -= 0.01;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_XSize], tData[pData[playerid][P_CurrentTextdraw]][T_YSize]);
 	        }
 	        
@@ -2028,7 +2029,7 @@ public KeyEdit( playerid )
 	            if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeX] -= 10.0;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeX] -= 1.0;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeX], tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeY]);
 	        }
 	    }
@@ -2042,7 +2043,7 @@ public KeyEdit( playerid )
                 if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_X] += 10.0;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_X] += 1.0;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Position: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "y~~h~Position: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_X], tData[pData[playerid][P_CurrentTextdraw]][T_Y]);
 	        }
 	        
@@ -2051,7 +2052,7 @@ public KeyEdit( playerid )
 	            if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_XSize] += 0.1;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_XSize] += 0.01;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_XSize], tData[pData[playerid][P_CurrentTextdraw]][T_YSize]);
 	        }
 	        
@@ -2060,13 +2061,18 @@ public KeyEdit( playerid )
 	            if(keys == KEY_SPRINT)	tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeX] += 10.0;
 				else                    tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeX] += 1.0;
 
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
+				format(string, sizeof(string), "~y~~h~Size: ~b~X: ~w~%.4f ~r~- ~b~Y: ~w~%.4f", \
 			        tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeX], tData[pData[playerid][P_CurrentTextdraw]][T_TextSizeY]);
 	        }
 	    }
 	}
 
-	GameTextForPlayer(playerid, string, 999999999, 3);
+	ShowInfoDraw(playerid, string, 3000);
+	
+	
+	
+	
+	
 	UpdateTextdraw(pData[playerid][P_CurrentTextdraw]);
 	if(pData[playerid][P_KeyEdition] == EDIT_POSITION)
 	{
@@ -2091,7 +2097,7 @@ public OnPlayerKeyStateChange( playerid, newkeys, oldkeys )
 {
     if(pData[playerid][P_KeyEdition] != EDIT_NONE && newkeys == KEY_SECONDARY_ATTACK)
 	{
-	    GameTextForPlayer(playerid, " ", 100, 3);
+	    ShowInfoDraw(playerid, " ", 3000);
 	    TogglePlayerControllable(playerid, 1);
 
         new string[128];
@@ -3752,3 +3758,50 @@ stock IsPlayerMinID(playerid)
 // ================================================================================================================================
 
 // EOF
+
+
+
+static DelayShowInfoDrawTimer;
+static Text:InfoDraw = Text:-1;
+
+static CreateInfoDraws()
+{
+	InfoDraw = TextDrawCreate(320.000000, 217.000000, "320.000,_320.000~n~");
+	TextDrawLetterSize(InfoDraw, 0.659499, 2.686399);
+	TextDrawAlignment(InfoDraw, 2);
+	TextDrawColor(InfoDraw, -1);
+	TextDrawSetShadow(InfoDraw, 0);
+	TextDrawSetOutline(InfoDraw, 2);
+	TextDrawBackgroundColor(InfoDraw, 255);
+	TextDrawFont(InfoDraw, 2);
+	TextDrawSetProportional(InfoDraw, 1);
+	TextDrawSetShadow(InfoDraw, 0);
+	return 1;
+}
+
+static DestroyInfoDraws()
+{
+	TextDrawDestroy(InfoDraw);
+	InfoDraw = Text:-1;
+	return 1;
+}
+
+static ShowInfoDraw(playerid, text[], time)
+{
+	if(_:InfoDraw == -1) CreateInfoDraws();
+	KillTimer(DelayShowInfoDrawTimer);
+	TextDrawDestroy(InfoDraw);
+	CreateInfoDraws();
+	TextDrawSetString(InfoDraw, text);
+    TextDrawShowForPlayer(playerid, InfoDraw);
+	DelayShowInfoDrawTimer = SetTimer("HideInfoDraw", time, false);
+	return 1;
+}
+
+forward HideInfoDraw();
+public HideInfoDraw()
+{
+	DestroyInfoDraws();
+	return 1;
+}
+

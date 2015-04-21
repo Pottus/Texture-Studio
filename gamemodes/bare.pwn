@@ -1,7 +1,7 @@
 #include <a_samp>
 #include <core>
 #include <float>
-#include <streamer>
+//#include <streamer>
 
 main()
 {

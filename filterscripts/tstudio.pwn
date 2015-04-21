@@ -432,6 +432,7 @@ new Float:CurrEditPos[MAX_PLAYERS][6];
 #define         TEXTDRAW_LISTSEL        3
 #define         TEXTDRAW_OSEARCH        4
 
+
 // Set the players editing mode
 #define SetEditMode(%0,%1) CurrMode[%0] = %1
 
@@ -912,8 +913,10 @@ sqlite_LoadMapObjects()
 			// Update 3d text
 			UpdateObject3DText(currindex, true);
         }
+		stmt_close(loadstmt);
         return 1;
     }
+	stmt_close(loadstmt);
     return 0;
 }
 
@@ -1559,6 +1562,7 @@ sqlite_LoadRemoveBuildings()
 			// Add the removed building
 			AddRemoveBuilding(tmpremove[rModel], tmpremove[rX], tmpremove[rY], tmpremove[rZ], tmpremove[rRange], false);
         }
+		stmt_close(loadremovebuldingstmt);
         return 1;
     }
     return 0;
@@ -2286,6 +2290,10 @@ LoadMap(playerid)
 
 				// Map is now open
                 MapOpen = true;
+
+				// Default editing mode
+   				EditingMode[playerid] = false;
+				SetEditMode(playerid,EDIT_MODE_NONE);
 
 				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 				SendClientMessage(playerid, STEALTH_GREEN, "You have loaded a map");
