@@ -3,8 +3,6 @@
 #define         MAX_EDIT_CARS                   10
 #define         MAX_CAR_OBJECTS         		30
 #define         MAX_CAR_COMPONENTS              14
-#define         MAX_CAR_EDIT_OBJECTS            300
-
 
 #define         NOMODSHOP			0
 #define         TRANSFENDER         1
@@ -174,9 +172,15 @@ CMD:avdeletecar(playerid, arg[])
 
 	VehicleCheck(playerid);
 	
-    DestroyEditCar(CurrVehicle[playerid], true);
-    CurrVehicle[playerid] = -1;
-    
+	inline DeleteVehicleObjects(pid, dialogid, response, listitem, string:text[])
+    {
+        #pragma unused listitem, dialogid, pid, text
+		if(response) DestroyEditCar(CurrVehicle[playerid], true, true);
+		else DestroyEditCar(CurrVehicle[playerid], true);
+	    CurrVehicle[playerid] = -1;
+    }
+    Dialog_ShowCallback(playerid, using inline DeleteVehicleObjects, DIALOG_STYLE_LIST, "Texture Studio", "Delete Vehicles Objects?", "Yes", "No");
+	
    	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	SendClientMessage(playerid, STEALTH_GREEN, "Vehicle has been deleted.");
 
@@ -656,7 +660,7 @@ DeleteAllCars()
 	return 1;
 }
 
-DestroyEditCar(index, bool:sqldelete=true)
+DestroyEditCar(index, bool:sqldelete=true, deleteobjects=false)
 {
     DestroyVehicle(CarData[index][CarID]);
     CarData[index][CarModel] = -1;
@@ -677,21 +681,25 @@ DestroyEditCar(index, bool:sqldelete=true)
 		{
 			new oindex = CarData[index][CarObjectRef][i];
 
-			// Destroy the object
-		    DestroyDynamicObject(ObjectData[oindex][oID]);
+			if(deleteobjects) DeleteDynamicObject(oindex);
+			else
+			{
+				// Destroy the object
+			    DestroyDynamicObject(ObjectData[oindex][oID]);
 
-			// Re-create object
-			ObjectData[index][oID] = CreateDynamicObject(ObjectData[oindex][oModel], ObjectData[oindex][oX], ObjectData[oindex][oY], ObjectData[oindex][oZ], ObjectData[oindex][oRX], ObjectData[oindex][oRY], ObjectData[oindex][oRZ], -1, -1, -1, 300.0);
-			Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[oindex][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
+				// Re-create object
+				ObjectData[index][oID] = CreateDynamicObject(ObjectData[oindex][oModel], ObjectData[oindex][oX], ObjectData[oindex][oY], ObjectData[oindex][oZ], ObjectData[oindex][oRX], ObjectData[oindex][oRY], ObjectData[oindex][oRZ], -1, -1, -1, 300.0);
+				Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[oindex][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
-			// We need to update textures and materials
-			UpdateMaterial(oindex);
+				// We need to update textures and materials
+				UpdateMaterial(oindex);
 
-			// Update the object text
-			UpdateObjectText(oindex);
+				// Update the object text
+				UpdateObjectText(oindex);
 
-			// Update 3d Text
-			UpdateObject3DText(oindex, false);
+				// Update 3d Text
+				UpdateObject3DText(oindex, false);
+			}
 		}
 	    CarData[index][CarObjectRef][i] = -1;
 	    CarData[index][COX][i] = 0.0;
@@ -914,10 +922,11 @@ CMD:avdetach(playerid, arg[])
 	
 	if(ObjectData[CurrObject[playerid]][oAttachedVehicle] > -1)
 	{
-	    ObjectData[CurrObject[playerid]][oAttachedVehicle] = -1;
-	
 		new index = CurrObject[playerid];
-
+		if(ObjectData[index][oAttachedVehicle] > -1) UpdateAttachedObjectRef(ObjectData[index][oAttachedVehicle], index);
+		
+	    ObjectData[CurrObject[playerid]][oAttachedVehicle] = -1;
+	    
 		// Destroy the object
 	    DestroyDynamicObject(ObjectData[index][oID]);
 
@@ -968,6 +977,56 @@ CMD:avsel(playerid, arg[])
 
 	return 1;
 }
+
+CMD:avclonecar(playerid, arg[])
+{
+    MapOpenCheck();
+    NoEditingMode(playerid);
+	VehicleCheck(playerid);
+	
+	new index = Iter_Free(Cars);
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+	if(index > -1)
+	{
+		// Create clone car
+		new CloneCar = CurrVehicle[playerid];
+		GetPlayerPos(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ]);
+		GetXYInFrontOfPlayer(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], 2.0);
+		GetPlayerFacingAngle(playerid, CarData[index][CarSpawnFA]);
+		CurrVehicle[playerid] = AddNewCar(CarData[CloneCar][CarModel], index, true);
+
+		// Clone and attach objects
+		for(new i = 0; i < MAX_CAR_OBJECTS; i++)
+		{
+		    if(CarData[CloneCar][CarObjectRef][i] == -1) continue;
+
+		    // Clone and attach
+		    new CloneIndex = CloneObject(CarData[CloneCar][CarObjectRef][i]);
+
+            AttachDynamicObjectToVehicle(ObjectData[CloneIndex][oID], CarData[CurrVehicle[playerid]][CarID],
+				CarData[CloneCar][COX][i], CarData[CloneCar][COY][i], CarData[CloneCar][COZ][i], CarData[CloneCar][CORX][i], CarData[CloneCar][CORY][i], CarData[CloneCar][CORZ][i]);
+            CarData[CurrVehicle[playerid]][CarObjectRef][i] = CloneIndex;
+            ObjectData[CloneIndex][oAttachedVehicle] = CurrVehicle[playerid];
+            
+            CarData[CurrVehicle[playerid]][COX][i] = CarData[CloneCar][COX][i];
+            CarData[CurrVehicle[playerid]][COY][i] = CarData[CloneCar][COY][i];
+            CarData[CurrVehicle[playerid]][COZ][i] = CarData[CloneCar][COZ][i];
+            CarData[CurrVehicle[playerid]][CORX][i] = CarData[CloneCar][CORX][i];
+            CarData[CurrVehicle[playerid]][CORY][i] = CarData[CloneCar][CORY][i];
+            CarData[CurrVehicle[playerid]][CORZ][i] = CarData[CloneCar][CORZ][i];
+
+            sqlite_SaveVehicleObjectData(CurrVehicle[playerid]);
+
+            UpdateObject3DText(CloneIndex, false);
+		}
+        SendClientMessage(playerid, STEALTH_GREEN, "You have cloned this vehicle.");
+		return 1;
+	}
+	SendClientMessage(playerid, STEALTH_YELLOW, "Too many cars");
+
+	return 1;
+}
+
 
 CMD:avox(playerid, arg[]) // In GUI
 {

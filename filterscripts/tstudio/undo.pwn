@@ -121,7 +121,7 @@ UndoLastAction(lastgroup=0)
 			   	ObjectData[index][oBackColor] = UndoBuffer[CurrBufferIndex][uoBackColor];
 			   	ObjectData[index][oAlignment] = UndoBuffer[CurrBufferIndex][uoAlignment];
 			   	ObjectData[index][oTextFontSize] = UndoBuffer[CurrBufferIndex][uoTextFontSize];
-				ObjectData[index][oAttachedVehicle] = UndoBuffer[CurrBufferIndex][uoAttachedVehicle];
+			   	ObjectData[index][oAttachedVehicle] = UndoBuffer[CurrBufferIndex][uoAttachedVehicle];
 
 				for(new i = 0; i < MAX_MATERIALS; i++)
 				{

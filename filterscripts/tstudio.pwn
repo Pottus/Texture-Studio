@@ -3947,7 +3947,7 @@ CMD:dobject(playerid, arg[])  // In gui
     
     SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_DELETED);
     
-	DeleteDynamicObject(CurrObject[playerid]);
+    DeleteDynamicObject(CurrObject[playerid]);
 
 	foreach(new i : Player)
 	{
