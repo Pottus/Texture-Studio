@@ -564,6 +564,7 @@ sqlite_SaveVehicleObjectData(index)
 
 // Load query stmt
 static DBStatement:loadcarstmt;
+static bool:loadcarused;
 
 // Load all cars
 sqlite_LoadCars()
@@ -571,7 +572,11 @@ sqlite_LoadCars()
 	new tmpcar[CARINFO];
 	new currindex;
 
-	loadcarstmt = db_prepare(EditMap, "SELECT * FROM `Vehicles`");
+	if(!loadcarused)
+	{
+		loadcarstmt = db_prepare(EditMap, "SELECT * FROM `Vehicles`");
+		loadcarused = true;
+	}
 	
 	// Bind our results
     stmt_bind_result_field(loadcarstmt, 0, DB::TYPE_INT, currindex);
@@ -814,9 +819,14 @@ CMD:avattach(playerid, arg[])
                 CarData[CurrVehicle[playerid]][CarObjectRef][i] = CurrObject[playerid];
                 ObjectData[CurrObject[playerid]][oAttachedVehicle] = CurrVehicle[playerid];
                 
+                CarData[CurrVehicle[playerid]][COX][i] = 0.0;
+                CarData[CurrVehicle[playerid]][COY][i] = 0.0;
+                CarData[CurrVehicle[playerid]][COZ][i] = 0.0;
+                CarData[CurrVehicle[playerid]][CORX][i] = 0.0;
+                CarData[CurrVehicle[playerid]][CORY][i] = 0.0;
+                CarData[CurrVehicle[playerid]][CORZ][i] = 0.0;
+
                 sqlite_SaveVehicleObjectData(CurrVehicle[playerid]);
-                
-                printf("avoa::%i, %i", ObjectData[CurrObject[playerid]][oAttachedVehicle], CurrObject[playerid]);
                 
                 UpdateObject3DText(CurrObject[playerid], false);
 

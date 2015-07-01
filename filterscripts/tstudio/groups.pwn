@@ -1452,12 +1452,17 @@ stock ShowPrefabs(playerid)
 }
 
 static DBStatement:loadprefabstmt;
+static bool:loadprefabused;
 
 // Loads map objects from a data base
 sqlite_LoadPrefab(playerid, offset = true)
 {
 	// Load query stmt
-	loadprefabstmt = db_prepare(PrefabDB, "SELECT * FROM `Objects`");
+	if(!loadprefabused)
+	{
+		loadprefabstmt = db_prepare(PrefabDB, "SELECT * FROM `Objects`");
+		loadprefabused = true;
+	}
 
 	new tmpobject[OBJECTINFO];
 

@@ -844,6 +844,7 @@ public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
 
 // Load query stmt
 static DBStatement:loadstmt;
+static bool:loadstmtused;
 
 // Loads map objects from a data base
 sqlite_LoadMapObjects()
@@ -851,7 +852,11 @@ sqlite_LoadMapObjects()
 	new tmpobject[OBJECTINFO];
 	new currindex;
 
-	loadstmt = db_prepare(EditMap, "SELECT * FROM `Objects`");
+	if(!loadstmtused)
+	{
+		loadstmt = db_prepare(EditMap, "SELECT * FROM `Objects`");
+        loadstmtused = true;
+	}
 
 	// Bind our results
     stmt_bind_result_field(loadstmt, 0, DB::TYPE_INT, currindex);
@@ -1114,6 +1119,38 @@ sqlite_SaveColorIndex(index)
 
 	return 1;
 }
+
+new DBStatement:modelstmt;
+new ModelUpdateString[512];
+
+// Saves a specific texture index to DB
+sqlite_SaveModel(index)
+{
+	// Inserts a new index
+	if(!ModelUpdateString[0])
+	{
+		// Prepare query
+		strimplode(" ",
+			ModelUpdateString,
+			sizeof(ModelUpdateString),
+			"UPDATE `Objects` SET",
+			"`ModelID` = ?",
+			"WHERE `IndexID` = ?"
+		);
+        modelstmt = db_prepare(EditMap, ModelUpdateString);
+	}
+
+	// Bind values
+	stmt_bind_value(modelstmt, 0, DB::TYPE_INT, ObjectData[index][oModel]);
+	stmt_bind_value(modelstmt, 1, DB::TYPE_INT, index);
+
+	// Execute stmt
+    stmt_execute(modelstmt);
+
+	return 1;
+}
+
+
 
 new DBStatement:posupdatestmt;
 new PosUpdateString[512];
@@ -1540,13 +1577,17 @@ sqlite_InsertRemoveBuilding(index)
 
 // Load any remove buildings
 new DBStatement:loadremovebuldingstmt;
+new bool:loadremovebuldingused;
 
 sqlite_LoadRemoveBuildings()
 {
 	new tmpremove[REMOVEINFO];
 
-	loadremovebuldingstmt = db_prepare(EditMap, "SELECT * FROM `RemovedBuildings`");
-
+	if(!loadremovebuldingused)
+	{
+		loadremovebuldingstmt = db_prepare(EditMap, "SELECT * FROM `RemovedBuildings`");
+        loadremovebuldingused = true;
+	}
 	// Bind our results
     stmt_bind_result_field(loadremovebuldingstmt, 0, DB::TYPE_INT, tmpremove[rModel]);
     stmt_bind_result_field(loadremovebuldingstmt, 1, DB::TYPE_FLOAT, tmpremove[rX]);
@@ -3850,6 +3891,73 @@ CMD:mtcolorall(playerid, arg[]) // In GUI - Undo
 
 	return 1;
 }
+
+CMD:oswap(playerid, arg[])
+{
+    MapOpenCheck();
+
+	EditCheck(playerid);
+
+   	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+   	
+	new id = strval(arg);
+	if(id > 0 && id < 20000)
+	{
+		new index = CurrObject[playerid];
+        ObjectData[index][oModel] = id;
+        
+        SaveUndoInfo(index, UNDO_TYPE_EDIT);
+        
+		// Destroy the object
+	    DestroyDynamicObject(ObjectData[index][oID]);
+
+		// Re-create object
+		ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
+
+		// Update streamer for all
+		foreach(new i : Player) Streamer_UpdateEx(i, ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ]);
+
+		// Update the materials
+		UpdateMaterial(index);
+		
+		// Update the text
+		UpdateObjectText(index);
+		
+		// Save changes to database
+		sqlite_SaveModel(index);
+	}
+	else SendClientMessage(playerid, STEALTH_YELLOW, "Invalid Model");
+	return 1;
+}
+
+// Reset all materials
+CMD:mtreset(playerid, arg[])
+{
+    MapOpenCheck();
+
+	EditCheck(playerid);
+
+   	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+   	
+	new index = CurrObject[playerid];
+	
+	SaveUndoInfo(index, UNDO_TYPE_EDIT);
+
+   	for(new i = 0; i < MAX_MATERIALS; i++)
+	{
+		ObjectData[index][oTexIndex][i] = 0;
+		ObjectData[index][oColorIndex][i] = 0;
+	    UpdateTextureSlot(playerid, i);
+	}
+    UpdateMaterial(index);
+    
+  	sqlite_SaveMaterialIndex(index);
+    sqlite_SaveColorIndex(index);
+
+	return 1;
+}
+
 
 // Enter edit mode
 CMD:editobject(playerid, arg[]) // In GUI
