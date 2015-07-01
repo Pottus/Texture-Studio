@@ -598,8 +598,6 @@ sqlite_LoadCars()
     stmt_bind_result_field(loadcarstmt, 15, DB::TYPE_ARRAY, tmpcar[CORY], MAX_CAR_OBJECTS);
     stmt_bind_result_field(loadcarstmt, 16, DB::TYPE_ARRAY, tmpcar[CORZ], MAX_CAR_OBJECTS);
 
-    stmt_execute(loadcarstmt);
-
 	// Execute query
     if(stmt_execute(loadcarstmt))
     {
