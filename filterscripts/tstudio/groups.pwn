@@ -1290,9 +1290,9 @@ sqlite_InsertPrefab(index, Float:x, Float:y, Float:z)
 			"INSERT INTO `Objects`",
 	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		);
-		// Prepare data base for writing
-		insertprefabstmt = db_prepare(PrefabDB, InsertPrefabString);
 	}
+
+	insertprefabstmt = db_prepare(PrefabDB, InsertPrefabString);
 
 	// Bind our results
     stmt_bind_value(insertprefabstmt, 0, DB::TYPE_INT, ObjectData[index][oModel]);
@@ -1315,6 +1315,7 @@ sqlite_InsertPrefab(index, Float:x, Float:y, Float:z)
     stmt_bind_value(insertprefabstmt, 17, DB::TYPE_STRING, ObjectData[index][oObjectText], MAX_TEXT_LENGTH);
 
     stmt_execute(insertprefabstmt);
+	stmt_close(insertprefabstmt);
 }
 
 CMD:prefabsetz(playerid, arg[]) // in GUI
@@ -1452,17 +1453,12 @@ stock ShowPrefabs(playerid)
 }
 
 static DBStatement:loadprefabstmt;
-static bool:loadprefabused;
 
 // Loads map objects from a data base
 sqlite_LoadPrefab(playerid, offset = true)
 {
 	// Load query stmt
-	if(!loadprefabused)
-	{
-		loadprefabstmt = db_prepare(PrefabDB, "SELECT * FROM `Objects`");
-		loadprefabused = true;
-	}
+	loadprefabstmt = db_prepare(PrefabDB, "SELECT * FROM `Objects`");
 
 	new tmpobject[OBJECTINFO];
 

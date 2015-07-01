@@ -449,8 +449,9 @@ sqlite_InsertCar(index)
 	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		);
 		// Prepare data base for writing
-		insertcarstmt = db_prepare(EditMap, InsertCarString);
 	}
+
+	insertcarstmt = db_prepare(EditMap, InsertCarString);
 
 	// Bind our results
     stmt_bind_value(insertcarstmt, 0, DB::TYPE_INT, index);
@@ -472,6 +473,7 @@ sqlite_InsertCar(index)
     stmt_bind_value(insertcarstmt, 16, DB::TYPE_ARRAY, CarData[index][CORZ], MAX_CAR_OBJECTS);
 
     stmt_execute(insertcarstmt);
+	stmt_close(insertcarstmt);
 }
 
 new DBStatement:savevposstmt;
@@ -499,8 +501,9 @@ sqlite_SaveVehicleData(index)
 			"`CarComponents` = ?",
 			"WHERE `IndexID` = ?"
 		);
-        savevposstmt = db_prepare(EditMap, VehiclePosUpdateString);
 	}
+
+    savevposstmt = db_prepare(EditMap, VehiclePosUpdateString);
 
 	// Bind values
 	stmt_bind_value(savevposstmt, 0, DB::TYPE_INT, CarData[index][CarModel]);
@@ -516,6 +519,7 @@ sqlite_SaveVehicleData(index)
 
 	// Execute stmt
     stmt_execute(savevposstmt);
+	stmt_close(savevposstmt);
 	return 1;
 }
 
@@ -543,8 +547,9 @@ sqlite_SaveVehicleObjectData(index)
 			"`CORZ` = ?",
 			"WHERE `IndexID` = ?"
 		);
-        savevdatastmt = db_prepare(EditMap, VehicleDataUpdateString);
 	}
+
+    savevdatastmt = db_prepare(EditMap, VehicleDataUpdateString);
 
 	// Bind values
 	stmt_bind_value(savevdatastmt, 0, DB::TYPE_ARRAY, CarData[index][CarObjectRef], MAX_CAR_OBJECTS);
@@ -558,13 +563,13 @@ sqlite_SaveVehicleObjectData(index)
 
 	// Execute stmt
     stmt_execute(savevdatastmt);
+	stmt_close(savevdatastmt);
 
 	return 1;
 }
 
 // Load query stmt
 static DBStatement:loadcarstmt;
-static bool:loadcarused;
 
 // Load all cars
 sqlite_LoadCars()
@@ -572,11 +577,7 @@ sqlite_LoadCars()
 	new tmpcar[CARINFO];
 	new currindex;
 
-	if(!loadcarused)
-	{
-		loadcarstmt = db_prepare(EditMap, "SELECT * FROM `Vehicles`");
-		loadcarused = true;
-	}
+	loadcarstmt = db_prepare(EditMap, "SELECT * FROM `Vehicles`");
 	
 	// Bind our results
     stmt_bind_result_field(loadcarstmt, 0, DB::TYPE_INT, currindex);

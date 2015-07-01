@@ -844,7 +844,6 @@ public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
 
 // Load query stmt
 static DBStatement:loadstmt;
-static bool:loadstmtused;
 
 // Loads map objects from a data base
 sqlite_LoadMapObjects()
@@ -852,11 +851,7 @@ sqlite_LoadMapObjects()
 	new tmpobject[OBJECTINFO];
 	new currindex;
 
-	if(!loadstmtused)
-	{
-		loadstmt = db_prepare(EditMap, "SELECT * FROM `Objects`");
-        loadstmtused = true;
-	}
+	loadstmt = db_prepare(EditMap, "SELECT * FROM `Objects`");
 
 	// Bind our results
     stmt_bind_result_field(loadstmt, 0, DB::TYPE_INT, currindex);
@@ -943,8 +938,8 @@ sqlite_InsertObject(index)
 	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		);
 		// Prepare data base for writing
-		insertstmt = db_prepare(EditMap, InsertObjectString);
 	}
+	insertstmt = db_prepare(EditMap, InsertObjectString);
 	
 	// Bind values
 
@@ -972,6 +967,7 @@ sqlite_InsertObject(index)
     stmt_bind_value(insertstmt, 19, DB::TYPE_INT, ObjectData[index][oGroup]);
     
     stmt_execute(insertstmt);
+	stmt_close(insertstmt);
 }
 
 // Remove a object from the database
@@ -1077,8 +1073,8 @@ sqlite_SaveMaterialIndex(index)
 			"`TextureIndex` = ?",
 			"WHERE `IndexID` = ?"
 		);
-        texturestmt = db_prepare(EditMap, TextureUpdateString);
 	}
+    texturestmt = db_prepare(EditMap, TextureUpdateString);
 	
 	// Bind values
 	stmt_bind_value(texturestmt, 0, DB::TYPE_ARRAY, ObjectData[index][oTexIndex], MAX_MATERIALS);
@@ -1086,6 +1082,7 @@ sqlite_SaveMaterialIndex(index)
 
 	// Execute stmt
     stmt_execute(texturestmt);
+	stmt_close(texturestmt);
 
 	return 1;
 }
@@ -1107,8 +1104,9 @@ sqlite_SaveColorIndex(index)
 			"`ColorIndex` = ?",
 			"WHERE `IndexID` = ?"
 		);
-        colorstmt = db_prepare(EditMap, ColorUpdateString);
 	}
+
+    colorstmt = db_prepare(EditMap, ColorUpdateString);
 
 	// Bind values
 	stmt_bind_value(colorstmt, 0, DB::TYPE_ARRAY, ObjectData[index][oColorIndex], MAX_MATERIALS);
@@ -1116,6 +1114,7 @@ sqlite_SaveColorIndex(index)
 
 	// Execute stmt
     stmt_execute(colorstmt);
+	stmt_close(colorstmt);
 
 	return 1;
 }
@@ -1137,8 +1136,9 @@ sqlite_SaveModel(index)
 			"`ModelID` = ?",
 			"WHERE `IndexID` = ?"
 		);
-        modelstmt = db_prepare(EditMap, ModelUpdateString);
 	}
+
+    modelstmt = db_prepare(EditMap, ModelUpdateString);
 
 	// Bind values
 	stmt_bind_value(modelstmt, 0, DB::TYPE_INT, ObjectData[index][oModel]);
@@ -1146,7 +1146,7 @@ sqlite_SaveModel(index)
 
 	// Execute stmt
     stmt_execute(modelstmt);
-
+	stmt_close(modelstmt);
 	return 1;
 }
 
@@ -1173,8 +1173,8 @@ sqlite_UpdateObjectPos(index)
 			"`rzRot` = ?",
 			"WHERE `IndexID` = ?"
 		);
-        posupdatestmt = db_prepare(EditMap, PosUpdateString);
 	}
+    posupdatestmt = db_prepare(EditMap, PosUpdateString);
 
 	// Bind values
 	stmt_bind_value(posupdatestmt, 0, DB::TYPE_FLOAT, ObjectData[index][oX]);
@@ -1187,6 +1187,7 @@ sqlite_UpdateObjectPos(index)
 
 	// Execute stmt
     stmt_execute(posupdatestmt);
+	stmt_close(posupdatestmt);
     
 	foreach(new i : Player)
 	{
@@ -1220,8 +1221,9 @@ sqlite_SaveAllObjectText(index)
 			"`ObjectText` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		objecttextallsave = db_prepare(EditMap, ObjectTextSave);
 	}
+
+	objecttextallsave = db_prepare(EditMap, ObjectTextSave);
 	
 	// Bind values
 	stmt_bind_value(objecttextallsave, 0, DB::TYPE_INT, ObjectData[index][ousetext]);
@@ -1236,6 +1238,7 @@ sqlite_SaveAllObjectText(index)
 	stmt_bind_value(objecttextallsave, 9, DB::TYPE_INT, index);
 
 	stmt_execute(objecttextallsave);
+	stmt_close(objecttextallsave);
 }
 
 
@@ -1255,8 +1258,9 @@ sqlite_ObjUseText(index)
 			"`usetext` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		usetextupdatestmt = db_prepare(EditMap, UseTextString);
 	}
+
+	usetextupdatestmt = db_prepare(EditMap, UseTextString);
 
 	// Bind values
 	stmt_bind_value(usetextupdatestmt, 0, DB::TYPE_INT, ObjectData[index][ousetext]);
@@ -1264,6 +1268,7 @@ sqlite_ObjUseText(index)
 
 	// Execute stmt
     stmt_execute(usetextupdatestmt);
+	stmt_close(usetextupdatestmt);
 	return 1;
 }
 
@@ -1282,8 +1287,9 @@ sqlite_ObjFontFace(index)
 			"`FontFace` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		fontfaceupdatestmt = db_prepare(EditMap, FontFaceString);
 	}
+
+	fontfaceupdatestmt = db_prepare(EditMap, FontFaceString);
 
 	// Bind values
 	stmt_bind_value(fontfaceupdatestmt, 0, DB::TYPE_INT, ObjectData[index][oFontFace]);
@@ -1291,6 +1297,7 @@ sqlite_ObjFontFace(index)
 	
 	// Execute stmt
     stmt_execute(fontfaceupdatestmt);
+	stmt_close(fontfaceupdatestmt);
 	return 1;
 }
 
@@ -1309,8 +1316,8 @@ sqlite_ObjFontSize(index)
 			"`FontSize` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		fontsizeupdatestmt = db_prepare(EditMap, FontSizeString);
 	}
+	fontsizeupdatestmt = db_prepare(EditMap, FontSizeString);
 
 	// Bind values
 	stmt_bind_value(fontsizeupdatestmt, 0, DB::TYPE_INT, ObjectData[index][oFontSize]);
@@ -1318,6 +1325,7 @@ sqlite_ObjFontSize(index)
 
 	// Execute stmt
     stmt_execute(fontsizeupdatestmt);
+	stmt_close(fontsizeupdatestmt);
 	return 1;
 }
 
@@ -1338,8 +1346,9 @@ sqlite_ObjFontBold(index)
 			"`FontBold` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		fontboldupdatestmt = db_prepare(EditMap, FontBoldString);
 	}
+
+	fontboldupdatestmt = db_prepare(EditMap, FontBoldString);
 
 	// Bind values
 	stmt_bind_value(fontboldupdatestmt, 0, DB::TYPE_INT, ObjectData[index][oFontBold]);
@@ -1347,6 +1356,7 @@ sqlite_ObjFontBold(index)
 
 	// Execute stmt
     stmt_execute(fontboldupdatestmt);
+	stmt_close(fontboldupdatestmt);
 	return 1;
 }
 
@@ -1365,8 +1375,9 @@ sqlite_ObjFontColor(index)
 			"`FontColor` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		fontcolorupdatestmt = db_prepare(EditMap, FontColorString);
 	}
+
+	fontcolorupdatestmt = db_prepare(EditMap, FontColorString);
 
 	// Bind values
 	stmt_bind_value(fontcolorupdatestmt, 0, DB::TYPE_INT, ObjectData[index][oFontColor]);
@@ -1374,6 +1385,7 @@ sqlite_ObjFontColor(index)
 
 	// Execute stmt
     stmt_execute(fontcolorupdatestmt);
+	stmt_close(fontcolorupdatestmt);
 	return 1;
 }
 
@@ -1392,15 +1404,17 @@ sqlite_ObjBackColor(index)
 			"`BackColor` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		backcolorupdatestmt = db_prepare(EditMap, BackColorString);
 	}
 
+	backcolorupdatestmt = db_prepare(EditMap, BackColorString);
+	
 	// Bind values
 	stmt_bind_value(backcolorupdatestmt, 0, DB::TYPE_INT, ObjectData[index][oBackColor]);
 	stmt_bind_value(backcolorupdatestmt, 1, DB::TYPE_INT, index);
 
 	// Execute stmt
     stmt_execute(backcolorupdatestmt);
+	stmt_close(backcolorupdatestmt);
 	return 1;
 }
 
@@ -1420,8 +1434,9 @@ sqlite_ObjAlignment(index)
 			"`Alignment` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		alignmentupdatestmt = db_prepare(EditMap, AlignmentString);
 	}
+
+	alignmentupdatestmt = db_prepare(EditMap, AlignmentString);
 
 	// Bind values
 	stmt_bind_value(alignmentupdatestmt, 0, DB::TYPE_INT, ObjectData[index][oAlignment]);
@@ -1429,6 +1444,7 @@ sqlite_ObjAlignment(index)
 
 	// Execute stmt
     stmt_execute(alignmentupdatestmt);
+	stmt_close(alignmentupdatestmt);
 	return 1;
 }
 
@@ -1447,8 +1463,9 @@ sqlite_ObjFontTextSize(index)
 			"`TextFontSize` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		textsizeupdatestmt = db_prepare(EditMap, TextSizeString);
 	}
+
+	textsizeupdatestmt = db_prepare(EditMap, TextSizeString);
 
 	// Bind values
 	stmt_bind_value(textsizeupdatestmt, 0, DB::TYPE_INT, ObjectData[index][oTextFontSize]);
@@ -1456,6 +1473,7 @@ sqlite_ObjFontTextSize(index)
 
 	// Execute stmt
     stmt_execute(textsizeupdatestmt);
+	stmt_close(textsizeupdatestmt);
 	return 1;
 }
 
@@ -1474,8 +1492,9 @@ sqlite_ObjObjectText(index)
 			"`ObjectText` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		objecttextupdatestmt = db_prepare(EditMap, ObjectTextString);
 	}
+
+	objecttextupdatestmt = db_prepare(EditMap, ObjectTextString);
 
 	// Bind values
 	stmt_bind_value(objecttextupdatestmt, 0, DB::TYPE_STRING, ObjectData[index][oObjectText]);
@@ -1483,6 +1502,7 @@ sqlite_ObjObjectText(index)
 
 	// Execute stmt
     stmt_execute(objecttextupdatestmt);
+	stmt_close(objecttextupdatestmt);
 	return 1;
 }
 
@@ -1501,8 +1521,9 @@ sqlite_ObjGroup(index)
 			"`GroupID` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		objectgroupupdatestmt = db_prepare(EditMap, ObjectGroupString);
 	}
+
+	objectgroupupdatestmt = db_prepare(EditMap, ObjectGroupString);
 
 	// Bind values
 	stmt_bind_value(objectgroupupdatestmt, 0, DB::TYPE_INT, ObjectData[index][oGroup]);
@@ -1510,6 +1531,7 @@ sqlite_ObjGroup(index)
 
 	// Execute stmt
     stmt_execute(objectgroupupdatestmt);
+	stmt_close(objectgroupupdatestmt);
 	return 1;
 }
 
@@ -1529,8 +1551,8 @@ sqlite_ObjModel(index)
 			"`ModelID` = ?",
 			"WHERE `IndexID` = ?"
 		);
-		objectmodelupdatestmt = db_prepare(EditMap, ObjectModelString);
 	}
+	objectmodelupdatestmt = db_prepare(EditMap, ObjectModelString);
 
 	// Bind values
 	stmt_bind_value(objectmodelupdatestmt, 0, DB::TYPE_INT, ObjectData[index][oModel]);
@@ -1538,6 +1560,7 @@ sqlite_ObjModel(index)
 
 	// Execute stmt
     stmt_execute(objectmodelupdatestmt);
+	stmt_close(objectmodelupdatestmt);
 	return 1;
 }
 
@@ -1562,8 +1585,8 @@ sqlite_InsertRemoveBuilding(index)
 	        "VALUES(?, ?, ?, ?, ?)"
 		);
 		// Prepare data base for writing
-		insertremovebuldingstmt = db_prepare(EditMap, InsertRemoveBuildingString);
 	}
+	insertremovebuldingstmt = db_prepare(EditMap, InsertRemoveBuildingString);
 
 	// Bind our results
     stmt_bind_value(insertremovebuldingstmt, 0, DB::TYPE_INT, RemoveData[index][rModel]);
@@ -1573,21 +1596,18 @@ sqlite_InsertRemoveBuilding(index)
     stmt_bind_value(insertremovebuldingstmt, 4, DB::TYPE_FLOAT, RemoveData[index][rRange]);
 
     stmt_execute(insertremovebuldingstmt);
+	stmt_close(insertremovebuldingstmt);
 }
 
 // Load any remove buildings
 new DBStatement:loadremovebuldingstmt;
-new bool:loadremovebuldingused;
 
 sqlite_LoadRemoveBuildings()
 {
 	new tmpremove[REMOVEINFO];
 
-	if(!loadremovebuldingused)
-	{
-		loadremovebuldingstmt = db_prepare(EditMap, "SELECT * FROM `RemovedBuildings`");
-        loadremovebuldingused = true;
-	}
+	loadremovebuldingstmt = db_prepare(EditMap, "SELECT * FROM `RemovedBuildings`");
+
 	// Bind our results
     stmt_bind_result_field(loadremovebuldingstmt, 0, DB::TYPE_INT, tmpremove[rModel]);
     stmt_bind_result_field(loadremovebuldingstmt, 1, DB::TYPE_FLOAT, tmpremove[rX]);
@@ -1606,6 +1626,7 @@ sqlite_LoadRemoveBuildings()
 		stmt_close(loadremovebuldingstmt);
         return 1;
     }
+	stmt_close(loadremovebuldingstmt);
     return 0;
 }
 
