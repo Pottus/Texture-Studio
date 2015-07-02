@@ -308,11 +308,6 @@ forward OnDeleteGroup3DText(index);
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________"); \
 	return SendClientMessage(playerid, STEALTH_YELLOW, "You need to finish editng your object before using this command"); }
 
-// Checks if model is valid
-#define ModelIsValid(%0); if(!IsValidModel(%0)) { \
-	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________"); \
-	return SendClientMessage(playerid, STEALTH_YELLOW, "Invalid Model!"); }
-
 // Checks if a map is open
 #define MapOpenCheck(); if(!MapOpen) { \
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________"); \
@@ -1119,38 +1114,6 @@ sqlite_SaveColorIndex(index)
 	return 1;
 }
 
-new DBStatement:modelstmt;
-new ModelUpdateString[512];
-
-// Saves a specific texture index to DB
-sqlite_SaveModel(index)
-{
-	// Inserts a new index
-	if(!ModelUpdateString[0])
-	{
-		// Prepare query
-		strimplode(" ",
-			ModelUpdateString,
-			sizeof(ModelUpdateString),
-			"UPDATE `Objects` SET",
-			"`ModelID` = ?",
-			"WHERE `IndexID` = ?"
-		);
-	}
-
-    modelstmt = db_prepare(EditMap, ModelUpdateString);
-
-	// Bind values
-	stmt_bind_value(modelstmt, 0, DB::TYPE_INT, ObjectData[index][oModel]);
-	stmt_bind_value(modelstmt, 1, DB::TYPE_INT, index);
-
-	// Execute stmt
-    stmt_execute(modelstmt);
-	stmt_close(modelstmt);
-	return 1;
-}
-
-
 
 new DBStatement:posupdatestmt;
 new PosUpdateString[512];
@@ -1563,9 +1526,6 @@ sqlite_ObjModel(index)
 	stmt_close(objectmodelupdatestmt);
 	return 1;
 }
-
-
-
 
 
 // Insert a remove building to DB
@@ -3946,7 +3906,7 @@ CMD:oswap(playerid, arg[])
 		UpdateObjectText(index);
 		
 		// Save changes to database
-		sqlite_SaveModel(index);
+		sqlite_ObjModel(index);
 	}
 	else SendClientMessage(playerid, STEALTH_YELLOW, "Invalid Model");
 	return 1;
@@ -4021,8 +3981,6 @@ CMD:cobject(playerid, arg[]) // In gui
         SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /cobject <modelid>");
 		return 1;
 	}
-
-	// ModelIsValid(modelid);
 
 	// Set the initial object position
 	new Float:px, Float:py, Float:pz, Float:fa;

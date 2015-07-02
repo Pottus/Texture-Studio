@@ -140,12 +140,8 @@ static OBMEditor(playerid)
 						if(mresponse)
 						{
 							new model = strval(mtext);
-							if(IsValidModel(model))
-							{
-								OBMData[playerid][pOBMModel] = model;
-								UpdateOBM(playerid);
-							}
-							else SendClientMessage(playerid, STEALTH_GREEN, "Invalid model id!");
+							OBMData[playerid][pOBMModel] = model;
+							UpdateOBM(playerid);
 						}
       					OBMEditor(playerid);
 					}

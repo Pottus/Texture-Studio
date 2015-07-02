@@ -63,20 +63,12 @@ ShowPropMenu(playerid)
 						{
 							new model = strval(etext);
 
-                            if(IsValidModel(model))
-							{
-								SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
-							    ObjectData[CurrObject[playerid]][oModel] = model;
-								sqlite_ObjModel(CurrObject[playerid]);
-								RebuildObject(CurrObject[playerid]);
-								SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-								SendClientMessage(playerid, STEALTH_YELLOW, "Model changed");
-							}
-							else
-							{
-								SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-								SendClientMessage(playerid, STEALTH_YELLOW, "Invalid Model!");
-							}
+							SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
+							ObjectData[CurrObject[playerid]][oModel] = model;
+							sqlite_ObjModel(CurrObject[playerid]);
+							RebuildObject(CurrObject[playerid]);
+							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+							SendClientMessage(playerid, STEALTH_YELLOW, "Model changed");
 						}
                         ShowPropMenu(playerid);
 				    }
