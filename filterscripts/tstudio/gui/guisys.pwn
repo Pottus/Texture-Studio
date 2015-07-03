@@ -1,3 +1,10 @@
+#tryinclude <YSI\y_iterate>
+
+#if !defined _Y_ITERATE_LOCAL_VERSION
+	#error y_iterate not found
+#endif
+
+
 // Common Data
 #define         GUI_X_OFFSET    0.0
 #define         GUI_Y_OFFSET    0.0
