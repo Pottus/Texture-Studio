@@ -4133,31 +4133,244 @@ ShowObjectText()
 }
 
 // Command list
-CMD:thelp(playerid, arg[])
+CMD:thelp(playerid, params[])
 {
-	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-	SendClientMessage(playerid, STEALTH_GREEN, "Commands");
-	SendClientMessage(playerid, STEALTH_GREEN, "Maps: /loadmap - /newmap - /importmap - /exportmap");
-	SendClientMessage(playerid, STEALTH_GREEN, "Objects: /cobject - /dobject - /robject - /osearch");
-	SendClientMessage(playerid, STEALTH_GREEN, "Objects: /sel - /csel - /lsel - /flymode - /ogoto");
-	SendClientMessage(playerid, STEALTH_GREEN, "Objects/Pivot: /pivot - /togpivot");
-	SendClientMessage(playerid, STEALTH_GREEN, "Removebuildings: /gtaobjects - /gtashow - /gtahide - /remobject - /swapbuilding");
-	SendClientMessage(playerid, STEALTH_GREEN, "Vehicles: /avmodcar - /avsetspawn - /avnewcar - /avdeletecar - /avcarcolor");
-	SendClientMessage(playerid, STEALTH_GREEN, "Vehicles: /avpaint - /avattach - /avmirror - /avdetach - /avsel");
-	SendClientMessage(playerid, STEALTH_GREEN, "Vehicles: /editobject - /avox - /avoy - /avoz - /avrx - /avry - avrz");
-	SendClientMessage(playerid, STEALTH_GREEN, "Vehicles: /avexport - /avexportall");
-	SendClientMessage(playerid, STEALTH_GREEN, "Movement: /editobject - /ox - /oy - /oz - /rx - ry - /rz");
-	SendClientMessage(playerid, STEALTH_GREEN, "Movement: /dox - /doy - /doz - /drx - /dry - /drz");
-	SendClientMessage(playerid, STEALTH_GREEN, "Textures: /mtextures - /ttextures - /stexture - /mtset - /mtcolor - /mtsetall");
-	SendClientMessage(playerid, STEALTH_GREEN, "Textures/Text: /mtcolorall - /copy - /paste - /clear - /text");
-	SendClientMessage(playerid, STEALTH_GREEN, "Textures/Indexes: /sindex - /rindex");
-	SendClientMessage(playerid, STEALTH_GREEN, "Textures/Theme: /loadtheme - /savetheme - /deletetheme");
-	SendClientMessage(playerid, STEALTH_GREEN, "Groups: /setgroup - /selectgroup - /gsel - /gadd - grem - /gclear /gclone /gdelete");
-	SendClientMessage(playerid, STEALTH_GREEN, "Groups: /editgroup - /gox - /goy - /goz - /grx - /gry - /grz");
-	SendClientMessage(playerid, STEALTH_GREEN, "Group/Prefab: /gaexport(N/A) - /gprefab - /prefabsetz - /prefab");
-	SendClientMessage(playerid, STEALTH_GREEN, "Labels: /showtext3d - /hidetext3d");
-	SendClientMessage(playerid, STEALTH_GREEN, "Bind Editor: /bindeditor - /runbind");
-	SendClientMessage(playerid, STEALTH_GREEN, "Other: /echo");
+	static Commands[10][32][64] =
+	{
+		{//MAPS
+			{"Maps"},
+			
+			{"{81181C}General{FFFFFF}"},
+			{"loadmap"},
+			{"newmap"},
+			{"importmap"},
+			{"export"},
+			{"exportmap"},
+			{"exportallmap"},
+			
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},
+		},
+		{//OBJECTS
+			{"Objects"},
+			
+			{"{81181C}General{FFFFFF}"},
+			{"cobject"},
+			{"dobject"},
+			{"robject"},
+			{"clone"},
+			{"ogroup"},
+			{"ogoto"},
+			{"oswap"},
+			{"osearch"},
+			{"oprop"},
+			
+			{" \n{81181C}Pivot{FFFFFF}"},
+			{"pivot"},
+			{"togpivot"},
+			
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+		},
+		{//TEXTURES
+			{"Textures"},
+			
+			{"{81181C}General{FFFFFF}"},
+			{"mtextures"},
+			{"ttextures"},
+			{"stexture"},
+			{"mtset"},
+			{"mtsetall"},
+			{"mtreset"},
+			{"mtcolor"},
+			{"mtcolorall"},
+			{"tsearch"},
+			{"text"},
+			
+			{" \n{81181C}Texture Buffer{FFFFFF}"},
+			{"copy"},
+			{"clear"},
+			{"paste"},
+			
+			{" \n{81181C}Texture Indexes{FFFFFF}"},
+			{"settindex"},
+			{"sindex"},
+			{"rindex"},
+
+			{" \n{81181C}Texture Themes{FFFFFF}"},
+			{"savetheme"},
+			{"deletetheme"},
+			{"loadtheme"},
+			
+			{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},
+			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+		},
+		{//MOVEMENT
+			{"Movement"},
+			
+			{"{81181C}General{FFFFFF}"},
+			{"editobject"},
+			{"ox"},
+			{"oy"},
+			{"oz"},
+			{"rx"},
+			{"ry"},
+			{"rz"},
+			{"rotreset"},
+
+			{" \n{81181C}Delta Movement{FFFFFF}"},
+			{"dox"},
+			{"doy"},
+			{"doz"},
+			{"drx"},
+			{"dry"},
+			{"drz"},
+			
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""}//,{""},
+			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+		},
+		{//SELECTION
+			{"Selection"},
+			
+			{"{81181C}General{FFFFFF}"},
+			{"sel"},
+			{"csel"},
+			{"lsel"},
+			{"scsel"},
+			{"dsel"},
+			{"dcsel"},
+			
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},
+		},
+		{//GROUPS
+			{"Groups"},
+			
+			{"{81181C}General{FFFFFF}"},
+			{"obmedit"},
+			{"setgroup"},
+			{"selectgroup"},
+			{"gsel"},
+			{"gadd"},
+			{"grem"},
+			{"gclear"},
+			{"gclone"},
+			{"gdelete"},
+			{"gall"},
+			{"0group"},
+			
+			{" \n{81181C}Group Movement{FFFFFF}"},
+			{"editgroup"},
+			{"gox"},
+			{"goy"},
+			{"goz"},
+			{"grx"},
+			{"gry"},
+			{"grz"},
+			
+			{" \n{81181C}Group Prefabs{FFFFFF}"},
+			{"gaexport"},
+			{"gprefab"},
+			{"prefabsetz"},
+			{"prefab"},
+			
+			{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+		},
+		{//BUILDINGS
+			{"Buildings"},
+			
+			{"{81181C}General{FFFFFF}"},
+			{"gtaobjects"},
+			{"gtashow"},
+			{"gtahide"},
+			{"remobject"},
+			{"swapbuilding"},
+			
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},
+		},
+		{//VEHICLE
+			{"Vehicles"},
+			
+			{"{81181C}General{FFFFFF}"},
+			{"avmodcar"},
+			{"avsetspawn"},
+			{"avdeletecar"},
+			{"avselectcar"},
+			{"avnewcar"},
+			{"avcarcolor"},
+			{"avpaint"},
+			{"avsel"},
+			{"avclonecar"},
+			{"avexport"},
+			{"avexportall"},
+			
+			{" \n{81181C}Vehicle Objects{FFFFFF}"},
+			{"avattach"},
+			{"avdetach"},
+			{"avox"},
+			{"avoy"},
+			{"avoz"},
+			{"avrx"},
+			{"avry"},
+			{"avrz"},
+			{"avmirror"},
+			
+			{""},{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},
+			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+		},
+		{//BINDS
+			{"Binds"},
+			
+			{"{81181C}General{FFFFFF}"},
+			{"runbind"},
+			{"bindeditor"},
+			
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},
+		},
+		{//OTHER
+			{"Others"},
+			
+			{"{81181C}General{FFFFFF}"},
+			{"hidetext3d"},
+			{"showtext3d"},
+			{"flymode"},
+			{"thelp"},
+			{"undo"},
+			{"echo"},
+			
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},
+		}
+	};
+
+	new cmdtypes[256];
+	foreach(new i: Range(0, sizeof(Commands)))
+		strcat(cmdtypes, sprintf("%s\n", Commands[i][0]));
+		
+	inline SelectCommandType(spid, sdialogid, sresponse, slistitem, string:stext[])
+	{
+		#pragma unused slistitem, sdialogid, spid, stext
+		if(sresponse)
+		{
+			new cmds[2048];
+			foreach(new i: Range(1, sizeof(Commands[])))
+				if(!isnull(Commands[slistitem][i])) strcat(cmds, sprintf("%s\n", Commands[slistitem][i]));
+				
+			inline SelectCommand(epid, edialogid, eresponse, elistitem, string:etext[])
+			{
+				#pragma unused elistitem, edialogid, epid, etext
+				if(eresponse)
+					Dialog_ShowCallback(playerid, using inline SelectCommand, DIALOG_STYLE_LIST, "Texture Studio - Command List", cmds, "Select", "Back");
+				else
+					Dialog_ShowCallback(playerid, using inline SelectCommandType, DIALOG_STYLE_LIST, "Texture Studio - Command List", cmdtypes, "Select", "Cancel");
+			}
+			Dialog_ShowCallback(playerid, using inline SelectCommand, DIALOG_STYLE_LIST, "Texture Studio - Command List", cmds, "Select", "Back");
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline SelectCommandType, DIALOG_STYLE_LIST, "Texture Studio - Command List", cmdtypes, "Select", "Cancel");
 	return 1;
 }
 ////////////////////////////////////////////////////////////////////////////////
