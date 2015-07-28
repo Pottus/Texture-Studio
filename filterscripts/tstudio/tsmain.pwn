@@ -4347,7 +4347,8 @@ CMD:thelp(playerid, params[])
 	};
 
 	new cmdtypes[256];
-	foreach(new i: Range(0, sizeof(Commands)))
+	for(new i; i < sizeof(Commands); i++)
+	//foreach(new i: Range(0, sizeof(Commands)))
 		strcat(cmdtypes, sprintf("%s\n", Commands[i][0]));
 		
 	inline SelectCommandType(spid, sdialogid, sresponse, slistitem, string:stext[])
@@ -4356,7 +4357,8 @@ CMD:thelp(playerid, params[])
 		if(sresponse)
 		{
 			new cmds[2048];
-			foreach(new i: Range(1, sizeof(Commands[])))
+			for(new i = 1; i < sizeof(Commands[]); i++)
+			//foreach(new i: Range(1, sizeof(Commands[])))
 				if(!isnull(Commands[slistitem][i])) strcat(cmds, sprintf("%s\n", Commands[slistitem][i]));
 				
 			inline SelectCommand(epid, edialogid, eresponse, elistitem, string:etext[])
