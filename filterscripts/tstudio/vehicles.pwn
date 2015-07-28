@@ -845,81 +845,86 @@ CMD:avattach(playerid, arg[])
 
 CMD:avmirror(playerid, arg[])
 {
-    MapOpenCheck();
+	MapOpenCheck();
 
 	NoEditingMode(playerid);
 
 	EditCheck(playerid);
-	
-	new bool:mx, bool:my, bool:mz;
 
-	if(ObjectData[CurrObject[playerid]][oAttachedVehicle] > -1)
-	{
-		inline MirrorX(mxpid, mxdialogid, mxresponse, mxlistitem, string:mxtext[])
-		{
-			#pragma unused mxlistitem, mxdialogid, mxpid, mxresponse, mxtext
-			if(mxresponse) mx = true;
-
-			inline MirrorY(mypid, mydialogid, myresponse, mylistitem, string:mytext[])
-			{
-				#pragma unused mylistitem, mydialogid, mypid, myresponse, mytext
-				if(myresponse) my = true;
-
-				inline MirrorZ(mzpid, mzdialogid, mzresponse, mzlistitem, string:mztext[])
-				{
-					#pragma unused mzlistitem, mzdialogid, mzpid, mzresponse, mztext
-					if(mzresponse) mz = true;
-					
-			        for(new i = 0; i < MAX_CAR_OBJECTS; i++)
-			        {
-			            if(CarData[ObjectData[CurrObject[playerid]][oAttachedVehicle]][CarObjectRef][i] == -1)
-			            {
-							new cloneindex = CurrObject[playerid];
-		                    SetCurrObject(playerid, CloneObject(CurrObject[playerid]));
-		                    new refindex = GetCarObjectRefIndex(ObjectData[cloneindex][oAttachedVehicle], cloneindex);
-
-							if(mx) CarData[ObjectData[cloneindex][oAttachedVehicle]][COX][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][COX][refindex];
-							else CarData[ObjectData[cloneindex][oAttachedVehicle]][COX][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][COX][refindex];
-
-							if(my) CarData[ObjectData[cloneindex][oAttachedVehicle]][COY][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][COY][refindex];
-							else CarData[ObjectData[cloneindex][oAttachedVehicle]][COY][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][COY][refindex];
-
-							if(mz) CarData[ObjectData[cloneindex][oAttachedVehicle]][COZ][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][COZ][refindex];
-							else CarData[ObjectData[cloneindex][oAttachedVehicle]][COZ][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][COZ][refindex];
-
-						    AttachDynamicObjectToVehicle(ObjectData[CurrObject[playerid]][oID], CarData[ObjectData[cloneindex][oAttachedVehicle]][CarID],
-								0.0, 0.0, 0.0, 0.0, 0.0, 0.0
-							);
-
-			                CarData[ObjectData[cloneindex][oAttachedVehicle]][CarObjectRef][i] = CurrObject[playerid];
-			                ObjectData[CurrObject[playerid]][oAttachedVehicle] = ObjectData[cloneindex][oAttachedVehicle];
-
-			                UpdateAttachedVehicleObject(ObjectData[CurrObject[playerid]][oAttachedVehicle], i, VEHICLE_ATTACH_UPDATE);
-
-			                sqlite_SaveVehicleObjectData(ObjectData[CurrObject[playerid]][oAttachedVehicle]);
-
-							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-							SendClientMessage(playerid, STEALTH_GREEN, "Mirror attached object to vehicle.");
-							return 1;
-						}
-					}
-					SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-					SendClientMessage(playerid, STEALTH_YELLOW, "Too many attached objects.");
-				}
-			    Dialog_ShowCallback(playerid, using inline MirrorZ, DIALOG_STYLE_MSGBOX, "Texture Studio", "Mirror Z-Axis?", "Yes", "No");
-			}
-		    Dialog_ShowCallback(playerid, using inline MirrorY, DIALOG_STYLE_MSGBOX, "Texture Studio", "Mirror Y-Axis?", "Yes", "No");
-		}
-	    Dialog_ShowCallback(playerid, using inline MirrorX, DIALOG_STYLE_MSGBOX, "Texture Studio", "Mirror X-Axis?", "Yes", "No");
-	}
-	else
+	if(ObjectData[CurrObject[playerid]][oAttachedVehicle] < 0)
 	{
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_YELLOW, "This object is not attached to any vehicles.");
 	}
+	
+	inline Mirror(mxpid, mxdialogid, mxresponse, mxlistitem, string:mxtext[])
+	{
+		#pragma unused mxpid, mxdialogid, mxtext
+		if(!mxresponse)
+			return 1;
+	
+		new bool:mx, bool:my, bool:mz;
+		switch(mxlistitem)
+		{
+			case 0: mx = true;
+			case 1: my = true;
+			case 2: mz = true;
+		}
+		
+		for(new i = 0; i < MAX_CAR_OBJECTS; i++)
+		{
+			if(CarData[ObjectData[CurrObject[playerid]][oAttachedVehicle]][CarObjectRef][i] == -1)
+			{
+				new cloneindex = CurrObject[playerid];
+				SetCurrObject(playerid, CloneObject(CurrObject[playerid]));
+				new refindex = GetCarObjectRefIndex(ObjectData[cloneindex][oAttachedVehicle], cloneindex);
+				
+				if(mx) {
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][COX][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][COX][refindex];
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][CORX][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][CORX][refindex];
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][CORY][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][CORY][refindex];
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][CORZ][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][CORZ][refindex];
+				}
+				else CarData[ObjectData[cloneindex][oAttachedVehicle]][COX][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][COX][refindex];
+
+				if(my) {
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][COY][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][COY][refindex];
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][CORX][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][CORX][refindex];
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][CORY][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][CORY][refindex];
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][CORZ][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][CORZ][refindex];
+				}
+				else CarData[ObjectData[cloneindex][oAttachedVehicle]][COY][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][COY][refindex];
+
+				if(mz) {
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][COZ][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][COZ][refindex];
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][CORX][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][CORX][refindex];
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][CORY][i] = -CarData[ObjectData[cloneindex][oAttachedVehicle]][CORY][refindex];
+					CarData[ObjectData[cloneindex][oAttachedVehicle]][CORZ][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][CORZ][refindex];
+				}
+				else CarData[ObjectData[cloneindex][oAttachedVehicle]][COZ][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][COZ][refindex];
+
+				AttachDynamicObjectToVehicle(ObjectData[CurrObject[playerid]][oID], CarData[ObjectData[cloneindex][oAttachedVehicle]][CarID],
+					0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+				);
+
+				CarData[ObjectData[cloneindex][oAttachedVehicle]][CarObjectRef][i] = CurrObject[playerid];
+				ObjectData[CurrObject[playerid]][oAttachedVehicle] = ObjectData[cloneindex][oAttachedVehicle];
+
+				UpdateAttachedVehicleObject(ObjectData[CurrObject[playerid]][oAttachedVehicle], i, VEHICLE_ATTACH_UPDATE);
+
+				sqlite_SaveVehicleObjectData(ObjectData[CurrObject[playerid]][oAttachedVehicle]);
+
+				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+				SendClientMessage(playerid, STEALTH_GREEN, "Mirror attached object to vehicle.");
+				return 1;
+			}
+		}
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Too many attached objects.");
+	}
+	Dialog_ShowCallback(playerid, using inline Mirror, DIALOG_STYLE_LIST, "Texture Studio - Select Mirror Axis", "X\nY\nZ", "Select", "");
 	return 1;
 }
-
 
 CMD:avdetach(playerid, arg[])
 {
