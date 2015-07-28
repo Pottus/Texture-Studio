@@ -4149,12 +4149,13 @@ CMD:thelp(playerid, arg[])
 	SendClientMessage(playerid, STEALTH_GREEN, "Movement: /editobject - /ox - /oy - /oz - /rx - ry - /rz");
 	SendClientMessage(playerid, STEALTH_GREEN, "Movement: /dox - /doy - /doz - /drx - /dry - /drz");
 	SendClientMessage(playerid, STEALTH_GREEN, "Textures: /mtextures - /ttextures - /stexture - /mtset - /mtcolor - /mtsetall");
-	SendClientMessage(playerid, STEALTH_GREEN, "Textures/Text: /setindex - /mtcolorall - /copy - /paste - /clear - /text");
+	SendClientMessage(playerid, STEALTH_GREEN, "Textures/Text: /mtcolorall - /copy - /paste - /clear - /text");
 	SendClientMessage(playerid, STEALTH_GREEN, "Textures/Indexes: /sindex - /rindex");
 	SendClientMessage(playerid, STEALTH_GREEN, "Textures/Theme: /loadtheme - /savetheme - /deletetheme");
 	SendClientMessage(playerid, STEALTH_GREEN, "Groups: /setgroup - /selectgroup - /gsel - /gadd - grem - /gclear /gclone /gdelete");
-    SendClientMessage(playerid, STEALTH_GREEN, "Groups: /editgroup - /gox - /goy - /goz - /grx - /gry - /grz");
+	SendClientMessage(playerid, STEALTH_GREEN, "Groups: /editgroup - /gox - /goy - /goz - /grx - /gry - /grz");
 	SendClientMessage(playerid, STEALTH_GREEN, "Group/Prefab: /gaexport(N/A) - /gprefab - /prefabsetz - /prefab");
+	SendClientMessage(playerid, STEALTH_GREEN, "Labels: /showtext3d - /hidetext3d");
 	SendClientMessage(playerid, STEALTH_GREEN, "Bind Editor: /bindeditor - /runbind");
 	SendClientMessage(playerid, STEALTH_GREEN, "Other: /echo");
 	return 1;
