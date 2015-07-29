@@ -1,7 +1,14 @@
 /*
-	SQLite Improved v0.9.6 by Slice
+	SQLite Improved v0.9.7 by Slice
 	
 	Changelog:
+			2015-07-13:
+				* Update for 0.3.7 R2.
+				* All crash issues should be solved now, including the previous one that happened only on some servers.
+
+			2014-10-08:
+				* Fix crash when using stmt_fetch_row on an empty result (only affects Linux servers).
+
 			2013-10-07:
 				* Display errors from db_query. Works only on Windows.
 			
@@ -121,7 +128,7 @@
 #endif
 
 #if !defined DB_MAX_STATEMENTS
-	#define DB_MAX_STATEMENTS  64
+	#define DB_MAX_STATEMENTS  16
 #endif
 
 #if !defined DB_MAX_STATEMENT_SIZE
@@ -144,34 +151,24 @@
 	#define DB_DEBUG  false
 #endif
 
+#if !defined DB_DEBUG_BACKTRACE_NOTICE
+	#define DB_DEBUG_BACKTRACE_NOTICE  false
+#endif
+
+#if !defined DB_DEBUG_BACKTRACE_WARNING
+	#define DB_DEBUG_BACKTRACE_WARNING  false
+#endif
+
+#if !defined DB_DEBUG_BACKTRACE_ERROR
+	#define DB_DEBUG_BACKTRACE_ERROR  false
+#endif
+
+#if !defined DB_DEBUG_BACKTRACE_DEBUG
+	#define DB_DEBUG_BACKTRACE_DEBUG  false
+#endif
+
 #if !defined DB_LOG_TO_CHAT
 	#define DB_LOG_TO_CHAT  false
-#endif
-
-#if !defined DB_QUERY_ERRORS
-	#define DB_QUERY_ERRORS  false
-#endif
-
-#if !defined DB_PRINT_ERRORS
-	#define DB_PRINT_ERRORS  true
-#endif
-
-#if DB_QUERY_ERRORS
-	#tryinclude "amx_assembly\amx_header"
-	
-	#if !defined _inc_amx_header
-		#error amx_assembly is required for DB_QUERY_ERRORS. Get it here: github.com/zeex/amx_assembly
-	#endif
-
-	#include "amx_assembly\dynamic_call"
-	#include "amx_assembly\phys_memory"
-	#include "amx_assembly\windows\import_table"
-	#include "amx_assembly\shellcode"
-	#include "amx_assembly\os"
-
-	static stock VirtualProtect(addr, size, new_protect, &old_protect = 0);
-	static stock patch_db_query();
-	static stock db_get_error(DBResult:r, output[], maxlength = sizeof(output));
 #endif
 
 // "Namespace"
@@ -356,23 +353,18 @@ enum DB::E_PERSISTENT_DB {
 	  DB:e_dbDatabase
 };
 
-
-
 static stock
 	            gs_szBuffer[8192],
 	            gs_aiCompressBuffer[3072],
 	            gs_Statements[DBStatement:DB::MAX_STATEMENTS][DB::E_STATEMENT],
 	            gs_iAutoFreeTimer = -1,
 	            gs_iAutoFreeResultsIndex = 0,
-	   DBResult:gs_adbrAutoFreeResults[10000],
+	   DBResult:gs_adbrAutoFreeResults[1024],
 	            gs_iAutoCloseStatementsIndex = 0,
-	DBStatement:gs_astAutoCloseStatements[10000],
+	DBStatement:gs_astAutoCloseStatements[1024],
 	            gs_PersistentDatabases[DB::MAX_PERSISTENT_DATABASES][DB::E_PERSISTENT_DB],
 	            gs_iClosePersistentTimer = -1,
 	            gs_iFreeStatementResultsTimer = -1,
-#if DB_QUERY_ERRORS
-	            gs_szLastError[512],
-#endif
 	            gs_szNull[1] = {0}
 ;
 
@@ -386,15 +378,36 @@ const
 #endif
 
 #if !DB_LOG_TO_CHAT
-	#define DB_Notice(%1)    print(!"SQLitei Notice: " %1)
-	#define DB_Warning(%1)   print(!"SQLitei Warning: " %1)
-	#define DB_Error(%1)     print(!"SQLitei Error: " %1)
-	#define DB_Noticef(%1)   printf("SQLitei Notice: " %1)
-	#define DB_Warningf(%1)  printf("SQLitei Warning: " %1)
-	#define DB_Errorf(%1)    printf("SQLitei Error: " %1)
+	#if DB_DEBUG_BACKTRACE_NOTICE
+		#define DB_Notice(%1)    print(!"SQLitei Notice: " %1),PrintAmxBacktrace()
+		#define DB_Noticef(%1)   printf("SQLitei Notice: " %1),PrintAmxBacktrace()
+	#else
+		#define DB_Notice(%1)    print(!"SQLitei Notice: " %1)
+		#define DB_Noticef(%1)   printf("SQLitei Notice: " %1)
+	#endif
+
+	#if DB_DEBUG_BACKTRACE_WARNING
+		#define DB_Warning(%1)   print(!"SQLitei Warning: " %1),PrintAmxBacktrace()
+		#define DB_Warningf(%1)  printf("SQLitei Warning: " %1),PrintAmxBacktrace()
+	#else
+		#define DB_Warning(%1)   print(!"SQLitei Warning: " %1)
+		#define DB_Warningf(%1)  printf("SQLitei Warning: " %1)
+	#endif
+
+	#if DB_DEBUG_BACKTRACE_ERROR
+		#define DB_Error(%1)     print(!"SQLitei Error: " %1),PrintAmxBacktrace()
+		#define DB_Errorf(%1)    printf("SQLitei Error: " %1),PrintAmxBacktrace()
+	#else
+		#define DB_Error(%1)     print(!"SQLitei Error: " %1)
+		#define DB_Errorf(%1)    printf("SQLitei Error: " %1)
+	#endif
 	
 	#if DB_DEBUG
-		#define DB_Debug(%1)  printf("SQLitei Debug: " %1)
+		#if DB_DEBUG_BACKTRACE_DEBUG
+			#define DB_Debug(%1)  printf("SQLitei Debug: " %1),PrintAmxBacktrace()
+		#else
+			#define DB_Debug(%1)  printf("SQLitei Debug: " %1)
+		#endif
 	#endif
 #else
 	new
@@ -415,6 +428,11 @@ const
 
 // Has to be defined after statement functions.
 stock DBResult:db_query_hook(iTagOf3 = tagof(_bAutoRelease), DB:db, const szQuery[], {bool, DBDataType}:_bAutoRelease = true, {DBDataType, QQPA}:...);
+
+// forward's
+forward bool:db_set_row_index(DBResult:dbrResult, iRow);
+forward bool:db_free_result_hook(DBResult:dbrResult);
+forward bool:db_set_synchronous(DB:db, DB::e_SYNCHRONOUS_MODE:iValue);
 
 forward DB::funcinc();
 public DB::funcinc() {
@@ -610,7 +628,7 @@ stock DB::LazyInitialize() {
 	bIsInitialized = true;
 	
 	#if defined HTTP
-		HTTP(0x7FEDCBA0, HTTP_GET, !"spelsajten.net/sqlitei_version.php?version=095", "", !"DB_VersionCheckReponse");
+		HTTP(0x7FEDCBA0, HTTP_GET, !"spelsajten.net/sqlitei_version.php?version=097", "", !"DB_VersionCheckReponse");
 	#endif
 }
 
@@ -737,7 +755,7 @@ stock db_get_struct_info(DB:db, {_, e_SQLITE3}:iOffset) {
 	}
 	
 	new
-		iAddress = (_:db & 0x7FFFFFFF) - DB::GetAmxBaseRelative() + iOffset,
+		iAddress = db_get_mem_handle(db & DB:0x7FFFFFFF) - DB::GetAmxBaseRelative() + iOffset,
 		iValue
 	;
 	
@@ -767,14 +785,13 @@ stock db_set_struct_info(DB:db, {_, e_SQLITE3}:iOffset, iValue) {
 	}
 	
 	new
-		iAddress = (_:db & 0x7FFFFFFF) - DB::GetAmxBaseRelative() + iOffset
+		iAddress = db_get_mem_handle(db & DB:0x7FFFFFFF) - DB::GetAmxBaseRelative() + iOffset
 	;
 	
 	#emit LOAD.S.pri  iValue
 	#emit SREF.S.pri  iAddress
 }
 
-forward bool:db_set_row_index(DBResult:dbrResult, iRow);
 stock bool:db_set_row_index(DBResult:dbrResult, iRow) {
 	if (dbrResult == DB::INVALID_RESULT) {
 		DB::Notice("(db_set_row_index) Invalid result given.");
@@ -786,7 +803,7 @@ stock bool:db_set_row_index(DBResult:dbrResult, iRow) {
 		return false;
 	
 	new
-		iAddress = _:dbrResult - DB::GetAmxBaseRelative() + 16
+		iAddress = db_get_result_mem_handle(dbrResult) - DB::GetAmxBaseRelative() + 16
 	;
 	
 	#emit LOAD.S.pri  iRow
@@ -803,7 +820,7 @@ stock db_get_row_index(DBResult:dbrResult) {
 	}
 	
 	new
-		iAddress = _:dbrResult - DB::GetAmxBaseRelative() + 16
+		iAddress = db_get_result_mem_handle(dbrResult) - DB::GetAmxBaseRelative() + 16
 	;
 	
 	#emit LREF.S.pri  iAddress
@@ -927,19 +944,10 @@ stock db_is_result_freed(DBResult:dbrResult) {
 		
 		return true;
 	}
-	
-	new
-		iAddress = _:dbrResult - DB::GetAmxBaseRelative() + 16,
-		iData
-	;
-	
-	#emit LREF.S.pri  iAddress
-	#emit STOR.S.pri  iData
-	
-	return (iData == 0xFFFFFFFF);
+
+	return db_get_result_mem_handle(dbrResult) == 0;
 }
 
-forward bool:db_free_result_hook(DBResult:dbrResult);
 stock bool:db_free_result_hook(DBResult:dbrResult) {
 	if (dbrResult == DB::INVALID_RESULT) {
 		DB::Notice("(db_free_result_hook) Invalid result given.");
@@ -958,7 +966,7 @@ stock bool:db_free_result_hook(DBResult:dbrResult) {
 	}
 
 	new
-		iFreeTestAddress = _:dbrResult - DB::GetAmxBaseRelative() + 16,
+		iFreeTestAddress = db_get_result_mem_handle(dbrResult) - DB::GetAmxBaseRelative() + 16,
 		iData
 	;
 	
@@ -967,7 +975,7 @@ stock bool:db_free_result_hook(DBResult:dbrResult) {
 	
 	if (iData != 0xFFFFFFFF) {
 		new
-			iResultAddress = _:dbrResult - DB::GetAmxBaseRelative(),
+			iResultAddress = db_get_result_mem_handle(dbrResult) - DB::GetAmxBaseRelative(),
 			iAddress,
 			iRows,
 			iCols,
@@ -1077,7 +1085,6 @@ stock db_set_asynchronous(DB:db, bool:bSet = true) {
 	db_set_synchronous(DB:db, bSet ? DB::SYNCHRONOUS_OFF : DB::SYNCHRONOUS_FULL);
 }
 
-forward bool:db_set_synchronous(DB:db, DB::e_SYNCHRONOUS_MODE:iValue);
 stock bool:db_set_synchronous(DB:db, DB::e_SYNCHRONOUS_MODE:iValue) {
 	if (0 <= _:iValue <= 2) {
 		format(gs_szBuffer, sizeof(gs_szBuffer), "PRAGMA synchronous = %d", _:iValue);
@@ -1139,7 +1146,7 @@ stock db_field_is_null(DBResult:dbrResult, iField) {
 	}
 	
 	new
-		iAddress = _:dbrResult - DB::GetAmxBaseRelative(),
+		iAddress = db_get_result_mem_handle(dbrResult) - DB::GetAmxBaseRelative(),
 		iCols,
 		iCurrentRow
 	;
@@ -1173,54 +1180,6 @@ stock db_field_is_null(DBResult:dbrResult, iField) {
 	iAddress -= DB::GetAmxBaseRelative();
 	
 	return !iAddress;
-}
-
-stock db_get_field_int(DBResult:dbrResult, iField = 0) {
-	if (dbrResult == DB::INVALID_RESULT) {
-		DB::Notice("(db_get_field_int) Invalid result given.");
-		
-		return 0;
-	}
-	
-	if (!db_num_rows(dbrResult)) {
-		DB::Notice("(db_get_field_int) Empty result given.");
-		
-		return 0;
-	}
-
-	if (iField < 0 || db_num_fields(dbrResult) <= iField) {
-		DB::Notice("(db_get_field_int) Given field index doesn't exist in the result.");
-
-		return 0;
-	}
-	
-	db_get_field(dbrResult, iField, gs_szBuffer, sizeof(gs_szBuffer) - 1);
-	
-	return strval(gs_szBuffer);
-}
-
-stock Float:db_get_field_float(DBResult:dbrResult, iField = 0) {
-	if (dbrResult == DB::INVALID_RESULT) {
-		DB::Notice("(db_get_field_float) Invalid result given.");
-		
-		return 0.0;
-	}
-
-	if (!db_num_rows(dbrResult)) {
-		DB::Notice("(db_get_field_int) Empty result given.");
-
-		return 0.0;
-	}
-
-	if (iField < 0 || db_num_fields(dbrResult) <= iField) {
-		DB::Notice("(db_get_field_int) Given field index doesn't exist in the result.");
-
-		return 0.0;
-	}
-	
-	db_get_field(dbrResult, iField, gs_szBuffer, sizeof(gs_szBuffer) - 1);
-	
-	return floatstr(gs_szBuffer);
 }
 
 stock db_autofree_result(DBResult:dbrResult) {
@@ -1736,6 +1695,12 @@ stock bool:stmt_fetch_row(&DBStatement:stStatement) {
 		
 		return false;
 	}
+
+	if (!stmt_rows_left(stStatement)) {
+		DB::Debug("(stmt_fetch_row) No rows left.");
+
+		return false;
+	}
 	
 	if (!db_num_rows(gs_Statements[stStatement][e_dbrResult])) {
 		DB::Debug("(stmt_fetch_row) Freed previous result.");
@@ -1781,7 +1746,6 @@ stock bool:stmt_fetch_row(&DBStatement:stStatement) {
 				iAddress = gs_Statements[stStatement][e_aiFieldAddresses][iField];
 				xValue = (gs_Statements[stStatement][e_aiFieldTypes][iField] != DB::TYPE_FLOAT) ? strval(gs_szBuffer) : _:floatstr(gs_szBuffer);
 
-				#emit LREF.pri iAddress
 				#emit LOAD.S.pri xValue
 				#emit SREF.S.pri iAddress
 			}
@@ -1811,7 +1775,6 @@ stock bool:stmt_fetch_row(&DBStatement:stStatement) {
 				
 				iAddress = gs_Statements[stStatement][e_aiFieldAddresses][iField];
 
-				#emit LREF.pri iAddress
 				#emit LOAD.S.pri xValue
 				#emit SREF.S.pri iAddress
 			}
@@ -2086,16 +2049,6 @@ stock DBResult:db_query_hook(iTagOf3 = tagof(_bAutoRelease), DB:db, const szQuer
 	} else {
 		bAutoRelease = _bAutoRelease;
 	}
-
-#if DB_QUERY_ERRORS	
-	static has_patched = false;
-
-	if (!has_patched) {
-		patch_db_query();
-		
-		has_patched = true;
-	}
-#endif
 	
 	if (db_is_persistent(db)) {
 		if (!db_is_valid_persistent(db)) {
@@ -2198,24 +2151,12 @@ stock DBResult:db_query_hook(iTagOf3 = tagof(_bAutoRelease), DB:db, const szQuer
 		dbrResult = db_query@(db, szQuery);
 	}
 	
-	#if DB_QUERY_ERRORS
-		if (db_get_error(dbrResult, gs_szLastError)) {
-			db_free_result(dbrResult);
-		
-			#if DB_PRINT_ERRORS
-				DB::Errorf("(db_query) %s", gs_szLastError);
-			#endif
-		
-			dbrResult = DBResult:0;
-		}
-	#endif
-	
 	if (dbrResult) {
 		if (bAutoRelease)
 			db_autofree_result(dbrResult);
 		
 		new
-			iResultAddress = _:dbrResult - DB::GetAmxBaseRelative(),
+			iResultAddress = db_get_result_mem_handle(dbrResult) - DB::GetAmxBaseRelative(),
 			iAddress,
 			iRows,
 			iCols,
@@ -2266,15 +2207,6 @@ stock DBResult:db_query_hook(iTagOf3 = tagof(_bAutoRelease), DB:db, const szQuer
 	}
 	
 	return dbrResult;
-}
-
-stock db_get_last_error() {
-	#if DB_QUERY_ERRORS
-		return gs_szLastError;
-	#else
-		static const retstr[] = "(unknown)";
-		return retstr;
-	#endif
 }
 
 stock db_get_field_hook(DBResult:dbresult, field, result[], maxlength = sizeof(result)) {
@@ -2927,153 +2859,6 @@ static stock WritePhysMemoryCell_(addr, what) {
 	#emit retn
 	return 0; // make compiler happy
 }
-
-#if DB_QUERY_ERRORS
-	static stock const PAGE_NOACCESS          =  0x01;
-	static stock const PAGE_READONLY          =  0x02;
-	static stock const PAGE_READWRITE         =  0x04;
-	static stock const PAGE_WRITECOPY         =  0x08;
-	static stock const PAGE_EXECUTE           =  0x10;
-	static stock const PAGE_EXECUTE_READ      =  0x20;
-	static stock const PAGE_EXECUTE_READWRITE =  0x40;
-	static stock const PAGE_EXECUTE_WRITECOPY =  0x80;
-	static stock const PAGE_GUARD             = 0x100;
-	static stock const PAGE_NOCACHE           = 0x200;
-	static stock const PAGE_WRITECOMBINE      = 0x400;
-
-	// https://github.com/Zeex/amx_assembly/blob/master/windows/ShellExecute.inc
-	static stock VirtualProtect(addr, size, new_protect, &old_protect = 0) {
-		/*
-		.text:10001000 55                                push    ebp
-		.text:10001001 8B EC                             mov     ebp, esp
-		.text:10001011 8B 4D 0C                          mov     ecx, [ebp+arg_4]
-		.text:10001014 8B 51 10                          mov     edx, [ecx+10h]
-		.text:10001017 52                                push    edx             ; lpflOldProtect
-		.text:10001018 8B 45 0C                          mov     eax, [ebp+arg_4]
-		.text:1000101B 8B 48 0C                          mov     ecx, [eax+0Ch]
-		.text:1000101E 51                                push    ecx             ; flNewProtect
-		.text:1000101F 8B 55 0C                          mov     edx, [ebp+arg_4]
-		.text:10001022 8B 42 08                          mov     eax, [edx+8]
-		.text:10001025 50                                push    eax             ; dwSize
-		.text:10001026 8B 4D 0C                          mov     ecx, [ebp+arg_4]
-		.text:10001029 8B 51 04                          mov     edx, [ecx+4]
-		.text:1000102C 52                                push    edx             ; lpAddress
-		.text:1000102D FF 15 78 56 34 12                 call    ds:VirtualProtect
-		.text:10001033 5D                                pop     ebp
-		.text:10001034 C3                                retn
-		*/
-
-		#define __(%0,%1,%2,%3) (((0x%3) << 24) | ((0x%2) << 16) | (0x%1 << 8) | (0x%0))
-
-		static const asm[] = {
-			__(90,90,90,90),
-			__(90,90,90,90),
-			__(90,90,90,90),
-			__(90,90,90,90),
-			__(55,8B,EC,90),
-			__(90,8B,4D,0C),
-			__(8B,51,10,52),
-			__(8B,45,0C,8B),
-			__(48,0C,51,8B),
-			__(55,0C,8B,42),
-			__(08,50,8B,4D),
-			__(0C,8B,51,04),
-			__(52,FF,15,00),
-			__(00,00,00,5D),
-			__(C3,CC,CC,CC)
-		};
-
-		#undef __
-
-		static address = -1;
-	
-		if (address == -1) {
-			address = GetImportAddress("VirtualProtect");
-			
-			WriteAmxMemory(ref(asm) + 51, refabs(address));
-		}
-
-		Push(addr);                  // LPVOID  lpAddress
-		Push(size);                  // SIZE_T  dwSize
-		Push(new_protect);           // DWORD   flNewProtect
-		Push(refabs(old_protect));   // PDWORD  lpflOldProtect
-	
-		return RunShellcode(refabs(asm));
-	}
-
-	static stock patch_db_query() {
-		if (!IsWindows()) {
-			return false;
-		}
-		
-		new addr = GetNativeAddressFromName("db_query");
-
-		if (!addr) {
-			printf("Unable to patch db_query: unable to get the address of db_query.");
-
-			return false;
-		}
-
-		// addr+144:
-		// JE SHORT 0044DCB7 -> JMP SHORT 0044DCB7
-		addr += 144;
-
-		new opcodes = ReadPhysMemoryCell(addr);
-
-		if (opcodes != 0xE8561574) {
-			printf("Unable to patch db_query: unexpected opcodes.");
-
-			return false;
-		}
-
-		new old_protect;
-
-		// Make it possible to write to "addr"
-		VirtualProtect(addr, 4, PAGE_EXECUTE_READWRITE, old_protect);
-		
-		// change JE to JMP
-		WritePhysMemoryCell_(addr, 0xEB | (ReadPhysMemoryCell(addr) & 0xFFFFFF00));
-
-		// Put the VirtualProtect back to what it was
-		VirtualProtect(addr, 4, old_protect);
-	
-		return true;
-	}
-	
-	static stock db_get_error(DBResult:r, output[], maxlength = sizeof(output)) {
-		if (!r) {
-			output[0] = '\0';
-			
-			return false;
-		}
-		
-	    // the error message is a char* in dbresult+12
-	    new errptr = ReadPhysMemoryCell(_:r + 12);
-
-	    if (errptr) {
-	    	new i = -1;
-
-			// read C string
-	    	do {
-				if (i >= maxlength - 1) {
-					output[maxlength - 1] = '\0';
-					break;
-				}
-				
-	    	    output[++i] = ReadPhysMemoryCell(errptr + i * 4);
-	    	    output[i] = swapchars(output[i]);
-	    	} while (strlen(output[i]) == 4);
-
-			strunpack(output, output, maxlength);
-			
-			return true;
-    	}
-		
-		output[0] = '\0';
-		
-		return false;
-	}
-#endif
 
 // Hook db_get_field
 // This is done lastly because the fixed function isn't needed within SQLitei

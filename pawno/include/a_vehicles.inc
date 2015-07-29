@@ -30,7 +30,7 @@
 #define VEHICLE_PARAMS_ON		1
 
 // Vehicle
-native CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay);
+native CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren=0);
 native DestroyVehicle(vehicleid);
 native IsVehicleStreamedIn(vehicleid, forplayerid);
 native GetVehiclePos(vehicleid, &Float:x, &Float:y, &Float:z);
@@ -43,6 +43,11 @@ native SetVehicleParamsForPlayer(vehicleid,playerid,objective,doorslocked);
 native ManualVehicleEngineAndLights();
 native SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 native GetVehicleParamsEx(vehicleid, &engine, &lights, &alarm, &doors, &bonnet, &boot, &objective);
+native GetVehicleParamsSirenState(vehicleid);
+native SetVehicleParamsCarDoors(vehicleid, driver, passenger, backleft, backright);
+native GetVehicleParamsCarDoors(vehicleid, &driver, &passenger, &backleft, &backright);
+native SetVehicleParamsCarWindows(vehicleid, driver, passenger, backleft, backright);
+native GetVehicleParamsCarWindows(vehicleid, &driver, &passenger, &backleft, &backright);
 native SetVehicleToRespawn(vehicleid);
 native LinkVehicleToInterior(vehicleid, interiorid);
 native AddVehicleComponent(vehicleid, componentid);
