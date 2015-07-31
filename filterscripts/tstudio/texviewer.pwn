@@ -431,7 +431,7 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)
 	if(EditingMode[playerid] && GetEditMode(playerid) != EDIT_MODE_TEXTURING) return 0;
 
 	// Scroll right
-	if(newkeys & KEY_ANALOG_RIGHT)
+	if(newkeys & KEY_ANALOG_RIGHT || (((newkeys & (KEY_CROUCH | KEY_CTRL_BACK)) == (KEY_CROUCH | KEY_CTRL_BACK)) && ((oldkeys & (KEY_CROUCH | KEY_CTRL_BACK)) != (KEY_CROUCH | KEY_CTRL_BACK))))
 	{
 		if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
 		{
@@ -465,7 +465,7 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)
 	}
 
 	// Pressed left (Same as right almost)
-	else if(newkeys & KEY_ANALOG_LEFT)
+	else if(newkeys & KEY_ANALOG_LEFT || (((newkeys & (KEY_CROUCH | KEY_YES)) == (KEY_CROUCH | KEY_YES)) && ((oldkeys & (KEY_CROUCH | KEY_YES)) != (KEY_CROUCH | KEY_YES))))
 	{
 		if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
 		{
