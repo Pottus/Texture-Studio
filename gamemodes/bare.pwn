@@ -7,15 +7,28 @@ main()
 	print("\\*-----------------------------------*/\n");
 }
 
-public OnPlayerConnect(playerid)
-{
-	GameTextForPlayer(playerid,"~h~~w~SA-MP: ~r~T~h~~r~exture ~r~S~h~~r~tudio",5000,5);
-	return 1;
-}
+new bool:JustConnected[MAX_PLAYERS];
 
 public OnPlayerRequestClass(playerid, classid)
 {
- 	TogglePlayerSpectating(playerid, true);
+	TogglePlayerSpectating(playerid, true);
+	if(JustConnected[playerid])
+	{
+		JustConnected[playerid] = false;
+		SetTimerEx("OnPlayerRequestClass", 100, false, "ii", playerid, classid);
+	}
+	else
+	{
+		TogglePlayerSpectating(playerid, false);
+		SpawnPlayer(playerid);
+	}
+	return 1;
+}
+
+public OnPlayerConnect(playerid)
+{
+	GameTextForPlayer(playerid,"~h~~w~SA-MP: ~r~T~h~~r~exture ~r~S~h~~r~tudio",5000,5);
+	JustConnected[playerid] = true;
 	return 1;
 }
 
