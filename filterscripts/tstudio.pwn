@@ -508,6 +508,9 @@ new DB: SystemDB;
 // Database for the edit map
 new DB: EditMap;
 
+// Current map name
+new MapName[128];
+
 // Theme data
 new DB: ThemeDataDB;
 

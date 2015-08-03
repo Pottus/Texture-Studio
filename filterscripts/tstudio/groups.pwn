@@ -69,7 +69,7 @@ public OnUpdateGroup3DText(index)
 			DestroyDynamic3DTextLabel(GroupObjectText[i][index]);
 			GroupObjectText[i][index] = Text3D:-1;
 		}
-		
+
         if(GroupedObjects[i][index])
         {
 			// 3D Text Label (To identify objects)
@@ -130,7 +130,7 @@ hook OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, 
 
 			}
 		}
-		
+
 		// Try and remove from group
 		else if(Keys & KEY_WALK)
 		{
@@ -184,7 +184,7 @@ OnPlayerEditDOGroup(playerid, objectid, response, Float:x, Float:y, Float:z, Flo
 	   		if(GroupedObjects[playerid][i])
 			{
 				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
-				
+
 				new Float:offx, Float:offy, Float:offz;
 				offx = (ObjectData[i][oX] + (x - gCenterX)) - PivotOffset[playerid][xPos];
 				offy = (ObjectData[i][oY] + (y - gCenterY)) - PivotOffset[playerid][yPos];
@@ -202,7 +202,7 @@ OnPlayerEditDOGroup(playerid, objectid, response, Float:x, Float:y, Float:z, Flo
 
 		EditingMode[playerid] = false;
 		SetEditMode(playerid, EDIT_MODE_NONE);
-				
+
 		DestroyDynamicObject(PivotObject[playerid]);
 	}
 	else if(response == EDIT_RESPONSE_UPDATE)
@@ -252,7 +252,7 @@ OnPlayerEditDOGroup(playerid, objectid, response, Float:x, Float:y, Float:z, Flo
 			LastGroupPosition[playerid][xPos] = x - PivotOffset[playerid][xPos];
 			LastGroupPosition[playerid][yPos] = y - PivotOffset[playerid][yPos];
 			LastGroupPosition[playerid][zPos] = z - PivotOffset[playerid][zPos];
-			
+
 			LastPivot[playerid][xPos] = x;
 			LastPivot[playerid][yPos] = y;
 			LastPivot[playerid][zPos] = z;
@@ -261,7 +261,7 @@ OnPlayerEditDOGroup(playerid, objectid, response, Float:x, Float:y, Float:z, Flo
 			LastPivot[playerid][yPos] = ry;
 			LastPivot[playerid][zPos] = rz;
 
-			
+
 			PivotReset[playerid] = false;
 		}
 	}
@@ -366,9 +366,9 @@ CMD:setgroup(playerid, arg[]) // in GUI
 {
     MapOpenCheck();
     NoEditingMode(playerid);
-    
+
     new groupid = strval(arg);
-    
+
     new time = GetTickCount();
 
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -455,15 +455,15 @@ CMD:editgroup(playerid, arg[]) // in GUI
 	if(PlayerHasGroup(playerid))
 	{
 		GetGroupCenter(playerid, LastPivot[playerid][xPos], LastPivot[playerid][yPos], LastPivot[playerid][zPos]);
-		
+
 		LastGroupPosition[playerid][xPos] = LastPivot[playerid][xPos];
 		LastGroupPosition[playerid][yPos] = LastPivot[playerid][yPos];
 		LastGroupPosition[playerid][zPos] = LastPivot[playerid][zPos];
-		
+
 		PivotOffset[playerid][xPos] = 0.0;
 		PivotOffset[playerid][yPos] = 0.0;
 		PivotOffset[playerid][zPos] = 0.0;
-		
+
 		PivotObject[playerid] = CreateDynamicObject(1974, LastPivot[playerid][xPos], LastPivot[playerid][yPos], LastPivot[playerid][zPos], 0.0, 0.0, 0.0, -1, -1, playerid);
 
 		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, PivotObject[playerid], E_STREAMER_DRAW_DISTANCE, 300.0);
@@ -476,11 +476,11 @@ CMD:editgroup(playerid, arg[]) // in GUI
 		PivotReset[playerid] = true;
 		SetEditMode(playerid, EDIT_MODE_OBJECTGROUP);
 	    EditDynamicObject(playerid, PivotObject[playerid]);
-	    
+
 	    SendClientMessage(playerid, STEALTH_GREEN, "Editing your group");
 	}
 	else SendClientMessage(playerid, STEALTH_YELLOW, "You must have at least one object grouped");
-	
+
 	return 1;
 }
 
@@ -592,7 +592,7 @@ CMD:gclone(playerid, arg[]) // in  GUI
 	new time = GetTickCount();
 
 	for(new i = 0; i < MAX_TEXTURE_OBJECTS; i++) { tmpgrp[i] = false; }
-	
+
     foreach(new i : Objects)
     {
         if(GroupedObjects[playerid][i])
@@ -604,7 +604,7 @@ CMD:gclone(playerid, arg[]) // in  GUI
 			count++;
         }
     }
-    
+
     // Update grouped objects
     for(new i = 0; i < MAX_TEXTURE_OBJECTS; i++)
 	{
@@ -612,7 +612,7 @@ CMD:gclone(playerid, arg[]) // in  GUI
 		if(GroupedObjects[playerid][i] == true)
 		OnUpdateGroup3DText(i);
 	}
-    
+
     if(count)
 	{
 		// Update the Group GUI
@@ -623,7 +623,7 @@ CMD:gclone(playerid, arg[]) // in  GUI
 		SendClientMessage(playerid, STEALTH_GREEN, line);
 	}
     else SendClientMessage(playerid, STEALTH_YELLOW, "No group objects to clone");
-    
+
     return 1;
 }
 
@@ -645,7 +645,7 @@ CMD:gdelete(playerid, arg[]) // in  GUI
         	count++;
         }
     }
-    
+
     if(count)
 	{
 		// Update the Group GUI
@@ -705,7 +705,7 @@ CMD:gox(playerid, arg[])
 		if(GroupedObjects[playerid][i])
 		{
 			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
-			
+
 		    ObjectData[i][oX] += dist;
 
 		    SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
@@ -737,7 +737,7 @@ CMD:goy(playerid, arg[])
 		if(GroupedObjects[playerid][i])
 		{
 			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
-			
+
 		    ObjectData[i][oY] += dist;
 
 		    SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
@@ -804,7 +804,7 @@ CMD:grx(playerid, arg[])
 
 	// We need to get the map center as the rotation node
 	new bool:value, Float:gCenterX, Float:gCenterY, Float:gCenterZ;
-	
+
 	if(PivotPointOn[playerid])
 	{
 		new bool:hasgroup;
@@ -1007,9 +1007,8 @@ CMD:grz(playerid, arg[])
 }
 
 
-// Export group of objects as an attached object
 /*
-
+// Export group of objects as an attached object
 CMD:gaexport(playerid, arg[])
 {
 	MapOpenCheck();
@@ -1033,27 +1032,49 @@ CMD:gaexport(playerid, arg[])
 		    {
 				if(!isnull(ctext))
 				{
-					new mapname[128];
-					format(mapname, sizeof(mapname), "tstudio/AttachExport/%s.txt", ctext);
-
-					if(!fexist(mapname)) AttachExport(playerid, mapname);
-					else
+					inline DrawDist(dpid, ddialogid, dresponse, dlistitem, string:dtext[])
 					{
-                        inline OverwriteAttachExport(opid, odialogid, oresponse, olistitem, string:otext[])
-                        {
-                            #pragma unused olistitem, odialogid, opid, otext
-                            
-							if(oresponse)
-							{
-								fremove(mapname);
-								AttachExport(playerid, mapname);
-							}
-								
+						#pragma unused dlistitem, ddialogid, dpid
+						new Float:dist;
+
+						// Set the drawdistance
+						if(dresponse)
+						{
+							if(sscanf(dtext, "f", dist)) dist = 300.0;
 						}
-						SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-						SendClientMessage(playerid, STEALTH_YELLOW, "A attached object export with that name already exists");
-						Dialog_ShowCallback(playerid, using inline OverwriteAttachExport, DIALOG_STYLE_MSGBOX, "Texture Studio", "Attached file exists overwrite?", "Ok", "Cancel");
+						else dist = 300.0;
+
+						new mapname[128];
+						
+						if(strlen(ctext) >= 20)
+						{
+							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+							SendClientMessage(playerid, STEALTH_YELLOW, "Choose a shorter map name to export to...");
+							return 1;
+						}
+						
+						format(mapname, sizeof(mapname), "tstudio/AttachExport/%s.txt", ctext);
+
+						if(!fexist(mapname)) AttachExport(playerid, mapname, dist);
+						else
+						{
+							inline OverwriteAttachExport(opid, odialogid, oresponse, olistitem, string:otext[])
+							{
+								#pragma unused olistitem, odialogid, opid, otext
+
+								if(oresponse)
+								{
+									fremove(mapname);
+									AttachExport(playerid, mapname, dist);
+								}
+
+							}
+							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+							SendClientMessage(playerid, STEALTH_YELLOW, "A attached object export with that name already exists");
+							Dialog_ShowCallback(playerid, using inline OverwriteAttachExport, DIALOG_STYLE_MSGBOX, "Texture Studio", "Attached file exists overwrite?", "Ok", "Cancel");
+						}
 					}
+					Dialog_ShowCallback(playerid, using inline DrawDist, DIALOG_STYLE_INPUT, "Texture Studio (Map Export)", "Enter the draw distance for objects\n(Note: Default draw distance is 300.0)", "Ok", "Cancel");
 				}
 				else
 				{
@@ -1073,11 +1094,12 @@ CMD:gaexport(playerid, arg[])
 	return 1;
 }
 
-AttachExport(playerid, mapname[128])
+AttachExport(playerid, mapname[], Float:drawdist)
 {
 	// Choose a object as a center node
 	inline SelectObjectCenterNode(spid, sdialogid, sresponse, slistitem, string:stext[])
 	{
+		#pragma unused slistitem, sdialogid, spid
 		if(sresponse)
 		{
 			if(isnull(stext))
@@ -1096,7 +1118,7 @@ AttachExport(playerid, mapname[128])
 				Dialog_ShowCallback(playerid, using inline SelectObjectCenterNode, DIALOG_STYLE_INPUT, "Texture Studio", "Enter object index of attach object center", "Ok", "Cancel");
 				return 1;
 			}
-			
+
 		    if(!GroupedObjects[playerid][centerindex])
 		    {
 				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -1104,35 +1126,155 @@ AttachExport(playerid, mapname[128])
 				Dialog_ShowCallback(playerid, using inline SelectObjectCenterNode, DIALOG_STYLE_INPUT, "Texture Studio", "Enter object index of attach object center", "Ok", "Cancel");
 				return 1;
 		    }
-		    
+
 			// Get Offsets
 		    new Float:offx, Float:offy, Float:offz;
 		    offx = ObjectData[centerindex][oX];
 		    offy = ObjectData[centerindex][oY];
 		    offz = ObjectData[centerindex][oZ];
-		    
-		    
+
+			new exportmap[256];
+			format(exportmap, sizeof(exportmap), "%s", mapname);
+
 			new mobjects;
 			new templine[256];
 			new File:f;
+			new syncrot = 1;
 
-			f = fopen(mapname,io_write);
+			f = fopen(exportmap,io_write);
 
 			fwrite(f,"//Attached Object Map Exported with Texture Studio By: [uL]Pottus////////////////////////////////////////////////\r\n");
 			fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 			fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 
-			new count;
+			// Temp object for setting materials
+			format(templine,sizeof(templine),"new centobjid, tmpobjid;\r\n");
+			fwrite(f,templine);
 
+			format(templine,sizeof(templine),"centobjid = CreateObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f);\r\n",ObjectData[centerindex][oModel],ObjectData[centerindex][oX],ObjectData[centerindex][oY],ObjectData[centerindex][oZ],ObjectData[centerindex][oRX],ObjectData[centerindex][oRY],ObjectData[centerindex][oRZ],drawdist);
 
+			// Write all objects with materials first
 			foreach(new i : Objects)
 			{
-			    if(GroupedObjects[playerid][i])
+			    if(ObjectData[i][oAttachedVehicle] > -1 || !GroupedObjects[playerid][i] || centerindex == i) continue;
+
+				new bool:writeobject;
+
+				// Does the object have materials?
+		        for(new j = 0; j < MAX_MATERIALS; j++)
+		        {
+		            if(ObjectData[i][oTexIndex][j] != 0 || ObjectData[i][oColorIndex][j] != 0 || ObjectData[i][ousetext])
+		            {
+						writeobject = true;
+						break;
+					}
+				}
+
+				// Object had materials we will write them to the export file
+				if(writeobject)
 				{
-					count++;
-					break;
+					mobjects++;
+
+					// Write the create object line
+					format(templine,sizeof(templine),"tmpobjid = CreateObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist);
+					fwrite(f,templine);
+
+					// Write all materials and colors
+		  			for(new j = 0; j < MAX_MATERIALS; j++)
+		        	{
+						// Does object have a texture set?
+			            if(ObjectData[i][oTexIndex][j] != 0)
+			            {
+							format(templine,sizeof(templine),"SetObjectMaterial(tmpobjid, %i, %i, %c%s%c, %c%s%c, %i);\r\n", j, GetTModel(ObjectData[i][oTexIndex][j]), 34, GetTXDName(ObjectData[i][oTexIndex][j]), 34, 34,GetTextureName(ObjectData[i][oTexIndex][j]), 34, ObjectData[i][oColorIndex][j]);
+							fwrite(f,templine);
+			            }
+			            // No texture how about a color?
+			            else if(ObjectData[i][oColorIndex][j] != 0)
+			            {
+							format(templine,sizeof(templine),"SetObjectMaterial(tmpobjid, %i, -1, %c%s%c, %c%s%c, %i);\r\n", j, 34, "none", 34, 34,"none", 34, ObjectData[i][oColorIndex][j]);
+							fwrite(f,templine);
+						}
+					}
+
+					// Write any text
+					if(ObjectData[i][ousetext])
+					{
+						format(templine,sizeof(templine),"SetObjectMaterialText(tmpobjid, %c%s%c, 0, %i, %c%s%c, %i, %i, %i, %i, %i);\r\n",
+							34, ObjectData[i][oObjectText], 34,
+							FontSizes[ObjectData[i][oFontSize]],
+							34, FontNames[ObjectData[i][oFontFace]], 34,
+							ObjectData[i][oTextFontSize],
+							ObjectData[i][oFontBold],
+							ObjectData[i][oFontColor],
+							ObjectData[i][oBackColor],
+							ObjectData[i][oAlignment]
+						);
+						fwrite(f,templine);
+					}
+
+					// Attach the object
+					format(templine,sizeof(templine),"AttachObjectToObject(tmpobjid,centobjid,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%i);\r\n",
+						offx - ObjectData[i][oX],
+						offy - ObjectData[i][oY],
+						offz - ObjectData[i][oZ],
+						ObjectData[i][oRX],
+						ObjectData[i][oRY],
+						ObjectData[i][oRZ],
+						syncrot
+					);
+					fwrite(f,templine);
 				}
 			}
+
+			if(mobjects)
+			{
+				fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+				fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+				fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+			}
+
+			// We need to write all of the objects that didn't have materials set now
+			foreach(new i : Objects)
+			{
+			    if(ObjectData[i][oAttachedVehicle] > -1 || !GroupedObjects[playerid][i] || centerindex == i) continue;
+
+				new bool:writeobject = true;
+
+				// Does the object have materials?
+		        for(new j = 0; j < MAX_MATERIALS; j++)
+		        {
+					// This object has already been written
+		            if(ObjectData[i][oTexIndex][j] != 0 || ObjectData[i][oColorIndex][j] != 0 || ObjectData[i][ousetext])
+		            {
+						writeobject = false;
+						break;
+					}
+				}
+
+				// Object has not been exported yet export
+				if(writeobject)
+				{
+					format(templine,sizeof(templine),"tmpobjid = CreateObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist);
+					fwrite(f,templine);
+				}
+
+				// Attach the object
+				format(templine,sizeof(templine),"AttachObjectToObject(tmpobjid,centobjid,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%i);\r\n",
+					offx - ObjectData[i][oX],
+					offy - ObjectData[i][oY],
+					offz - ObjectData[i][oZ],
+					ObjectData[i][oRX],
+					ObjectData[i][oRY],
+					ObjectData[i][oRZ],
+					syncrot
+				);
+				fwrite(f,templine);
+			}
+
+			fclose(f);
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			format(templine, sizeof(templine), "Map has been exported to %s", exportmap);
+			SendClientMessage(playerid, STEALTH_GREEN, templine);
 		}
 	}
 
@@ -1140,7 +1282,6 @@ AttachExport(playerid, mapname[128])
 
 	return 1;
 }
-
 */
 
 // Save objects as a prefab data base
@@ -1349,7 +1490,7 @@ CMD:prefabsetz(playerid, arg[]) // in GUI
 CMD:prefab(playerid, arg[]) // in GUI
 {
 	MapOpenCheck();
-	
+
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	if(isnull(arg)) ShowPrefabs(playerid);
 	else
@@ -1378,7 +1519,7 @@ CMD:0group(playerid, arg[])
 
 	new bool:hasgroup;
 	new time = GetTickCount();
-	
+
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 
 	foreach(new i : Objects)
@@ -1386,7 +1527,7 @@ CMD:0group(playerid, arg[])
    		if(GroupedObjects[playerid][i])
 		{
 			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
-			
+
 			ObjectData[i][oX] -= gCenterX;
 			ObjectData[i][oY] -= gCenterY;
 			ObjectData[i][oZ] -= gCenterZ;
@@ -1400,10 +1541,10 @@ CMD:0group(playerid, arg[])
 			hasgroup = true;
 		}
 	}
-	
+
 	if(hasgroup) SendClientMessage(playerid, STEALTH_GREEN, "Moved grouped objects to 0,0,0");
 	else SendClientMessage(playerid, STEALTH_YELLOW, "You don't have any objects grouped");
-	
+
 	return 1;
 }
 
@@ -1550,7 +1691,7 @@ sqlite_LoadPrefab(playerid, offset = true)
 
 			// Save all text
 			sqlite_SaveAllObjectText(index);
-			
+
 			SaveUndoInfo(index, UNDO_TYPE_CREATED, time);
         }
 

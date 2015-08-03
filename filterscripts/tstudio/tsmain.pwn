@@ -1725,11 +1725,10 @@ LoadMap(playerid)
             {
 				ClearAllUndoInfo();
 
-				new mapname[128];
-				format(mapname, sizeof(mapname), "tstudio/SavedMaps/%s", stext);
+				format(MapName, sizeof(MapName), "tstudio/SavedMaps/%s", stext);
 
 				// Map is now open
-                EditMap = db_open_persistent(mapname);
+                EditMap = db_open_persistent(MapName);
 
 				// Perform any version updates
 				sqlite_UpdateDB();
@@ -1766,6 +1765,107 @@ LoadMap(playerid)
 	    }
 	    Dialog_ShowCallback(playerid, using inline CreateMap, DIALOG_STYLE_MSGBOX, "Texture Studio", "There are no maps to load create a new map?", "Ok", "Cancel");
 	}
+	return 1;
+}
+
+// Rename a map
+CMD:renamemap(playerid, arg[]) // In GUI
+{
+	MapOpenCheck();
+
+	// Confirm rename map
+	inline Confirm(cpid, cdialogid, cresponse, clistitem, string:ctext[])
+	{
+		#pragma unused clistitem, cdialogid, cpid
+
+		// Rename a map
+		if(cresponse)
+		{
+			if(!isnull(ctext))
+			{
+				new newname[128];
+				format(newname, 128, "tstudio/SavedMaps/%s.db", ctext);
+				
+				if(!fexist(newname))
+				{
+					// Close the old map
+					db_free_persistent(EditMap);
+					
+					// Rename the old map
+					file_copy(sprintf("./scriptfiles/%s", MapName), sprintf("./scriptfiles/%s", newname));
+					file_delete(sprintf("./scriptfiles/%s", MapName));
+					MapName = newname;
+					
+					// Open the new map
+					EditMap = db_open_persistent(MapName);
+
+					SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+					SendClientMessage(playerid, STEALTH_GREEN, "You have renamed a map");
+				}
+				else
+				{
+					SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+					SendClientMessage(playerid, STEALTH_YELLOW, "A map with that name already exists");
+					Dialog_ShowCallback(playerid, using inline Confirm, DIALOG_STYLE_INPUT, "Texture Studio", "Enter a new name for the current map below.", "Ok", "Cancel");
+				}
+			}
+			else
+			{
+				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+				SendClientMessage(playerid, STEALTH_YELLOW, "You must give your map a filename");
+				Dialog_ShowCallback(playerid, using inline Confirm, DIALOG_STYLE_INPUT, "Texture Studio", "Enter a new name for the current map below.", "Ok", "Cancel");
+			}
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline Confirm, DIALOG_STYLE_INPUT, "Texture Studio", "Enter a new name for the current map below.", "Ok", "Cancel");
+	return 1;
+}
+
+// Delete a map
+CMD:deletemap(playerid, arg[]) // In GUI
+{
+	MapOpenCheck();
+
+	// Confirm delete map
+	inline Confirm(cpid, cdialogid, cresponse, clistitem, string:ctext[])
+	{
+		#pragma unused clistitem, cdialogid, cpid, ctext
+
+		// Delete a map
+		if(cresponse)
+		{
+			// Close and delete map
+			db_free_persistent(EditMap);
+			fremove(MapName);
+
+			ClearAllUndoInfo();
+
+			// Delete all map objects
+			DeleteMapObjects(false);
+
+			// Clear all removed buildings
+			ClearRemoveBuildings();
+
+			// Clean up vehicles
+			ClearVehicles();
+
+			// No map open
+			MapOpen = false;
+
+			// Reset player variables
+			foreach(new i : Player)
+			{
+				CancelEdit(i);
+				EditingMode[i] = false;
+				SetCurrObject(playerid, -1);
+				ClearCopyBuffer(i);
+			}
+
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			SendClientMessage(playerid, STEALTH_GREEN, "You have deleted a map");
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline Confirm, DIALOG_STYLE_MSGBOX, "Texture Studio", "Are you sure you want to delete this map?\n(Note: Once deleted, there is no going back)", "Ok", "Cancel");
 	return 1;
 }
 
@@ -1829,13 +1929,12 @@ NewMap(playerid)
 	    {
 			if(!isnull(ctext))
 			{
-				new mapname[128];
-				format(mapname, sizeof(mapname), "tstudio/SavedMaps/%s.db", ctext);
+				format(MapName, sizeof(MapName), "tstudio/SavedMaps/%s.db", ctext);
 
-				if(!fexist(mapname))
+				if(!fexist(MapName))
 				{
 					// Open the map for editing
-		            EditMap = db_open_persistent(mapname);
+		            EditMap = db_open_persistent(MapName);
 
 					// Create new table for map
 		            sqlite_CreateNewMap();
@@ -4135,13 +4234,19 @@ ShowObjectText()
 // Command list
 CMD:thelp(playerid, params[])
 {
+#if defined COMPILE_GTA_OBJECTS
 	static Commands[10][32][64] =
+#else
+	static Commands[9][32][64] =
+#endif
 	{
 		{//MAPS
 			{"Maps"},
 			
 			{"{81181C}General{FFFFFF}"},
 			{"loadmap"},
+			{"renamemap"},
+			{"deletemap"},
 			{"newmap"},
 			{"importmap"},
 			{"export"},
@@ -4149,7 +4254,7 @@ CMD:thelp(playerid, params[])
 			{"exportallmap"},
 			
 			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
-			{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		},
 		{//OBJECTS
 			{"Objects"},
@@ -4277,6 +4382,7 @@ CMD:thelp(playerid, params[])
 			{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		},
+#if defined COMPILE_GTA_OBJECTS
 		{//BUILDINGS
 			{"Buildings"},
 			
@@ -4290,6 +4396,7 @@ CMD:thelp(playerid, params[])
 			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 			{""},{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},
 		},
+#endif
 		{//VEHICLE
 			{"Vehicles"},
 			
