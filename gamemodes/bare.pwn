@@ -27,14 +27,14 @@ public OnPlayerRequestClass(playerid, classid)
 
 public OnPlayerConnect(playerid)
 {
-	GameTextForPlayer(playerid,"~h~~w~SA-MP: ~r~T~h~~r~exture ~r~S~h~~r~tudio",5000,5);
+	GameTextForPlayer(playerid,"~r~T~w~exture ~r~S~w~tudio ~b~1.7e",5000,5);
 	JustConnected[playerid] = true;
 	return 1;
 }
 
 public OnGameModeInit()
 {
-	SetGameModeText("Texture Studio");
+	SetGameModeText("TS 1.7e");
 	UsePlayerPedAnims();
 
 	AddPlayerClass(265,1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
