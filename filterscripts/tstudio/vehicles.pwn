@@ -90,8 +90,15 @@ static CarModShops[212] = {
 
 static Float:ModCarPos[MAX_PLAYERS][4];
 
-CMD:avmodcar(playerid, arg[])
+YCMD:avmodcar(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Modify car components using modshop.");
+		return 1;
+	}
+
 	new vid = GetPlayerVehicleID(playerid);
 	foreach(new i : Cars)
 	{
@@ -141,8 +148,15 @@ CMD:avmodcar(playerid, arg[])
 	return 1;
 }
 
-CMD:avsetspawn(playerid, arg[])
+YCMD:avsetspawn(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set vehicle's spawn point to current position.");
+		return 1;
+	}
+
 	new vid = GetPlayerVehicleID(playerid);
 	foreach(new i : Cars)
 	{
@@ -162,8 +176,15 @@ CMD:avsetspawn(playerid, arg[])
 	return 1;
 }
 
-CMD:avdeletecar(playerid, arg[])
+YCMD:avdeletecar(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Destroy current vehicle.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -284,8 +305,15 @@ public OnVehicleSpawn(vehicleid)
 	return 1;
 }
 
-CMD:avselectcar(playerid, arg[])
+YCMD:avselectcar(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Adds a vehicle to the loaded map.");
+		return 1;
+	}
+
     inline SelectID(pid, dialogid, response, listitem, string:text[])
     {
         #pragma unused listitem, dialogid, pid, text
@@ -330,8 +358,15 @@ CMD:avselectcar(playerid, arg[])
 }
 
 
-CMD:avnewcar(playerid, arg[])
+YCMD:avnewcar(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Add a vehicle to map.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -726,8 +761,15 @@ DestroyEditCar(index, bool:sqldelete=true, deleteobjects=false)
 	return next;
 }
 
-CMD:avcarcolor(playerid, arg[])
+YCMD:avcarcolor(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set current vehicle's colors.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -759,8 +801,15 @@ CMD:avcarcolor(playerid, arg[])
 	return 1;
 }
 
-CMD:avpaint(playerid, arg[])
+YCMD:avpaint(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set current vehicle's paintjob ID.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -785,8 +834,15 @@ CMD:avpaint(playerid, arg[])
 
 }
 
-CMD:avattach(playerid, arg[])
+YCMD:avattach(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Attach current object to current vehicle.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -843,8 +899,15 @@ CMD:avattach(playerid, arg[])
 	return 1;
 }
 
-CMD:avmirror(playerid, arg[])
+YCMD:avmirror(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Mirror an attached object on the current vehicle.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -926,8 +989,15 @@ CMD:avmirror(playerid, arg[])
 	return 1;
 }
 
-CMD:avdetach(playerid, arg[])
+YCMD:avdetach(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Detach the current object from a vehicle.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -970,8 +1040,15 @@ CMD:avdetach(playerid, arg[])
 
 }
 
-CMD:avsel(playerid, arg[])
+YCMD:avsel(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Select a vehicle by index.");
+		return 1;
+	}
+
     MapOpenCheck();
     new index = strval(arg);
     if(Iter_Contains(Cars, index))
@@ -992,8 +1069,15 @@ CMD:avsel(playerid, arg[])
 	return 1;
 }
 
-CMD:avclonecar(playerid, arg[])
+YCMD:avclonecar(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Clone current vehicle with all properties and objects.");
+		return 1;
+	}
+
     MapOpenCheck();
     NoEditingMode(playerid);
 	VehicleCheck(playerid);
@@ -1042,8 +1126,15 @@ CMD:avclonecar(playerid, arg[])
 }
 
 
-CMD:avox(playerid, arg[]) // In GUI
+YCMD:avox(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move a vehicle's attached object along the X axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -1073,8 +1164,15 @@ CMD:avox(playerid, arg[]) // In GUI
 	return 1;
 }
 
-CMD:avoy(playerid, arg[]) // In GUI
+YCMD:avoy(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move a vehicle's attached object along the Y axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -1104,8 +1202,15 @@ CMD:avoy(playerid, arg[]) // In GUI
 	return 1;
 }
 
-CMD:avoz(playerid, arg[]) // In GUI
+YCMD:avoz(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move a vehicle's attached object along the Z axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -1135,8 +1240,15 @@ CMD:avoz(playerid, arg[]) // In GUI
 	return 1;
 }
 
-CMD:avrx(playerid, arg[]) // In GUI
+YCMD:avrx(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate a vehicle's attached object along the X axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -1166,8 +1278,15 @@ CMD:avrx(playerid, arg[]) // In GUI
 	return 1;
 }
 
-CMD:avry(playerid, arg[]) // In GUI
+YCMD:avry(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate a vehicle's attached object along the Y axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -1197,8 +1316,15 @@ CMD:avry(playerid, arg[]) // In GUI
 	return 1;
 }
 
-CMD:avrz(playerid, arg[]) // In GUI
+YCMD:avrz(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate a vehicle's attached object along the Z axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	NoEditingMode(playerid);
@@ -1791,8 +1917,15 @@ static ExportAllCars(playerid, name[])
 }
 
 
-CMD:avexport(playerid, arg[]) // In GUI
+YCMD:avexport(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Export all vehicles to a text file.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	VehicleCheck(playerid);
@@ -1852,8 +1985,15 @@ CMD:avexport(playerid, arg[]) // In GUI
 
 }
 
-CMD:avexportall(playerid, arg[]) // In GUI
+YCMD:avexportall(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Export all vehicles to a filterscript.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	if(Iter_Count(Cars) == 0)

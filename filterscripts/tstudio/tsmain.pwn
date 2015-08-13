@@ -1633,16 +1633,30 @@ GetPosFaInFrontOfPlayer(playerid, Float:OffDist, &Float:Pxx, &Float:Pyy, &Float:
 ////////////////////////////////////////////////////////////////////////////////
 
 // Echo text to player useful for keybind (Autohotkey)
-CMD:echo(playerid, arg[])
+YCMD:echo(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Echo text in the chat. Useful for binds and external keybinds.");
+		return 1;
+	}
+
 	SendClientMessage(playerid, -1, arg);
 	return 1;
 }
 
 
 // Pick a map to load
-CMD:loadmap(playerid, arg[])    // In GUI
+YCMD:loadmap(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Load a saved map.");
+		return 1;
+	}
+
 	// Map was already open
 	if(MapOpen)
 	{
@@ -1769,8 +1783,15 @@ LoadMap(playerid)
 }
 
 // Rename a map
-CMD:renamemap(playerid, arg[]) // In GUI
+YCMD:renamemap(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rename a saved map.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	// Confirm rename map
@@ -1822,8 +1843,15 @@ CMD:renamemap(playerid, arg[]) // In GUI
 }
 
 // Delete a map
-CMD:deletemap(playerid, arg[]) // In GUI
+YCMD:deletemap(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Delete a saved map. (Use with caution!)");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	// Confirm delete map
@@ -1870,8 +1898,15 @@ CMD:deletemap(playerid, arg[]) // In GUI
 }
 
 // Create a new map
-CMD:newmap(playerid, arg[]) // In GUI
+YCMD:newmap(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Open a new map.");
+		return 1;
+	}
+
 	// Map was already open
 	if(MapOpen)
 	{
@@ -1964,8 +1999,15 @@ NewMap(playerid)
 }
 
 // Imports CreateObject() or CreateDynamic() raw code
-CMD:importmap(playerid, arg[]) // In GUI
+YCMD:importmap(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Import a map from a text file.");
+		return 1;
+	}
+
 	if(MapOpen)
 	{
 		// The map already has objects
@@ -2086,8 +2128,15 @@ ImportMap(playerid)
 }
 
 
-CMD:export(playerid, arg[])
+YCMD:export(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Export current map.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	inline Export(epid, edialogid, eresponse, elistitem, string:etext[])
@@ -2111,8 +2160,15 @@ CMD:export(playerid, arg[])
 
 
 // Export map to create object
-CMD:exportmap(playerid, arg[]) // In GUI
+YCMD:exportmap(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Export current map to a text file.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	// Ask for a map name
@@ -2389,8 +2445,15 @@ MapExport(playerid, mapname[], Float:drawdist)
 }
 
 // Export map to create object
-CMD:exportallmap(playerid, arg[]) // In GUI
+YCMD:exportallmap(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Export current map to a filterscript.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	// Ask for a map name
@@ -2778,8 +2841,15 @@ static MapExportAll(playerid, name[], Float:drawdist)
 }
 
 // Selects a object for editing
-CMD:sel(playerid, arg[]) // In GUI
+YCMD:sel(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Select an object by index.");
+		return 1;
+	}
+
 	NoEditingMode(playerid);
 
     MapOpenCheck();
@@ -2801,8 +2871,15 @@ CMD:sel(playerid, arg[]) // In GUI
 	return 1;
 }
 
-CMD:dsel(playerid, arg[]) // In GUI
+YCMD:dsel(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Deselect current object.");
+		return 1;
+	}
+
     MapOpenCheck();
 	EditCheck(playerid);
 	NoEditingMode(playerid);
@@ -2816,8 +2893,15 @@ CMD:dsel(playerid, arg[]) // In GUI
 }
 
 // Selects the closest object to player
-CMD:scsel(playerid, arg[]) // In GUI
+YCMD:scsel(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Selects closest object.");
+		return 1;
+	}
+
 	NoEditingMode(playerid);
     MapOpenCheck();
 
@@ -2848,8 +2932,15 @@ CMD:scsel(playerid, arg[]) // In GUI
 }
 
 // Deletes the closest object to player
-CMD:dcsel(playerid, arg[]) // In GUI
+YCMD:dcsel(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Destroy closest object.");
+		return 1;
+	}
+
 	NoEditingMode(playerid);
     MapOpenCheck();
 
@@ -2890,8 +2981,17 @@ CMD:dcsel(playerid, arg[]) // In GUI
 }
 
 
-CMD:csel(playerid, arg[]) // In GUI
+YCMD:csel(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Select an object using cursor.");
+		SendClientMessage(playerid, STEALTH_GREEN, "Holding 'H' while clicking an object will copy properites to buffer.");
+		SendClientMessage(playerid, STEALTH_GREEN, "Holding 'Walk Key' while clicking an object will paste properties from buffer.");
+		return 1;
+	}
+
     NoEditingMode(playerid);
 
     MapOpenCheck();
@@ -2911,8 +3011,15 @@ CMD:csel(playerid, arg[]) // In GUI
 
 
 // Set a material of an object
-CMD:mtset(playerid, arg[]) // In GUI - Undo
+YCMD:mtset(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set the material of an object.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -2949,8 +3056,15 @@ CMD:mtset(playerid, arg[]) // In GUI - Undo
 }
 
 // Set all materials of a certain type
-CMD:mtsetall(playerid, arg[]) // In GUI - Undo
+YCMD:mtsetall(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set the material of all currently selected objects.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -2987,8 +3101,15 @@ CMD:mtsetall(playerid, arg[]) // In GUI - Undo
 	return 1;
 }
 
-CMD:ogroup(playerid, arg[]) // In GUI
+YCMD:ogroup(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set the group ID of current object.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -3040,8 +3161,15 @@ stock ColumnExists(DB:database, table[], columnname[])
 }
 
 
-CMD:clone(playerid, arg[])  // In GUI
+YCMD:clone(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Clone current object with all properties.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -3056,8 +3184,15 @@ CMD:clone(playerid, arg[])  // In GUI
 	return 1;
 }
 
-CMD:copy(playerid, arg[]) // in GUI
+YCMD:copy(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Copy an objects properties to the clipboard.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -3093,16 +3228,30 @@ CopyCopyBuffer(playerid, index)
     return 1;
 }
 
-CMD:clear(playerid, arg[]) // in GUI
+YCMD:clear(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Clears current clipboard.");
+		return 1;
+	}
+
     ClearCopyBuffer(playerid);
     SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	SendClientMessage(playerid, STEALTH_GREEN, "Cleared your copy buffer");
 	return 1;
 }
 
-CMD:paste(playerid, arg[]) // in GUI
+YCMD:paste(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Paste copied propeties to current object.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -3237,8 +3386,15 @@ SetMaterials(index, mindex, tref)
 }
 
 
-CMD:ogoto(playerid, arg[])   // In GUI
+YCMD:ogoto(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Moves camera to the current object's position.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -3261,8 +3417,15 @@ CMD:ogoto(playerid, arg[])   // In GUI
 
 
 // Set a color of an object
-CMD:mtcolor(playerid, arg[]) // In GUI - Undo
+YCMD:mtcolor(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set the color of an object.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -3331,8 +3494,15 @@ CMD:mtcolor(playerid, arg[]) // In GUI - Undo
 }
 
 // Set a color of an object
-CMD:mtcolorall(playerid, arg[]) // In GUI - Undo
+YCMD:mtcolorall(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set the color of all currently selected objects.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -3405,8 +3575,15 @@ CMD:mtcolorall(playerid, arg[]) // In GUI - Undo
 	return 1;
 }
 
-CMD:oswap(playerid, arg[])
+YCMD:oswap(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Change the model of current object.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -3445,8 +3622,15 @@ CMD:oswap(playerid, arg[])
 }
 
 // Reset all materials
-CMD:mtreset(playerid, arg[])
+YCMD:mtreset(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Reset all materials and colors of current object.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -3473,8 +3657,15 @@ CMD:mtreset(playerid, arg[])
 
 
 // Enter edit mode
-CMD:editobject(playerid, arg[]) // In GUI
+YCMD:editobject(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Edit current object.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	EditCheck(playerid);
@@ -3501,8 +3692,15 @@ CMD:editobject(playerid, arg[]) // In GUI
 }
 
 // Create an object
-CMD:cobject(playerid, arg[]) // In gui
+YCMD:cobject(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Creates an object and selects it.");
+		return 1;
+	}
+
     MapOpenCheck();
 	NoEditingMode(playerid);
 
@@ -3558,8 +3756,15 @@ CMD:cobject(playerid, arg[]) // In gui
 	return 1;
 }
 
-CMD:dobject(playerid, arg[])  // In gui
+YCMD:dobject(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Destroys current object and deselects it.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
     NoEditingMode(playerid);
@@ -3579,8 +3784,15 @@ CMD:dobject(playerid, arg[])  // In gui
 	return 1;
 }
 
-CMD:rotreset(playerid, arg[])  // In gui
+YCMD:rotreset(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Reset all rotation axes of current object.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
     NoEditingMode(playerid);
@@ -3601,8 +3813,15 @@ CMD:rotreset(playerid, arg[])  // In gui
 
 
 // Resets an objects materials and text
-CMD:robject(playerid, arg[]) // In GUI
+YCMD:robject(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Reset all materials, colors, and text of current object.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
     NoEditingMode(playerid);
@@ -3679,8 +3898,15 @@ stock const ShowIndexColors[MAX_MATERIALS][INDEXCOLORINFO] = {
 	{ 0xFFFFFF66, 0xFF00FF33 }
 };
 
-CMD:sindex(playerid, arg[]) // in gui
+YCMD:sindex(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Display texture slots of current object.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
 //    NoEditingMode(playerid);
@@ -3714,8 +3940,15 @@ CMD:sindex(playerid, arg[]) // in gui
 }
 
 // Restores an object to it's original form
-CMD:rindex(playerid, arg[]) // in gui
+YCMD:rindex(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Restore objects textures after displaying texture slots.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
 //    NoEditingMode(playerid);
@@ -3750,8 +3983,15 @@ CMD:rindex(playerid, arg[]) // in gui
 }
 
 // Set a pivot point
-CMD:pivot(playerid, arg[]) // In GUI
+YCMD:pivot(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set the desired pivot to rotate around.");
+		return 1;
+	}
+
     MapOpenCheck();
     NoEditingMode(playerid);
 
@@ -3777,8 +4017,15 @@ CMD:pivot(playerid, arg[]) // In GUI
 	return 1;
 }
 
-CMD:togpivot(playerid, arg[])
+YCMD:togpivot(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Toggle pivot rotation.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	if(PivotPointOn[playerid])
@@ -3799,8 +4046,15 @@ CMD:togpivot(playerid, arg[])
 
 
 // Move object on X axis
-CMD:ox(playerid, arg[])  // In GUI - Undo
+YCMD:ox(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move current object along the X axis.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
     NoEditingMode(playerid);
@@ -3824,8 +4078,15 @@ CMD:ox(playerid, arg[])  // In GUI - Undo
 }
 
 // Move object on Y axis
-CMD:oy(playerid, arg[])  // In GUI - Undo
+YCMD:oy(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move current object along the Y axis.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
     NoEditingMode(playerid);
@@ -3849,8 +4110,15 @@ CMD:oy(playerid, arg[])  // In GUI - Undo
 }
 
 // Move object on Z axis
-CMD:oz(playerid, arg[])  // In GUI - Undo
+YCMD:oz(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move current object along the Z axis.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
     NoEditingMode(playerid);
@@ -3874,8 +4142,15 @@ CMD:oz(playerid, arg[])  // In GUI - Undo
 }
 
 // Move object on RX rot
-CMD:rx(playerid, arg[])  // In GUI - Undo
+YCMD:rx(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate currently object around the X axis.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
     NoEditingMode(playerid);
@@ -3907,8 +4182,15 @@ CMD:rx(playerid, arg[])  // In GUI - Undo
 }
 
 // Move object on RX rot
-CMD:ry(playerid, arg[])  // In GUI - Undo
+YCMD:ry(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate currently object around the Y axis.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
     NoEditingMode(playerid);
@@ -3940,8 +4222,15 @@ CMD:ry(playerid, arg[])  // In GUI - Undo
 }
 
 // Move object on RX rot
-CMD:rz(playerid, arg[])  // In GUI - Undo
+YCMD:rz(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate currently object around the Z axis.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
     NoEditingMode(playerid);
@@ -3973,8 +4262,15 @@ CMD:rz(playerid, arg[])  // In GUI - Undo
 }
 
 // Move all objects on X axis
-CMD:dox(playerid, arg[])  // In GUI - Undo
+YCMD:dox(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move all loaded objects along the X axis.");
+		return 1;
+	}
+
     MapOpenCheck();
     NoEditingMode(playerid);
 
@@ -4001,8 +4297,15 @@ CMD:dox(playerid, arg[])  // In GUI - Undo
 }
 
 // Move all objects on Y axis
-CMD:doy(playerid, arg[])  // In GUI - Undo
+YCMD:doy(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move all loaded objects along the Y axis.");
+		return 1;
+	}
+
     MapOpenCheck();
     NoEditingMode(playerid);
 
@@ -4029,8 +4332,15 @@ CMD:doy(playerid, arg[])  // In GUI - Undo
 }
 
 // Move all objects on Z axis
-CMD:doz(playerid, arg[])  // In GUI - Undo
+YCMD:doz(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move all loaded objects along the Z axis.");
+		return 1;
+	}
+
     MapOpenCheck();
     NoEditingMode(playerid);
 
@@ -4057,8 +4367,15 @@ CMD:doz(playerid, arg[])  // In GUI - Undo
 }
 
 // Rotate map on RX
-CMD:drx(playerid, arg[])  // In GUI - Undo
+YCMD:drx(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate all loaded objects around the X axis.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	new Float:Delta, time;
@@ -4103,8 +4420,15 @@ CMD:drx(playerid, arg[])  // In GUI - Undo
 }
 
 // Rotate map on RY
-CMD:dry(playerid, arg[])  // In GUI - Undo
+YCMD:dry(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate all loaded objects around the Y axis.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	new Float:Delta, time;
@@ -4149,8 +4473,15 @@ CMD:dry(playerid, arg[])  // In GUI - Undo
 }
 
 // Rotate map on RZ
-CMD:drz(playerid, arg[])  // In GUI - Undo
+YCMD:drz(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate all loaded objects around the Z axis.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	new Float:Delta, time;
@@ -4195,8 +4526,15 @@ CMD:drz(playerid, arg[])  // In GUI - Undo
 }
 
 // Extras
-CMD:hidetext3d(playerid, arg[])
+YCMD:hidetext3d(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Hide all 3D text labels.");
+		return 1;
+	}
+
 	HideGroupLabels(playerid);
 	HideObjectText();
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -4204,8 +4542,15 @@ CMD:hidetext3d(playerid, arg[])
 	return 1;
 }
 
-CMD:showtext3d(playerid, arg[])
+YCMD:showtext3d(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Show all 3D text labels.");
+		return 1;
+	}
+
     ShowGroupLabels(playerid);
 	ShowObjectText();
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -4232,8 +4577,15 @@ ShowObjectText()
 }
 
 // Command list
-CMD:thelp(playerid, params[])
+YCMD:thelp(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "View a list of all commands and see what they do.");
+		return 1;
+	}
+
 #if defined COMPILE_GTA_OBJECTS
 	static Commands[10][32][64] =
 #else
@@ -4243,7 +4595,7 @@ CMD:thelp(playerid, params[])
 		{//MAPS
 			{"Maps"},
 			
-			{"{81181C}General{FFFFFF}"},
+			{"{81181C} - General{FFFFFF}"},
 			{"loadmap"},
 			{"renamemap"},
 			{"deletemap"},
@@ -4259,7 +4611,7 @@ CMD:thelp(playerid, params[])
 		{//OBJECTS
 			{"Objects"},
 			
-			{"{81181C}General{FFFFFF}"},
+			{"{81181C} - General{FFFFFF}"},
 			{"cobject"},
 			{"dobject"},
 			{"robject"},
@@ -4270,7 +4622,7 @@ CMD:thelp(playerid, params[])
 			{"osearch"},
 			{"oprop"},
 			
-			{" \n{81181C}Pivot{FFFFFF}"},
+			{" \n{81181C} - Pivot{FFFFFF}"},
 			{"pivot"},
 			{"togpivot"},
 			
@@ -4280,7 +4632,7 @@ CMD:thelp(playerid, params[])
 		{//TEXTURES
 			{"Textures"},
 			
-			{"{81181C}General{FFFFFF}"},
+			{"{81181C} - General{FFFFFF}"},
 			{"mtextures"},
 			{"ttextures"},
 			{"stexture"},
@@ -4292,17 +4644,17 @@ CMD:thelp(playerid, params[])
 			{"tsearch"},
 			{"text"},
 			
-			{" \n{81181C}Texture Buffer{FFFFFF}"},
+			{" \n{81181C} - Texture Buffer{FFFFFF}"},
 			{"copy"},
 			{"clear"},
 			{"paste"},
 			
-			{" \n{81181C}Texture Indexes{FFFFFF}"},
+			{" \n{81181C} - Texture Indexes{FFFFFF}"},
 			{"settindex"},
 			{"sindex"},
 			{"rindex"},
 
-			{" \n{81181C}Texture Themes{FFFFFF}"},
+			{" \n{81181C} - Texture Themes{FFFFFF}"},
 			{"savetheme"},
 			{"deletetheme"},
 			{"loadtheme"},
@@ -4313,7 +4665,7 @@ CMD:thelp(playerid, params[])
 		{//MOVEMENT
 			{"Movement"},
 			
-			{"{81181C}General{FFFFFF}"},
+			{"{81181C} - General{FFFFFF}"},
 			{"editobject"},
 			{"ox"},
 			{"oy"},
@@ -4323,7 +4675,7 @@ CMD:thelp(playerid, params[])
 			{"rz"},
 			{"rotreset"},
 
-			{" \n{81181C}Delta Movement{FFFFFF}"},
+			{" \n{81181C} - Delta Movement{FFFFFF}"},
 			{"dox"},
 			{"doy"},
 			{"doz"},
@@ -4337,7 +4689,7 @@ CMD:thelp(playerid, params[])
 		{//SELECTION
 			{"Selection"},
 			
-			{"{81181C}General{FFFFFF}"},
+			{"{81181C} - General{FFFFFF}"},
 			{"sel"},
 			{"csel"},
 			{"lsel"},
@@ -4351,7 +4703,7 @@ CMD:thelp(playerid, params[])
 		{//GROUPS
 			{"Groups"},
 			
-			{"{81181C}General{FFFFFF}"},
+			{"{81181C} - General{FFFFFF}"},
 			{"obmedit"},
 			{"setgroup"},
 			{"selectgroup"},
@@ -4364,7 +4716,7 @@ CMD:thelp(playerid, params[])
 			{"gall"},
 			{"0group"},
 			
-			{" \n{81181C}Group Movement{FFFFFF}"},
+			{" \n{81181C} - Group Movement{FFFFFF}"},
 			{"editgroup"},
 			{"gox"},
 			{"goy"},
@@ -4373,7 +4725,7 @@ CMD:thelp(playerid, params[])
 			{"gry"},
 			{"grz"},
 			
-			{" \n{81181C}Group Prefabs{FFFFFF}"},
+			{" \n{81181C} - Group Prefabs{FFFFFF}"},
 			{"gaexport"},
 			{"gprefab"},
 			{"prefabsetz"},
@@ -4386,7 +4738,7 @@ CMD:thelp(playerid, params[])
 		{//BUILDINGS
 			{"Buildings"},
 			
-			{"{81181C}General{FFFFFF}"},
+			{"{81181C} - General{FFFFFF}"},
 			{"gtaobjects"},
 			{"gtashow"},
 			{"gtahide"},
@@ -4400,7 +4752,7 @@ CMD:thelp(playerid, params[])
 		{//VEHICLE
 			{"Vehicles"},
 			
-			{"{81181C}General{FFFFFF}"},
+			{"{81181C} - General{FFFFFF}"},
 			{"avmodcar"},
 			{"avsetspawn"},
 			{"avdeletecar"},
@@ -4413,7 +4765,7 @@ CMD:thelp(playerid, params[])
 			{"avexport"},
 			{"avexportall"},
 			
-			{" \n{81181C}Vehicle Objects{FFFFFF}"},
+			{" \n{81181C} - Vehicle Objects{FFFFFF}"},
 			{"avattach"},
 			{"avdetach"},
 			{"avox"},
@@ -4430,7 +4782,7 @@ CMD:thelp(playerid, params[])
 		{//BINDS
 			{"Binds"},
 			
-			{"{81181C}General{FFFFFF}"},
+			{"{81181C} - General{FFFFFF}"},
 			{"runbind"},
 			{"bindeditor"},
 			
@@ -4440,7 +4792,7 @@ CMD:thelp(playerid, params[])
 		{//OTHER
 			{"Others"},
 			
-			{"{81181C}General{FFFFFF}"},
+			{"{81181C} - General{FFFFFF}"},
 			{"hidetext3d"},
 			{"showtext3d"},
 			{"flymode"},
@@ -4472,7 +4824,17 @@ CMD:thelp(playerid, params[])
 			{
 				#pragma unused elistitem, edialogid, epid, etext
 				if(eresponse)
+				{
+					if(strfind(etext, " - ") == -1)
+					{
+						#if defined Y_COMMANDS_NO_IPC
+						Command_ReProcess(playerid, etext, 1);
+						#else
+						Command_OnReceived(OK, playerid, etext);
+						#endif
+					}
 					Dialog_ShowCallback(playerid, using inline SelectCommand, DIALOG_STYLE_LIST, "Texture Studio - Command List", cmds, "Select", "Back");
+				}
 				else
 					Dialog_ShowCallback(playerid, using inline SelectCommandType, DIALOG_STYLE_LIST, "Texture Studio - Command List", cmdtypes, "Select", "Cancel");
 			}

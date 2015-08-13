@@ -362,8 +362,15 @@ stock GetGroupCenter(playerid, &Float:X, &Float:Y, &Float:Z)
 	return 1;
 }
 
-CMD:setgroup(playerid, arg[]) // in GUI
+YCMD:setgroup(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Sets the group ID of currently selected objects.");
+		return 1;
+	}
+
     MapOpenCheck();
     NoEditingMode(playerid);
 
@@ -395,8 +402,15 @@ CMD:setgroup(playerid, arg[]) // in GUI
 	return 1;
 }
 
-CMD:selectgroup(playerid, arg[]) // in GUI
+YCMD:selectgroup(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Select a group of objects by group ID.");
+		return 1;
+	}
+
     MapOpenCheck();
     NoEditingMode(playerid);
 
@@ -445,8 +459,16 @@ static PlayerHasGroup(playerid)
 
 
 // Edit a group
-CMD:editgroup(playerid, arg[]) // in GUI
+YCMD:editgroup(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Edit currently edited objects simultaneously.");
+		SendClientMessage(playerid, STEALTH_GREEN, "Hold 'Walk Key' to set the group rotation pivot, you can only do this once per edit.");
+		return 1;
+	}
+
     MapOpenCheck();
     NoEditingMode(playerid);
 
@@ -485,8 +507,15 @@ CMD:editgroup(playerid, arg[]) // in GUI
 }
 
 
-CMD:gsel(playerid, arg[]) // In GUI
+YCMD:gsel(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Select/deselect objects using the cursor.");
+		return 1;
+	}
+
     NoEditingMode(playerid);
 
     MapOpenCheck();
@@ -504,8 +533,15 @@ CMD:gsel(playerid, arg[]) // In GUI
 	return 1;
 }
 
-CMD:gadd(playerid, arg[]) // In GUI
+YCMD:gadd(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Add an object to current selection.");
+		return 1;
+	}
+
     MapOpenCheck();
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must supply an object index to group");
@@ -535,8 +571,15 @@ CMD:gadd(playerid, arg[]) // In GUI
 	return 1;
 }
 
-CMD:grem(playerid, arg[]) // In GUI
+YCMD:grem(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Remove an object from your current selection.");
+		return 1;
+	}
+
     MapOpenCheck();
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must supply an object index to group");
@@ -566,8 +609,15 @@ CMD:grem(playerid, arg[]) // In GUI
 	return 1;
 }
 
-CMD:gclear(playerid, arg[]) // in  GUI
+YCMD:gclear(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Clears the current selection.");
+		return 1;
+	}
+
 	MapOpenCheck();
     ClearGroup(playerid);
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -581,8 +631,15 @@ CMD:gclear(playerid, arg[]) // in  GUI
 
 new bool:tmpgrp[MAX_TEXTURE_OBJECTS];
 
-CMD:gclone(playerid, arg[]) // in  GUI
+YCMD:gclone(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Clone all currently selected objects.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -627,8 +684,15 @@ CMD:gclone(playerid, arg[]) // in  GUI
     return 1;
 }
 
-CMD:gdelete(playerid, arg[]) // in  GUI
+YCMD:gdelete(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Destroy all currently selected objects.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -660,8 +724,15 @@ CMD:gdelete(playerid, arg[]) // in  GUI
 	return 1;
 }
 
-CMD:gall(playerid, arg[]) // in  GUI
+YCMD:gall(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Add all loaded objects to current selection.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -690,8 +761,15 @@ CMD:gall(playerid, arg[]) // in  GUI
 }
 
 // Move all grouped objects on X axis
-CMD:gox(playerid, arg[])
+YCMD:gox(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move all currently selected objects along the X axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	new Float:dist;
@@ -722,8 +800,15 @@ CMD:gox(playerid, arg[])
 }
 
 // Move all grouped objects on Y axis
-CMD:goy(playerid, arg[])
+YCMD:goy(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move all currently selected objects along the Y axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	new Float:dist;
@@ -757,8 +842,15 @@ CMD:goy(playerid, arg[])
 }
 
 // Move all grouped objects on Z axis
-CMD:goz(playerid, arg[])
+YCMD:goz(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move all currently selected objects along the Z axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	new Float:dist;
@@ -790,8 +882,15 @@ CMD:goz(playerid, arg[])
 }
 
 // Rotate map on RX
-CMD:grx(playerid, arg[])
+YCMD:grx(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate all currently selected objects around the X axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 	new time = GetTickCount();
 	new Float:Delta;
@@ -863,8 +962,15 @@ CMD:grx(playerid, arg[])
 }
 
 // Rotate map on RX
-CMD:gry(playerid, arg[])
+YCMD:gry(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate all currently selected objects around the Y axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 	new time = GetTickCount();
 	new Float:Delta;
@@ -935,8 +1041,15 @@ CMD:gry(playerid, arg[])
 }
 
 // Rotate map on RX
-CMD:grz(playerid, arg[])
+YCMD:grz(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate all currently selected objects around the Z axis.");
+		return 1;
+	}
+
     MapOpenCheck();
 	new time = GetTickCount();
 	new Float:Delta;
@@ -1009,8 +1122,15 @@ CMD:grz(playerid, arg[])
 
 /*
 // Export group of objects as an attached object
-CMD:gaexport(playerid, arg[])
+YCMD:gaexport(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Export all currently selected objects as an attached object.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	new count;
@@ -1287,8 +1407,15 @@ AttachExport(playerid, mapname[], Float:drawdist)
 // Save objects as a prefab data base
 new NewPreFabString[512];
 new DB: PrefabDB;
-CMD:gprefab(playerid, arg[]) // in GUI
+YCMD:gprefab(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Save current objects as a prefabricated group.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	new count;
@@ -1459,8 +1586,15 @@ sqlite_InsertPrefab(index, Float:x, Float:y, Float:z)
 	stmt_close(insertprefabstmt);
 }
 
-CMD:prefabsetz(playerid, arg[]) // in GUI
+YCMD:prefabsetz(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set prefabricated group Z axis offset.");
+		return 1;
+	}
+
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	if(isnull(arg)) ShowPrefabs(playerid);
 	else
@@ -1487,8 +1621,15 @@ CMD:prefabsetz(playerid, arg[]) // in GUI
 }
 
 // Load a prefab specify a filename
-CMD:prefab(playerid, arg[]) // in GUI
+YCMD:prefab(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Load a prefabricated group of objects.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -1510,8 +1651,15 @@ CMD:prefab(playerid, arg[]) // in GUI
 	return 1;
 }
 
-CMD:0group(playerid, arg[])
+YCMD:0group(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Center all currently selected objects to the center of San Andreas.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	new Float:gCenterX, Float:gCenterY, Float:gCenterZ;

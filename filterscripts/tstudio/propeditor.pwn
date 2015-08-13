@@ -1,7 +1,14 @@
 #include <YSI\y_hooks>
 
-CMD:oprop(playerid, arg[])
+YCMD:oprop(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Edit/view an objects properties.");
+		return 1;
+	}
+
     MapOpenCheck();
     EditCheck(playerid);
     NoEditingMode(playerid);

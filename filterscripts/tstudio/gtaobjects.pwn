@@ -27,8 +27,15 @@ ResetGTADeletedObjects()
 	return 1;
 }
 
-CMD:gtaobjects(playerid, arg[])
+YCMD:gtaobjects(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Display information on all San Andreas buildings.");
+		return 1;
+	}
+
 	new Float:colradius;
 	sscanf(arg, "F(0)", colradius);
 	
@@ -65,8 +72,15 @@ CMD:gtaobjects(playerid, arg[])
 	return 1;
 }
 
-/*CMD:gtaobjects(playerid, arg[])
+/*YCMD:gtaobjects(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Display information on all San Andreas buildings.");
+		return 1;
+	}
+
 	if(ObjectsShown)
 	{
 		for(new i = 0; i < SEARCH_DATA_SIZE; i++) DestroyDynamic3DTextLabel(GTAObjectText[i]);
@@ -91,8 +105,15 @@ CMD:gtaobjects(playerid, arg[])
 	return 1;
 }*/
 
-CMD:gtashow(playerid, arg[])
+YCMD:gtashow(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "\"Highlight\" a San Andreas building.");
+		return 1;
+	}
+
 	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must provide an index to highlight!");
 	new line[128], index = strval(arg);
 
@@ -115,8 +136,15 @@ CMD:gtashow(playerid, arg[])
 	return 1;
 }
 
-CMD:gtahide(playerid, arg[])
+YCMD:gtahide(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Hide a \"highlighted\" San Andreas building.");
+		return 1;
+	}
+
 	if(HighLightObject[playerid] > -1)
 	{
 		DestroyDynamicObject(HighLightObject[playerid]);
@@ -126,8 +154,15 @@ CMD:gtahide(playerid, arg[])
 	return 1;
 }
 
-CMD:remobject(playerid, arg[])
+YCMD:remobject(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Destroy a San Andreas building. (CAUTION: Permanent!)");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must provide an index to delete!");
@@ -155,8 +190,15 @@ CMD:remobject(playerid, arg[])
 	return 1;
 }
 
-CMD:swapbuilding(playerid, arg[])
+YCMD:swapbuilding(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Destroys a San Andreas building and creates a map object in it's place.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 

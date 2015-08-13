@@ -215,8 +215,15 @@ ClearUndoInfo(index)
 	return 1;
 }
 
-CMD:undo(playerid, arg[])
+YCMD:undo(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Undo last action.");
+		return 1;
+	}
+
     MapOpenCheck();
     NoEditingMode(playerid);
 	if(UndoLastAction()) SendClientMessage(playerid, STEALTH_GREEN, "Last action has been undone.");

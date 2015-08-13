@@ -34,8 +34,15 @@ static bool:TextEditing[MAX_PLAYERS];
 stock IsTextEditing(playerid) { return TextEditing[playerid]; }
 
 // Open text editor
-CMD:text(playerid, arg[])
+YCMD:text(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Add/edit/remove text on an object. (Only texture slot 0 is supported.)");
+		return 1;
+	}
+
     NoEditingMode(playerid);
 
     MapOpenCheck();

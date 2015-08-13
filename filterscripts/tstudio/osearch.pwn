@@ -72,8 +72,15 @@ hook OnPlayerConnect(playerid)
 }
 
 // Search for object names
-CMD:osearch(playerid, arg[]) // In GUI
+YCMD:osearch(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Search for an object model by keyword.");
+		return 1;
+	}
+
 	if(GetEditMode(playerid) != EDIT_MODE_OSEARCH) NoEditingMode(playerid);
 
     MapOpenCheck();

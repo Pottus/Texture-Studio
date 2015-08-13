@@ -1570,8 +1570,15 @@ static CommandBindData[MAX_CLICK_BINDS][MAX_BINDS_PER_BIND][MAX_BIND_LENGTH];
 static tmpCommandBindText[MAX_BIND_TEXT_LENGTH];
 static tmpCommandBindData[MAX_BINDS_PER_BIND][MAX_BIND_LENGTH];
 
-CMD:runbind(playerid, arg[]) // In GUI
+YCMD:runbind(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Run a saved bind. Used to simplify a repeated process.");
+		return 1;
+	}
+
     NoEditingMode(playerid);
 	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "Usage /runbind <1-7>");
 	new bind = strval(arg);
@@ -1588,8 +1595,15 @@ CMD:runbind(playerid, arg[]) // In GUI
 }
 
 
-CMD:bindeditor(playerid, arg[])
+YCMD:bindeditor(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Edit currently saved binds.");
+		return 1;
+	}
+
     NoEditingMode(playerid);
 
 	new line[1024];

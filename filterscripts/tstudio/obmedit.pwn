@@ -67,8 +67,15 @@ hook OnPlayerDisconnect(playerid, reason)
 	return 1;
 }
 
-CMD:obmedit(playerid, arg[])
+YCMD:obmedit(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Create an \"objectmetry\" masterpiece.");
+		return 1;
+	}
+
    	NoEditingMode(playerid);
 
     MapOpenCheck();

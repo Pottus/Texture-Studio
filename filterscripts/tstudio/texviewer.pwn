@@ -243,8 +243,15 @@ hook OnPlayerDisconnect(playerid, reason)
 
 static FoundTextures[4096];
 
-CMD:tsearch(playerid, arg[])
+YCMD:tsearch(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Search for texture indexes by keyword.");
+		return 1;
+	}
+
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must supply a texture search string");
 
@@ -285,8 +292,15 @@ CMD:tsearch(playerid, arg[])
 }
 
 // All texture mode
-CMD:mtextures(playerid, arg[]) // in GUI
+YCMD:mtextures(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Open 3D texture viewer.");
+		return 1;
+	}
+
 	new index = strval(arg);
 	if(index < 1 || index > sizeof(ObjectTextures) - 1) Menu3DData[playerid][CurrTextureIndex] = 1;
 	else Menu3DData[playerid][CurrTextureIndex] = index;
@@ -347,8 +361,15 @@ CMD:mtextures(playerid, arg[]) // in GUI
 }
 
 
-CMD:ttextures(playerid, arg[]) // in GUI
+YCMD:ttextures(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "View a saved set of textures in the 3D texture viewer.");
+		return 1;
+	}
+
 	new index = strval(arg);
 	if(index < 1 || index > MAX_THEME_TEXTURES - 1) Menu3DData[playerid][CurrThemeIndex] = 1;
 	else Menu3DData[playerid][CurrThemeIndex] = index;
@@ -675,8 +696,15 @@ static DestroyTexViewer(playerid)
 	return 1;
 }
 
-CMD:savetheme(playerid, arg[]) // in GUI
+YCMD:savetheme(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Save a few textures as a theme to be used later.");
+		return 1;
+	}
+
 	new count;
 	new DBResult:r;
 
@@ -751,8 +779,15 @@ CMD:savetheme(playerid, arg[]) // in GUI
 }
 
 
-CMD:deletetheme(playerid, arg[]) // in GUI
+YCMD:deletetheme(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Delete a saved texture theme.");
+		return 1;
+	}
+
 	new DBResult:r = db_query(ThemeDataDB, "SELECT * FROM sqlite_master");
 
 	if(db_num_rows(r))
@@ -809,8 +844,15 @@ CMD:deletetheme(playerid, arg[]) // in GUI
 }
 
 
-CMD:loadtheme(playerid, arg[]) // in GUI
+YCMD:loadtheme(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Load a saved texture theme.");
+		return 1;
+	}
+
 	new DBResult:r = db_query(ThemeDataDB, "SELECT * FROM sqlite_master");
 	
 	if(db_num_rows(r))
@@ -908,8 +950,15 @@ static LoadPlayerTheme(playerid, name[], bool:cleararray=true)
 
 
 
-CMD:settindex(playerid, arg[]) // in GUI
+YCMD:settindex(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set currently selected texturing index.");
+		return 1;
+	}
+
     MapOpenCheck();
 
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -926,8 +975,15 @@ CMD:settindex(playerid, arg[]) // in GUI
 }
 
 
-CMD:stexture(playerid, arg[]) // in GUI
+YCMD:stexture(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Texture editor.");
+		return 1;
+	}
+
     MapOpenCheck();
 	EditCheck(playerid);
 

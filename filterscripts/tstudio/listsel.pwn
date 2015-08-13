@@ -566,8 +566,15 @@ OnPlayerKeyStateChangeLSel(playerid,newkeys,oldkeys)
 }
 
 
-CMD:lsel(playerid, arg[]) // In GUI
+YCMD:lsel(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Display a list of all objects currently loaded to select from.");
+		return 1;
+	}
+
 	NoEditingMode(playerid);
     MapOpenCheck();
     

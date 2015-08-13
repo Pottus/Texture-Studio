@@ -78,8 +78,15 @@ hook OnPlayerConnect(playerid)
 
 //--------------------------------------------------
 
-CMD:flymode(playerid, arg[])
+YCMD:flymode(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Toggle flymode.");
+		return 1;
+	}
+
     // Place the player in and out of edit mode
 	if(FlyMode[playerid]) CancelFlyMode(playerid);
 	else StartFlyMode(playerid);
