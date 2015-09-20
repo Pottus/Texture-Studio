@@ -1,3 +1,8 @@
+#if defined ALLTEXTURES
+	#endinput
+#endif
+#define ALLTEXTURES
+
 #define GetTModel(%0) ObjectTextures[%0][TModel]
 #define GetTXDName(%0) ObjectTextures[%0][TXDName]
 #define GetTextureName(%0) ObjectTextures[%0][TextureName]

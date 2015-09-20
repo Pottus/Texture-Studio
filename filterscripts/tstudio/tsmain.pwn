@@ -3223,7 +3223,7 @@ CopyCopyBuffer(playerid, index)
 		CopyBuffer[playerid][cBackColor] = ObjectData[index][oBackColor];
 		CopyBuffer[playerid][cAlignment] = ObjectData[index][oAlignment];
 		CopyBuffer[playerid][cTextFontSize] = ObjectData[index][oTextFontSize];
-		CopyBuffer[playerid][cObjectText] = ObjectData[index][oObjectText];
+		strcat((CopyBuffer[playerid][cObjectText][0] = '\0', CopyBuffer[playerid][cObjectText]), ObjectData[index][oObjectText], MAX_TEXT_LENGTH);
     }
     return 1;
 }
@@ -3281,7 +3281,7 @@ PasteCopyBuffer(playerid, index)
 	ObjectData[index][oBackColor] = CopyBuffer[playerid][cBackColor];
 	ObjectData[index][oAlignment] = CopyBuffer[playerid][cAlignment];
 	ObjectData[index][oTextFontSize] = CopyBuffer[playerid][cTextFontSize];
-	ObjectData[index][oObjectText] = CopyBuffer[playerid][cObjectText];
+	strcat((ObjectData[index][oObjectText][0] = '\0', ObjectData[index][oObjectText]), CopyBuffer[playerid][cObjectText], MAX_TEXT_LENGTH);
 
     // Destroy the object
     DestroyDynamicObject(ObjectData[index][oID]);
@@ -4585,6 +4585,9 @@ YCMD:thelp(playerid, arg[], help)
 		SendClientMessage(playerid, STEALTH_GREEN, "View a list of all commands and see what they do.");
 		return 1;
 	}
+	
+	if(!isnull(arg) && Command_GetPlayerNamed(arg, playerid))
+		Command_ReProcess(playerid, arg, true);
 
 #if defined COMPILE_GTA_OBJECTS
 	static Commands[10][32][64] =
@@ -4825,7 +4828,7 @@ YCMD:thelp(playerid, arg[], help)
 				#pragma unused elistitem, edialogid, epid, etext
 				if(eresponse)
 				{
-					if(strfind(etext, " - ") == -1)
+					if(Command_GetPlayerNamed(etext, playerid))
 					{
 						#if defined Y_COMMANDS_NO_IPC
 						Command_ReProcess(playerid, etext, 1);
