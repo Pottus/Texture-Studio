@@ -1,25 +1,30 @@
 #include <YSI\y_hooks>
-#include <mapandreas>
+#include <colandreas>
 
 new Float:GroupSlopeRX[MAX_PLAYERS], Float:GroupSlopeRY[MAX_PLAYERS];
 
-CMD:gs(playerid, arg[])
+/* Debug Command
+YCMD:gs(playerid, arg[], help)
 {
-	new Float:x, Float:y, Float:z;
+	new Float:x, Float:y, Float:z, line[128];
 	GetPlayerPos(playerid, x, y, z);
     CalcSlopeAtPoint(x, y, x, y);
-	new line[128];
-	format(line, sizeof(line), "Slope X:%f Slope:Y:%f", x, y);
+	format(line, sizeof(line), "Slope X:%3.4f | Slope Y:%3.4f", x, y);
     SendClientMessage(playerid, -1, line);
-    
-
 	return 1;
-}
+}*/
 
 
 // Load a prefab specify a filename
-CMD:pma(playerid, arg[])
+YCMD:sprefab(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Load a prefabricated group of objects rotated according to the ground slope.");
+		return 1;
+	}
+
 	MapOpenCheck();
 
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -31,18 +36,14 @@ CMD:pma(playerid, arg[])
 		if(fexist(mapname))
 		{
 		    PrefabDB = db_open_persistent(mapname);
-		    sqlite_LoadPrefab(playerid, false);
+		    sqlite_LoadPrefab(playerid);
 		    db_free_persistent(PrefabDB);
 
 			new Float:x, Float:y, Float:z;
-
 			GetPlayerPos(playerid, x, y, z);
 			CalcSlopeAtPoint(x, y, GroupSlopeRX[playerid], GroupSlopeRY[playerid]);
    			GroupRotate(playerid, GroupSlopeRX[playerid], GroupSlopeRY[playerid], 0.0);
-   			
-   	   		// Update the Group GUI
-			UpdatePlayerGSelText(playerid);
-
+			
 			SendClientMessage(playerid, STEALTH_GREEN, "Prefab loaded and set to your group selection");
 		}
 		else SendClientMessage(playerid, STEALTH_YELLOW, "That prefab does not exist!");
@@ -51,23 +52,85 @@ CMD:pma(playerid, arg[])
 	return 1;
 }
 
-CMD:gz(playerid, arg[])
+// Rotate map on RX
+YCMD:grzs(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate all currently selected objects around the Z axis, accordingly to ground slope.");
+		return 1;
+	}
+
     MapOpenCheck();
+	new time = GetTickCount();
+	new Float:Delta;
+	sscanf(arg, "F(0.0)", Delta);
 
-	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+	// We need to get the map center as the rotation node
+	new bool:value, Float:gCenterX, Float:gCenterY, Float:gCenterZ;
 
-	new Float:rot = floatstr(arg);
-	if(rot == 0.0) return SendClientMessage(playerid, STEALTH_YELLOW, "You must supply a valid rotation angle!");
+	if(PivotPointOn[playerid])
+	{
+		new bool:hasgroup;
+		foreach(new i : Objects)
+		{
+		    if(GroupedObjects[playerid][i])
+		    {
+			    gCenterX = PivotPoint[playerid][xPos];
+			    gCenterY = PivotPoint[playerid][yPos];
+			    gCenterZ = PivotPoint[playerid][zPos];
+				value = true;
+                hasgroup = true;
+				break;
+			}
+		}
+		if(!hasgroup)
+		{
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			SendClientMessage(playerid, STEALTH_YELLOW, "There is not enough objects for this command to work");
+		}
+	}
+	else if(GetGroupCenter(playerid, gCenterX, gCenterY, gCenterZ)) value = true;
 
-	GroupRotate(playerid, -GroupSlopeRX[playerid], -GroupSlopeRY[playerid], 0.0, false);
-	GroupRotate(playerid, 0.0, 0.0, rot, false);
-    GroupRotate(playerid, GroupSlopeRX[playerid], GroupSlopeRY[playerid], 0.0, true);
+	if(value)
+	{
+		new Float:x, Float:y, Float:z;
+		GetPlayerPos(playerid, x, y, z);
+		CalcSlopeAtPoint(x, y, GroupSlopeRX[playerid], GroupSlopeRY[playerid]);
 
-	SendClientMessage(playerid, STEALTH_GREEN, "Rotate group Z complete");
+		// Loop through all objects and perform rotation calculations
+		foreach(new i : Objects)
+		{
+			if(GroupedObjects[playerid][i])
+			{
+				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+				
+				AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, -GroupSlopeRX[playerid], -GroupSlopeRY[playerid], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+				if(Delta)
+					AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, 0.0, 0.0, Delta, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+				AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, GroupSlopeRX[playerid], GroupSlopeRY[playerid], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+				
+				SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
+				SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 
-	// Update the Group GUI
-	UpdatePlayerGSelText(playerid);
+				UpdateObject3DText(i);
+
+				sqlite_UpdateObjectPos(i);
+			}
+		}
+
+   		// Update the Group GUI
+		UpdatePlayerGSelText(playerid);
+
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Group RZ rotation complete ");
+	}
+	else
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "There is not enough objects for this command to work");
+	}
 
 	return 1;
 }
@@ -75,7 +138,7 @@ CMD:gz(playerid, arg[])
 
 /*
 // Load a prefab specify a filename adjust to facing angle
-CMD:pmaf(playerid, arg[])
+YCMD:pmaf(playerid, arg[], help)
 {
 	MapOpenCheck();
 
@@ -114,10 +177,14 @@ CMD:pmaf(playerid, arg[])
 }
 */
 
-
-
-CMD:mb(playerid, arg[])
+YCMD:csobject(playerid, arg[], help)
 {
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Creates a rotated object according to the map slope and selects it.");
+		return 1;
+	}
 
     MapOpenCheck();
 	NoEditingMode(playerid);
@@ -126,23 +193,23 @@ CMD:mb(playerid, arg[])
 	if(sscanf(arg, "i", modelid))
 	{
 	    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-        SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /cobject <modelid>");
+        SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /csobject <modelid>");
 		return 1;
 	}
 
-	ModelIsValid(modelid);
-
-	// Calculate busm mode rotation
-	new Float:px, Float:py, Float:pz, Float:RXAngle, Float:RYAngle, Float:RZAngle;
-	GetPlayerPos(playerid, px, py, pz);
+	// Set the initial object position
+	new Float:px, Float:py, Float:pz, Float:fa, Float:RXAngle, Float:RYAngle, Float:RZAngle;
+	new Float:colradius = GetColSphereRadius(modelid);
+	GetPosFaInFrontOfPlayer(playerid, colradius + 1.0, px, py, pz, fa);
 	pz -= 1.0;
+
+	// Calculate rotation
 	CalcSlopeAtPoint(px, py, RXAngle, RYAngle);
 	new Float:angle = float(random(360));
 	ObjectRotateZ(RXAngle, RYAngle, RZAngle, angle, RXAngle, RYAngle, RZAngle);
 
-
 	// Create the object
-	CurrObject[playerid] = AddDynamicObject(modelid, px, py, pz, RXAngle, RYAngle, RZAngle);
+	SetCurrObject(playerid, AddDynamicObject(modelid, px, py, pz, RXAngle, RYAngle, RZAngle));
 
 	// Object was created
 	if(CurrObject[playerid] != -1)
@@ -150,9 +217,13 @@ CMD:mb(playerid, arg[])
 		// Update the streamer for this player
         Streamer_Update(playerid);
 
+		SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_CREATED);
+
 		// Show output message
 		new line[128];
-		format(line, sizeof(line), "Created Object Index: %i Model Name: %s", CurrObject[playerid], GetModelName(GetModelArray(modelid)));
+		new modelarray = GetModelArray(modelid);
+		if(modelarray > -1) format(line, sizeof(line), "Created Object Index: %i Model Name: %s", CurrObject[playerid], GetModelName(modelarray));
+		else format(line, sizeof(line), "Created Object Index: %i Model Name: Unknown", CurrObject[playerid]);
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, line);
 
@@ -163,8 +234,8 @@ CMD:mb(playerid, arg[])
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_YELLOW, "You have too many objects created to create anymore!");
 	}
-	return 1;
 
+	return 1;
 }
 
 
@@ -186,11 +257,11 @@ stock CalcSlopeAtPoint(Float:x, Float:y, &Float:RXAngle, &Float:RYAngle)
 	West[0] = x - 1;
 	West[1] = y;
 
-	// Use map andreas to get Z Values
-	MapAndreas_FindZ_For2DCoord(North[0], North[1], North[2]);
-	MapAndreas_FindZ_For2DCoord(South[0], South[1], South[2]);
-	MapAndreas_FindZ_For2DCoord(East[0], East[1], East[2]);
-	MapAndreas_FindZ_For2DCoord(West[0], West[1], West[2]);
+	// Use ColAndreas to get Z Values
+	CA_FindZ_For2DCoord(North[0], North[1], North[2]);
+	CA_FindZ_For2DCoord(South[0], South[1], South[2]);
+	CA_FindZ_For2DCoord(East[0], East[1], East[2]);
+	CA_FindZ_For2DCoord(West[0], West[1], West[2]);
 
 	// Calculate Slope angles
 	// North South RX
@@ -252,7 +323,7 @@ stock FloatConvertValue(Float:rot_x, Float:rot_y, Float:rot_z, &Float:sinx, &Flo
 
 #define     MAX_MATERIAL_INDEX      16
 
-CMD:cpf(playerid, arg[])
+YCMD:cpf(playerid, arg[], help)
 {
 	new dir:dHandle = dir_open("./scriptfiles/tstudio/medit/importpf/");
 	new item[40], type;
@@ -638,34 +709,4 @@ stock GetPrefabCenter(openmap[64], &Float:pfx, &Float:pfy, &Float:pfz)
 
 	return 1;
 }
-
-
-
-
-// Old assed function
-stock strtok(const string[],&index)
-{
-	new index2 = strfind(string," ",false,index),
-	    result[30];
-
-	if(index2 == -1)
-	{
-		if(strlen(string) > index)
-		{
-			strmid(result, string, index, strlen(string), 30);
-			index = strlen(string);
-		}
-		return result;
-	}
-	if(index2 > (index + 29))
-	{
-		index2 = index + 29;
-		strmid(result, string, index, index2, 30);
-		index = index2;
-		return result;
-	}
-	strmid(result, string, index, index2, 30);
-	index = index2 + 1;
-	return result;
-}
-
+*/
