@@ -352,6 +352,7 @@ YCMD:tcar(playerid, arg[], help)
 			GetPlayerFacingAngle(playerid, R);
 			TempVehicle[playerid] = CreateVehicle(listitem+400, X, Y, Z, R, 0, 0, 1);
 			IsTempVehicle[TempVehicle[playerid]] = true;
+			PutPlayerInVehicle(playerid, TempVehicle[playerid], 0);
 			return 1;
 		}
     }
