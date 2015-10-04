@@ -1,10 +1,15 @@
-#include <YSI\y_hooks>
 #tryinclude <colandreas>
 #if !defined COLANDREAS
 	#endinput
 #endif
 
 #define MANGLE
+
+hook OnFilterScriptInit()
+{
+	CA_Init();
+	return 1;
+}
 
 new Float:GroupSlopeRX[MAX_PLAYERS], Float:GroupSlopeRY[MAX_PLAYERS];
 
