@@ -200,11 +200,11 @@ Change Log:
 
 // #define GUI_DEBUG
 
-// Leave commented
-//#define			COMPILE_DAYZ_INCLUDES
+// Compile the Angular Map Extension module
+//#define COMPILE_MANGLE
 
 // Compile the GTA Object module for removing buildings
-#define COMPILE_GTA_OBJECTS
+//#define COMPILE_GTA_OBJECTS
 
 #if defined DEBUG
 	#define DB_DEBUG true
@@ -242,12 +242,8 @@ Change Log:
 #define Y_COMMANDS_NO_IPC 
 #include <YSI\y_commands>
 
-// All SA textures
-#if defined COMPILE_DAYZ_INCLUDES
-	#include "tstudio\alltextures420.pwn"
-#else
-	#include "tstudio\alltextures.pwn"
-#endif
+// All SA Textures
+#include "tstudio\alltextures.pwn"
 
 // Valid SA models
 #include "tstudio\validmodels.pwn"
@@ -559,8 +555,8 @@ new bool:MapOpen;
 #include "tstudio\vehicles.pwn"
 
 // Special includes
-#if defined COMPILE_DAYZ_INCLUDES
-//	#include "tstudio\420\mangle.pwn"
+#if defined COMPILE_MANGLE
+	#include "tstudio\mangle.pwn"
 #endif
 
 // Menu GUI

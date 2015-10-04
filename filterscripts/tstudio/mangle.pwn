@@ -1,5 +1,10 @@
 #include <YSI\y_hooks>
-#include <colandreas>
+#tryinclude <colandreas>
+#if !defined COLANDREAS
+	#endinput
+#endif
+
+#define MANGLE
 
 new Float:GroupSlopeRX[MAX_PLAYERS], Float:GroupSlopeRY[MAX_PLAYERS];
 
@@ -16,7 +21,7 @@ YCMD:gs(playerid, arg[], help)
 
 
 // Load a prefab specify a filename
-YCMD:sprefab(playerid, arg[], help)
+YCMD:prefabsets(playerid, arg[], help)
 {
 	if(help)
 	{
@@ -53,7 +58,7 @@ YCMD:sprefab(playerid, arg[], help)
 }
 
 // Rotate map on RX
-YCMD:grzs(playerid, arg[], help)
+YCMD:grzsets(playerid, arg[], help)
 {
 	if(help)
 	{
@@ -106,10 +111,10 @@ YCMD:grzs(playerid, arg[], help)
 			{
 				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
 				
-				AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, -GroupSlopeRX[playerid], -GroupSlopeRY[playerid], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+				AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, -GroupSlopeRX[playerid], -GroupSlopeRY[playerid], 0.0, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 				if(Delta)
 					AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, 0.0, 0.0, Delta, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
-				AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, GroupSlopeRX[playerid], GroupSlopeRY[playerid], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+				AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, GroupSlopeRX[playerid], GroupSlopeRY[playerid], 0.0, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 				
 				SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
 				SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
@@ -177,7 +182,7 @@ YCMD:pmaf(playerid, arg[], help)
 }
 */
 
-YCMD:csobject(playerid, arg[], help)
+YCMD:cobjectsets(playerid, arg[], help)
 {
 	if(help)
 	{
