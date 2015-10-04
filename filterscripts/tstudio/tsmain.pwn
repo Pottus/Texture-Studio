@@ -4589,11 +4589,7 @@ YCMD:thelp(playerid, arg[], help)
 	if(!isnull(arg) && Command_GetPlayerNamed(arg, playerid))
 		Command_ReProcess(playerid, arg, true);
 
-#if defined COMPILE_GTA_OBJECTS
-	static Commands[10][32][64] =
-#else
-	static Commands[9][32][64] =
-#endif
+	static Commands[][32][64] =
 	{
 		{//MAPS
 			{"Maps"},
@@ -4737,6 +4733,23 @@ YCMD:thelp(playerid, arg[], help)
 			{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		},
+#if defined MANGLE
+		{//MANGLE
+			{"Angular Map Extension"},
+			
+			{"{81181C} - Object{FFFFFF}"},
+			{"cobjectsets"},
+			
+			{"{81181C} - Groups{FFFFFF}"},
+			{"grzsets"},
+			
+			{" \n{81181C} - Group Prefabs{FFFFFF}"},
+			{"prefabsets"},
+			
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},
+		},
+#endif
 #if defined COMPILE_GTA_OBJECTS
 		{//BUILDINGS
 			{"Buildings"},
