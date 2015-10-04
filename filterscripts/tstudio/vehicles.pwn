@@ -42,7 +42,7 @@ new CarData[MAX_EDIT_CARS][CARINFO];
 
 new CurrVehicle[MAX_PLAYERS] = { -1, ... };
 static TempVehicle[MAX_PLAYERS] = { -1, ... };
-static bool:IsTempVehicle[MAX_VEHICLES] = { 0, ... };
+static bool:IsTempVehicle[MAX_VEHICLES] = { false, ... };
 
 static VehicleNames[212][] = {
 	{"Landstalker"},{"Bravura"},{"Buffalo"},{"Linerunner"},{"Perrenial"},{"Sentinel"},{"Dumper"},
@@ -324,7 +324,7 @@ public OnVehicleSpawn(vehicleid)
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	if(oldstate == PLAYER_STATE_DRIVER && IsValidVehicle(TempVehicle[playerid]))
+	if(oldstate == PLAYER_STATE_DRIVER && TempVehicle[playerid] != -1)
 	{
 		IsTempVehicle[TempVehicle[playerid]] = false;
 		DestroyVehicle(TempVehicle[playerid]);
