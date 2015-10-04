@@ -41,6 +41,8 @@ new Iterator:Cars<MAX_EDIT_CARS>;
 new CarData[MAX_EDIT_CARS][CARINFO];
 
 new CurrVehicle[MAX_PLAYERS] = { -1, ... };
+static TempVehicle[MAX_PLAYERS] = { -1, ... };
+static bool:IsTempVehicle[MAX_VEHICLES] = { 0, ... };
 
 static VehicleNames[212][] = {
 	{"Landstalker"},{"Bravura"},{"Buffalo"},{"Linerunner"},{"Perrenial"},{"Sentinel"},{"Dumper"},
@@ -288,6 +290,21 @@ public OnVehiclePaintjob(playerid, vehicleid, paintjobid)
 
 public OnVehicleSpawn(vehicleid)
 {
+	if(IsTempVehicle[vehicleid])
+	{
+		foreach(new i: Player)
+		{
+			if(vehicleid == TempVehicle[i])
+			{
+				TempVehicle[i] = -1;
+				break;
+			}
+		}
+		IsTempVehicle[vehicleid] = false;
+		
+		DestroyVehicle(vehicleid);
+	}
+
 	foreach(new i : Cars)
 	{
 	    if(CarData[i][CarID] == vehicleid)
@@ -301,6 +318,44 @@ public OnVehicleSpawn(vehicleid)
 			return 1;
 		}
 	}
+
+	return 1;
+}
+
+public OnPlayerStateChange(playerid, newstate, oldstate)
+{
+	if(oldstate == PLAYER_STATE_DRIVER && IsValidVehicle(TempVehicle[playerid]))
+	{
+		IsTempVehicle[TempVehicle[playerid]] = false;
+		DestroyVehicle(TempVehicle[playerid]);
+		TempVehicle[playerid] = -1;
+	}
+	return 1;
+}
+
+YCMD:tcar(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Gives you a temporary vehicle.");
+		return 1;
+	}
+
+	inline SelectModel(pid, dialogid, response, listitem, string:text[])
+    {
+        #pragma unused listitem, dialogid, pid, text
+		if(response)
+		{
+			new Float:X, Float:Y, Float:Z, Float:R;
+			GetPlayerPos(playerid, X, Y, Z);
+			GetPlayerFacingAngle(playerid, R);
+			TempVehicle[playerid] = CreateVehicle(listitem+400, X, Y, Z, R, 0, 0, 1);
+			IsTempVehicle[TempVehicle[playerid]] = true;
+			return 1;
+		}
+    }
+    Dialog_ShowCallback(playerid, using inline SelectModel, DIALOG_STYLE_LIST, "Texture Studio", VehicleList, "Ok", "Cancel");
 
 	return 1;
 }
