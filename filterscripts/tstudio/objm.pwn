@@ -135,7 +135,7 @@ static AddOBMObject(playerid,modelid,Float:x,Float:y,Float:z,Float:rx,Float:ry,F
 	return 1;
 }
 
-CreateDynamicObjectCircle(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:radius,Float:sep,bool:facecenter=false)
+CreateDynamicObjectCircle(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:sep,bool:facecenter=false)
 {
 	if(facecenter == false)
 	{
@@ -146,7 +146,7 @@ CreateDynamicObjectCircle(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,
     	    {
 				x = posx+radius*floatcos(angle,degrees);
       			y = posy+radius*floatsin(angle,degrees);
-				AddOBMObject(playerid,modelid, x, y, posz,rx,ry,rz);
+				AddOBMObject(playerid,modelid, x, y, posz,rx,ry,rz+orz);
 				angle = angle+sep;
 			}
 			else break;
@@ -164,7 +164,7 @@ CreateDynamicObjectCircle(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,
 			   	
 				// Translate to rotation
                 AttachPoint(x, y, posz,
-                    orx, ory, angle-180.0,
+                    orx, ory, angle-180.0+orz,
                     posx, posy, posz, rx, ry, rz,
 					x, y, z,
                     detrx, detry, detrz
@@ -180,7 +180,7 @@ CreateDynamicObjectCircle(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,
 }
 
 /* Creates objects in a Helical path */
-CreateDynamicObjectSpiral(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:radius,Float:hsep,Float:vsep,bool:facecenter=false)
+CreateDynamicObjectSpiral(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:hsep,Float:vsep,bool:facecenter=false)
 {
 	if(facecenter == false)
 	{
@@ -191,7 +191,7 @@ CreateDynamicObjectSpiral(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,
    		    {
 				x=posx+radius*floatcos(angle,degrees);
 				y=posy+radius*floatsin(angle,degrees);
-				AddOBMObject(playerid,modelid, x, y, posz+c,rx,ry,rz);
+				AddOBMObject(playerid,modelid, x, y, posz+c,rx,ry,rz+orz);
 				c = c+vsep;
 				angle = angle+hsep;
 			}
@@ -211,7 +211,7 @@ CreateDynamicObjectSpiral(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,
 
 				// Translate to rotation
                 AttachPoint(x, y, posz+c,
-                    orx, ory, angle+180.0,
+                    orx, ory, angle+180.0+orz,
                     posx, posy, posz, rx, ry, rz,
 					x, y, z,
                     detrx, detry, detrz
@@ -229,7 +229,7 @@ CreateDynamicObjectSpiral(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,
 }
 
 /* Creates objects in a Cylinderical path */
-CreateDynamicObjectCylinder(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:radius,Float:hsep,Float:vsep,parts,bool:facecenter=false)
+CreateDynamicObjectCylinder(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:hsep,Float:vsep,parts,bool:facecenter=false)
 {
 	if(facecenter == false)
 	{
@@ -243,7 +243,7 @@ CreateDynamicObjectCylinder(playerid,modelid,deg,Float:posx,Float:posy,Float:pos
 			    {
 					x=posx+radius*floatcos(angle,degrees);
 					y=posy+radius*floatsin(angle,degrees);
-					AddOBMObject(playerid,modelid, x, y, posz+c,rx,ry,rz);
+					AddOBMObject(playerid,modelid, x, y, posz+c,rx,ry,rz+orz);
 					angle=angle+hsep;
 				}
 				else break;
@@ -266,7 +266,7 @@ CreateDynamicObjectCylinder(playerid,modelid,deg,Float:posx,Float:posy,Float:pos
 					
 					// Translate to rotation
 	                AttachPoint(x, y, posz+c,
-	                    orx, ory, angle+180.0,
+	                    orx, ory, angle+180.0+orz,
 	                    posx, posy, posz, rx, ry, rz,
 						x, y, z,
 	                    detrx, detry, detrz
@@ -285,7 +285,7 @@ CreateDynamicObjectCylinder(playerid,modelid,deg,Float:posx,Float:posy,Float:pos
 
 
 /* Creates objects in a reversed "6" type of path */
-CreateDynamicObjectWhirl(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz, Float:orx, Float:ory, Float:radius,Float:sep,bool:facecenter=false)
+CreateDynamicObjectWhirl(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:sep,bool:facecenter=false)
 {
 	if(facecenter == false)
 	{
@@ -296,7 +296,7 @@ CreateDynamicObjectWhirl(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,F
         	{
 				x=posx+(radius-i)*floatcos(angle,degrees);
 				y=posy+(radius-i)*floatsin(angle,degrees);
-				AddOBMObject(playerid,modelid, x, y, posz,rx,ry,rz);
+				AddOBMObject(playerid,modelid, x, y, posz,rx,ry,rz+orz);
 				angle=angle+sep;
 			}
 			else break;
@@ -314,7 +314,7 @@ CreateDynamicObjectWhirl(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,F
 
 				// Translate to rotation
                 AttachPoint(x, y, posz,
-                    orx, ory, angle+180.0,
+                    orx, ory, angle+180.0+orz,
                     posx, posy, posz, rx, ry, rz,
 					x, y, z,
                     detrx, detry, detrz
@@ -331,7 +331,7 @@ CreateDynamicObjectWhirl(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,F
 }
 
 /* Creates objects in a circular path within a circular pathed object */
-CreateDynamicCircleIn(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz, Float:orx, Float:ory, Float:radius,Float:sep,parts,bool:facecenter=false)
+CreateDynamicCircleIn(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:sep,parts,bool:facecenter=false)
 {
 	if(facecenter == false)
 	{
@@ -345,7 +345,7 @@ CreateDynamicCircleIn(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Floa
         		{
 					x=posx+(radius)*floatcos(angle,degrees);
 					y=posy+(radius)*floatsin(angle,degrees);
-					AddOBMObject(playerid,modelid, x, y, posz,rx,ry,rz);
+					AddOBMObject(playerid,modelid, x, y, posz,rx,ry,rz+orz);
 					angle=angle+sep;
 				}
 				else break;
@@ -368,7 +368,7 @@ CreateDynamicCircleIn(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Floa
 
 					// Translate to rotation
 	                AttachPoint(x, y, posz,
-	                    orx, ory, angle+180.0,
+	                    orx, ory, angle+180.0+orz,
 	                    posx, posy, posz, rx, ry, rz,
 						x, y, z,
 	                    detrx, detry, detrz
@@ -386,7 +386,7 @@ CreateDynamicCircleIn(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Floa
 }
 
 /* Creates objects in a circular path outside a circular pathed object */
-CreateDynamicCircleOut(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz, Float:orx, Float:ory, Float:radius,Float:sep,parts,bool:facecenter=false)
+CreateDynamicCircleOut(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:sep,parts,bool:facecenter=false)
 {
     if(facecenter == false)
 	{
@@ -400,7 +400,7 @@ CreateDynamicCircleOut(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Flo
         		{
 					x=posx+(radius)*floatcos(angle,degrees);
 					y=posy+(radius)*floatsin(angle,degrees);
-					AddOBMObject(playerid,modelid, x, y, posz,rx,ry,rz);
+					AddOBMObject(playerid,modelid, x, y, posz,rx,ry,rz+orz);
 					angle=angle+sep;
 				}
 				else break;
@@ -422,7 +422,7 @@ CreateDynamicCircleOut(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Flo
 					y=posy+(radius)*floatsin(angle,degrees);
 					// Translate to rotation
 	                AttachPoint(x, y, posz,
-	                    orx, ory, angle+180.0,
+	                    orx, ory, angle+180.0+orz,
 	                    posx, posy, posz, rx, ry, rz,
 						x, y, z,
 	                    detrx, detry, detrz

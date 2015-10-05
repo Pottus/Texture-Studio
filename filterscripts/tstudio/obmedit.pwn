@@ -39,6 +39,7 @@ enum pOBMINFO
 	Float:pOBMOriginRZ,
 	Float:pOBMOrientationRX,
 	Float:pOBMOrientationRY,
+	Float:pOBMOrientationRZ,
 	Float:pOBMRadius,
 	Float:pOBMhsep,
 	Float:pOBMvsep,
@@ -48,7 +49,7 @@ enum pOBMINFO
 
 static OBMData[MAX_PLAYERS][pOBMINFO];
 static Float:OBMOriginSave[MAX_PLAYERS][6];
-static Float:OBMOrientationSave[MAX_PLAYERS][2];
+static Float:OBMOrientationSave[MAX_PLAYERS][3];
 static OBMEditMode[MAX_PLAYERS];
 
 hook OnFilterScriptInit()
@@ -104,6 +105,7 @@ static ResetOBMValues(playerid)
     OBMData[playerid][pOBMOriginRZ] = 0.0;
     OBMData[playerid][pOBMOrientationRX] = 0.0;
     OBMData[playerid][pOBMOrientationRY] = 0.0;
+    OBMData[playerid][pOBMOrientationRZ] = 0.0;
     OBMData[playerid][pOBMRadius] = 0.0;
     OBMData[playerid][pOBMhsep] = 0.0;
     OBMData[playerid][pOBMvsep] = 0.0;
@@ -378,8 +380,24 @@ static OBMEditor(playerid)
 					Dialog_ShowCallback(playerid, using inline OBMORTRY, DIALOG_STYLE_INPUT, "Texture Studio", "Orientation RY", "Ok", "Cancel");
 				}
 
-                // Radius
+                // OrientationRZ
 				case 15:
+				{
+					inline OBMORTRZ(ortrzpid, ortrzdialogid, ortrzresponse, ortrzlistitem, string:ortrztext[])
+					{
+						#pragma unused ortrzlistitem, ortrzdialogid, ortrzpid, ortrztext
+						if(ortrzresponse)
+						{
+						    OBMData[playerid][pOBMOrientationRZ] = floatstr(ortrztext);
+						    UpdateOBM(playerid);
+						}
+						OBMEditor(playerid);
+					}
+					Dialog_ShowCallback(playerid, using inline OBMORTRZ, DIALOG_STYLE_INPUT, "Texture Studio", "Orientation RZ", "Ok", "Cancel");
+				}
+
+                // Radius
+				case 16:
 				{
 					inline OBMRadius(rpid, rdialogid, rresponse, rlistitem, string:rtext[])
 					{
@@ -396,7 +414,7 @@ static OBMEditor(playerid)
 
 
                 // Set origin
-				case 16:
+				case 17:
 				{
 					if(!OBMData[playerid][OriginSet])
 					{
@@ -428,7 +446,7 @@ static OBMEditor(playerid)
 				}
 				
 				// Set rotation orientation
-				case 17:
+				case 18:
 				{
 					if(!OBMData[playerid][OriginSet]) 
 					{
@@ -437,10 +455,11 @@ static OBMEditor(playerid)
 					}
 					else
 					{
-						OBMObject[playerid] = CreateDynamicObject(1974, OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ], OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ], -1, -1, playerid);
+						OBMObject[playerid] = CreateDynamicObject(1974, OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ], OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ], -1, -1, playerid);
 
 	                    OBMOrientationSave[playerid][0] = OBMData[playerid][pOBMOrientationRX];
 	                    OBMOrientationSave[playerid][1] = OBMData[playerid][pOBMOrientationRY];
+	                    OBMOrientationSave[playerid][2] = OBMData[playerid][pOBMOrientationRZ];
 
 						Streamer_SetFloatData(STREAMER_TYPE_OBJECT, OBMObject[playerid], E_STREAMER_DRAW_DISTANCE, 300.0);
 
@@ -448,17 +467,18 @@ static OBMEditor(playerid)
 
 						Streamer_Update(playerid);
 
+						printf("[s] %f, %f, %f", OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ]);
 						EditDynamicObject(playerid, OBMObject[playerid]);
 
 						OBMEditMode[playerid] = OMBE_ORIENT;
 
 						SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-					    SendClientMessage(playerid, STEALTH_GREEN, "Editing your RX/RY orientation");
+					    SendClientMessage(playerid, STEALTH_GREEN, "Editing your rotation orientation");
 					}
 				}
 
 				// Apply objects to map
-				case 18:
+				case 19:
 				{
 					inline OBMApply(apid, adialogid, aresponse, alistitem, string:atext[])
 					{
@@ -475,7 +495,7 @@ static OBMEditor(playerid)
 				}
 
 				// Reset values
-				case 19:
+				case 20:
 				{
 					inline OBMReset(epid, edialogid, eresponse, elistitem, string:etext[])
 					{
@@ -491,7 +511,7 @@ static OBMEditor(playerid)
 				}
 				
 				// Hide object stack
-				case 20:
+				case 21:
 				{
 					inline OBMHideStack(hpid, hdialogid, hresponse, hlistitem, string:htext[])
 					{
@@ -510,7 +530,7 @@ static OBMEditor(playerid)
 		}
 	}
 	
-	format(line, sizeof(line), "Set Type: %s\nModel: %i\nParts: %i\nDegrees: %i\nHorizontal Seperation: %f\nVertical Seperation: %f\nFace Center: %s\nOriginX: %f\nOriginY: %f\nOriginZ: %f\nOriginRX: %f\nOriginRY: %f\nOriginRZ: %f\nOrientationRX: %f\nOrientationRY: %f\nRadius: %f\nSet Origin\nSet Rotation Orientation\nApply Objects to map\nReset Values\nHide Objects",
+	format(line, sizeof(line), "Set Type: %s\nModel: %i\nParts: %i\nDegrees: %i\nHorizontal Seperation: %f\nVertical Seperation: %f\nFace Center: %s\nOriginX: %f\nOriginY: %f\nOriginZ: %f\nOriginRX: %f\nOriginRY: %f\nOriginRZ: %f\nOrientationRX: %f\nOrientationRY: %f\nOrientationRZ: %f\nRadius: %f\nSet Origin\nSet Rotation Orientation\nApply Objects to map\nReset Values\nHide Objects",
 	    OBMTypes[OBMData[playerid][pOBMType]],
 	    OBMData[playerid][pOBMModel],
 	    OBMData[playerid][pOBMParts],
@@ -526,6 +546,7 @@ static OBMEditor(playerid)
  		OBMData[playerid][pOBMOriginRZ],
  		OBMData[playerid][pOBMOrientationRX],
  		OBMData[playerid][pOBMOrientationRY],
+ 		OBMData[playerid][pOBMOrientationRZ],
         OBMData[playerid][pOBMRadius]
 	);
 	    
@@ -551,7 +572,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
-				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMfacecenter]
@@ -563,7 +584,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
-				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMvsep],
@@ -576,7 +597,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
-				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMvsep],
@@ -589,7 +610,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
-				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMfacecenter]
@@ -601,7 +622,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
-				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMParts],
@@ -613,7 +634,7 @@ static UpdateOBM(playerid)
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
 				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
-				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ],
 				OBMData[playerid][pOBMRadius],
 				OBMData[playerid][pOBMhsep],
 				OBMData[playerid][pOBMParts],
@@ -683,6 +704,7 @@ OnPlayerEditDOOBM(playerid, objectid, response, Float:x, Float:y, Float:z, Float
 		{
 	   	    OBMData[playerid][pOBMOrientationRX] = rx;
 	 		OBMData[playerid][pOBMOrientationRY] = ry;
+	 		OBMData[playerid][pOBMOrientationRZ] = rz;
 			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		    SendClientMessage(playerid, STEALTH_GREEN, "Objectmetry orientation set");
 			DestroyDynamicObject(OBMObject[playerid]);
@@ -693,17 +715,21 @@ OnPlayerEditDOOBM(playerid, objectid, response, Float:x, Float:y, Float:z, Float
 		{
 	   	    OBMData[playerid][pOBMOrientationRX] = rx;
 	 		OBMData[playerid][pOBMOrientationRY] = ry;
+	 		OBMData[playerid][pOBMOrientationRZ] = rz;
 	 		UpdateOBM(playerid);
 		}
 		else if(response == EDIT_RESPONSE_CANCEL)
 		{
-			OBMData[playerid][pOBMOrientationRX] = OBMOriginSave[playerid][0];
-			OBMData[playerid][pOBMOrientationRY] = OBMOriginSave[playerid][1];
+			OBMData[playerid][pOBMOrientationRX] = OBMOrientationSave[playerid][0];
+			OBMData[playerid][pOBMOrientationRY] = OBMOrientationSave[playerid][1];
+			OBMData[playerid][pOBMOrientationRZ] = OBMOrientationSave[playerid][2];
 
 			DestroyDynamicObject(OBMObject[playerid]);
 			UpdateOBM(playerid);
 			OBMEditor(playerid);
 		}
+		
+		printf("[%i] %f, %f, %f", response, OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ]);
 	}
 	return 1;
 }
