@@ -4588,8 +4588,22 @@ YCMD:thelp(playerid, arg[], help)
 	
 	if(!isnull(arg) && Command_GetPlayerNamed(arg, playerid))
 		Command_ReProcess(playerid, arg, true);
+	
+#if defined MANGLE
+	#if defined COMPILE_GTA_OBJECTS
+		#define TYPES 11
+	#else
+		#define TYPES 10
+	#endif
+#else
+	#if defined COMPILE_GTA_OBJECTS
+		#define TYPES 10
+	#else
+		#define TYPES 9
+	#endif
+#endif
 
-	static Commands[][32][64] =
+	static Commands[TYPES][32][64] =
 	{
 		{//MAPS
 			{"Maps"},
@@ -4739,15 +4753,16 @@ YCMD:thelp(playerid, arg[], help)
 			
 			{"{81181C} - Object{FFFFFF}"},
 			{"cobjectsets"},
+			{"osets"},
 			
 			{"{81181C} - Groups{FFFFFF}"},
-			{"grzsets"},
+			{"gsets"},
 			
 			{" \n{81181C} - Group Prefabs{FFFFFF}"},
 			{"prefabsets"},
 			
 			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
-			{""},{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},
 		},
 #endif
 #if defined COMPILE_GTA_OBJECTS

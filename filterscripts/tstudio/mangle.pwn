@@ -5,6 +5,7 @@
 
 #define MANGLE
 
+#include <YSI\y_hooks>
 hook OnFilterScriptInit()
 {
 	CA_Init();
@@ -51,7 +52,8 @@ YCMD:prefabsets(playerid, arg[], help)
 
 			new Float:x, Float:y, Float:z;
 			GetPlayerPos(playerid, x, y, z);
-			CalcSlopeAtPoint(x, y, GroupSlopeRX[playerid], GroupSlopeRY[playerid]);
+			//CalcSlopeAtPoint(x, y, GroupSlopeRX[playerid], GroupSlopeRY[playerid]);
+			CA_RayCastLineAngle(x, y, 1200.0, x, y, -100.0, z, z, z, GroupSlopeRX[playerid], GroupSlopeRY[playerid], z);
    			GroupRotate(playerid, GroupSlopeRX[playerid], GroupSlopeRY[playerid], 0.0);
 			
 			SendClientMessage(playerid, STEALTH_GREEN, "Prefab loaded and set to your group selection");
@@ -62,20 +64,18 @@ YCMD:prefabsets(playerid, arg[], help)
 	return 1;
 }
 
-// Rotate map on RX
-YCMD:grzsets(playerid, arg[], help)
+// Rotate group on ground slope
+YCMD:gsets(playerid, arg[], help)
 {
 	if(help)
 	{
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-		SendClientMessage(playerid, STEALTH_GREEN, "Rotate all currently selected objects around the Z axis, accordingly to ground slope.");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate all currently selected objects accordingly to ground slope.");
 		return 1;
 	}
 
     MapOpenCheck();
 	new time = GetTickCount();
-	new Float:Delta;
-	sscanf(arg, "F(0.0)", Delta);
 
 	// We need to get the map center as the rotation node
 	new bool:value, Float:gCenterX, Float:gCenterY, Float:gCenterZ;
@@ -107,7 +107,8 @@ YCMD:grzsets(playerid, arg[], help)
 	{
 		new Float:x, Float:y, Float:z;
 		GetPlayerPos(playerid, x, y, z);
-		CalcSlopeAtPoint(x, y, GroupSlopeRX[playerid], GroupSlopeRY[playerid]);
+		//CalcSlopeAtPoint(x, y, GroupSlopeRX[playerid], GroupSlopeRY[playerid]);
+		CA_RayCastLineAngle(x, y, 1200.0, x, y, -100.0, z, z, z, GroupSlopeRX[playerid], GroupSlopeRY[playerid], z);
 
 		// Loop through all objects and perform rotation calculations
 		foreach(new i : Objects)
@@ -116,9 +117,6 @@ YCMD:grzsets(playerid, arg[], help)
 			{
 				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
 				
-				AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, -GroupSlopeRX[playerid], -GroupSlopeRY[playerid], 0.0, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
-				if(Delta)
-					AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, 0.0, 0.0, Delta, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 				AttachObjectToPoint(i, gCenterX, gCenterY, gCenterZ, GroupSlopeRX[playerid], GroupSlopeRY[playerid], 0.0, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 				
 				SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
@@ -141,6 +139,46 @@ YCMD:grzsets(playerid, arg[], help)
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_YELLOW, "There is not enough objects for this command to work");
 	}
+
+	return 1;
+}
+
+// Rotate object on ground slope
+YCMD:osets(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Rotate currently selected object according to ground slope.");
+		return 1;
+	}
+
+    MapOpenCheck();
+    EditCheck(playerid);
+    NoEditingMode(playerid);
+
+    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
+
+	new Float:x, Float:y, Float:z;
+	GetPlayerPos(playerid, x, y, z);
+	CA_RayCastLineAngle(x, y, 1200.0, x, y, -100.0, z, z, z, GroupSlopeRX[playerid], GroupSlopeRY[playerid], z);
+	
+	if(PivotPointOn[playerid])
+	{
+		new i = CurrObject[playerid];
+		AttachObjectToPoint(i, PivotPoint[playerid][xPos], PivotPoint[playerid][yPos], PivotPoint[playerid][zPos], GroupSlopeRX[playerid], GroupSlopeRY[playerid], 0.0, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+		SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
+		SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+		UpdateObject3DText(CurrObject[playerid]);
+	}
+	else
+	{
+	    ObjectData[CurrObject[playerid]][oRX] += GroupSlopeRX[playerid];
+	    ObjectData[CurrObject[playerid]][oRY] += GroupSlopeRY[playerid];
+	    SetDynamicObjectRot(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
+	}
+
+    sqlite_UpdateObjectPos(CurrObject[playerid]);
 
 	return 1;
 }
@@ -199,8 +237,8 @@ YCMD:cobjectsets(playerid, arg[], help)
     MapOpenCheck();
 	NoEditingMode(playerid);
 
- 	new modelid;
-	if(sscanf(arg, "i", modelid))
+ 	new modelid, Float:RZAngle;
+	if(sscanf(arg, "iF(0.0)", modelid, RZAngle))
 	{
 	    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
         SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /csobject <modelid>");
@@ -208,15 +246,16 @@ YCMD:cobjectsets(playerid, arg[], help)
 	}
 
 	// Set the initial object position
-	new Float:px, Float:py, Float:pz, Float:fa, Float:RXAngle, Float:RYAngle, Float:RZAngle;
+	new Float:px, Float:py, Float:pz, Float:fa, Float:RXAngle, Float:RYAngle;
 	new Float:colradius = GetColSphereRadius(modelid);
 	GetPosFaInFrontOfPlayer(playerid, colradius + 1.0, px, py, pz, fa);
 	pz -= 1.0;
 
 	// Calculate rotation
-	CalcSlopeAtPoint(px, py, RXAngle, RYAngle);
-	new Float:angle = float(random(360));
-	ObjectRotateZ(RXAngle, RYAngle, RZAngle, angle, RXAngle, RYAngle, RZAngle);
+	//CalcSlopeAtPoint(px, py, RXAngle, RYAngle);
+	CA_RayCastLineAngle(px, py, 1200.0, px, py, -100.0, fa, fa, fa, RXAngle, RYAngle, RZAngle);
+	//new Float:angle = float(random(360));
+	//ObjectRotateZ(RXAngle, RYAngle, RZAngle, angle, RXAngle, RYAngle, RZAngle);
 
 	// Create the object
 	SetCurrObject(playerid, AddDynamicObject(modelid, px, py, pz, RXAngle, RYAngle, RZAngle));
