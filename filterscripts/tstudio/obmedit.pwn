@@ -467,7 +467,6 @@ static OBMEditor(playerid)
 
 						Streamer_Update(playerid);
 
-						printf("[s] %f, %f, %f", OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ]);
 						EditDynamicObject(playerid, OBMObject[playerid]);
 
 						OBMEditMode[playerid] = OMBE_ORIENT;
@@ -728,8 +727,6 @@ OnPlayerEditDOOBM(playerid, objectid, response, Float:x, Float:y, Float:z, Float
 			UpdateOBM(playerid);
 			OBMEditor(playerid);
 		}
-		
-		printf("[%i] %f, %f, %f", response, OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ]);
 	}
 	return 1;
 }

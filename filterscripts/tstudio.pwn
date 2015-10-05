@@ -204,7 +204,7 @@ Change Log:
 //#define COMPILE_MANGLE
 
 // Compile the GTA Object module for removing buildings
-//#define COMPILE_GTA_OBJECTS
+#define COMPILE_GTA_OBJECTS
 
 #if defined DEBUG
 	#define DB_DEBUG true
