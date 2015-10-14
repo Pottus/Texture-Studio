@@ -325,6 +325,84 @@ stock GroupRotate(playerid, Float:rx, Float:ry, Float:rz, update = true)
 	}
 }
 
+YCMD:ginfront(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Move all grouped objects in front of the player.");
+		return 1;
+	}
+	MapOpenCheck();
+	new Float:radius;
+	if(GetGroupRadius(playerid, radius))
+	{
+		radius += 1.0;
+		new Float:x, Float:y, Float:z, Float:gcx, Float:gcy, Float:gcz, count, line[128];
+		GetPlayerPos(playerid, x, y, z);
+		GetPosFaInFrontOfPlayer(playerid, radius, x, y, z, gcz);
+		GetGroupCenter(playerid, gcx, gcy, gcz);
+		
+		x -= gcx;
+		y -= gcy;
+		z -= gcz;
+
+		foreach(new i : Objects)
+		{
+			if(GroupedObjects[playerid][i])
+			{
+				ObjectData[i][oX] += x;
+				ObjectData[i][oY] += y;
+				ObjectData[i][oZ] += z;
+				
+				SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
+				UpdateObject3DText(i);
+				sqlite_UpdateObjectPos(i);
+				count++;
+			}
+		}
+		format(line, sizeof(line), "Moved %i grouped objects to in front", count);
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, line);
+		
+	}
+	return 1;
+}
+
+GetGroupRadius(playerid, &Float:radius)
+{
+	new Float:highX = -9999999.0;
+	new Float:highY = -9999999.0;
+	new Float:highZ = -9999999.0;
+
+	new Float:lowX  = 9999999.0;
+	new Float:lowY  = 9999999.0;
+	new Float:lowZ  = 9999999.0;
+
+	new count;
+
+	foreach(new i : Objects)
+	{
+		if(GroupedObjects[playerid][i])
+		{
+			if(ObjectData[i][oX] > highX) highX = ObjectData[i][oX];
+			if(ObjectData[i][oY] > highY) highY = ObjectData[i][oY];
+			if(ObjectData[i][oZ] > highZ) highZ = ObjectData[i][oZ];
+			if(ObjectData[i][oX] < lowX) lowX = ObjectData[i][oX];
+			if(ObjectData[i][oY] < lowY) lowY = ObjectData[i][oY];
+			if(ObjectData[i][oZ] < lowZ) lowZ = ObjectData[i][oZ];
+			count++;
+		}
+	}
+
+	// Not enough objects grouped
+	if(count < 1) return 0;
+
+	radius = floatdiv(getdist3d(highX, highY, highZ, lowX, lowY, lowZ), 2);
+
+	return 1;
+}
+
 stock GetGroupCenter(playerid, &Float:X, &Float:Y, &Float:Z)
 {
 	new Float:highX = -9999999.0;
