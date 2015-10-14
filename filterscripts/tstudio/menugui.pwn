@@ -138,6 +138,7 @@ static bool:DeltaMapMovement[MAX_PLAYERS];
 #define         CLICK_GROUP_SELECTGROUP     2218
 #define         CLICK_GROUP_GDELETE         2219
 #define         CLICK_GROUP_EDIT            2220
+#define         CLICK_GROUP_INFRONT         2221
 
 // Group prefab selection
 #define			CLICK_GROUP_GPREFAB         2231
@@ -438,6 +439,10 @@ hook OnFilterScriptInit()
 
 	LoadGUIMenu(GroupSelSubMenu,MenuButton,335.0, 255.0, CLICK_GROUP_EDIT, E_INDEX);
 	GUISetPlayerText(GroupSelSubMenu, E_INDEX[1], "Group Edit");
+	GUISetPlayerText(GroupSelSubMenu, E_INDEX[2], "LD_BEAT:square");
+	
+	LoadGUIMenu(GroupSelSubMenu,MenuButton,335.0, 270.0, CLICK_GROUP_INFRONT, E_INDEX);
+	GUISetPlayerText(GroupSelSubMenu, E_INDEX[1], "Group Infront");
 	GUISetPlayerText(GroupSelSubMenu, E_INDEX[2], "LD_BEAT:square");
 
 	LoadGUIMenu(GroupSelSubMenu,MenuButton,335.0, 285.0, CLICK_GROUP_GDELETE, E_INDEX);
@@ -1314,6 +1319,9 @@ OnGUIClick:SubMenuGroupSel(playerid, group, gindex, pindex)
 			// csel mode (We need to delay to use this mode effectively)
 			SetTimerEx("DelayGEdit", 1000, false, "i", playerid);
 		}
+		
+		case CLICK_GROUP_INFRONT: { BroadcastCommand(playerid, "/ginfront"); }
+		
 	}
 	return 1;
 }

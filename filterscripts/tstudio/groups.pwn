@@ -366,6 +366,11 @@ YCMD:ginfront(playerid, arg[], help)
 		SendClientMessage(playerid, STEALTH_GREEN, line);
 		
 	}
+	else
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "You do not have any objects grouped");
+	}
 	return 1;
 }
 
