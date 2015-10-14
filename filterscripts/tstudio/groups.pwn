@@ -347,10 +347,14 @@ YCMD:ginfront(playerid, arg[], help)
 		y -= gcy;
 		z -= gcz;
 
+		new time = GetTickCount();
+
 		foreach(new i : Objects)
 		{
 			if(GroupedObjects[playerid][i])
 			{
+				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+				
 				ObjectData[i][oX] += x;
 				ObjectData[i][oY] += y;
 				ObjectData[i][oZ] += z;
