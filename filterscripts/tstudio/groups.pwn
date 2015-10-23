@@ -531,6 +531,48 @@ YCMD:selectgroup(playerid, arg[], help)
 	return 1;
 }
 
+YCMD:gselmodel(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Select a group of objects by model ID.");
+		return 1;
+	}
+
+    MapOpenCheck();
+    NoEditingMode(playerid);
+
+    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+
+	new modelid = strval(arg);
+
+	if(PlayerHasGroup(playerid)) ClearGroup(playerid);
+
+	new count;
+	foreach(new i : Objects)
+	{
+	    if(ObjectData[i][oModel] == modelid)
+		{
+		    GroupedObjects[playerid][i] = true;
+			OnUpdateGroup3DText(i);
+			UpdateObject3DText(i);
+		    count++;
+		}
+	}
+	if(count)
+	{
+		new line[128];
+
+		// Update the Group GUI
+		UpdatePlayerGSelText(playerid);
+		format(line, sizeof(line), "Selected model %i Objects: %i", modelid, count);
+		SendClientMessage(playerid, STEALTH_GREEN, line);
+	}
+	else SendClientMessage(playerid, STEALTH_YELLOW, "There are no objects with this model id");
+	return 1;
+}
+
 
 static PlayerHasGroup(playerid)
 {
