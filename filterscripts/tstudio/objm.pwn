@@ -179,6 +179,44 @@ CreateDynamicObjectCircle(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,
     return 1;
 }
 
+/* Creates objects in a Spherical path */
+CreateDynamicObjectSphere(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:hsep,Float:vsep,bool:facecenter=false)
+{
+	if(facecenter == false)
+	{
+    	new Float:x, Float:y, Float:z;
+		for(new Float:lat = -90.0; lat <= 90.0; lat += vsep)
+		for(new Float:lon = -180.0, Float:angle = float(clamp(deg, 0, 360) - 180); lon <= angle; lon += hsep)
+    	{
+			x = radius * -(floatcos(lat, degrees) * floatsin(-lon, degrees));
+			y = radius * floatcos(lat, degrees) * floatcos(-lon, degrees);
+			z = radius * floatsin(lat, degrees);
+			
+			AddOBMObject(playerid, modelid, posx + x, posy + y, posz + z, rx, ry, rz + orz);
+		}
+	}
+	else
+	{
+    	new Float:x, Float:y, Float:z, Float:detrx, Float:detry, Float:detrz;
+		for(new Float:lat = -90.0; lat <= 90.0; lat += vsep)
+		for(new Float:lon = -180.0, Float:angle = float(clamp(deg, 0, 360) - 180); lon <= angle; lon += hsep)
+    	{
+			x = -(floatcos(lat, degrees) * floatsin(-lon, degrees));
+			y = floatcos(lat, degrees) * floatcos(-lon, degrees);
+			z = floatsin(lat, degrees);
+			
+			AttachPoint(x * radius, y * radius, z * radius, orx + 90 - lat, ory, orz + 180.0 - lon,
+				posx, posy, posz, rx, ry, rz,
+				x, y, z, detrx, detry, detrz
+			);
+			
+			AddOBMObject(playerid, modelid, posx + x, posy + y, posz + z, detrx, detry, detrz);
+		}
+	}
+	Streamer_Update(playerid);
+    return 1;
+}
+
 /* Creates objects in a Helical path */
 CreateDynamicObjectSpiral(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:hsep,Float:vsep,bool:facecenter=false)
 {
