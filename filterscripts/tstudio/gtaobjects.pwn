@@ -50,21 +50,28 @@ YCMD:gtaobjects(playerid, arg[], help)
 		if(ObjectsShown)
 			for(new i = 0; i < SEARCH_DATA_SIZE; i++) DestroyDynamic3DTextLabel(GTAObjectText[i]);
 
-	    for(new i = 0; i < SEARCH_DATA_SIZE; i++)
+		new index, name[32];
+		AO_RESULT = db_query(AO_DB, "SELECT * FROM `buildings`");
+		do
 		{
+			index = db_get_field_int(AO_RESULT, 0);
+			db_get_field(AO_RESULT, 3, name, sizeof name[]);
+			
  			if(!colradius)
 			{
-				colradius = GetColSphereRadius(SearchData[i][Search_Model]);
+				colradius = GetColSphereRadius(db_get_field_int(AO_RESULT, 1));
 				if(colradius < MIN_GTAOBJECT_LABEL_DIST) colradius = MIN_GTAOBJECT_LABEL_DIST;
 				colradius *= 2;
 			}
 		
-            GTAObjectText[i] = CreateDynamic3DTextLabel(
-				sprintf("Index: %i\nName: %s\nModelID: %i", i, SearchData[i][Search_Model_Name], SearchData[i][Search_Model]), 
-				(GTAObjectDeleted[i] ? (GTAObjectSwapped[i] ? 0x5A34FFFF : 0xFF345AFF) : 0xFF69B4FF), 
-				SearchData[i][SearchX], SearchData[i][SearchY], SearchData[i][SearchZ]+SearchData[i][SearchOffset], colradius*2.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, -1, -1, -1, colradius
+            GTAObjectText[index] = CreateDynamic3DTextLabel(
+				sprintf("Index: %i\nName: %s\nModelID: %i", index, name, db_get_field_int(AO_RESULT, 1)), 
+				(GTAObjectDeleted[index] ? (GTAObjectSwapped[index] ? 0x5A34FFFF : 0xFF345AFF) : 0xFF69B4FF), 
+				db_get_field_float(AO_RESULT, 4), db_get_field_float(AO_RESULT, 5), db_get_field_float(AO_RESULT, 6) + db_get_field_float(AO_RESULT, 10), colradius * 2.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, -1, -1, -1, colradius
 			);
 		}
+		while(db_next_row(AO_RESULT));
+		
 	    ObjectsShown = true;
 	    SendClientMessage(playerid, STEALTH_GREEN, "Showing GTA Objects");
 	}
@@ -125,9 +132,9 @@ YCMD:gtashow(playerid, arg[], help)
 
 	if(HighLightObject[playerid] > -1) DestroyDynamicObject(HighLightObject[playerid]);
 
-    HighLightObject[playerid] = CreateDynamicObject(SearchData[index][Search_Model],
-		SearchData[index][SearchX], SearchData[index][SearchY], SearchData[index][SearchZ]+1.0,
-		SearchData[index][SearchRX], SearchData[index][SearchRY], SearchData[index][SearchRZ],
+    HighLightObject[playerid] = CreateDynamicObject(db_get_field_int(AO_RESULT, 1),
+		db_get_field_float(AO_RESULT, 4), db_get_field_float(AO_RESULT, 5), db_get_field_float(AO_RESULT, 6) + 1.0,
+		db_get_field_float(AO_RESULT, 7), db_get_field_float(AO_RESULT, 8), db_get_field_float(AO_RESULT, 9),
 		-1, -1, playerid
 	);
 	
@@ -177,13 +184,18 @@ YCMD:remobject(playerid, arg[], help)
 	if(GTAObjectDeleted[index] == true) return SendClientMessage(playerid, STEALTH_YELLOW, "That object is already deleted!");
 
     GTAObjectDeleted[index] = true;
-    
-	AddRemoveBuilding(SearchData[index][Search_Model], SearchData[index][SearchX], SearchData[index][SearchY], SearchData[index][SearchZ], 0.25, true);
-	if(SearchData[index][Search_LODModel] != INVALID_OBJECT_ID) AddRemoveBuilding(SearchData[index][Search_LODModel], SearchData[index][SearchX], SearchData[index][SearchY], SearchData[index][SearchZ], 0.25, true);
+	
+	new name[32];
+	AO_RESULT = db_query(AO_DB, sprintf("SELECT * FROM `buildings` WHERE `ID` = %i", index));
+	db_get_field(AO_RESULT, 3, name, sizeof name[]);
+	
+	AddRemoveBuilding(db_get_field_int(AO_RESULT, 1), db_get_field_float(AO_RESULT, 4), db_get_field_float(AO_RESULT, 5), db_get_field_float(AO_RESULT, 6), 0.25, true);
+	if(db_get_field_int(AO_RESULT, 2) != INVALID_OBJECT_ID)
+		AddRemoveBuilding(db_get_field_int(AO_RESULT, 2), db_get_field_float(AO_RESULT, 4), db_get_field_float(AO_RESULT, 5), db_get_field_float(AO_RESULT, 6), 0.25, true);
 
 	UpdateDynamic3DTextLabelText(GTAObjectText[index],
 		(GTAObjectDeleted[index] ? (GTAObjectSwapped[index] ? 0x5A34FFFF : 0xF51414FF) : 0xFF69B4FF),
-		sprintf("Index: %i\nName: %s\nModelID: %i", index, SearchData[index][Search_Model_Name], SearchData[index][Search_Model]));
+		sprintf("Index: %i\nName: %s\nModelID: %i", index, name, db_get_field_int(AO_RESULT, 1)));
 
 	SendClientMessage(playerid, STEALTH_YELLOW, "Object has been removed!");
 	
@@ -213,20 +225,26 @@ YCMD:swapbuilding(playerid, arg[], help)
 
 	if(GTAObjectSwapped[index] == true) return SendClientMessage(playerid, STEALTH_YELLOW, "That object is already swapped!");
 
+	new name[32];
+	AO_RESULT = db_query(AO_DB, sprintf("SELECT * FROM `buildings` WHERE `ID` = %i", index));
+	db_get_field(AO_RESULT, 3, name, sizeof name[]);
+	
 	if(GTAObjectDeleted[index] == false)
 	{
-		AddRemoveBuilding(SearchData[index][Search_Model], SearchData[index][SearchX], SearchData[index][SearchY], SearchData[index][SearchZ], 0.25, true);
-		if(SearchData[index][Search_LODModel] != INVALID_OBJECT_ID) AddRemoveBuilding(SearchData[index][Search_LODModel], SearchData[index][SearchX], SearchData[index][SearchY], SearchData[index][SearchZ], 0.25, true);
-	    GTAObjectDeleted[index] = true;
+		AddRemoveBuilding(db_get_field_int(AO_RESULT, 1), db_get_field_float(AO_RESULT, 4), db_get_field_float(AO_RESULT, 5), db_get_field_float(AO_RESULT, 6), 0.25, true);
+		if(db_get_field_int(AO_RESULT, 2) != INVALID_OBJECT_ID)
+			AddRemoveBuilding(db_get_field_int(AO_RESULT, 2), db_get_field_float(AO_RESULT, 4), db_get_field_float(AO_RESULT, 5), db_get_field_float(AO_RESULT, 6), 0.25, true);
+	    
+		GTAObjectDeleted[index] = true;
 	}
 
 	// Swap object
-	UpdateObject3DText(AddDynamicObject(SearchData[index][Search_Model], SearchData[index][SearchX], SearchData[index][SearchY], SearchData[index][SearchZ], SearchData[index][SearchRX], SearchData[index][SearchRY], SearchData[index][SearchRZ]), true);
+	UpdateObject3DText(AddDynamicObject(db_get_field_int(AO_RESULT, 1), db_get_field_float(AO_RESULT, 4), db_get_field_float(AO_RESULT, 5), db_get_field_float(AO_RESULT, 6), db_get_field_float(AO_RESULT, 7), db_get_field_float(AO_RESULT, 8), db_get_field_float(AO_RESULT, 9)), true);
     GTAObjectSwapped[index] = true;
 
 	UpdateDynamic3DTextLabelText(GTAObjectText[index],
-		(GTAObjectDeleted[index] ? (GTAObjectSwapped[index] ? 0x5A34FFFF : 0xFF345AFF) : 0xFF69B4FF),
-		sprintf("Index: %i\nName: %s\nModelID: %i", index, SearchData[index][Search_Model_Name], SearchData[index][Search_Model]));
+		(GTAObjectDeleted[index] ? (GTAObjectSwapped[index] ? 0x5A34FFFF : 0xF51414FF) : 0xFF69B4FF),
+		sprintf("Index: %i\nName: %s\nModelID: %i", index, name, db_get_field_int(AO_RESULT, 1)));
 	
 	SendClientMessage(playerid, STEALTH_YELLOW, "Object has been swapped!");
 	return 1;
