@@ -179,6 +179,7 @@ OnPlayerEditDOGroup(playerid, objectid, response, Float:x, Float:y, Float:z, Flo
 
 		new time = GetTickCount();
 
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 	   		if(GroupedObjects[playerid][i])
@@ -199,6 +200,7 @@ OnPlayerEditDOGroup(playerid, objectid, response, Float:x, Float:y, Float:z, Flo
 			    UpdateObject3DText(i);
 			}
 		}
+		db_end_transaction(EditMap);
 
 		EditingMode[playerid] = false;
 		SetEditMode(playerid, EDIT_MODE_NONE);
@@ -309,6 +311,7 @@ stock GroupRotate(playerid, Float:rx, Float:ry, Float:rz, update = true)
 	GetGroupCenter(playerid, gCenterX, gCenterY, gCenterZ);
 
 	// Loop through all objects and perform rotation calculations
+	db_begin_transaction(EditMap);
 	foreach(new i : Objects)
 	{
 		if(GroupedObjects[playerid][i])
@@ -323,6 +326,7 @@ stock GroupRotate(playerid, Float:rx, Float:ry, Float:rz, update = true)
 			}
 		}
 	}
+	db_end_transaction(EditMap);
 }
 
 YCMD:ginfront(playerid, arg[], help)
@@ -349,6 +353,7 @@ YCMD:ginfront(playerid, arg[], help)
 
 		new time = GetTickCount();
 
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 			if(GroupedObjects[playerid][i])
@@ -365,10 +370,11 @@ YCMD:ginfront(playerid, arg[], help)
 				count++;
 			}
 		}
+		db_end_transaction(EditMap);
+		
 		format(line, sizeof(line), "Moved %i grouped objects to in front", count);
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, line);
-		
 	}
 	else
 	{
@@ -469,6 +475,7 @@ YCMD:setgroup(playerid, arg[], help)
 
 	if(PlayerHasGroup(playerid))
 	{
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 			if(GroupedObjects[playerid][i])
@@ -480,6 +487,8 @@ YCMD:setgroup(playerid, arg[], help)
 				sqlite_ObjGroup(i);
 			}
 		}
+		db_end_transaction(EditMap);
+		
 		new line[128];
 		format(line, sizeof(line), "Set all objects in your group to group: %i", groupid);
 		SendClientMessage(playerid, STEALTH_GREEN, line);
@@ -829,6 +838,7 @@ YCMD:gdelete(playerid, arg[], help)
 	new count;
 	new time = GetTickCount();
 
+	db_begin_transaction(EditMap);
     foreach(new i : Objects)
     {
         if(GroupedObjects[playerid][i])
@@ -838,6 +848,7 @@ YCMD:gdelete(playerid, arg[], help)
         	count++;
         }
     }
+	db_end_transaction(EditMap);
 
     if(count)
 	{
@@ -907,6 +918,7 @@ YCMD:gox(playerid, arg[], help)
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
 
+	db_begin_transaction(EditMap);
  	foreach(new i : Objects)
 	{
 		if(GroupedObjects[playerid][i])
@@ -922,6 +934,8 @@ YCMD:gox(playerid, arg[], help)
 		    sqlite_UpdateObjectPos(i);
 		}
 	}
+	db_end_transaction(EditMap);
+	
 	// Update the Group GUI
 	UpdatePlayerGSelText(playerid);
 
@@ -946,6 +960,7 @@ YCMD:goy(playerid, arg[], help)
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
 
+	db_begin_transaction(EditMap);
  	foreach(new i : Objects)
 	{
 		if(GroupedObjects[playerid][i])
@@ -962,6 +977,7 @@ YCMD:goy(playerid, arg[], help)
 
 		}
 	}
+	db_end_transaction(EditMap);
 
 	// Update the Group GUI
 	UpdatePlayerGSelText(playerid);
@@ -988,6 +1004,7 @@ YCMD:goz(playerid, arg[], help)
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
 
+	db_begin_transaction(EditMap);
  	foreach(new i : Objects)
 	{
 		if(GroupedObjects[playerid][i])
@@ -1003,6 +1020,7 @@ YCMD:goz(playerid, arg[], help)
 		    sqlite_UpdateObjectPos(i);
 		}
 	}
+	db_end_transaction(EditMap);
 
 	// Update the Group GUI
 	UpdatePlayerGSelText(playerid);
@@ -1059,6 +1077,7 @@ YCMD:grx(playerid, arg[], help)
 	if(value)
 	{
 		// Loop through all objects and perform rotation calculations
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 			if(GroupedObjects[playerid][i])
@@ -1074,6 +1093,7 @@ YCMD:grx(playerid, arg[], help)
 
 			}
 		}
+		db_end_transaction(EditMap);
 
 		// Update the Group GUI
 		UpdatePlayerGSelText(playerid);
@@ -1139,6 +1159,7 @@ YCMD:gry(playerid, arg[], help)
 	if(value)
 	{
 		// Loop through all objects and perform rotation calculations
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 			if(GroupedObjects[playerid][i])
@@ -1153,6 +1174,7 @@ YCMD:gry(playerid, arg[], help)
 				sqlite_UpdateObjectPos(i);
 			}
 		}
+		db_end_transaction(EditMap);
 
    		// Update the Group GUI
 		UpdatePlayerGSelText(playerid);
@@ -1218,6 +1240,7 @@ YCMD:grz(playerid, arg[], help)
 	if(value)
 	{
 		// Loop through all objects and perform rotation calculations
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 			if(GroupedObjects[playerid][i])
@@ -1232,6 +1255,7 @@ YCMD:grz(playerid, arg[], help)
 				sqlite_UpdateObjectPos(i);
 			}
 		}
+		db_end_transaction(EditMap);
 
    		// Update the Group GUI
 		UpdatePlayerGSelText(playerid);
@@ -1249,7 +1273,6 @@ YCMD:grz(playerid, arg[], help)
 }
 
 
-/*
 // Export group of objects as an attached object
 YCMD:gaexport(playerid, arg[], help)
 {
@@ -1531,7 +1554,6 @@ AttachExport(playerid, mapname[], Float:drawdist)
 
 	return 1;
 }
-*/
 
 // Save objects as a prefab data base
 new NewPreFabString[512];
@@ -1627,6 +1649,7 @@ YCMD:gprefab(playerid, arg[], help)
 
 						count = 0;
 
+						db_begin_transaction(EditMap);
 						foreach(new i : Objects)
 						{
 							if(GroupedObjects[playerid][i])
@@ -1635,7 +1658,7 @@ YCMD:gprefab(playerid, arg[], help)
 								count++;
 						    }
 						}
-
+						db_end_transaction(EditMap);
 
 						SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 						new line[128];
@@ -1799,6 +1822,7 @@ YCMD:0group(playerid, arg[], help)
 
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 
+	db_begin_transaction(EditMap);
 	foreach(new i : Objects)
 	{
    		if(GroupedObjects[playerid][i])
@@ -1818,6 +1842,7 @@ YCMD:0group(playerid, arg[], help)
 			hasgroup = true;
 		}
 	}
+	db_end_transaction(EditMap);
 
 	if(hasgroup) SendClientMessage(playerid, STEALTH_GREEN, "Moved grouped objects to 0,0,0");
 	else SendClientMessage(playerid, STEALTH_YELLOW, "You don't have any objects grouped");
@@ -1922,6 +1947,7 @@ sqlite_LoadPrefab(playerid, offset = true)
 	// Execute query
     if(stmt_execute(loadprefabstmt))
     {
+		db_begin_transaction(EditMap);
         while(stmt_fetch_row(loadprefabstmt))
         {
 			new index = AddDynamicObject(tmpobject[oModel], tmpobject[oX]+px, tmpobject[oY]+py, tmpobject[oZ]+pz+zoff, tmpobject[oRX], tmpobject[oRY], tmpobject[oRZ]);
@@ -1971,6 +1997,7 @@ sqlite_LoadPrefab(playerid, offset = true)
 
 			SaveUndoInfo(index, UNDO_TYPE_CREATED, time);
         }
+		db_end_transaction(EditMap);
 
    		// Update the Group GUI
 		UpdatePlayerGSelText(playerid);

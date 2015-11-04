@@ -111,6 +111,7 @@ YCMD:gsets(playerid, arg[], help)
 		CA_RayCastLineAngle(x, y, 1200.0, x, y, -100.0, z, z, z, GroupSlopeRX[playerid], GroupSlopeRY[playerid], z);
 
 		// Loop through all objects and perform rotation calculations
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 			if(GroupedObjects[playerid][i])
@@ -127,6 +128,7 @@ YCMD:gsets(playerid, arg[], help)
 				sqlite_UpdateObjectPos(i);
 			}
 		}
+		db_end_transaction(EditMap);
 
    		// Update the Group GUI
 		UpdatePlayerGSelText(playerid);
