@@ -243,7 +243,7 @@ YCMD:swapbuilding(playerid, arg[], help)
     GTAObjectSwapped[index] = true;
 
 	UpdateDynamic3DTextLabelText(GTAObjectText[index],
-		(GTAObjectDeleted[index] ? (GTAObjectSwapped[index] ? 0x5A34FFFF : 0xF51414FF) : 0xFF69B4FF),
+		(GTAObjectDeleted[index] ? (GTAObjectSwapped[index] ? 0x5A34FFFF : 0xFF345AFF) : 0xFF69B4FF),
 		sprintf("Index: %i\nName: %s\nModelID: %i", index, name, db_get_field_int(AO_RESULT, 1)));
 	
 	SendClientMessage(playerid, STEALTH_YELLOW, "Object has been swapped!");
