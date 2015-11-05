@@ -306,6 +306,7 @@ sqlite_LoadMapObjects()
 	// Execute query
     if(stmt_execute(loadstmt))
     {
+		new count;
         while(stmt_fetch_row(loadstmt))
         {
 			// Load object into database at specified index (Don't save to sqlite database)
@@ -340,9 +341,11 @@ sqlite_LoadMapObjects()
 
 			// Update 3d text
 			UpdateObject3DText(currindex, true);
+			
+			count++;
         }
 		stmt_close(loadstmt);
-        return 1;
+        return count;
     }
 	stmt_close(loadstmt);
     return 0;
@@ -1011,13 +1014,15 @@ sqlite_LoadRemoveBuildings()
 	// Execute query
     if(stmt_execute(loadremovebuldingstmt))
     {
+		new count;
         while(stmt_fetch_row(loadremovebuldingstmt))
         {
 			// Add the removed building
 			AddRemoveBuilding(tmpremove[rModel], tmpremove[rX], tmpremove[rY], tmpremove[rZ], tmpremove[rRange], false);
+			count++;
         }
 		stmt_close(loadremovebuldingstmt);
-        return 1;
+        return count;
     }
 	stmt_close(loadremovebuldingstmt);
     return 0;
@@ -1748,10 +1753,10 @@ LoadMap(playerid)
 				sqlite_UpdateDB();
 
 				// Load the maps remove buildings
-			    sqlite_LoadRemoveBuildings();
+			    new rmcount = sqlite_LoadRemoveBuildings();
 
                 // Load the maps objects
-                sqlite_LoadMapObjects();
+                new ocount = sqlite_LoadMapObjects();
 
 				// Load any vehicles
 			    sqlite_LoadCars();
@@ -1764,7 +1769,7 @@ LoadMap(playerid)
 				SetEditMode(playerid,EDIT_MODE_NONE);
 
 				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-				SendClientMessage(playerid, STEALTH_GREEN, "You have loaded a map");
+				SendClientMessage(playerid, STEALTH_GREEN, sprintf("You have loaded a map with %i objects and %i removed buildings.", ocount, rmcount));
             }
         }
         Dialog_ShowCallback(playerid, using inline Select, DIALOG_STYLE_LIST, "Texture Studio (Load Map)", line, "Ok", "Cancel");
@@ -4550,7 +4555,18 @@ YCMD:showtext3d(playerid, arg[], help)
 		SendClientMessage(playerid, STEALTH_GREEN, "Show all 3D text labels.");
 		return 1;
 	}
-
+	
+	/*/Experimental Multiplier
+	new Float:mult = floatstr(arg);
+	if(0.0 < mult <= 1.0)
+		Streamer_SetRadiusMultiplier(STREAMER_TYPE_3D_TEXT_LABEL, mult, playerid);
+	else if(mult) {
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Invalid multiplier specified, must be between 0.0 and 1.0");
+		return 1;
+	}
+	else
+		Streamer_SetRadiusMultiplier(STREAMER_TYPE_3D_TEXT_LABEL, 1.0, playerid);*/
     ShowGroupLabels(playerid);
 	ShowObjectText();
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
