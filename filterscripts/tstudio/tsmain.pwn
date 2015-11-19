@@ -3999,7 +3999,7 @@ YCMD:minfo(playerid, arg[], help)
 
 	
 	new model = strval(arg);
-	if(isnull(arg) || (0 <= model <= 19999)) {
+	if(isnull(arg) || !(0 <= model <= 19999)) {
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /minfo <ID [0-19999]>");
 		return 1;
@@ -4011,15 +4011,20 @@ YCMD:minfo(playerid, arg[], help)
 	GetColSphereOffset(model, rOff[0], rOff[1], rOff[2]);
 	GetModelBoundingBox(model, Min[0], Min[1], Min[2], Max[0], Max[1], Max[2]);
 	
+	new buffer[1024];
+	strcat(buffer, sprintf("Bounding Sphere\n\tRadius: %f\n\tRadius Offset: %f, %f, %f\n\n",
+		r, rOff[0], rOff[1], rOff[2]));
+	strcat(buffer, sprintf("Axis Alligned Bounding Box\n\tMinimum: %f, %f, %f\n\t",
+		Min[0], Min[1], Min[2]));
+	strcat(buffer, sprintf("Maximun: %f, %f, %f\n\t",
+		Max[0], Max[1], Max[2]));
+	strcat(buffer, sprintf("Dimensions: %f, %f, %f",
+		floatabs(Min[0] - Max[0]), floatabs(Min[1] - Max[1]), floatabs(Min[2] - Max[2])));
+	
 	Dialog_Show(
 		playerid, DIALOG_STYLE_MSGBOX, 
 		sprintf("Model Information: %i", model), 
-		sprintf("Bounding Sphere\n\tRadius: %f\n\tRadius Offset: %f, %f, %f\n\nAxis Alligned Bounding Box\n\tMinimum: %f, %f, %f\n\tMaximun: %f, %f, %f\n\tDimensions: %f, %f, %f",
-			r, rOff[0], rOff[1], rOff[2],
-			Min[0], Min[1], Min[2],
-			Max[0], Max[1], Max[2],
-			floatabs(Min[0] - Max[0]), floatabs(Min[1] - Max[1]), floatabs(Min[2] - Max[2])
-		), 
+		buffer, 
 		"Okay"
 	);
 
