@@ -1414,7 +1414,15 @@ AttachExport(playerid, mapname[], Float:drawdist)
 			new syncrot = 1;
 
 			f = fopen(exportmap,io_write);
-
+			if(!f) {
+				SendClientMessage(playerid, -1, "For some reason this file isn't being created.");
+				SendClientMessage(playerid, -1, "Trying to highjack the existing blank.txt instead (temporary solution).");
+				f = fopen("tstudio/AttachExport/blank.txt",io_write);
+				if(!f) {
+					SendClientMessage(playerid, -1, "Failed to highjack...");
+				}
+			}
+			
 			fwrite(f,"//Attached Object Map Exported with Texture Studio By: [uL]Pottus////////////////////////////////////////////////\r\n");
 			fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 			fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
@@ -1424,6 +1432,7 @@ AttachExport(playerid, mapname[], Float:drawdist)
 			fwrite(f,templine);
 
 			format(templine,sizeof(templine),"centobjid = CreateObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f);\r\n",ObjectData[centerindex][oModel],ObjectData[centerindex][oX],ObjectData[centerindex][oY],ObjectData[centerindex][oZ],ObjectData[centerindex][oRX],ObjectData[centerindex][oRY],ObjectData[centerindex][oRZ],drawdist);
+			fwrite(f,templine);
 
 			// Write all objects with materials first
 			foreach(new i : Objects)
@@ -1510,7 +1519,7 @@ AttachExport(playerid, mapname[], Float:drawdist)
 			{
 			    if(ObjectData[i][oAttachedVehicle] > -1 || !GroupedObjects[playerid][i] || centerindex == i) continue;
 
-				new bool:writeobject = true;
+				new bool:skipobject = true;
 
 				// Does the object have materials?
 		        for(new j = 0; j < MAX_MATERIALS; j++)
@@ -1518,13 +1527,13 @@ AttachExport(playerid, mapname[], Float:drawdist)
 					// This object has already been written
 		            if(ObjectData[i][oTexIndex][j] != 0 || ObjectData[i][oColorIndex][j] != 0 || ObjectData[i][ousetext])
 		            {
-						writeobject = false;
+						skipobject = true;
 						break;
 					}
 				}
 
 				// Object has not been exported yet export
-				if(writeobject)
+				if(!skipobject)
 				{
 					format(templine,sizeof(templine),"tmpobjid = CreateObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist);
 					fwrite(f,templine);
