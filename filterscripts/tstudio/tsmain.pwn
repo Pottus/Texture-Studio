@@ -3885,22 +3885,22 @@ YCMD:robject(playerid, arg[], help)
 // Loops through all indexes and labels them with object text
 enum INDEXCOLORINFO { FaceColor, BackColor }
 stock const ShowIndexColors[MAX_MATERIALS][INDEXCOLORINFO] = {
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 },
-	{ 0xFFFFFF66, 0xFF00FF33 }
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFF000000, 0xFFFFFFFF },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFF800000, 0xFFFFFFFF },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFF008000, 0xFFFFFFFF },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFF000080, 0xFFFFFFFF },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFFC0C0C0, 0xFF000000 },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFFFF0000, 0xFF000000 },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFF00FF00, 0xFF000000 },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFF0000FF, 0xFF000000 },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFF808080, 0xFFFFFFFF },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFF800080, 0xFFFFFFFF },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFF808000, 0xFFFFFFFF },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFF008080, 0xFFFFFFFF },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFFFFFFFF, 0xFF000000 },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFFFF00FF, 0xFF000000 },
+	{ 0xFFFFFF66, 0xFF00FF33 }, // { 0xFFFFFF00, 0xFF000000 },
+	{ 0xFFFFFF66, 0xFF00FF33 }  // { 0xFF00FFFF, 0xFF000000 }
 };
 
 YCMD:sindex(playerid, arg[], help)
@@ -3983,6 +3983,45 @@ YCMD:rindex(playerid, arg[], help)
 
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
     SendClientMessage(playerid, STEALTH_GREEN, "Reset current objects labels");
+
+	return 1;
+}
+
+// Get information on a model
+YCMD:minfo(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "See information on the provided model ID.");
+		return 1;
+	}
+
+	
+	new model = strval(arg);
+	if(isnull(arg) || (0 <= model <= 19999)) {
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /minfo <ID [0-19999]>");
+		return 1;
+	}
+	
+	new Float:r = Float:GetColSphereRadius(model),
+		Float:rOff[3], Float:Min[3], Float:Max[3];
+	
+	GetColSphereOffset(model, rOff[0], rOff[1], rOff[2]);
+	GetModelBoundingBox(model, Min[0], Min[1], Min[2], Max[0], Max[1], Max[2]);
+	
+	Dialog_Show(
+		playerid, DIALOG_STYLE_MSGBOX, 
+		sprintf("Model Information: %i", model), 
+		sprintf("Bounding Sphere\n\tRadius: %f\n\tRadius Offset: %f, %f, %f\n\nAxis Alligned Bounding Box\n\tMinimum: %f, %f, %f\n\tMaximun: %f, %f, %f\n\tDimensions: %f, %f, %f",
+			r, rOff[0], rOff[1], rOff[2],
+			Min[0], Min[1], Min[2],
+			Max[0], Max[1], Max[2],
+			floatabs(Min[0] - Max[0]), floatabs(Min[1] - Max[1]), floatabs(Min[2] - Max[2])
+		), 
+		"Okay"
+	);
 
 	return 1;
 }
@@ -4736,6 +4775,7 @@ YCMD:thelp(playerid, arg[], help)
 			{"obmedit"},
 			{"setgroup"},
 			{"selectgroup"},
+			{"gselmodel"},
 			{"gsel"},
 			{"gadd"},
 			{"grem"},
@@ -4753,6 +4793,7 @@ YCMD:thelp(playerid, arg[], help)
 			{"grx"},
 			{"gry"},
 			{"grz"},
+			{"ginfront"},
 			
 			{" \n{81181C} - Group Prefabs{FFFFFF}"},
 			{"gaexport"},
@@ -4760,7 +4801,7 @@ YCMD:thelp(playerid, arg[], help)
 			{"prefabsetz"},
 			{"prefab"},
 			
-			{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		},
 #if defined MANGLE
@@ -4843,13 +4884,14 @@ YCMD:thelp(playerid, arg[], help)
 			{"{81181C} - General{FFFFFF}"},
 			{"hidetext3d"},
 			{"showtext3d"},
+			{"minfo"},
 			{"flymode"},
 			{"thelp"},
 			{"undo"},
 			{"echo"},
 			
 			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
-			{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		}
 	};
 
