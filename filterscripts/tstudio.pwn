@@ -206,6 +206,9 @@ Change Log:
 // Compile the GTA Object module for removing buildings
 #define COMPILE_GTA_OBJECTS
 
+// Compile the local input module for advanced keys and mouse control
+//#define COMPILE_LOCAL_INPUT
+
 #if defined DEBUG
 	#define DB_DEBUG true
 	#define DB_QUERY_ERRORS true
@@ -548,6 +551,11 @@ new bool:MapOpen;
 // GTA objects module
 #if defined COMPILE_GTA_OBJECTS
 	#include "tstudio\gtaobjects.pwn"
+#endif
+
+// Local input module
+#if defined COMPILE_LOCAL_INPUT
+	#include "tstudio\localinput.pwn"
 #endif
 
 // Vehicles
