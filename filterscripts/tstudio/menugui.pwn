@@ -1566,7 +1566,7 @@ stock UpdatePlayerGSelText(playerid)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Commands
-#define     MAX_CLICK_BINDS     		8
+#define     MAX_CLICK_BINDS     		10
 #define     MAX_BIND_TEXT_LENGTH        16
 #define     MAX_BINDS_PER_BIND          10
 #define     MAX_BIND_LENGTH             128
@@ -1588,9 +1588,9 @@ YCMD:runbind(playerid, arg[], help)
 	}
 
     NoEditingMode(playerid);
-	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "Usage /runbind <1-7>");
+	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "Usage /runbind <0-9>");
 	new bind = strval(arg);
-	if(bind < 0 || bind > 7) return SendClientMessage(playerid, STEALTH_YELLOW, "Usage /runbind <1-7>");
+	if(bind < 0 || bind > (MAX_CLICK_BINDS - 1)) return SendClientMessage(playerid, STEALTH_YELLOW, "Usage /runbind <0-9>");
 	if(!BindUsed[bind]) return SendClientMessage(playerid, STEALTH_YELLOW, "That bind is not used, type /bindeditor to create one");
 
 	// Broadcast commands from command binds
