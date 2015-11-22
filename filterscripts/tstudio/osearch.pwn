@@ -1,6 +1,6 @@
 #include <YSI\y_hooks>
 
-#define         MAX_SEARCH_OBJECT           100
+#define         MAX_SEARCH_OBJECT           200
 #define         MAX_OS_PAGE                 20
 
 #define         OS_MIN_ZOOM_CONSTRAINT      2.0
@@ -39,6 +39,41 @@ static Float:CurrOSXRot[MAX_PLAYERS] = { -20.0, ... };
 static Float:CurrOSYRot[MAX_PLAYERS] = { 0.0, ... };
 static Float:CurrOSZRot[MAX_PLAYERS] = { -50.0, ... };
 static Float:CurrOSZoom[MAX_PLAYERS] = { 1.0, ... };
+
+enum {
+	//==, !=, >, <, >=, <=
+	OPER_EQUAL,
+	OPER_NOT_EQUAL,
+	OPER_MORE,
+	OPER_LESS,
+	OPER_MORE_EQUAL,
+	OPER_LESS_EQUAL,
+	
+	//+, -, *, /, %
+	OPER_PLUS,
+	OPER_MINUS,
+	OPER_MULT,
+	OPER_DIV,
+	OPER_MOD,
+
+	//!, &&, ||
+	OPER_NOT,
+	OPER_AND,
+	OPER_OR,
+
+	//(, )
+	OPER_OPEN,
+	OPER_CLOSE,
+	
+	NUMERIC
+}
+
+static Operators[16][3] = {
+	"==", "!=", ">", "<", ">=", "<=",
+	"+", "-", "*", "/", "%",
+	"!", "&&", "||",
+	"(", ")"
+};
 
 hook OnFilterScriptInit()
 {
@@ -93,7 +128,7 @@ YCMD:osearch(playerid, arg[], help)
         if(strfind(ObjectList[i][oName],arg, true) != -1)
 		{
 			if(totalobjectsfound == 0) SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-	        format(line, sizeof(line), "Object Name: %s Object id: %i", ObjectList[i][oName],ObjectList[i][oID]);
+	        format(line, sizeof(line), "Object Name: %s Model ID: %i", ObjectList[i][oName],ObjectList[i][oID]);
 	        SendClientMessage(playerid, STEALTH_GREEN, line);
 	        SearchObjects[playerid][totalobjectsfound][SearchModel] = ObjectList[i][oID];
 	        format(SearchObjects[playerid][totalobjectsfound][SearchName], 50, "%s", ObjectList[i][oName]);
@@ -119,6 +154,119 @@ YCMD:osearch(playerid, arg[], help)
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, line);
 	}
+	return 1;
+}
+
+// Search for objects with expression
+YCMD:osearchex(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Search for an object model by expression.");
+		return 1;
+	}
+
+	if(GetEditMode(playerid) != EDIT_MODE_OSEARCH) NoEditingMode(playerid);
+
+    MapOpenCheck();
+
+	new out[64][24], type[64] = {-1, ...}, count = strexplode(out, arg, " ");
+	for(new i = 0; i < MAX_SEARCH_OBJECT; i++) SearchObjects[playerid][i][SearchModel] = -1;
+	new line[128];
+	new totalobjectsfound, index;
+	
+	for(new c; c < count; c++) {
+		if(!strcmp(out[c], "X", true)) {
+			type[c] = NUMERIC;
+			continue;
+		}
+		if(!strcmp(out[c], "Y", true)) {
+			type[c] = NUMERIC;
+			continue;
+		}
+		if(!strcmp(out[c], "Z", true)) {
+			type[c] = NUMERIC;
+			continue;
+		}
+
+		for(new i; i < sizeof Operators; i++) {
+			if(!strcmp(out[c], Operators[i])) {
+				type[c] = i;
+				break;
+			}
+		}
+		if(type[c] == -1 && isnumeric_f(out[c])) {
+			type[c] = NUMERIC;
+		}
+	}
+
+	new str[128];
+	strcat(str, "SELECT `Model` FROM `AABB` WHERE (");
+	for(new c; c < count; c++) {
+		if(out[c][0] == 'X')
+			format(out[c], sizeof out[], "(MaxX - MinX)");
+		else if(out[c][0] == 'Y')
+			format(out[c], sizeof out[], "(MaxY - MinY)");
+		else if(out[c][0] == 'Z')
+			format(out[c], sizeof out[], "(MaxZ - MinZ)");
+		else switch(type[c]) {
+			case OPER_AND:
+				format(out[c], sizeof out[], " AND ");
+			case OPER_OR:
+				format(out[c], sizeof out[], " OR ");
+			case OPER_NOT:
+				format(out[c], sizeof out[], " NOT ");
+		}
+		
+		strcat(str, out[c]);
+	}
+	strcat(str, ")");
+	
+	MS_RESULT = db_query(MS_DB, str);
+	totalobjectsfound = db_num_rows(MS_RESULT);
+	if(totalobjectsfound) {
+		do
+		{
+			new model = db_get_field_int(MS_RESULT, 0), i = -1;
+			
+			for(new l; l < sizeof(ObjectList); l++) {
+				if(ObjectList[l][oID] == model) {
+					i = l;
+					break;
+				}
+			}
+			
+			if(i == -1) // Invalid Model
+				continue;
+
+			if(index == 0) SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			format(line, sizeof(line), "Object Name: %s Model ID: %i", ObjectList[i][oName],ObjectList[i][oID]);
+			SendClientMessage(playerid, STEALTH_GREEN, line);
+			SearchObjects[playerid][index][SearchModel] = ObjectList[i][oID];
+			format(SearchObjects[playerid][index][SearchName], 50, "%s", ObjectList[i][oName]);
+			index++;
+
+			if(index == MAX_SEARCH_OBJECT)
+			{
+				SendClientMessage(playerid, STEALTH_YELLOW, "Maximum amount of objects found!");
+				break;
+			}
+		}
+		while(db_next_row(MS_RESULT));
+		
+		format(line, sizeof(line), "Total Objects Found: %i", totalobjectsfound);
+		TotalObjectFound[playerid] = totalobjectsfound;
+		ShowObjectList(playerid);
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, line);
+	}
+	else {
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "No objects found try searching again");
+	}
+	db_free_result(MS_RESULT);
+
 	return 1;
 }
 
@@ -635,4 +783,11 @@ static HidePlayerOSDraws(playerid)
 	}
 	PlayerTextDrawHide(playerid, SearchDisplayModel[playerid]);
 
+}
+
+stock isnumeric_f(str[])
+{
+	new i, ch;
+	while ((ch = str[i++])) if (!('0' <= ch <= '9') && ch != '.') return 0;
+	return !str[i];
 }
