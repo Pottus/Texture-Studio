@@ -645,6 +645,143 @@ YCMD:editgroup(playerid, arg[], help)
 }
 
 
+YCMD:gmtset(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set the material of all currently selected objects.");
+		return 1;
+	}
+
+    MapOpenCheck();
+
+	EditCheck(playerid);
+
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+
+	if(PlayerHasGroup(playerid))
+	{
+		new mindex;
+		new tref;
+		new time = GetTickCount();
+
+		if(GetMaterials(playerid, arg, mindex, tref))
+		{
+			db_begin_transaction(EditMap);
+			foreach(new i : Objects)
+			{
+				if(GroupedObjects[playerid][i])
+				{
+					SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+					SetMaterials(i, mindex, tref);
+					UpdateObjectText(i);
+
+					if(ObjectData[i][oAttachedVehicle] > -1)
+						UpdateAttachedVehicleObject(ObjectData[i][oAttachedVehicle], i, VEHICLE_REATTACH_UPDATE);
+				}
+			}
+			db_end_transaction(EditMap);
+
+			SendClientMessage(playerid, STEALTH_GREEN, "Changed All Materials");
+
+			foreach(new i : Player)
+				Streamer_Update(i);
+		
+			UpdateTextureSlot(playerid, mindex);
+		}
+	}
+	else SendClientMessage(playerid, STEALTH_YELLOW, "You must have at least one object grouped");
+	
+	return 1;
+}
+
+
+YCMD:gmtcolor(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set the material of all currently selected objects.");
+		return 1;
+	}
+
+    MapOpenCheck();
+
+	EditCheck(playerid);
+
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+
+	if(PlayerHasGroup(playerid))
+	{
+		new mindex;
+		new time = GetTickCount();
+		new HexColor[12];
+
+		sscanf(arg, "is[12]", mindex, HexColor);
+		
+		if(mindex < 0 || mindex > MAX_MATERIALS - 1)
+		{
+			new line[128];
+			format(line, sizeof(line), "The material selection must be between <0 - %i>", MAX_MATERIALS - 1);
+			return SendClientMessage(playerid, STEALTH_YELLOW, line);
+		}
+		
+		if(IsHexValue(HexColor))
+		{
+			new hcolor;
+			sscanf(HexColor, "h", hcolor);
+			
+			db_begin_transaction(EditMap);
+			foreach(new i : Objects)
+			{
+				if(GroupedObjects[playerid][i])
+				{
+					SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+
+					ObjectData[i][oColorIndex][mindex] = hcolor;
+
+					// Destroy the object
+					DestroyDynamicObject(ObjectData[i][oID]);
+
+					// Re-create object
+					ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], -1, -1, -1, 300.0);
+					Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[i][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
+
+					// Update the materials
+					UpdateMaterial(i);
+
+					UpdateObjectText(i);
+
+					if(ObjectData[i][oAttachedVehicle] > -1)
+						UpdateAttachedVehicleObject(ObjectData[i][oAttachedVehicle], i, VEHICLE_REATTACH_UPDATE);
+
+					// Save this material index to the data base
+					sqlite_SaveColorIndex(i);
+				}
+			}
+			db_end_transaction(EditMap);
+
+			SendClientMessage(playerid, STEALTH_GREEN, "Changed All Color");
+		}
+		else
+		{
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			SendClientMessage(playerid, STEALTH_YELLOW, "Invalid hex color.");
+			return 1;
+		}
+
+		foreach(new i : Player)
+			Streamer_Update(i);
+	
+		UpdateTextureSlot(playerid, mindex);
+	}
+	else SendClientMessage(playerid, STEALTH_YELLOW, "You must have at least one object grouped");
+	
+	return 1;
+}
+
+
 YCMD:gsel(playerid, arg[], help)
 {
 	if(help)

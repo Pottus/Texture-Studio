@@ -3066,7 +3066,7 @@ YCMD:mtsetall(playerid, arg[], help)
 	if(help)
 	{
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-		SendClientMessage(playerid, STEALTH_GREEN, "Set the material of all currently selected objects.");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set the material of all objects of the same model.");
 		return 1;
 	}
 
@@ -3504,7 +3504,7 @@ YCMD:mtcolorall(playerid, arg[], help)
 	if(help)
 	{
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-		SendClientMessage(playerid, STEALTH_GREEN, "Set the color of all currently selected objects.");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set the color of all objects of the same model.");
 		return 1;
 	}
 
@@ -3535,6 +3535,7 @@ YCMD:mtcolorall(playerid, arg[], help)
 
 		new time = GetTickCount();
 
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 		    if(ObjectData[i][oModel] == ObjectData[CurrObject[playerid]][oModel])
