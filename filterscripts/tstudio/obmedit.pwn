@@ -4,9 +4,10 @@
 #define         OBM_SPHERE      2
 #define         OBM_SPIRAL      3
 #define         OBM_CLYINDER    4
-#define         OBM_WHIRL       5
-#define         OBM_CIRCLEIN    6
-#define         OBM_CIRCLEOUT   7
+#define         OBM_CONE		5
+#define         OBM_WHIRL       6
+#define         OBM_CIRCLEIN    7
+#define         OBM_CIRCLEOUT   8
 
 #define         OBME_ORIGIN     0
 #define         OMBE_ORIENT     1
@@ -17,6 +18,7 @@ static const OBMTypes[][] = {
 	"Objectmetry Sphere",
 	"Objectmetry Spiral",
 	"Objectmetry Cylinder",
+	"Objectmetry Cone",
 	"Objectmetry Whirl",
 	"Objectmetry Circle In",
 	"Objectmetry Circle Out"
@@ -632,6 +634,20 @@ static UpdateOBM(playerid)
 
 
 		    case OBM_CLYINDER: { CreateDynamicObjectCylinder(playerid,
+				OBMData[playerid][pOBMModel],
+				OBMData[playerid][pOBMDegrees],
+				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],
+				OBMData[playerid][pOBMOriginRX], OBMData[playerid][pOBMOriginRY], OBMData[playerid][pOBMOriginRZ],
+				OBMData[playerid][pOBMOrientationRX], OBMData[playerid][pOBMOrientationRY], OBMData[playerid][pOBMOrientationRZ],
+				OBMData[playerid][pOBMRadius],
+				OBMData[playerid][pOBMhsep],
+				OBMData[playerid][pOBMvsep],
+				OBMData[playerid][pOBMParts],
+				OBMData[playerid][pOBMfacecenter]
+			);	}
+
+
+		    case OBM_CONE: { CreateDynamicObjectCone(playerid,
 				OBMData[playerid][pOBMModel],
 				OBMData[playerid][pOBMDegrees],
 				OBMData[playerid][pOBMOriginX], OBMData[playerid][pOBMOriginY], OBMData[playerid][pOBMOriginZ],

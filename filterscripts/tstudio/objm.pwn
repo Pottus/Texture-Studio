@@ -359,6 +359,70 @@ CreateDynamicObjectCylinder(playerid,modelid,deg,Float:posx,Float:posy,Float:pos
     return 1;
 }
 
+/* Creates objects in a Conical path */
+CreateDynamicObjectCone(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:hsep,Float:vsep,parts,bool:facecenter=false)
+{
+	if(facecenter == false)
+	{
+     	new Float:angle=0.0,Float:x=0.0,Float:y=0.0,Float:c=0.0;
+    	for(new j=0;j<parts;j++)
+    	{
+			/*|		No Radius
+			j4|			*
+			j3|		   * *
+			j2|		  *   *
+			j1|		 *     *
+			j0|		*       *
+			*///   Full Radius	
+    	    angle = 0.0,x = 0.0,y = 0.0;
+			new Float:rad = radius - ((radius / (parts - 1)) * j);
+			for(new i=0;i<deg;i+=1)
+			{
+			    if(angle <= float(deg))
+			    {
+					x=posx+rad*floatcos(angle,degrees);
+					y=posy+rad*floatsin(angle,degrees);
+					AddOBMObject(playerid,modelid, x, y, posz+c,rx,ry,rz+orz);
+					angle=angle+hsep;
+				}
+				else break;
+			}
+			c=c+vsep;
+		}
+	}
+	else
+	{
+	    new Float:angle = 0.0,Float:x = 0.0,Float:y = 0.0,Float:z, Float:c = 0.0, Float:detrx,Float:detry,Float:detrz;
+    	for(new j=0;j<parts;j++)
+    	{
+    	    angle = 0.0,x = 0.0,y = 0.0;
+			new Float:rad = radius - ((radius / (parts - 1)) * j);
+   			for(new i=0;i<deg;i+=1)
+   			{
+   			    if(angle <= float(deg))
+   			    {
+					x=posx+rad*floatcos(angle,degrees);
+					y=posy+rad*floatsin(angle,degrees);
+					
+					// Translate to rotation
+	                AttachPoint(x, y, posz+c,
+	                    orx, ory, angle+180.0+orz,
+	                    posx, posy, posz, rx, ry, rz,
+						x, y, z,
+	                    detrx, detry, detrz
+					);
+	                AddOBMObject(playerid,modelid, x, y, z, detrx, detry, detrz);
+					angle=angle+hsep;
+				}
+				else break;
+			}
+			c=c+vsep;
+		}
+	}
+	Streamer_Update(playerid);
+    return 1;
+}
+
 
 /* Creates objects in a reversed "6" type of path */
 CreateDynamicObjectWhirl(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Float:rx,Float:ry,Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:sep,bool:facecenter=false)
