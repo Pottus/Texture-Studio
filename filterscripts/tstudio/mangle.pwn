@@ -5,12 +5,24 @@
 
 #define MANGLE
 
-#include <YSI\y_hooks>
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
 	CA_Init();
+
+	#if defined VC_OnFilterScriptInit
+		VC_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit VC_OnFilterScriptInit
+#if defined VC_OnFilterScriptInit
+	forward VC_OnFilterScriptInit();
+#endif
 
 new Float:GroupSlopeRX[MAX_PLAYERS], Float:GroupSlopeRY[MAX_PLAYERS];
 

@@ -1,4 +1,3 @@
-#include <YSI\y_hooks>
 
 #define         MAX_SEARCH_OBJECT           200
 #define         MAX_OS_PAGE                 20
@@ -75,36 +74,75 @@ static Operators[16][3] = {
 	"(", ")"
 };
 
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
 	CreateSearchDraws();
 	foreach(new i : Player)
 	{
 		CreatePlayerSearchDraw(i);
 	}
+
+	#if defined OS_OnFilterScriptInit
+		OS_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit OS_OnFilterScriptInit
+#if defined OS_OnFilterScriptInit
+	forward OS_OnFilterScriptInit();
+#endif
 
-hook OnFilterScriptExit()
+public OnFilterScriptExit()
 {
 	DestroySearchDraws();
 	foreach(new i : Player)
 	{
 	    DestroyPlayerSearchDraw(i);
 	}
+
+	#if defined OS_OnFilterScriptExit
+		OS_OnFilterScriptExit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptExit
+	#undef OnFilterScriptExit
+#else
+	#define _ALS_OnFilterScriptExit
+#endif
+#define OnFilterScriptExit OS_OnFilterScriptExit
+#if defined OS_OnFilterScriptExit
+	forward OS_OnFilterScriptExit();
+#endif
 
 
-hook OnPlayerConnect(playerid)
+public OnPlayerConnect(playerid)
 {
     CreatePlayerSearchDraw(playerid);
 	CurrOSXRot[playerid] = -20.0;
 	CurrOSYRot[playerid] = 0.0;
 	CurrOSZRot[playerid] = -50.0;
 	CurrOSZoom[playerid] = 1.0;
+
+	#if defined OS_OnPlayerConnect
+		OS_OnPlayerConnect(playerid);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerConnect
+	#undef OnPlayerConnect
+#else
+	#define _ALS_OnPlayerConnect
+#endif
+#define OnPlayerConnect OS_OnPlayerConnect
+#if defined OS_OnPlayerConnect
+	forward OS_OnPlayerConnect(playerid);
+#endif
 
 // Search for object names
 YCMD:osearch(playerid, arg[], help)

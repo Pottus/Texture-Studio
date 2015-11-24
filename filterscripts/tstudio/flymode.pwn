@@ -9,7 +9,6 @@
 //
 //-------------------------------------------------
 
-#include <YSI\y_hooks>
 
 // Players Move Speed
 #define MOVE_SPEED              100.0
@@ -51,19 +50,32 @@ new bool:FlyMode[MAX_PLAYERS];
 stock IsFlyMode(playerid) { return noclipdata[playerid][cameramode]; }
 
 
-hook OnFilterScriptExit()
+public OnFilterScriptExit()
 {
 	// If any players are still in edit mode, boot them out before the filterscript unloads
 	for(new x; x<MAX_PLAYERS; x++)
 	{
 		if(noclipdata[x][cameramode] == CAMERA_MODE_FLY) CancelFlyMode(x);
 	}
+
+	#if defined FM_OnFilterScriptExit
+		FM_OnFilterScriptExit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptExit
+	#undef OnFilterScriptExit
+#else
+	#define _ALS_OnFilterScriptExit
+#endif
+#define OnFilterScriptExit FM_OnFilterScriptExit
+#if defined FM_OnFilterScriptExit
+	forward FM_OnFilterScriptExit();
+#endif
 
 //--------------------------------------------------
 
-hook OnPlayerConnect(playerid)
+public OnPlayerConnect(playerid)
 {
 	// Reset the data belonging to this player slot
 	noclipdata[playerid][cameramode] 	= CAMERA_MODE_NONE;
@@ -73,8 +85,21 @@ hook OnPlayerConnect(playerid)
 	noclipdata[playerid][lastmove]   	= 0;
 	noclipdata[playerid][accelmul]   	= 0.0;
 	FlyMode[playerid] = false;
+
+	#if defined FM_OnPlayerConnect
+		FM_OnPlayerConnect(playerid);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerConnect
+	#undef OnPlayerConnect
+#else
+	#define _ALS_OnPlayerConnect
+#endif
+#define OnPlayerConnect FM_OnPlayerConnect
+#if defined FM_OnPlayerConnect
+	forward FM_OnPlayerConnect(playerid);
+#endif
 
 //--------------------------------------------------
 
@@ -94,7 +119,7 @@ YCMD:flymode(playerid, arg[], help)
 }
 //--------------------------------------------------
 
-hook OnPlayerUpdate(playerid)
+public OnPlayerUpdate(playerid)
 {
 	if(noclipdata[playerid][cameramode] == CAMERA_MODE_FLY)
 	{
@@ -129,10 +154,26 @@ hook OnPlayerUpdate(playerid)
 		}
 		noclipdata[playerid][udold] = ud; noclipdata[playerid][lrold] = lr; // Store current keys pressed for comparison next update
 
+		#if defined FM_OnPlayerUpdate
+			FM_OnPlayerUpdate(playerid);
+		#endif
 		return 0;
 	}
+
+	#if defined FM_OnPlayerUpdate
+		FM_OnPlayerUpdate(playerid);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerUpdate
+	#undef OnPlayerUpdate
+#else
+	#define _ALS_OnPlayerUpdate
+#endif
+#define OnPlayerUpdate FM_OnPlayerUpdate
+#if defined FM_OnPlayerUpdate
+	forward FM_OnPlayerUpdate(playerid);
+#endif
 
 //--------------------------------------------------
 

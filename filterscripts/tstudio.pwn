@@ -241,7 +241,6 @@ Change Log:
 #include <YSI\y_iterate>
 #include <YSI\y_inline>
 #include <YSI\y_dialog>
-#include <YSI\y_hooks>
 #define Y_COMMANDS_NO_IPC 
 #include <YSI\y_commands>
 

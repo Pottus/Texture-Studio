@@ -1,4 +1,3 @@
-#include <YSI\y_hooks>
 #include "tstudio\menudata.pwn"
 
 static PlayerGUIMenu:PlayerMainMenu[MAX_PLAYERS];
@@ -159,7 +158,7 @@ static bool:DeltaMapMovement[MAX_PLAYERS];
 ////////////////////////////////////////////////////////////////////////////////
 
 // Initialize all GUIMenus
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
 // Static menu draws ///////////////////////////////////////////////////////
 	MainMenu = CreateGUI("MainMenu");
@@ -466,23 +465,47 @@ hook OnFilterScriptInit()
 	GUISetPlayerText(GroupPrefabMenu, E_INDEX[1], "Set Load Z");
 	GUISetPlayerText(GroupPrefabMenu, E_INDEX[2], "LD_BEAT:square");
 
-
-
 	////////////////////////////////////////////////////////////////////////////
 
 	foreach(new i : Player)
 	{
 	    CreatePlayerMenus(i);
 	}
+
+	#if defined MG_OnFilterScriptInit
+		MG_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit MG_OnFilterScriptInit
+#if defined MG_OnFilterScriptInit
+	forward MG_OnFilterScriptInit();
+#endif
 
 
-hook OnPlayerConnect(playerid)
+public OnPlayerConnect(playerid)
 {
 	CreatePlayerMenus(playerid);
+
+	#if defined MG_OnPlayerConnect
+		MG_OnPlayerConnect(playerid);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerConnect
+	#undef OnPlayerConnect
+#else
+	#define _ALS_OnPlayerConnect
+#endif
+#define OnPlayerConnect MG_OnPlayerConnect
+#if defined MG_OnPlayerConnect
+	forward MG_OnPlayerConnect(playerid);
+#endif
 
 static CreatePlayerMenus(playerid)
 {

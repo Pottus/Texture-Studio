@@ -1,4 +1,3 @@
-#include <YSI\y_hooks>
 
 #undef MAX_PLAYERS
 #define MAX_PLAYERS 10
@@ -82,7 +81,7 @@ sqlite_ThemeSetup()
 }
 
 // Delete for include
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
 	foreach(new i : Player)
 	{
@@ -154,11 +153,24 @@ hook OnFilterScriptInit()
 	TextDrawBoxColor(Click_CloseTexture, 0);
 	TextDrawTextSize(Click_CloseTexture, 80.000000, 10.000000);
 	TextDrawSetSelectable(Click_CloseTexture, 1);
+
+	#if defined TV_OnFilterScriptInit
+		TV_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit TV_OnFilterScriptInit
+#if defined TV_OnFilterScriptInit
+	forward TV_OnFilterScriptInit();
+#endif
 
 
-hook OnFilterScriptExit()
+public OnFilterScriptExit()
 {
 	foreach(new i : Player)
 	{
@@ -187,22 +199,45 @@ hook OnFilterScriptExit()
 	}
 	
 	TextDrawDestroy(Click_CloseTexture);
-	
-	return 1;
 
+	#if defined TV_OnFilterScriptExit
+		TV_OnFilterScriptExit();
+	#endif
+	return 1;
 }
+#if defined _ALS_OnFilterScriptExit
+	#undef OnFilterScriptExit
+#else
+	#define _ALS_OnFilterScriptExit
+#endif
+#define OnFilterScriptExit TV_OnFilterScriptExit
+#if defined TV_OnFilterScriptExit
+	forward TV_OnFilterScriptExit();
+#endif
 
 
 // Hook for include
-hook OnPlayerConnect(playerid)
+public OnPlayerConnect(playerid)
 {
 	InitText3DDraw(playerid);
 	InitPlayerTextureInfo(playerid);
 	LoadPlayerTheme(playerid, "default_theme");
 	// Create texture editor
 
+	#if defined TV_OnPlayerConnect
+		TV_OnPlayerConnect(playerid);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerConnect
+	#undef OnPlayerConnect
+#else
+	#define _ALS_OnPlayerConnect
+#endif
+#define OnPlayerConnect TV_OnPlayerConnect
+#if defined TV_OnPlayerConnect
+	forward TV_OnPlayerConnect(playerid);
+#endif
 
 InitText3DDraw(playerid)
 {
@@ -219,7 +254,7 @@ InitText3DDraw(playerid)
 }
 
 // Player disconnected
-hook OnPlayerDisconnect(playerid, reason)
+public OnPlayerDisconnect(playerid, reason)
 {
 	// Out of preview state
     Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_NONE;
@@ -236,9 +271,21 @@ hook OnPlayerDisconnect(playerid, reason)
 	SelectingTexture[playerid] = false;
 	TextureAll[playerid] = false;
     CurrTexturingIndex[playerid] = 0;
-	
+
+	#if defined TV_OnPlayerDisconnect
+		TV_OnPlayerDisconnect(playerid, reason);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerDisconnect
+	#undef OnPlayerDisconnect
+#else
+	#define _ALS_OnPlayerDisconnect
+#endif
+#define OnPlayerDisconnect TV_OnPlayerDisconnect
+#if defined TV_OnPlayerDisconnect
+	forward TV_OnPlayerDisconnect(playerid, reason);
+#endif
 
 
 static FoundTextures[4096];

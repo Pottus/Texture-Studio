@@ -55,11 +55,7 @@ enum GUIMENUINFO {
 
 static GUIData[MAX_GUI][GUIMENUINFO];
 
-#if defined FILTERSCRIPT
-	public OnFilterScriptExit()
-#else
-	public OnGameModeExit()
-#endif
+public OnFilterScriptExit()
 {
     for(new i = 0; i < MAX_GUI; i++)
 	{
@@ -69,38 +65,19 @@ static GUIData[MAX_GUI][GUIMENUINFO];
 		}
 	}
 
-	#if defined FILTERSCRIPT
-		if (funcidx("GUI_OnFilterScriptExit") != -1)
-	  	{
-	    	return CallLocalFunction("GUI_OnFilterScriptExit", "");
-	  	}
-	#else
-		if (funcidx("GUI_OnGameModeExit") != -1)
-	  	{
-	    	return CallLocalFunction("GUI_OnGameModeExit", "");
-	  	}
+	#if defined GI_OnFilterScriptExit
+		GI_OnFilterScriptExit();
 	#endif
-
-
 	return 1;
 }
-
-#if defined FILTERSCRIPT
-	#if defined _ALS_OnFilterScriptExit
-		#undef OnFilterScriptExit
-	#else
-		#define _ALS_OnFilterScriptExit
-	#endif
-	#define OnFilterScriptExit GUI_OnFilterScriptExit
-	forward GUI_OnFilterScriptExit();
+#if defined _ALS_OnFilterScriptExit
+	#undef OnFilterScriptExit
 #else
-	#if defined _ALS_OnGameModeExit
-		#undef OnGameModeExit
-	#else
-		#define _ALS_OnGameModeExit
-	#endif
-	#define OnGameModeExit GUI_OnGameModeExit
-	forward GUI_OnGameModeExit();
+	#define _ALS_OnFilterScriptExit
+#endif
+#define OnFilterScriptExit GI_OnFilterScriptExit
+#if defined GI_OnFilterScriptExit
+	forward GI_OnFilterScriptExit();
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -138,20 +115,22 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 			}
 		}
 	}
-	if (funcidx("GUI_OnPlayerClickTextDraw") != -1)
-	{
-	   	return CallLocalFunction("GUI_OnPlayerClickTextDraw", "ii", playerid, _:clickedid);
-	}
 
+	#if defined GI_OnPlayerClickTextDraw
+		GI_OnPlayerClickTextDraw(playerid, Text:clickedid);
+	#endif
 	return 1;
 }
-	#if defined _ALS_OnPlayerClickTextDraw
-		#undef OnPlayerClickTextDraw
-	#else
-		#define _ALS_OnPlayerClickTextDraw
-	#endif
-	#define OnPlayerClickTextDraw GUI_OnPlayerClickTextDraw
-	forward GUI_OnPlayerClickTextDraw(playerid, Text:clickedid);
+#if defined _ALS_OnPlayerClickTextDraw
+	#undef OnPlayerClickTextDraw
+#else
+	#define _ALS_OnPlayerClickTextDraw
+#endif
+#define OnPlayerClickTextDraw GI_OnPlayerClickTextDraw
+#if defined GI_OnPlayerClickTextDraw
+	forward GI_OnPlayerClickTextDraw(playerid, Text:clickedid);
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 
 // Apply a template array to a GUI

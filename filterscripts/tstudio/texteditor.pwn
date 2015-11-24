@@ -4,7 +4,6 @@
 
 // This is adapted from 420medit
 
-#include <YSI\y_hooks>
 #include "tstudio\fontdata.pwn"
 
 // Text draws background
@@ -468,9 +467,8 @@ HideTextEditorDraw(playerid)
 
 
 // Initalize Static draws
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
-
 	TextEdit_Background_0 = TextDrawCreate(10.000000, 150.000000, "Text On:");
 	TextDrawBackgroundColor(TextEdit_Background_0, 255);
 	TextDrawFont(TextEdit_Background_0, 2);
@@ -558,10 +556,22 @@ hook OnFilterScriptInit()
 	
 	}
 
+	#if defined TE_OnFilterScriptInit
+		TE_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit TE_OnFilterScriptInit
+#if defined TE_OnFilterScriptInit
+	forward TE_OnFilterScriptInit();
+#endif
 
-hook OnFilterScriptExit()
+public OnFilterScriptExit()
 {
 	foreach(new i : Player)
 	{
@@ -586,17 +596,42 @@ hook OnFilterScriptExit()
 		PlayerTextDrawDestroy(i,Click_FontTextSize[i]);
 
 	}
+
+	#if defined TE_OnFilterScriptExit
+		TE_OnFilterScriptExit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptExit
+	#undef OnFilterScriptExit
+#else
+	#define _ALS_OnFilterScriptExit
+#endif
+#define OnFilterScriptExit TE_OnFilterScriptExit
+#if defined TE_OnFilterScriptExit
+	forward TE_OnFilterScriptExit();
+#endif
 
 
-
-hook OnPlayerConnect(playerid)
+public OnPlayerConnect(playerid)
 {
 	CreatePlayerTextDraws(playerid);
     TextEditing[playerid] = false;
+
+	#if defined TE_OnPlayerConnect
+		TE_OnPlayerConnect(playerid);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerConnect
+	#undef OnPlayerConnect
+#else
+	#define _ALS_OnPlayerConnect
+#endif
+#define OnPlayerConnect TE_OnPlayerConnect
+#if defined TE_OnPlayerConnect
+	forward TE_OnPlayerConnect(playerid);
+#endif
 
 CreatePlayerTextDraws(playerid)
 {

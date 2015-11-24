@@ -1,4 +1,3 @@
-#include <YSI\y_hooks>
 
 #define         MAX_LIST_OBJECTS            20
 
@@ -44,7 +43,7 @@ static CurrListHighlightObject[MAX_PLAYERS] = { -1, ... };
 enum LISTSELINFO { Float:LRX, Float:LRY, Float:LRZ, Float:LZoom }
 static ListSelData[MAX_PLAYERS][LISTSELINFO];
 
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
 	// Background
 	ListSelBackGround_0 = TextDrawCreate(539.000000, 159.000000, "RX");
@@ -277,10 +276,22 @@ hook OnFilterScriptInit()
 
 	foreach(new i : Player) CreatePlayerListDraws(i);
 
+	#if defined LS_OnFilterScriptInit
+		LS_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit LS_OnFilterScriptInit
+#if defined LS_OnFilterScriptInit
+	forward LS_OnFilterScriptInit();
+#endif
 
-hook OnFilterScriptExit()
+public OnFilterScriptExit()
 {
 	TextDrawDestroy(ListSelBackGround_0);
 	TextDrawDestroy(ListSelBackGround_1);
@@ -314,18 +325,43 @@ hook OnFilterScriptExit()
 		PlayerTextDrawDestroy(i, ListModel[i]);
 		DisablePlayerCheckpoint(i);
 	}
+
+	#if defined LS_OnFilterScriptExit
+		LS_OnFilterScriptExit();
+	#endif
 	return 1;
-
 }
+#if defined _ALS_OnFilterScriptExit
+	#undef OnFilterScriptExit
+#else
+	#define _ALS_OnFilterScriptExit
+#endif
+#define OnFilterScriptExit LS_OnFilterScriptExit
+#if defined LS_OnFilterScriptExit
+	forward LS_OnFilterScriptExit();
+#endif
 
-hook OnPlayerConnect(playerid)
+public OnPlayerConnect(playerid)
 {
 	CreatePlayerListDraws(playerid);
 	CurrListOffset[playerid] = 0;
 	CurrListHighlight[playerid] = 0;
 	CurrListHighlightObject[playerid] = -1;
+
+	#if defined LS_OnPlayerConnect
+		LS_OnPlayerConnect(playerid);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerConnect
+	#undef OnPlayerConnect
+#else
+	#define _ALS_OnPlayerConnect
+#endif
+#define OnPlayerConnect LS_OnPlayerConnect
+#if defined LS_OnPlayerConnect
+	forward LS_OnPlayerConnect(playerid);
+#endif
 
 static CreatePlayerListDraws(playerid)
 {

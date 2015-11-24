@@ -95,7 +95,7 @@ OnPlayerKeyStateChangeOEdit(playerid,newkeys,oldkeys)
 }
 
 // player finished editing an object
-hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 	switch(GetEditMode(playerid))
 	{
@@ -170,8 +170,21 @@ hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, F
 
 		case EDIT_MODE_VOBJECT: OnPlayerEditVObject(playerid, objectid, response, x, y, z, rx, ry, rz);
 	}
+
+	#if defined MA_OnPlayerEditDynamicObject
+		MA_OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerEditDynamicObject
+	#undef OnPlayerEditDynamicObject
+#else
+	#define _ALS_OnPlayerEditDynamicObject
+#endif
+#define OnPlayerEditDynamicObject MA_OnPlayerEditDynamicObject
+#if defined MA_OnPlayerEditDynamicObject
+	forward MA_OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
+#endif
 
 // Player clicked a dynamic object
 public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, Float:z)
@@ -232,21 +245,45 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
     if(GetCurrTextDraw(playerid) == TEXTDRAW_LISTSEL) if(ClickTextDrawListSel(playerid, Text:clickedid)) return 1;
     if(GetCurrTextDraw(playerid) == TEXTDRAW_OSEARCH) if(ClickTextDrawOSearch(playerid, Text:clickedid)) return 1;
 
+	#if defined MA_OnPlayerClickTextDraw
+		return MA_OnPlayerClickTextDraw(playerid, Text:clickedid);
+	#endif
 	return 0;
 }
-
+#if defined _ALS_OnPlayerClickTextDraw
+	#undef OnPlayerClickTextDraw
+#else
+	#define _ALS_OnPlayerClickTextDraw
+#endif
+#define OnPlayerClickTextDraw MA_OnPlayerClickTextDraw
+#if defined MA_OnPlayerClickTextDraw
+	forward MA_OnPlayerClickTextDraw(playerid, Text:clickedid);
+#endif
 
 
 // Player clicked player textdraw
-hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
+public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
 	// Text editing mode
     if(GetCurrTextDraw(playerid) == TEXTDRAW_TEXTEDIT) if(ClickPlayerTextDrawEditText(playerid, PlayerText:playertextid)) return 1;
     if(GetCurrTextDraw(playerid) == TEXTDRAW_MATERIALS) if(ClickPlayerTextDrawEditMat(playerid, PlayerText:playertextid)) return 1;
     if(GetCurrTextDraw(playerid) == TEXTDRAW_LISTSEL) if(ClickPlayerTextListSel(playerid, PlayerText:playertextid)) return 1;
     if(GetCurrTextDraw(playerid) == TEXTDRAW_OSEARCH) if(ClickPlayerTextDrawOSearch(playerid, PlayerText:playertextid)) return 1;
+
+	#if defined MA_OnPlayerClickPlayerTextDraw
+		return MA_OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid);
+	#endif
 	return 0;
 }
+#if defined _ALS_OnPlayerClickPlayerTD
+	#undef OnPlayerClickPlayerTextDraw
+#else
+	#define _ALS_OnPlayerClickPlayerTD
+#endif
+#define OnPlayerClickPlayerTextDraw MA_OnPlayerClickPlayerTextDraw
+#if defined MA_OnPlayerClickPlayerTextDraw
+	forward MA_OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid);
+#endif
 
 
 public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)

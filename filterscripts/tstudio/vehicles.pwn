@@ -1,4 +1,3 @@
-#include <YSI\y_hooks>
 
 #define         MAX_EDIT_CARS                   10
 #define         MAX_CAR_OBJECTS         		30
@@ -213,23 +212,62 @@ YCMD:avdeletecar(playerid, arg[], help)
 
 static VehicleList[4096];
 
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
 	for(new i = 0; i < 212; i++) format(VehicleList, sizeof(VehicleList), "%s(%i) %s\n", VehicleList, i+400, VehicleNames[i]);
+
+	#if defined VH_OnFilterScriptInit
+		VH_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit VH_OnFilterScriptInit
+#if defined VH_OnFilterScriptInit
+	forward VH_OnFilterScriptInit();
+#endif
 
-hook OnFilterScriptExit()
+public OnFilterScriptExit()
 {
 	DeleteAllCars();
+
+	#if defined VH_OnFilterScriptExit
+		VH_OnFilterScriptExit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptExit
+	#undef OnFilterScriptExit
+#else
+	#define _ALS_OnFilterScriptExit
+#endif
+#define OnFilterScriptExit VH_OnFilterScriptExit
+#if defined VH_OnFilterScriptExit
+	forward VH_OnFilterScriptExit();
+#endif
 
-hook OnPlayerDisconnect(playerid, reason)
+public OnPlayerDisconnect(playerid, reason)
 {
     CurrVehicle[playerid] = -1;
+
+	#if defined VH_OnPlayerDisconnect
+		VH_OnPlayerDisconnect(playerid, reason);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerDisconnect
+	#undef OnPlayerDisconnect
+#else
+	#define _ALS_OnPlayerDisconnect
+#endif
+#define OnPlayerDisconnect VH_OnPlayerDisconnect
+#if defined VH_OnPlayerDisconnect
+	forward VH_OnPlayerDisconnect(playerid, reason);
+#endif
 
 public OnEnterExitModShop(playerid,enterexit,interiorid)
 {

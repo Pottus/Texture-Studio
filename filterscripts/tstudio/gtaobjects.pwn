@@ -1,4 +1,3 @@
-#include <YSI\y_hooks>
 #include "tstudio\allobjects.pwn"
 
 #define         MIN_GTAOBJECT_LABEL_DIST            5.0
@@ -9,15 +8,28 @@ static bool:GTAObjectDeleted[SEARCH_DATA_SIZE];
 static bool:GTAObjectSwapped[SEARCH_DATA_SIZE];
 static HighLightObject[MAX_PLAYERS] = -1;
 
-hook OnPlayerDisconnect(playerid, reason)
+public OnPlayerDisconnect(playerid, reason)
 {
 	if(HighLightObject[playerid] > -1)
 	{
 		DestroyDynamicObject(HighLightObject[playerid]);
         HighLightObject[playerid] = -1;
 	}
+
+	#if defined GO_OnPlayerDisconnect
+		GO_OnPlayerDisconnect(playerid, reason);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerDisconnect
+	#undef OnPlayerDisconnect
+#else
+	#define _ALS_OnPlayerDisconnect
+#endif
+#define OnPlayerDisconnect GO_OnPlayerDisconnect
+#if defined GO_OnPlayerDisconnect
+	forward GO_OnPlayerDisconnect(playerid, reason);
+#endif
 
 
 ResetGTADeletedObjects()

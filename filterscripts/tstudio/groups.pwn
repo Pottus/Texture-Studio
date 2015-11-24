@@ -1,4 +1,3 @@
-#include <YSI\y_hooks>
 
 // Group objects
 new Text3D:GroupObjectText[MAX_PLAYERS][MAX_TEXTURE_OBJECTS];
@@ -8,7 +7,7 @@ new Float:LastPivot[MAX_PLAYERS][XYZR];
 new Float:LastGroupPosition[MAX_PLAYERS][XYZ];
 new bool:PivotReset[MAX_PLAYERS];
 
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
 	for(new i = 0; i < MAX_PLAYERS; i++)
 	{
@@ -17,11 +16,24 @@ hook OnFilterScriptInit()
 	        GroupObjectText[i][j] = Text3D:-1;
 	    }
 	}
+
+	#if defined GR_OnFilterScriptInit
+		GR_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit GR_OnFilterScriptInit
+#if defined GR_OnFilterScriptInit
+	forward GR_OnFilterScriptInit();
+#endif
 
 
-hook OnPlayerDisconnect(playerid, reason)
+public OnPlayerDisconnect(playerid, reason)
 {
 	for(new i = 0; i < MAX_TEXTURE_OBJECTS; i++)
 	{
@@ -32,8 +44,21 @@ hook OnPlayerDisconnect(playerid, reason)
 		}
     }
 	ClearGroup(playerid);
+
+	#if defined GR_OnPlayerDisconnect
+		GR_OnPlayerDisconnect(playerid, reason);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerDisconnect
+	#undef OnPlayerDisconnect
+#else
+	#define _ALS_OnPlayerDisconnect
+#endif
+#define OnPlayerDisconnect GR_OnPlayerDisconnect
+#if defined GR_OnPlayerDisconnect
+	forward GR_OnPlayerDisconnect(playerid, reason);
+#endif
 
 HideGroupLabels(playerid)
 {
@@ -99,7 +124,7 @@ public OnDeleteGroup3DText(index)
 }
 
 
-hook OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, Float:z)
+public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, Float:z)
 {
 	if(GetEditMode(playerid) == EDIT_MODE_GROUP)
 	{
@@ -149,8 +174,21 @@ hook OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, 
 
 		}
 	}
+
+	#if defined GR_OnPlayerSelectDynamicObject
+		GR_OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, Float:z);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerSelectDynamicObj
+	#undef OnPlayerSelectDynamicObject
+#else
+	#define _ALS_OnPlayerSelectDynamicObj
+#endif
+#define OnPlayerSelectDynamicObject GR_OnPlayerSelectDynamicObject
+#if defined GR_OnPlayerSelectDynamicObject
+	forward GR_OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, Float:z);
+#endif
 
 OnPlayerKeyStateGroupChange(playerid, newkeys, oldkeys)
 {

@@ -75,7 +75,7 @@ static
 	ScreenWidth, ScreenHeight,
 	VirtualKeys[46][E_KEY_STRUCT];
 
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
 	VirtualKeys[00][KEY_CODE] = VK_KEY_0;
 	VirtualKeys[01][KEY_CODE] = VK_KEY_1;
@@ -126,10 +126,23 @@ hook OnFilterScriptInit()
 
 	editorid = INVALID_PLAYER_ID;
 	SetTimer("OnEditorUpdate", 25, true);
+
+	#if defined LI_OnFilterScriptInit
+		LI_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit LI_OnFilterScriptInit
+#if defined LI_OnFilterScriptInit
+	forward LI_OnFilterScriptInit();
+#endif
 
-hook OnPlayerConnect(playerid)
+public OnPlayerConnect(playerid)
 {
 	if(editorid != INVALID_PLAYER_ID)
 		return 1;
@@ -139,10 +152,22 @@ hook OnPlayerConnect(playerid)
 	
 	if(!strcmp(ip, "127.0.0.1"))
 		editorid = playerid;
+
+	#if defined LI_OnPlayerConnect
+		LI_OnPlayerConnect(playerid);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerConnect
+	#undef OnPlayerConnect
+#else
+	#define _ALS_OnPlayerConnect
+#endif
+#define OnPlayerConnect LI_OnPlayerConnect
+#if defined LI_OnPlayerConnect
+	forward LI_OnPlayerConnect(playerid);
+#endif
 
-//y_hooks won't work on OPD, see the "calling convention" issue on Misiur's YSI repo.
 public OnPlayerDisconnect(playerid, reason)
 {
 	if(editorid == playerid)

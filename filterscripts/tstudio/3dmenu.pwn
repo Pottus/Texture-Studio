@@ -8,7 +8,6 @@ native CancelSelect3DMenu(playerid);
 native Destroy3DMenu(MenuID);
 */
 
-#include <YSI\y_hooks>
 
 #define INVALID_3DMENU  (0xFFFF)
 
@@ -109,7 +108,7 @@ stock Select3DMenu(playerid,MenuID)
 	return 1;
 }
 
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
 	for(new i = 0; i < MAX_3DMENUS; i++)
 	{
@@ -120,30 +119,82 @@ hook OnFilterScriptInit()
  	    MenuInfo[i][AddingY] = 0.0;
  	    MenuInfo[i][Player] = -1;
 	}
+
+	#if defined TM_OnFilterScriptInit
+		TM_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit TM_OnFilterScriptInit
+#if defined TM_OnFilterScriptInit
+	forward TM_OnFilterScriptInit();
+#endif
 
-hook OnFilterScriptExit()
+public OnFilterScriptExit()
 {
 	for(new i = 0; i < MAX_3DMENUS; i++)
 	{
 		if(MenuInfo[i][IsExist]) Destroy3DMenu(i);
 	}
 
+	#if defined TM_OnFilterScriptExit
+		TM_OnFilterScriptExit();
+	#endif
+	return 1;
 }
+#if defined _ALS_OnFilterScriptExit
+	#undef OnFilterScriptExit
+#else
+	#define _ALS_OnFilterScriptExit
+#endif
+#define OnFilterScriptExit TM_OnFilterScriptExit
+#if defined TM_OnFilterScriptExit
+	forward TM_OnFilterScriptExit();
+#endif
 
-hook OnPlayerConnect(playerid)
+public OnPlayerConnect(playerid)
 {
     SelectedMenu[playerid] = -1;
 	SelectedBox[playerid] = -1;
+
+	#if defined TM_OnPlayerConnect
+		TM_OnPlayerConnect(playerid);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerConnect
+	#undef OnPlayerConnect
+#else
+	#define _ALS_OnPlayerConnect
+#endif
+#define OnPlayerConnect TM_OnPlayerConnect
+#if defined TM_OnPlayerConnect
+	forward TM_OnPlayerConnect(playerid);
+#endif
 
-hook OnPlayerDisconnect(playerid,reason)
+public OnPlayerDisconnect(playerid,reason)
 {
     if(SelectedMenu[playerid] != -1) CancelSelect3DMenu(playerid);
-    return 1;
+
+	#if defined TM_OnPlayerDisconnect
+		TM_OnPlayerDisconnect(playerid,reason);
+	#endif
+	return 1;
 }
+#if defined _ALS_OnPlayerDisconnect
+	#undef OnPlayerDisconnect
+#else
+	#define _ALS_OnPlayerDisconnect
+#endif
+#define OnPlayerDisconnect TM_OnPlayerDisconnect
+#if defined TM_OnPlayerDisconnect
+	forward TM_OnPlayerDisconnect(playerid,reason);
+#endif
 
 
 OnPlayerKeyStateChange3DMenu(playerid,newkeys,oldkeys)

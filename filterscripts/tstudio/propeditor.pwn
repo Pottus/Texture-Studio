@@ -1,4 +1,3 @@
-#include <YSI\y_hooks>
 
 YCMD:oprop(playerid, arg[], help)
 {

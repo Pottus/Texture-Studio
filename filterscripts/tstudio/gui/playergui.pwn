@@ -105,11 +105,7 @@ static bool:IgnoreNextClose[MAX_PLAYERS];
 static bool:SelectionOn[MAX_PLAYERS];
 
 // Init playergui //////////////////////////////////////////////////////////////
-#if defined FILTERSCRIPT
-	public OnFilterScriptInit()
-#else
-	public OnGameModeInit()
-#endif
+public OnFilterScriptInit()
 {
 	for(new i = 0; i < MAX_PLAYERS; i++)
 	{
@@ -120,46 +116,24 @@ static bool:SelectionOn[MAX_PLAYERS];
 		}
 	}
 
-	#if defined FILTERSCRIPT
-		if (funcidx("GUIP_OnFilterScriptInit") != -1)
-	  	{
-	    	return CallLocalFunction("GUIP_OnFilterScriptInit", "");
-	  	}
-	#else
-		if (funcidx("GUIP_OnGameModeInit") != -1)
-	  	{
-	    	return CallLocalFunction("GUIP_OnGameModeInit", "");
-	  	}
+	#if defined PG_OnFilterScriptInit
+		PG_OnFilterScriptInit();
 	#endif
-
-    return 1;
+	return 1;
 }
-
-#if defined FILTERSCRIPT
-	#if defined _ALS_OnFilterScriptInit
-		#undef OnFilterScriptInit
-	#else
-		#define _ALS_OnFilterScriptInit
-	#endif
-	#define OnFilterScriptInit GUIP_OnFilterScriptInit
-	forward GUIP_OnFilterScriptInit();
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
 #else
-	#if defined _ALS_OnGameModeInit
-		#undef OnGameModeInit
-	#else
-		#define _ALS_OnGameModeInit
-	#endif
-	#define OnFilterScriptInit GUIP_OnGameModeInit
-	forward GUIP_OnGameModeInit();
-
+	#define _ALS_OnFilterScriptInit
 #endif
+#define OnFilterScriptInit PG_OnFilterScriptInit
+#if defined PG_OnFilterScriptInit
+	forward PG_OnFilterScriptInit();
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 
-#if defined FILTERSCRIPT
-	public OnFilterScriptExit()
-#else
-	public OnGameModeExit()
-#endif
+public OnFilterScriptExit()
 {
 	foreach(new i : Player)
 	{
@@ -170,41 +144,20 @@ static bool:SelectionOn[MAX_PLAYERS];
 		}
 	}
 
-	#if defined FILTERSCRIPT
-		if (funcidx("GUIP_OnFilterScriptExit") != -1)
-	  	{
-	    	return CallLocalFunction("GUIP_OnFilterScriptExit", "");
-	  	}
-	#else
-		if (funcidx("GUIP_OnGameModeExit") != -1)
-	  	{
-	    	return CallLocalFunction("GUIP_OnGameModeExit", "");
-	  	}
+	#if defined PG_OnFilterScriptExit
+		PG_OnFilterScriptExit();
 	#endif
-
-
 	return 1;
 }
-
-#if defined FILTERSCRIPT
-	#if defined _ALS_OnFilterScriptExit
-		#undef OnFilterScriptExit
-	#else
-		#define _ALS_OnFilterScriptExit
-	#endif
-	#define OnFilterScriptExit GUIP_OnFilterScriptExit
-	forward GUIP_OnFilterScriptExit();
+#if defined _ALS_OnFilterScriptExit
+	#undef OnFilterScriptExit
 #else
-	#if defined _ALS_OnGameModeExit
-		#undef OnGameModeExit
-	#else
-		#define _ALS_OnGameModeExit
-	#endif
-	#define OnFilterScriptExit GUIP_OnGameModeExit
-	forward GUIP_OnGameModeExit();
-
+	#define _ALS_OnFilterScriptExit
 #endif
-
+#define OnFilterScriptExit PG_OnFilterScriptExit
+#if defined PG_OnFilterScriptExit
+	forward PG_OnFilterScriptExit();
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -225,21 +178,20 @@ public OnPlayerDisconnect(playerid, reason)
 	SelectionOn[playerid] = false;
 	GUIPaused[playerid] = false;
 
-	if (funcidx("GUIP_OnPlayerDisconnect") != -1)
-	{
-	   	return CallLocalFunction("GUIP_OnPlayerDisconnect", "ii", playerid, reason);
-	}
-
+	#if defined PG_OnPlayerDisconnect
+		PG_OnPlayerDisconnect(playerid,reason);
+	#endif
 	return 1;
 }
-
 #if defined _ALS_OnPlayerDisconnect
 	#undef OnPlayerDisconnect
 #else
 	#define _ALS_OnPlayerDisconnect
 #endif
-#define OnPlayerDisconnect GUIP_OnPlayerDisconnect
-forward GUIP_OnPlayerDisconnect(playerid, reason);
+#define OnPlayerDisconnect PG_OnPlayerDisconnect
+#if defined PG_OnPlayerDisconnect
+	forward PG_OnPlayerDisconnect(playerid,reason);
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 public OnPlayerClickTextDraw(playerid, Text:clickedid)
@@ -257,15 +209,21 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 			if(GUIHideFirstInStack(playerid)) return 1;
 		}
 	}
-	
-	if (funcidx("GUIP_OnPlayerClickTextDraw") != -1)
-	{
-	   	return CallLocalFunction("GUIP_OnPlayerClickTextDraw", "ii", playerid, _:clickedid);
-	}
 
+	#if defined PG_OnPlayerClickTextDraw
+		PG_OnPlayerClickTextDraw(playerid, Text:clickedid);
+	#endif
 	return 1;
 }
-
+#if defined _ALS_OnPlayerClickTextDraw
+	#undef OnPlayerClickTextDraw
+#else
+	#define _ALS_OnPlayerClickTextDraw
+#endif
+#define OnPlayerClickTextDraw PG_OnPlayerClickTextDraw
+#if defined PG_OnPlayerClickTextDraw
+	forward PG_OnPlayerClickTextDraw(playerid, Text:clickedid);
+#endif
 
 GUIHideFirstInStack(playerid)
 {
@@ -285,16 +243,6 @@ GUIHideFirstInStack(playerid)
 	return 0;
 }
 
-
-
-
-#if defined _ALS_OnPlayerClickTextDraw
-	#undef OnPlayerClickTextDraw
-#else
-	#define _ALS_OnPlayerClickTextDraw
-#endif
-#define OnPlayerClickTextDraw GUIP_OnPlayerClickTextDraw
-forward GUIP_OnPlayerClickTextDraw(playerid, Text:clickedid);
 ////////////////////////////////////////////////////////////////////////////////
 
 

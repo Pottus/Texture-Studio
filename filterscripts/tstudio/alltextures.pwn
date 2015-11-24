@@ -9082,33 +9082,34 @@ new ObjectTextures[][TEXTUREDEF] =
 	{ 19076, "xmastree1", "goldplate" }
 };
 
-public OnFilterScriptInit()
-{
-	MAX_TEXTURES = sizeof(ObjectTextures);
-	printf("LOADED %i texture definitions", MAX_TEXTURES);
-	return CallLocalFunction("Texture_ALS_OnFilterScriptInit", "");
-}
-#if defined _ALS_OnFilterScriptInit
-	#undef OnFilterScriptInit
+#if defined FILTERSCRIPT
+	public OnFilterScriptInit()
+	{
+		MAX_TEXTURES = sizeof(ObjectTextures);
+		printf("LOADED %i texture definitions", MAX_TEXTURES);
+		return CallLocalFunction("Texture_ALS_OnFilterScriptInit", "");
+	}
+	#if defined _ALS_OnFilterScriptInit
+		#undef OnFilterScriptInit
+	#else
+		#define _ALS_OnFilterScriptInit
+	#endif
+	#define OnFilterScriptInit Texture_ALS_OnFilterScriptInit
+
+	forward Texture_ALS_OnFilterScriptInit();
 #else
-	#define _ALS_OnFilterScriptInit
+	public OnGameModeInit()
+	{
+		MAX_TEXTURES = sizeof(ObjectTextures);
+		printf("LOADED %i texture definitions", MAX_TEXTURES);
+		return CallLocalFunction("Texture_ALS_OnGameModeInit", "");
+	}
+	#if defined _ALS_OnGameModeInit
+		#undef OnGameModeInit
+	#else
+		#define _ALS_OnGameModeInit
+	#endif
+	#define OnGameModeInit Texture_ALS_OnGameModeInit
+
+	forward Texture_ALS_OnGameModeInit();
 #endif
-#define OnFilterScriptInit Texture_ALS_OnFilterScriptInit
-
-forward Texture_ALS_OnFilterScriptInit();
-
-public OnGameModeInit()
-{
-	MAX_TEXTURES = sizeof(ObjectTextures);
-	printf("LOADED %i texture definitions", MAX_TEXTURES);
-	return CallLocalFunction("Texture_ALS_OnGameModeInit", "");
-}
-#if defined _ALS_OnGameModeInit
-	#undef OnGameModeInit
-#else
-	#define _ALS_OnGameModeInit
-#endif
-#define OnGameModeInit Texture_ALS_OnGameModeInit
-
-forward Texture_ALS_OnGameModeInit();
-

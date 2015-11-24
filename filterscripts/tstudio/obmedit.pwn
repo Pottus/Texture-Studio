@@ -1,4 +1,3 @@
-#include <YSI\y_hooks>
 
 #define         OBM_NONE        0
 #define         OBM_CIRCLE      1
@@ -54,21 +53,47 @@ static Float:OBMOriginSave[MAX_PLAYERS][6];
 static Float:OBMOrientationSave[MAX_PLAYERS][3];
 static OBMEditMode[MAX_PLAYERS];
 
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
 	for(new i = 0; i < MAX_PLAYERS; i++)
 	{
 	    OBMData[i][pOBMParts] = 10;
 	    OBMData[i][pOBMDegrees] = 360;
 	}
+
+	#if defined OE_OnFilterScriptInit
+		OE_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit OE_OnFilterScriptInit
+#if defined OE_OnFilterScriptInit
+	forward OE_OnFilterScriptInit();
+#endif
 
-hook OnPlayerDisconnect(playerid, reason)
+public OnPlayerDisconnect(playerid, reason)
 {
     ResetOBMValues(playerid);
+
+	#if defined OE_OnPlayerDisconnect
+		OE_OnPlayerDisconnect(playerid, reason);
+	#endif
 	return 1;
 }
+#if defined _ALS_OnPlayerDisconnect
+	#undef OnPlayerDisconnect
+#else
+	#define _ALS_OnPlayerDisconnect
+#endif
+#define OnPlayerDisconnect OE_OnPlayerDisconnect
+#if defined OE_OnPlayerDisconnect
+	forward OE_OnPlayerDisconnect(playerid, reason);
+#endif
 
 YCMD:obmedit(playerid, arg[], help)
 {

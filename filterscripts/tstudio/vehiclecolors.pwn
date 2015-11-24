@@ -1,4 +1,3 @@
-#include <YSI\y_hooks>
 
 new VehicleColorList[4096];
 
@@ -33,8 +32,21 @@ new VehicleColoursTableRGBA[256] = {
 	0x561A28FF, 0x4E0E27FF, 0x706C67FF, 0x3B3E42FF, 0x2E2D33FF, 0x7B7E7DFF, 0x4A4442FF, 0x28344EFF
 };
 
-hook OnFilterScriptInit()
+public OnFilterScriptInit()
 {
 	for(new i = 0; i < 256; i++) format(VehicleColorList, sizeof(VehicleColorList), "%s{%06x}%i XXX\n", VehicleColorList, VehicleColoursTableRGBA[i] >>> 8, i);
+
+	#if defined VC_OnFilterScriptInit
+		VC_OnFilterScriptInit();
+	#endif
 	return 1;
 }
+#if defined _ALS_OnFilterScriptInit
+	#undef OnFilterScriptInit
+#else
+	#define _ALS_OnFilterScriptInit
+#endif
+#define OnFilterScriptInit VC_OnFilterScriptInit
+#if defined VC_OnFilterScriptInit
+	forward VC_OnFilterScriptInit();
+#endif
