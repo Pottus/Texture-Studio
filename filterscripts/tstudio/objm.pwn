@@ -255,8 +255,69 @@ CreateDynamicObjectSphere(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,
     return 1;
 }
 
-/* Creates objects in a Helical path */
+/*
+x = (a + b * deg) * floatcos(deg, degrees);
+y = (a + b * deg) * floatsin(deg, degrees);
+*/
+
+/* Creates objects in an Archimedean spiral path */
 CreateDynamicObjectSpiral(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:hsep,Float:vsep,bool:facecenter=false)
+{
+	if(facecenter == false)
+	{
+    	new Float:x, Float:y, Float:c,
+			Float:away, Float:around,
+			Float:thetaMax = ((deg + 180) / 360 * 2) * (3.141593),
+			Float:awayStep = radius / thetaMax;
+
+		for(new Float:theta = hsep / awayStep; theta <= thetaMax; ) 
+		{
+			away = awayStep * theta,
+			around = theta;
+			
+			x = floatcos(around) * away,
+			y = floatsin(around) * away,
+			
+			AddOBMObject(playerid,modelid, posx + x, posy + y, posz + c,orx,ory,rz+orz);
+		
+			c += vsep;
+			theta += hsep / away;
+		}
+	}
+	else
+	{
+    	new Float:x, Float:y, Float:z, Float:c,
+			Float:detrx,Float:detry,Float:detrz,
+			Float:away, Float:around,
+			Float:thetaMax = ((deg + 180) / 360 * 2) * (3.141593),
+			Float:awayStep = radius / thetaMax;
+
+		for(new Float:theta = hsep / awayStep; theta <= thetaMax; ) 
+		{
+			away = awayStep * theta,
+			around = theta;
+			
+			x = floatcos(around) * away,
+			y = floatsin(around) * away,
+		
+			// Translate to rotation
+			AttachPoint(
+				posx + x, posy + y, posz + c,			orx, ory, atan2(y, x) + orz,
+				posx, posy, posz,						rx, ry, rz,
+				x, y, z,								detrx, detry, detrz
+			);
+			AddOBMObject(playerid,modelid, x, y, z, detrx, detry, detrz);
+		
+			c += vsep;
+			theta += hsep / away;
+		}
+	}
+	Streamer_Update(playerid);
+    return 1;
+}
+
+/* Creates objects in a Helical path */
+CreateDynamicObjectHelix(playerid,modelid,deg,Float:posx,Float:posy,Float:posz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:orz, Float:radius,Float:hsep,Float:vsep,bool:facecenter=false)
 {
 	if(facecenter == false)
 	{
