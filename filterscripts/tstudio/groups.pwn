@@ -858,29 +858,56 @@ YCMD:gadd(playerid, arg[], help)
     MapOpenCheck();
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must supply an object index to group");
-	new index = strval(arg);
-	if(index < 0) return SendClientMessage(playerid, STEALTH_YELLOW, "Index can not be less than 0");
-	if(index >= MAX_TEXTURE_OBJECTS)
+	
+	new index, range;
+	sscanf(arg, "iI(-1)", index, range);
+	
+	if(index < 0 || (range != -1 && range < 0)) return SendClientMessage(playerid, STEALTH_YELLOW, "Index can not be less than 0");
+	if(index >= MAX_TEXTURE_OBJECTS || range >= MAX_TEXTURE_OBJECTS)
 	{
 		new line[128];
 		format(line, sizeof(line), "Index can not be greater than %i", MAX_TEXTURE_OBJECTS - 1);
 		return SendClientMessage(playerid, STEALTH_YELLOW, line);
 	}
-	if(Iter_Contains(Objects, index))
+	if(range != -1 && range <= index) return SendClientMessage(playerid, STEALTH_YELLOW, "The range can not be more than the index.");
+	
+	if(range != -1)
 	{
-	    if(GroupedObjects[playerid][index]) SendClientMessage(playerid, STEALTH_YELLOW, "Object is already in your group selection");
-	    else
-	    {
-			// Update the Group GUI
-			UpdatePlayerGSelText(playerid);
+		new count;
+		for(new i = index; i <= range; i++)
+		{
+			if(Iter_Contains(Objects, i) && !GroupedObjects[playerid][i])
+			{
+				// Update the Group GUI
+				UpdatePlayerGSelText(playerid);
 
-			SendClientMessage(playerid, STEALTH_GREEN, "Object added to your group selection");
-			GroupedObjects[playerid][index] = true;
-			OnUpdateGroup3DText(index);
-	    }
+				GroupedObjects[playerid][i] = true;
+				OnUpdateGroup3DText(i);
+				
+				count++;
+			}
+		}
+		if(count) SendClientMessage(playerid, STEALTH_GREEN, sprintf("Added %i objects to your group selection", count));
+		else SendClientMessage(playerid, STEALTH_YELLOW, "No objects in that range are in your group selection");
 	}
-	else SendClientMessage(playerid, STEALTH_YELLOW, "No object exists on that index");
+	else
+	{
+		if(Iter_Contains(Objects, index))
+		{
+			if(GroupedObjects[playerid][index]) SendClientMessage(playerid, STEALTH_YELLOW, "Object is already in your group selection");
+			else
+			{
+				// Update the Group GUI
+				UpdatePlayerGSelText(playerid);
 
+				SendClientMessage(playerid, STEALTH_GREEN, "Object added to your group selection");
+				GroupedObjects[playerid][index] = true;
+				OnUpdateGroup3DText(index);
+			}
+		}
+		else SendClientMessage(playerid, STEALTH_YELLOW, "No object exists on that index");
+	}
+	
 	return 1;
 }
 
@@ -896,29 +923,57 @@ YCMD:grem(playerid, arg[], help)
     MapOpenCheck();
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must supply an object index to group");
-	new index = strval(arg);
-	if(index < 0) return SendClientMessage(playerid, STEALTH_YELLOW, "Index can not be less than 0");
-	if(index >= MAX_TEXTURE_OBJECTS)
+	
+
+	new index, range;
+	sscanf(arg, "iI(-1)", index, range);
+	
+	if(index < 0 || (range != -1 && range < 0)) return SendClientMessage(playerid, STEALTH_YELLOW, "Index can not be less than 0");
+	if(index >= MAX_TEXTURE_OBJECTS || range >= MAX_TEXTURE_OBJECTS)
 	{
 		new line[128];
 		format(line, sizeof(line), "Index can not be greater than %i", MAX_TEXTURE_OBJECTS - 1);
 		return SendClientMessage(playerid, STEALTH_YELLOW, line);
 	}
-	if(Iter_Contains(Objects, index))
+	if(range != -1 && range <= index) return SendClientMessage(playerid, STEALTH_YELLOW, "The range can not be more than the index.");
+	
+	if(range != -1)
 	{
-		if(!GroupedObjects[playerid][index]) SendClientMessage(playerid, STEALTH_YELLOW, "Object is not in your group selection");
-		else
+		new count;
+		for(new i = index; i <= range; i++)
 		{
-			// Update the Group GUI
-			UpdatePlayerGSelText(playerid);
+			if(Iter_Contains(Objects, i) && GroupedObjects[playerid][i])
+			{
+				// Update the Group GUI
+				UpdatePlayerGSelText(playerid);
 
-			SendClientMessage(playerid, STEALTH_GREEN, "Object removed from your group selection");
-			GroupedObjects[playerid][index] = false;
-			OnUpdateGroup3DText(index);
+				GroupedObjects[playerid][i] = false;
+				OnUpdateGroup3DText(i);
+				
+				count++;
+			}
 		}
+		if(count) SendClientMessage(playerid, STEALTH_GREEN, sprintf("Removed %i objects from your group selection", count));
+		else SendClientMessage(playerid, STEALTH_YELLOW, "No objects in that range are in your group selection");
 	}
-	else SendClientMessage(playerid, STEALTH_YELLOW, "No object exists on that index");
+	else
+	{
+		if(Iter_Contains(Objects, index))
+		{
+			if(!GroupedObjects[playerid][index]) SendClientMessage(playerid, STEALTH_YELLOW, "Object is not in your group selection");
+			else
+			{
+				// Update the Group GUI
+				UpdatePlayerGSelText(playerid);
 
+				SendClientMessage(playerid, STEALTH_GREEN, "Object removed from your group selection");
+				GroupedObjects[playerid][index] = false;
+				OnUpdateGroup3DText(index);
+			}
+		}
+		else SendClientMessage(playerid, STEALTH_YELLOW, "No object exists on that index");
+	}
+	
 	return 1;
 }
 
