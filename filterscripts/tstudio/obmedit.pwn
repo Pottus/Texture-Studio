@@ -462,7 +462,7 @@ static OBMEditor(playerid)
                     OBMOriginSave[playerid][4] = OBMData[playerid][pOBMOriginRY];
                     OBMOriginSave[playerid][5] = OBMData[playerid][pOBMOriginRZ];
 
-					Streamer_SetFloatData(STREAMER_TYPE_OBJECT, OBMObject[playerid], E_STREAMER_DRAW_DISTANCE, 300.0);
+					Streamer_SetFloatData(STREAMER_TYPE_OBJECT, OBMObject[playerid], E_STREAMER_DRAW_DISTANCE, 3000.0);
 
 					SetDynamicObjectMaterial(OBMObject[playerid], 0, 10765, "airportgnd_sfse", "white", -256);
 
@@ -492,7 +492,7 @@ static OBMEditor(playerid)
 	                    OBMOrientationSave[playerid][1] = OBMData[playerid][pOBMOrientationRY];
 	                    OBMOrientationSave[playerid][2] = OBMData[playerid][pOBMOrientationRZ];
 
-						Streamer_SetFloatData(STREAMER_TYPE_OBJECT, OBMObject[playerid], E_STREAMER_DRAW_DISTANCE, 300.0);
+						Streamer_SetFloatData(STREAMER_TYPE_OBJECT, OBMObject[playerid], E_STREAMER_DRAW_DISTANCE, 3000.0);
 
 						SetDynamicObjectMaterial(OBMObject[playerid], 0, 10765, "airportgnd_sfse", "white", -256);
 

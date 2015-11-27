@@ -1482,7 +1482,7 @@ EditVehicleObject(playerid)
         AVEditObjPos[playerid][4] = CarData[carindex][CORY][refindex];
         AVEditObjPos[playerid][5] = CarData[carindex][CORZ][refindex];
 
-		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, PivotObject[playerid], E_STREAMER_DRAW_DISTANCE, 300.0);
+		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, PivotObject[playerid], E_STREAMER_DRAW_DISTANCE, 3000.0);
 
 		SetDynamicObjectMaterial(PivotObject[playerid], 0, 10765, "airportgnd_sfse", "white", -256);
 
