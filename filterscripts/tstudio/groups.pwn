@@ -664,7 +664,7 @@ YCMD:editgroup(playerid, arg[], help)
 
 		PivotObject[playerid] = CreateDynamicObject(1974, LastPivot[playerid][xPos], LastPivot[playerid][yPos], LastPivot[playerid][zPos], 0.0, 0.0, 0.0, -1, -1, playerid);
 
-		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, PivotObject[playerid], E_STREAMER_DRAW_DISTANCE, 300.0);
+		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, PivotObject[playerid], E_STREAMER_DRAW_DISTANCE, 3000.0);
 
 		SetDynamicObjectMaterial(PivotObject[playerid], 0, 10765, "airportgnd_sfse", "white", -256);
 
@@ -1126,6 +1126,94 @@ YCMD:gall(playerid, arg[], help)
 		SendClientMessage(playerid, STEALTH_GREEN, line);
 	}
     else SendClientMessage(playerid, STEALTH_YELLOW, "There are no objects to group");
+
+	return 1;
+}
+
+YCMD:ginvert(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Invert all currently selected objects the selected axis.");
+		return 1;
+	}
+
+    MapOpenCheck();
+//	NoEditingMode(playerid);
+//	EditCheck(playerid);
+	
+	inline Mirror(mxpid, mxdialogid, mxresponse, mxlistitem, string:mxtext[])
+	{
+		#pragma unused mxpid, mxdialogid, mxtext
+		if(!mxresponse)
+			return 1;
+			
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		
+		new Float:gcx, Float:gcy, Float:gcz;
+		GetGroupCenter(playerid, gcx, gcy, gcz);
+		new time = GetTickCount();
+		
+		db_begin_transaction(EditMap);
+		foreach(new i: Objects)
+		{
+			if(GroupedObjects[playerid][i])
+			{
+				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+
+				switch(mxlistitem) {
+					case 0: {
+						ObjectData[i][oX] = -ObjectData[i][oX] + (2.0 * gcx);
+					//	ObjectData[i][oRY] = -ObjectData[i][oRY];
+					//	ObjectData[i][oRZ] = -ObjectData[i][oRZ];
+					
+					//	ObjectData[i][oRY] += 180.0;
+					//	ObjectData[i][oRZ] += 180.0;
+					
+					//	ObjectData[i][oRX] += 180.0;
+					}
+					case 1: {
+						ObjectData[i][oY] = -ObjectData[i][oY] + (2.0 * gcy);
+					//	ObjectData[i][oRX] = -ObjectData[i][oRX];
+					//	ObjectData[i][oRZ] = -ObjectData[i][oRZ];
+					
+					//	ObjectData[i][oRX] += 180.0;
+					//	ObjectData[i][oRZ] += 180.0;
+
+					//	ObjectData[i][oRY] += 180.0;
+					}
+					case 2: {
+						ObjectData[i][oZ] = -ObjectData[i][oZ] + (2.0 * gcz);
+					//	ObjectData[i][oRX] = -ObjectData[i][oRX];
+					//	ObjectData[i][oRY] = -ObjectData[i][oRY];
+					
+					//	ObjectData[i][oRX] += 180.0;
+					//	ObjectData[i][oRY] += 180.0;
+
+					//	ObjectData[i][oRZ] += 180.0;
+					}
+				}
+				EDIT_FloatGetRemainder(ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+				
+				SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
+				SetDynamicObjectRot(ObjectData[i][oID], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
+
+				UpdateObject3DText(i);
+
+				sqlite_UpdateObjectPos(i);
+			}
+		}
+		db_end_transaction(EditMap);
+		
+		//(Not added to GUI yet)
+		// Update the Group GUI
+		//UpdatePlayerGSelText(playerid);
+		
+		new c = mxlistitem == 0 ? 'X' : mxlistitem == 1 ? 'Y' : 'Z';
+		SendClientMessage(playerid, STEALTH_GREEN, sprintf("Inverted all currently selected along the %c axis.", c));
+	}
+	Dialog_ShowCallback(playerid, using inline Mirror, DIALOG_STYLE_LIST, "Texture Studio - Select Mirror Axis", "X\nY\nZ", "Select", "");
 
 	return 1;
 }
