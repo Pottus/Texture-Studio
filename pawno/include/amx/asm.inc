@@ -58,6 +58,8 @@ stock const ASM_CTRL_STK = 4;
 stock const ASM_CTRL_FRM = 5;
 stock const ASM_CTRL_CIP = 6;
 
+static gPreviousWriteOffset = cellmin;
+
 // Internal functions:
 
 static stock AsmError:AsmRaiseError(ctx[AsmContext], AsmError:error) {
@@ -93,6 +95,9 @@ static stock AsmError:AsmEmitOperand(ctx[AsmContext], value) {
 }
 
 static stock AsmError:AsmEmitInstruction(ctx[AsmContext], Opcode:opcode, ...) {
+	// if there's an error while writing then backtracking is useful
+	gPreviousWriteOffset = ctx[AsmContext_buffer_offset];
+
 	new AsmError:error = ASM_ERROR_NONE;
 
 	error = AsmEmitOpcode(ctx, opcode);
@@ -136,6 +141,10 @@ stock AsmError:AsmInitPtr(ctx[AsmContext], buffer, size) {
 	ctx[AsmContext_buffer_offset] = 0;
 	ctx[AsmContext_error_handler] = 0;
 	return ASM_ERROR_NONE;
+}
+
+stock AsmGetPreviousWriteOffset() {
+	return gPreviousWriteOffset;
 }
 
 stock AsmGetBufferSize(ctx[AsmContext]) {
@@ -562,7 +571,7 @@ stock AsmError:AsmEmitRetn(ctx[AsmContext]) {
 }
 
 stock AsmError:AsmEmitSctrl(ctx[AsmContext], index) {
-	assert(index == 2 || index == 4 || index == 6);
+	assert(index == 2 || 4 <= index <= 6);
 	return AsmEmitInstruction(ctx, OP_SCTRL, index);
 }
 
@@ -746,7 +755,7 @@ stock AsmError:AsmEmitZeroS(ctx[AsmContext], offset) {
 // Higher level functions:
 
 stock AsmError:AsmEmitSysreq(ctx[AsmContext], const name[]) {
-	return AsmEmitSysreqD(ctx, GetNativeAddressFromName(name));
+	return AsmEmitSysreqC(ctx, GetNativeIndexFromName(name));
 }
 
 stock AsmError:AsmEmitPopArgs(ctx[AsmContext], n) {

@@ -18,6 +18,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+#if defined ASM_MACROS_INC
+	#endinput
+#endif
+#define ASM_MACROS_INC
+
 // Only detect ONE space, so you don't need a trailing space on opcodes with no
 // parameters. Add a space on the end here incase there wasn't one already.
 #define @emit%0\32;%1\10;%3 asm_emit_(ctx,%1 );

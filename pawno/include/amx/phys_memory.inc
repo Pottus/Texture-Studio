@@ -27,15 +27,31 @@
 
 #include "amx_base"
 
-static stock AbsToRel(addr) {
-	new dat;
+static stock GetDat() {
 	#emit lctrl 1
-	#emit stor.s.pri dat
-	return addr - (GetAmxBaseAddress() + dat);
+	#emit retn
+	return 0; // make compiler happy
 }
 
-stock ReadPhysMemory(addr, dest[], num = sizeof(dest)) {
-	new rel_addr = AbsToRel(addr);
+static stock AbsToRel(address) {
+	return address - (GetAmxBaseAddress() + GetDat());
+}
+
+static stock RelToAbs(address) {
+	return address + (GetAmxBaseAddress() + GetDat());
+}
+
+// Returns the absolute address of a variable/array.
+stock refabs(...) {
+	assert(numargs() == 1);
+	new address;
+	#emit load.s.pri 12
+	#emit stor.s.pri address
+	return RelToAbs(address);
+}
+
+stock ReadPhysMemory(address, dest[], num = sizeof(dest)) {
+	new rel_addr = AbsToRel(address);
 
 	// Current destination cell address.
 	new cur_dest;
@@ -57,8 +73,8 @@ stock ReadPhysMemory(addr, dest[], num = sizeof(dest)) {
 	return 0; // make compiler happy
 }
 
-stock WritePhysMemory(addr, src[], num = sizeof(src)) {
-	new rel_addr = AbsToRel(addr);
+stock WritePhysMemory(address, src[], num = sizeof(src)) {
+	new rel_addr = AbsToRel(address);
 
 	// Current destination cell address..
 	new cur_src;
@@ -80,31 +96,19 @@ stock WritePhysMemory(addr, src[], num = sizeof(src)) {
 	return 0; // make compiler happy
 }
 
-stock ReadPhysMemoryCell(addr) {
-	new rel_addr = AbsToRel(addr);
+stock ReadPhysMemoryCell(address) {
+	new rel_addr = AbsToRel(address);
 	#emit lref.s.pri rel_addr
 	#emit stack 4
 	#emit retn
 	return 0; // make compiler happy
 }
 
-stock WritePhysMemoryCell(addr, what) {
-	new rel_addr = AbsToRel(addr);
+stock WritePhysMemoryCell(address, what) {
+	new rel_addr = AbsToRel(address);
 	#emit load.s.pri what
 	#emit sref.s.pri rel_addr
 	#emit stack 4
 	#emit retn
 	return 0; // make compiler happy
-}
-
-// Returns the absolute address of a variable/array.
-stock refabs(...) {
-	assert(numargs() == 1);
-	new offset;
-	#emit load.s.alt 12
-	#emit lctrl 1
-	#emit add
-	#emit move.alt
-	#emit stor.s.pri offset
-	return offset + GetAmxBaseAddress();
 }

@@ -18,15 +18,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+#if defined SHELLCODE_INC
+	#endinput
+#endif
+#define SHELLCODE_INC
+
 #include "amx_header"
 #include "dynamic_call"
 #include "phys_memory"
 
 stock RunShellcode(code_ptr, bool:align = true) {
 	if (align) {
-		while (code_ptr % 16 != 0) {
-			code_ptr++;
-		}
+		code_ptr = ((code_ptr + 15) >>> 4) << 4;
 	}
 	return SysreqD(code_ptr);
 }

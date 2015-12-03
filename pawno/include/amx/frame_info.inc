@@ -58,6 +58,17 @@ stock GetFrameReturn(frm_addr) {
 	return 0; // make compiler happy
 }
 
+stock SetFramePreviousFrame(frm_addr, addr) {
+	#emit load.s.pri frm_addr
+
+	#emit push.pri
+	#emit load.s.alt addr
+	#emit sref.s.alt 0xfffffffc
+
+	#emit stack 4
+	#emit retn
+}
+
 stock SetFrameReturn(frm_addr, addr) {
 	#emit load.s.pri frm_addr
 	#emit add.c 4
@@ -68,6 +79,22 @@ stock SetFrameReturn(frm_addr, addr) {
 
 	#emit stack 4
 	#emit retn
+}
+
+stock SetFrameParameterSize(frm_addr, size) {
+	#emit load.s.pri frm_addr
+	#emit add.c 8
+
+	#emit push.pri
+	#emit load.s.pri size
+	#emit sref.s.pri 0xfffffffc
+
+	#emit stack 4
+	#emit retn
+}
+
+stock SetFrameParameterCount(frm_addr, count) {
+	return SetFrameParameterSize(frm_add, count << 2);
 }
 
 stock GetFrameTotalSize(frm_addr) {
@@ -409,6 +436,18 @@ stock SetCurrentFrameReturn(addr) {
 	SetFrameReturn(GetCallerFrame(), addr);
 }
 
+stock SetCurrentFramePreviousFrame(addr) {
+	SetFramePreviousFrame(GetCallerFrame(), addr);
+}
+
+stock SetCurrentParameterSize(size) {
+	SetFrameParameterSize(GetCallerFrame(), size);
+}
+
+stock SetCurrentParameterCount(count) {
+	SetFrameParameterCount(GetCallerFrame(), count);
+}
+
 stock GetFrameFunction(frm_addr) {
 	// try to determine the start address of the function this frame is for
 	new prev_frm = GetFramePreviousFrame(frm_addr);
@@ -459,11 +498,13 @@ stock GetFrameFunction(frm_addr) {
 				return ReadAmxMemory(ReadAmxMemory(ret_addr - 4));
 			} else if (opcode == OP_LOAD_S_PRI) {
 				return GetFrameVariable(prev_frm, ReadAmxMemory(ret_addr - 4));
+			} else if (opcode == OP_CONST_PRI) {
+				return ReadAmxMemory(ret_addr - 4);
 			}
 		}
 
 		// guess!
-		new end = amxhdr[AMX_HDR_COD] - amxhdr[AMX_HDR_DAT];
+		new end = amxhdr[AMX_HDR_COD] - amxhdr[AMX_HDR_DAT] + 8; // "halt"
 		ret_addr = GetFrameReturn(GetFrameNextFrame(frm_addr)) + end;
 
 		opcode = RelocateOpcode(OP_RETN);

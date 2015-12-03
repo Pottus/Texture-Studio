@@ -388,6 +388,9 @@ stock bool:GetNativeInfo(index, info[AMX_FUNCSTUBNT]) {
 	new amxhdr[AMX_HDR];
 	GetAmxHeader(amxhdr);
 
+	// For when "index" is not valid
+	info[AMX_FUNCSTUBNT_ADDRESS] = -1;
+
 	new num_natives = GetNumNatives(amxhdr);
 
 	if (index < 0 || index >= num_natives) {

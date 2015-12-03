@@ -1,6 +1,6 @@
-#include <ShellExecute>
+#include "windows/ShellExecute"
 
-ToCharString(s[], size = sizeof(s)) {
+static stock ToCharString(s[], size = sizeof(s)) {
 	for (new i = 0; i < size; i++) {
 		s[i] = swapchars(s[i]);
 	}

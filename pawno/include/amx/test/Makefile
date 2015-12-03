@@ -8,6 +8,7 @@ AMX  = amx-test.amx
 AMX += asm-test.amx
 AMX += disasm-test.amx
 AMX += dynamic_call-test.amx
+AMX += jit-test.amx
 AMX += phys_memory-test.amx
 AMX += stack_trace-test.amx
 
@@ -23,6 +24,9 @@ disasm-test.amx: disasm-test.pwn
 	$(PAWNCC) $(PFLAGS) $(INCLUDE) $^ -o$@
 
 dynamic_call-test.amx: dynamic_call-test.pwn
+	$(PAWNCC) $(PFLAGS) $(INCLUDE) $^ -o$@
+
+jit-test.amx: jit-test.pwn
 	$(PAWNCC) $(PFLAGS) $(INCLUDE) $^ -o$@
 
 phys_memory-test.amx: phys_memory-test.pwn

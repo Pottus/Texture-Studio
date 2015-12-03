@@ -30,10 +30,12 @@
 #include "amx_memory"
 #include "opcode"
 
-#define MAX_INSN_NAME 15
+#define DISASM_MAX_INSN_NAME 15
+#define DISASM_MAX_PUBLIC_NAME 32
+#define DISASM_MAX_NATIVE_NAME 100
 
 enum DisasmInsnInfo {
-	DisasmInsnInfo_name[MAX_INSN_NAME],
+	DisasmInsnInfo_name[DISASM_MAX_INSN_NAME],
 	DisasmInsnInfo_num_opers,
 	bool:DisasmInsnInfo_needs_reloc
 }
@@ -177,7 +179,7 @@ static stock const insn_table[][DisasmInsnInfo] = {
 	{ "symbol",     -1, false }, // obsolete
 	{ "srange",     -1, false }, // obsolete
 	{ "jump.pri",    0, false },
-	{ "switch",      1, false },
+	{ "switch",      1, true },
 	{ "casetbl",    -1, true },
 	{ "swap.pri",    0, false },
 	{ "swap.alt",    0, false },
@@ -216,12 +218,12 @@ stock bool:DisasmDecodeInsn(ctx[DisasmContext]) {
 		return false;
 	}
 
-	new Opcode:opcode = UnrelocateOpcode(Opcode:ReadAmxMemory(ctx[DisasmContext_nip]));
+	new Opcode:opcode = UnrelocateOpcode(Opcode:ReadAmxMemory(ip));
 	if (opcode <= OP_NONE || _:opcode >= NUM_OPCODES) {
 		return false;
 	}
 
-	ctx[DisasmContext_cip] = ctx[DisasmContext_nip];
+	ctx[DisasmContext_cip] = ip;
 	ctx[DisasmContext_opcode] = opcode;
 	ctx[DisasmContext_insn] = insn_table[_:opcode];
 
@@ -238,6 +240,13 @@ stock bool:DisasmDecodeInsn(ctx[DisasmContext]) {
 
 	ctx[DisasmContext_nip] = ip;
 	return true;
+}
+
+stock Opcode:DisasmNextInsn(ctx[DisasmContext]) {
+	if (DisasmDecodeInsn(ctx)) {
+		return ctx[DisasmContext_opcode];
+	}
+	return OP_NONE;
 }
 
 stock Opcode:DisasmGetOpcode(ctx[DisasmContext]) {
@@ -294,13 +303,134 @@ static stock bool:IsPrintableAscii(c) {
 }
 
 static stock ToPrintableAscii(c) {
-	if (IsPrintableAscii(c)) {
-		return c;
-	}
-	return ' ';
+	return IsPrintableAscii(c) ? c : ' ';
 }
 
-static stock DumpDataRowChar(File:file, start, num, max) {
+stock DisasmWriteCode(File:file) {
+	new ctx[DisasmContext];
+	DisasmInit(ctx);
+
+	new base = GetAmxBaseAddress();
+
+	new hdr[AMX_HDR];
+	GetAmxHeader(hdr);
+
+	new dat = hdr[AMX_HDR_DAT];
+	new cod = hdr[AMX_HDR_COD];
+
+	fwrite(file, "; CODE\n\n");
+
+	while (DisasmGetNextIp(ctx) < ctx[DisasmContext_end_ip])
+	{
+		if (!DisasmDecodeInsn(ctx)) {
+			new cip = DisasmGetNextIp(ctx);
+			ctx[DisasmContext_nip] += 4;
+			fwrite(file, ToHexStr(cip + dat - cod));
+			fwrite(file, " ???? ");
+			fwrite(file, ToHexStr(ReadAmxMemory(cip)));
+			fwrite(file, "\n");
+			continue;
+		}
+
+		new Opcode:opcode = DisasmGetOpcode(ctx);
+
+		if (opcode == OP_PROC) {
+			fwrite(file, "\n");
+		}
+
+		new cip = DisasmGetCurIp(ctx);
+
+		new insn_name[DISASM_MAX_INSN_NAME];
+		DisasmGetInsnName(ctx, insn_name);
+		fwrite(file, ToHexStr(cip + dat - cod));
+		fwrite(file, " ");
+		fwrite(file, insn_name);
+		fwrite(file, " ");
+
+		switch (opcode) {
+			case OP_PROC: {
+				new name[32];
+				new address = cip + dat - cod;
+				if (address == hdr[AMX_HDR_CIP]) {
+					strcat(name, "main");
+				} else {
+					new index = GetPublicIndexFromAddress(address);
+					if (index >= 0) {
+						GetPublicNameFromIndex(index, name);
+					}
+				}
+				if (strlen(name) != 0) {
+					fwrite(file, "; ");
+					fwrite(file, name);
+				}
+			}
+			case OP_CASETBL: {
+				new num = DisasmGetNumOperands(ctx);
+				fwrite(file, ToHexStr(num));
+				fwrite(file, " ");
+				new rel_addr = DisasmGetOperand(ctx, 1) - (base + cod);
+				fwrite(file, ToHexStr(rel_addr));
+				for (new i = 1; i <= num; i++) {
+					fwrite(file, "\n         case ");
+					new val = DisasmGetOperand(ctx, i * 2);
+					fwrite(file, ToHexStr(val));
+					fwrite(file, " ");
+					rel_addr = DisasmGetOperand(ctx, i * 2 + 1) - (base + cod);
+					fwrite(file, ToHexStr(rel_addr));
+				}
+			}
+			case OP_CALL: {
+				new name[DISASM_MAX_PUBLIC_NAME];
+				new address = DisasmGetOperand(ctx) - base - cod;
+				if (address == hdr[AMX_HDR_CIP]) {
+					strcat(name, "main");
+				} else {
+					new index = GetPublicIndexFromAddress(address);
+					if (index >= 0) {
+						GetPublicNameFromIndex(index, name);
+					}
+				}
+				fwrite(file, ToHexStr(address));
+				if (strlen(name) > 0) {
+					fwrite(file, "; ");
+					fwrite(file, name);
+				}
+			}
+			case OP_SYSREQ_C, OP_SYSREQ_D: {
+				new name[DISASM_MAX_NATIVE_NAME];
+				new address = DisasmGetOperand(ctx);
+				if (opcode == OP_SYSREQ_C) {
+					new index = DisasmGetOperand(ctx);
+					GetNativeNameFromIndex(index, name);
+				} else {
+					new index = GetNativeIndexFromAddress(address);
+					if (index >= 0) {
+						GetNativeNameFromIndex(index, name);
+					}
+				}
+				fwrite(file, ToHexStr(address));
+				if (strlen(name) > 0) {
+					fwrite(file, "; ");
+					fwrite(file, name);
+				}
+			}
+			default: {
+				new n = DisasmGetNumOperands(ctx);
+				for (new i = 0; i < n; i++) {
+					new operand = DisasmGetOperand(ctx, i);
+					if (DisasmNeedReloc(ctx)) {
+						operand -= base + cod;
+					}
+					fwrite(file, ToHexStr(operand));
+				}
+			}
+		}
+
+		fwrite(file, "\n");
+	}
+}
+
+stock DisasmWriteDataRowChar(File:file, start, num, max) {
 	new cur = start;
 	new end = start + num*4;
 
@@ -324,7 +454,7 @@ static stock DumpDataRowChar(File:file, start, num, max) {
 	}
 }
 
-static stock DumpDataRowHex(File:file, start, num, max) {
+stock DisasmWriteDataRowHex(File:file, start, num, max) {
 	new cur = start;
 	new end = start + num*4;
 
@@ -339,136 +469,41 @@ static stock DumpDataRowHex(File:file, start, num, max) {
 	}
 }
 
-stock DisasmDump(const out_filename[]) {
-	new ctx[DisasmContext];
-	DisasmInit(ctx);
-
-	new File:file = fopen(out_filename, io_write);
-	if (!file) {
-		return;
-	}
-
-	new base = GetAmxBaseAddress();
+stock DisasmWriteData(File:file) {
+	fwrite(file, "\n\n; DATA\n");
 
 	new hdr[AMX_HDR];
 	GetAmxHeader(hdr);
 
 	new dat = hdr[AMX_HDR_DAT];
-	new cod = hdr[AMX_HDR_COD];
 	new hea = hdr[AMX_HDR_HEA];
-
-	// DISASSAMBLE CODE
-	fwrite(file, "; CODE\n\n");
-
-	while (DisasmDecodeInsn(ctx)) {
-		new Opcode:opcode = DisasmGetOpcode(ctx);
-
-		if (opcode == OP_PROC) {
-			fwrite(file, "\n");
-		}
-
-		new cip = DisasmGetCurIp(ctx);
-
-		new insn_name[15];
-		DisasmGetInsnName(ctx, insn_name);
-		fwrite(file, ToHexStr(cip + dat - cod));
-		fwrite(file, " ");
-		fwrite(file, insn_name);
-		fwrite(file, " ");
-
-		if (opcode == OP_PROC) {
-			new name[32];
-			new address = cip + dat - cod;
-			if (address == hdr[AMX_HDR_CIP]) {
-				strcat(name, "main");
-			} else {
-				new index = GetPublicIndexFromAddress(address);
-				if (index >= 0) {
-					GetPublicNameFromIndex(index, name);
-				}
-			}
-			if (strlen(name) != 0) {
-				fwrite(file, "; ");
-				fwrite(file, name);
-			}
-		}
-
-		if (opcode == OP_CASETBL) {
-			new num = DisasmGetNumOperands(ctx);
-			for (new i = 0; i < num; i++) {
-				fwrite(file, "\n         ");
-				new addr = ReadAmxMemory(cip + 4 * i * 2);
-				new rel_addr = addr - (base + cod) + (cip - 4 + dat - cod);
-				fwrite(file, ToHexStr(rel_addr));
-				fwrite(file, " ");
-				new val = ReadAmxMemory(cip + 4 * i * 2 + 4);
-				fwrite(file, ToHexStr(val));
-			}
-			goto next;
-		}
-
-		switch (opcode) {
-			case OP_CALL: {
-				new name[32];
-				new address = ReadAmxMemory(cip) - base - cod;
-				if (address == hdr[AMX_HDR_CIP]) {
-					strcat(name, "main");
-				} else {
-					new index = GetPublicIndexFromAddress(address);
-					if (index >= 0) {
-						GetPublicNameFromIndex(index, name);
-					}
-				}
-				if (strlen(name) > 0) {
-					fwrite(file, name);
-					goto next;
-				}
-			}
-			case OP_SYSREQ_C, OP_SYSREQ_D: {
-				new name[100];
-				if (opcode == OP_SYSREQ_C) {
-					new index = DisasmGetOperand(ctx);
-					GetNativeNameFromIndex(index, name);
-				} else {
-					new address = DisasmGetOperand(ctx);
-					new index = GetNativeIndexFromAddress(address);
-					if (index >= 0) {
-						GetNativeNameFromIndex(index, name);
-					}
-				}
-				if (strlen(name) > 0) {
-					fwrite(file, name);
-					goto next;
-				}
-			}
-		}
-
-		new n = DisasmGetNumOperands(ctx);
-		for (new i = 0; i < n; i++) {
-			new operand = DisasmGetOperand(ctx, i);
-			if (DisasmNeedReloc(ctx)) {
-				operand -= base + cod;
-			}
-			fwrite(file, ToHexStr(operand));
-		}
-
-next:
-		fwrite(file, "\n");
-	}
-
-	// DUMP DATA
-	fwrite(file, "\n\n; DATA\n");
-
 	new data_end = hea - dat;
 
 	for (new i = 0; i < data_end; i += 0x10) {
 		fwrite(file, ToHexStr(i));
 		fwrite(file, "  ");
-		DumpDataRowHex(file, i, 4, min(i + 0x10, data_end));
+		DisasmWriteDataRowHex(file, i, 4, min(i + 0x10, data_end));
 		fwrite(file, " ");
-		DumpDataRowChar(file, i, 4, min(i + 0x10, data_end));
+		DisasmWriteDataRowChar(file, i, 4, min(i + 0x10, data_end));
 		fwrite(file, "\n");
 	}
+}
 
-	fclose(file);
+stock DisasmWriteFile(File:file) {
+	DisasmWriteCode(file);
+	DisasmWriteData(file);
+}
+
+stock bool:DisasmWrite(const filename[]) {
+	new File:file = fopen(filename, io_write);
+	if (file) {
+		DisasmWriteFile(file);
+		fclose(file);
+		return true;
+	}
+	return false;
+}
+
+stock DisasmDump(const filename[]) {
+	DisasmWrite(filename);
 }

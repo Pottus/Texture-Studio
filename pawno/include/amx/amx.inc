@@ -23,7 +23,6 @@
 #endif
 #define AMX_INC
 
-#include "os"
 #include "phys_memory"
 #include "shellcode"
 
@@ -51,7 +50,6 @@ const AMX_OFFSET_SYSREQ_D = 100;
 // Returns the address of the AMX struct instance in memory that corresponds
 // to this script. This function works only on Windows!
 stock GetAmxAddress() {
-	assert(!IsLinux());
 	static address = 0;
 	if (address == 0) {
 		static const code[] = {
