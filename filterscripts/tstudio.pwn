@@ -221,7 +221,7 @@ Change Log:
 // Set max players
 #undef MAX_PLAYERS
 #define MAX_PLAYERS 10
-
+	
 // System defines
 #define BroadcastCommand(%0,%1) CallLocalFunction("OnPlayerCommandText","is",%0,%1)
 
@@ -571,3 +571,9 @@ new bool:MapOpen;
 
 // Main system
 #include "tstudio\tsmain.pwn"
+
+// SA-MP Introspect by Slice and Y_Less, automatically included with debug mode.
+#if debug > 1
+	#define AMX_NAME "tstudio.amx"
+	#include <interpreter>
+#endif
