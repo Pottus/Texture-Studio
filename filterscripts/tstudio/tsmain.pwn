@@ -1556,10 +1556,12 @@ CloneObject(index, grouptask=0)
 // Deletes all map objects
 DeleteMapObjects(bool:sqlsave)
 {
+	db_begin_transaction(EditMap);
 	foreach(new i : Objects)
 	{
         i = DeleteDynamicObject(i, sqlsave);
 	}
+	db_end_transaction(EditMap);
 
 	// Reset any player variables
 	foreach(new i : Player)
@@ -3120,6 +3122,7 @@ YCMD:mtsetall(playerid, arg[], help)
 
 	if(GetMaterials(playerid, arg, mindex, tref))
 	{
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 			if(ObjectData[i][oModel] == ObjectData[CurrObject[playerid]][oModel])
@@ -3131,6 +3134,7 @@ YCMD:mtsetall(playerid, arg[], help)
 	        	if(ObjectData[i][oAttachedVehicle] > -1) UpdateAttachedVehicleObject(ObjectData[i][oAttachedVehicle], i, VEHICLE_REATTACH_UPDATE);
 			}
 		}
+		db_end_transaction(EditMap);
 
         SendClientMessage(playerid, STEALTH_GREEN, "Changed All Materials");
 
@@ -3600,6 +3604,8 @@ YCMD:mtcolorall(playerid, arg[], help)
 		    }
 
 		}
+		db_end_transaction(EditMap);
+		
 		// Update the streamer
 		foreach(new i : Player)
 		{
@@ -4367,6 +4373,7 @@ YCMD:dox(playerid, arg[], help)
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
 
+	db_begin_transaction(EditMap);
 	foreach(new i : Objects)
 	{
 		SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
@@ -4379,6 +4386,7 @@ YCMD:dox(playerid, arg[], help)
 
 	    sqlite_UpdateObjectPos(i);
 	}
+	db_end_transaction(EditMap);
 
 	return 1;
 }
@@ -4402,6 +4410,7 @@ YCMD:doy(playerid, arg[], help)
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
 
+	db_begin_transaction(EditMap);
 	foreach(new i : Objects)
 	{
 		SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
@@ -4414,6 +4423,7 @@ YCMD:doy(playerid, arg[], help)
 
 	    sqlite_UpdateObjectPos(i);
 	}
+	db_end_transaction(EditMap);
 
 	return 1;
 }
@@ -4437,6 +4447,7 @@ YCMD:doz(playerid, arg[], help)
 	dist = floatstr(arg);
 	if(dist == 0) dist = 1.0;
 
+	db_begin_transaction(EditMap);
 	foreach(new i : Objects)
 	{
 		SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
@@ -4449,6 +4460,7 @@ YCMD:doz(playerid, arg[], help)
 
 	    sqlite_UpdateObjectPos(i);
 	}
+	db_end_transaction(EditMap);
 
 	return 1;
 }
@@ -4481,6 +4493,7 @@ YCMD:drx(playerid, arg[], help)
     if(GetMapCenter(mCenterX, mCenterY, mCenterZ))
 	{
 		// Loop through all objects and perform rotation calculations
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
@@ -4493,6 +4506,7 @@ YCMD:drx(playerid, arg[], help)
 
 			sqlite_UpdateObjectPos(i);
 		}
+		db_end_transaction(EditMap);
 
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, "Map RX rotation complete ");
@@ -4534,6 +4548,7 @@ YCMD:dry(playerid, arg[], help)
     if(GetMapCenter(mCenterX, mCenterY, mCenterZ))
 	{
 		// Loop through all objects and perform rotation calculations
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
@@ -4546,6 +4561,7 @@ YCMD:dry(playerid, arg[], help)
 
 			sqlite_UpdateObjectPos(i);
 		}
+		db_end_transaction(EditMap);
 
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, "Map RY rotation complete ");
@@ -4587,6 +4603,7 @@ YCMD:drz(playerid, arg[], help)
     if(GetMapCenter(mCenterX, mCenterY, mCenterZ))
 	{
 		// Loop through all objects and perform rotation calculations
+		db_begin_transaction(EditMap);
 		foreach(new i : Objects)
 		{
 			SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
@@ -4599,6 +4616,7 @@ YCMD:drz(playerid, arg[], help)
 
 			sqlite_UpdateObjectPos(i);
 		}
+		db_end_transaction(EditMap);
 
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, "Map RZ rotation complete ");
