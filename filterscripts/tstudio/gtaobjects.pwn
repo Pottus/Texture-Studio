@@ -262,3 +262,41 @@ YCMD:swapbuilding(playerid, arg[], help)
 	return 1;
 }
 
+YCMD:clonebuilding(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Clones a San Andreas building in it's place.");
+		return 1;
+	}
+
+    MapOpenCheck();
+
+	EditCheck(playerid);
+
+	NoEditingMode(playerid);
+
+	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must provide an index to clone!");
+	new line[128], index = strval(arg);
+
+	if(index < 0 || index >= SEARCH_DATA_SIZE)
+	{
+		format(line, sizeof(line), "Index must be between 0 and %i", SEARCH_DATA_SIZE-1);
+	    return SendClientMessage(playerid, STEALTH_YELLOW, line);
+	}
+	
+	AO_RESULT = db_query(AO_DB, sprintf("SELECT * FROM `buildings` WHERE `ID` = %i", index));
+
+	SetCurrObject(playerid, AddDynamicObject(db_get_field_int(AO_RESULT, 1), db_get_field_float(AO_RESULT, 4), db_get_field_float(AO_RESULT, 5), db_get_field_float(AO_RESULT, 6), db_get_field_float(AO_RESULT, 7), db_get_field_float(AO_RESULT, 8), db_get_field_float(AO_RESULT, 9)));
+
+	UpdateObject3DText(CurrObject[playerid], true);
+	
+	SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_CREATED);
+	
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+	SendClientMessage(playerid, STEALTH_GREEN, "Cloned your selected object the new object is now your selection");
+
+	return 1;
+}
+
