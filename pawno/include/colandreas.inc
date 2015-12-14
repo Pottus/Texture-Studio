@@ -100,6 +100,7 @@ native CA_RayCastMultiLine(Float:StartX, Float:StartY, Float:StartZ, Float:EndX,
 native CA_RayCastLineAngle(Float:StartX, Float:StartY, Float:StartZ, Float:EndX, Float:EndY, Float:EndZ, &Float:x, &Float:y, &Float:z, &Float:rx, &Float:ry, &Float:rz);
 native CA_RayCastReflectionVector(Float:startx, Float:starty, Float:startz, Float:endx, Float:endy, Float:endz, &Float:x, &Float:y, &Float:z, &Float:nx, &Float:ny, &Float:nz);
 native CA_RayCastLineNormal(Float:startx, Float:starty, Float:startz, Float:endx, Float:endy, Float:endz, &Float:x, &Float:y, &Float:z, &Float:nx, &Float:ny, &Float:nz);
+native CA_ContactTest(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
 native CA_EulerToQuat(Float:rx, Float:ry, Float:rz, &Float:x, &Float:y, &Float:z, &Float:w);
 native CA_QuatToEuler(Float:x, Float:y, Float:z, Float:w, &Float:rx, &Float:ry, &Float:rz);
 native CA_GetModelBoundingSphere(modelid, &Float:offx, &Float:offy, &Float:offz, &Float:radius);
@@ -541,6 +542,41 @@ stock Float:CA_GetRoomHeight(Float:x, Float:y, Float:z)
 			return floatsqroot(((fx-cx)*(fx-cx))+((fy-cy)*(fy-cy))+((fz-cz)*(fz-cz)));
 	}
 	return 0.0;
+}
+
+stock Float:CA_GetRoomCenter(Float:x, Float:y, Float:z, &Float:m_x, &Float:m_y)
+{
+	new Float:pt1x, Float:pt1y,
+		Float:pt2x, Float:pt2y,
+		Float:pt3x, Float:pt3y,
+		Float:tmp;
+
+	if(!CA_RayCastLine(x, y, z, x + 1000.0 * floatcos(0.0, degrees), y + 1000.0 * floatsin(0.0, degrees), z, pt1x, pt1y, tmp) ||
+		!CA_RayCastLine(x, y, z, x + 1000.0 * floatcos(120.0, degrees), y + 1000.0 * floatsin(120.0, degrees), z, pt2x, pt2y, tmp) ||
+		!CA_RayCastLine(x, y, z, x + 1000.0 * floatcos(-120.0, degrees), y + 1000.0 * floatsin(-120.0, degrees), z, pt3x, pt3y, tmp))
+		return -1.0;
+	
+	new Float:yDelta_a = pt2y - pt1y,
+		Float:xDelta_a = pt2x - pt1x,
+		Float:yDelta_b = pt3y - pt2y,
+		Float:xDelta_b = pt3x - pt2x;
+	
+	if (floatabs(xDelta_a) <= 0.000000001 && floatabs(yDelta_b) <= 0.000000001) {
+		m_x = 0.5 * (pt2x + pt3x);
+		m_y = 0.5 * (pt1y + pt2y);
+		return VectorSize(m_x - pt1x, m_y - pt1y, 0.0);
+	}
+	
+	new Float:aSlope = yDelta_a / xDelta_a,
+		Float:bSlope = yDelta_b / xDelta_b;
+	
+	if (floatabs(aSlope-bSlope) <= 0.000000001)
+		return -1.0;
+
+	m_x = (aSlope * bSlope * (pt1y - pt3y) + bSlope * (pt1x + pt2x) - aSlope * (pt2x + pt3x)) / (2.0 * (bSlope - aSlope));
+	m_y = -1.0 * (m_x - (pt1x + pt2x) / 2.0) / aSlope + (pt1y + pt2y) / 2.0;
+
+	return VectorSize(m_x - pt1x, m_y - pt1y, 0.0);
 }
 
 
