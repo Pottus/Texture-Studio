@@ -1435,7 +1435,11 @@ AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:r
 		// Create object and set data
 		ObjectData[index][oID] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, -1, -1, -1, 300.0);
 		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
-
+		
+		#if defined COMPILE_MANGLE
+			ObjectData[index][oCAID] = CA_CreateObject(modelid, x, y, z, rx, ry, rz, true);
+		#endif
+		
 		// Update the streamer
 		foreach(new i : Player)
 		{
@@ -1492,6 +1496,10 @@ DeleteDynamicObject(index, bool:sqlsave = true)
 		ResetObjectIndex(index);
 
 		GroupUpdate(index);
+		
+		#if defined COMPILE_MANGLE
+			CA_DestroyObject(ObjectData[index][oCAID]);
+		#endif
 
 		if(sqlsave) sqlite_RemoveObject(index);
 

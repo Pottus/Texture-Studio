@@ -327,6 +327,9 @@ new RemoveData[MAX_REMOVE_BUILDING][REMOVEINFO];
 enum OBJECTINFO
 {
 	oID,                                        // Object id
+#if defined COMPILE_MANGLE
+	oCAID,                                      // ColAndreas index
+#endif
 	oGroup,                                     // Object group
 	oModel,                                     // Object Model
 	Text3D:oTextID,                             // Object 3d text label
