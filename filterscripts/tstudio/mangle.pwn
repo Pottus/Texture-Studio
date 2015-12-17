@@ -9,8 +9,8 @@ public OnFilterScriptInit()
 {
 	CA_Init();
 
-	#if defined VC_OnFilterScriptInit
-		VC_OnFilterScriptInit();
+	#if defined MA_OnFilterScriptInit
+		MA_OnFilterScriptInit();
 	#endif
 	return 1;
 }
@@ -19,9 +19,9 @@ public OnFilterScriptInit()
 #else
 	#define _ALS_OnFilterScriptInit
 #endif
-#define OnFilterScriptInit VC_OnFilterScriptInit
-#if defined VC_OnFilterScriptInit
-	forward VC_OnFilterScriptInit();
+#define OnFilterScriptInit MA_OnFilterScriptInit
+#if defined MA_OnFilterScriptInit
+	forward MA_OnFilterScriptInit();
 #endif
 
 new Float:GroupSlopeRX[MAX_PLAYERS], Float:GroupSlopeRY[MAX_PLAYERS];
@@ -153,6 +153,58 @@ YCMD:gsets(playerid, arg[], help)
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_YELLOW, "There is not enough objects for this command to work");
 	}
+
+	return 1;
+}
+
+// Edit a group
+YCMD:editgroups(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Edit currently edited objects simultaneously.");
+		SendClientMessage(playerid, STEALTH_GREEN, "Hold 'Walk Key' to set the group rotation pivot, you can only do this once per edit.");
+		return 1;
+	}
+
+    MapOpenCheck();
+    NoEditingMode(playerid);
+
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+
+	if(PlayerHasGroup(playerid))
+	{
+		GetGroupCenter(playerid, LastPivot[playerid][xPos], LastPivot[playerid][yPos], LastPivot[playerid][zPos]);
+
+		LastGroupPosition[playerid][xPos] = LastPivot[playerid][xPos];
+		LastGroupPosition[playerid][yPos] = LastPivot[playerid][yPos];
+		LastGroupPosition[playerid][zPos] = LastPivot[playerid][zPos];
+
+		PivotOffset[playerid][xPos] = 0.0;
+		PivotOffset[playerid][yPos] = 0.0;
+		PivotOffset[playerid][zPos] = 0.0;
+		
+		new Float:x, Float:y, Float:z;
+		GetPlayerPos(playerid, x, y, z);
+		CA_RayCastLineAngle(x, y, 1200.0, x, y, -100.0, z, z, z, GroupSlopeRX[playerid], GroupSlopeRY[playerid], z);
+
+		PivotObject[playerid] = CreateDynamicObject(1974, LastPivot[playerid][xPos], LastPivot[playerid][yPos], LastPivot[playerid][zPos], GroupSlopeRX[playerid], GroupSlopeRY[playerid], z, -1, -1, playerid);
+
+		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, PivotObject[playerid], E_STREAMER_DRAW_DISTANCE, 3000.0);
+
+		SetDynamicObjectMaterial(PivotObject[playerid], 0, 10765, "airportgnd_sfse", "white", -256);
+
+		Streamer_Update(playerid);
+
+		EditingMode[playerid] = true;
+		PivotReset[playerid] = true;
+		SetEditMode(playerid, EDIT_MODE_OBJECTGROUP);
+	    EditDynamicObject(playerid, PivotObject[playerid]);
+
+	    SendClientMessage(playerid, STEALTH_GREEN, "Editing your group");
+	}
+	else SendClientMessage(playerid, STEALTH_YELLOW, "You must have at least one object grouped");
 
 	return 1;
 }

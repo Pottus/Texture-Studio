@@ -621,7 +621,7 @@ YCMD:gselmodel(playerid, arg[], help)
 }
 
 
-static PlayerHasGroup(playerid)
+PlayerHasGroup(playerid)
 {
 	foreach(new i : Objects)
 	{
