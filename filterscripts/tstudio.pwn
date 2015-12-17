@@ -227,6 +227,7 @@ Change Log:
 
 // System includes
 #include <sqlitei>
+#include <formatex>
 #include <strlib>
 
 // Plugins

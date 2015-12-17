@@ -2379,12 +2379,12 @@ MapExport(playerid, mapname[], Float:drawdist)
 			            {
 							if(elistitem == 0)
 							{
-								format(templine,sizeof(templine),"SetObjectMaterial(tmpobjid, %i, %i, %c%s%c, %c%s%c, %i);\r\n", j, GetTModel(ObjectData[i][oTexIndex][j]), 34, GetTXDName(ObjectData[i][oTexIndex][j]), 34, 34,GetTextureName(ObjectData[i][oTexIndex][j]), 34, ObjectData[i][oColorIndex][j]);
+								format(templine,sizeof(templine),"SetObjectMaterial(tmpobjid, %i, %i, %c%s%c, %c%s%c, 0x%X);\r\n", j, GetTModel(ObjectData[i][oTexIndex][j]), 34, GetTXDName(ObjectData[i][oTexIndex][j]), 34, 34,GetTextureName(ObjectData[i][oTexIndex][j]), 34, ObjectData[i][oColorIndex][j]);
 								fwrite(f,templine);
 							}
 							else if(elistitem == 1 || elistitem == 2)
 							{
-								format(templine,sizeof(templine),"SetDynamicObjectMaterial(tmpobjid, %i, %i, %c%s%c, %c%s%c, %i);\r\n", j, GetTModel(ObjectData[i][oTexIndex][j]), 34, GetTXDName(ObjectData[i][oTexIndex][j]), 34, 34,GetTextureName(ObjectData[i][oTexIndex][j]), 34, ObjectData[i][oColorIndex][j]);
+								format(templine,sizeof(templine),"SetDynamicObjectMaterial(tmpobjid, %i, %i, %c%s%c, %c%s%c, 0x%X);\r\n", j, GetTModel(ObjectData[i][oTexIndex][j]), 34, GetTXDName(ObjectData[i][oTexIndex][j]), 34, 34,GetTextureName(ObjectData[i][oTexIndex][j]), 34, ObjectData[i][oColorIndex][j]);
 								fwrite(f,templine);
 							}
 			            }
@@ -2393,12 +2393,12 @@ MapExport(playerid, mapname[], Float:drawdist)
 			            {
 							if(elistitem == 0)
 							{
-								format(templine,sizeof(templine),"SetObjectMaterial(tmpobjid, %i, -1, %c%s%c, %c%s%c, %i);\r\n", j, 34, "none", 34, 34,"none", 34, ObjectData[i][oColorIndex][j]);
+								format(templine,sizeof(templine),"SetObjectMaterial(tmpobjid, %i, -1, %c%s%c, %c%s%c, 0x%X);\r\n", j, 34, "none", 34, 34,"none", 34, ObjectData[i][oColorIndex][j]);
 								fwrite(f,templine);
 							}
 							else if(elistitem == 1 || elistitem == 2)
 							{
-								format(templine,sizeof(templine),"SetDynamicObjectMaterial(tmpobjid, %i, -1, %c%s%c, %c%s%c, %i);\r\n", j, 34, "none", 34, 34,"none", 34, ObjectData[i][oColorIndex][j]);
+								format(templine,sizeof(templine),"SetDynamicObjectMaterial(tmpobjid, %i, -1, %c%s%c, %c%s%c, 0x%X);\r\n", j, 34, "none", 34, 34,"none", 34, ObjectData[i][oColorIndex][j]);
 								fwrite(f,templine);
 							}
 						}
@@ -2409,7 +2409,7 @@ MapExport(playerid, mapname[], Float:drawdist)
 					{
 						if(elistitem == 0)
 						{
-							format(templine,sizeof(templine),"SetObjectMaterialText(tmpobjid, %c%s%c, 0, %i, %c%s%c, %i, %i, %i, %i, %i);\r\n",
+							format(templine,sizeof(templine),"SetObjectMaterialText(tmpobjid, %c%s%c, 0, %i, %c%s%c, %i, %i, 0x%X, 0x%X, %i);\r\n",
 								34, ObjectData[i][oObjectText], 34,
 								FontSizes[ObjectData[i][oFontSize]],
 								34, FontNames[ObjectData[i][oFontFace]], 34,
@@ -2422,7 +2422,7 @@ MapExport(playerid, mapname[], Float:drawdist)
 						}
 						else if(elistitem == 1 || elistitem == 2)
 						{
-							format(templine,sizeof(templine),"SetDynamicObjectMaterialText(tmpobjid, 0, %c%s%c, %i, %c%s%c, %i, %i, %i, %i, %i);\r\n",
+							format(templine,sizeof(templine),"SetDynamicObjectMaterialText(tmpobjid, 0, %c%s%c, %i, %c%s%c, %i, %i, 0x%X, 0x%X, %i);\r\n",
 								34, ObjectData[i][oObjectText], 34,
 								FontSizes[ObjectData[i][oFontSize]],
 								34, FontNames[ObjectData[i][oFontFace]], 34,
@@ -2673,7 +2673,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 				// Does object have a texture set?
 	            if(ObjectData[oindex][oTexIndex][k] != 0)
 	            {
-					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, %i, %c%s%c, %c%s%c, %i);\r\n",
+					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, %i, %c%s%c, %c%s%c, 0x%X);\r\n",
 						k, GetTModel(ObjectData[oindex][oTexIndex][k]), 34, GetTXDName(ObjectData[oindex][oTexIndex][k]), 34, 34,GetTextureName(ObjectData[oindex][oTexIndex][k]), 34, ObjectData[oindex][oColorIndex][k]
 					);
 
@@ -2683,7 +2683,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 	            // No texture how about a color?
 	            else if(ObjectData[oindex][oColorIndex][k] != 0)
 	            {
-					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, -1, %c%s%c, %c%s%c, %i);\r\n", j, 34, "none", 34, 34,"none", 34, ObjectData[oindex][oColorIndex][k]);
+					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, -1, %c%s%c, %c%s%c, 0x%X);\r\n", j, 34, "none", 34, 34,"none", 34, ObjectData[oindex][oColorIndex][k]);
 					fwrite(f,templine);
 				}
 			}
@@ -2691,7 +2691,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 			// Write any text
 			if(ObjectData[oindex][ousetext])
 			{
-				format(templine,sizeof(templine),"    SetDynamicObjectMaterialText(tmpobjid, 0, %c%s%c, %i, %c%s%c, %i, %i, %i, %i, %i);\r\n",
+				format(templine,sizeof(templine),"    SetDynamicObjectMaterialText(tmpobjid, 0, %c%s%c, %i, %c%s%c, %i, %i, 0x%X, 0x%X, %i);\r\n",
 					34, ObjectData[oindex][oObjectText], 34,
 					FontSizes[ObjectData[oindex][oFontSize]],
 					34, FontNames[ObjectData[oindex][oFontFace]], 34,
@@ -2749,13 +2749,13 @@ static MapExportAll(playerid, name[], Float:drawdist)
 				// Does object have a texture set?
 	            if(ObjectData[i][oTexIndex][j] != 0)
 	            {
-					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, %i, %c%s%c, %c%s%c, %i);\r\n", j, GetTModel(ObjectData[i][oTexIndex][j]), 34, GetTXDName(ObjectData[i][oTexIndex][j]), 34, 34,GetTextureName(ObjectData[i][oTexIndex][j]), 34, ObjectData[i][oColorIndex][j]);
+					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, %i, %c%s%c, %c%s%c, 0x%X);\r\n", j, GetTModel(ObjectData[i][oTexIndex][j]), 34, GetTXDName(ObjectData[i][oTexIndex][j]), 34, 34,GetTextureName(ObjectData[i][oTexIndex][j]), 34, ObjectData[i][oColorIndex][j]);
 					fwrite(f,templine);
 	            }
 	            // No texture how about a color?
 	            else if(ObjectData[i][oColorIndex][j] != 0)
 	            {
-					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, -1, %c%s%c, %c%s%c, %i);\r\n", j, 34, "none", 34, 34,"none", 34, ObjectData[i][oColorIndex][j]);
+					format(templine,sizeof(templine),"    SetDynamicObjectMaterial(tmpobjid, %i, -1, %c%s%c, %c%s%c, 0x%X);\r\n", j, 34, "none", 34, 34,"none", 34, ObjectData[i][oColorIndex][j]);
 					fwrite(f,templine);
 				}
 			}
@@ -2763,7 +2763,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 			// Write any text
 			if(ObjectData[i][ousetext])
 			{
-				format(templine,sizeof(templine),"    SetDynamicObjectMaterialText(tmpobjid, 0, %c%s%c, %i, %c%s%c, %i, %i, %i, %i, %i);\r\n",
+				format(templine,sizeof(templine),"    SetDynamicObjectMaterialText(tmpobjid, 0, %c%s%c, %i, %c%s%c, %i, %i, 0x%X, 0x%X, %i);\r\n",
 					34, ObjectData[i][oObjectText], 34,
 					FontSizes[ObjectData[i][oFontSize]],
 					34, FontNames[ObjectData[i][oFontFace]], 34,
