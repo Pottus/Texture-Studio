@@ -42,7 +42,7 @@ Note: This include has been modified and integrated for use in Texture Studio
 
 /* Creates object in a circular path */
 
-#define         MAX_OBM         1000
+#define         MAX_OBM         2000
 
 enum OBMINFO
 {
@@ -136,6 +136,8 @@ ApplyOBM(playerid)
 	ClearGroup(playerid);
 	new index;
 	new time = GetTickCount();
+	
+	db_begin_transaction(EditMap);
 	for(new i = 0; i < MAX_OBM; i++)
 	{
 	    if(OBMStack[playerid][i][OMBID] != -1)
@@ -150,6 +152,7 @@ ApplyOBM(playerid)
 			OnUpdateGroup3DText(index);
 		}
 	}
+	db_end_transaction(EditMap);
 	return 1;
 }
 
@@ -280,7 +283,8 @@ CreateDynamicObjectSpiral(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,
 			
 			AddOBMObject(playerid,modelid, posx + x, posy + y, posz + c,orx,ory,rz+orz);
 		
-			c += vsep;
+			//c += vsep;
+			c = vsep + floatsqroot(floatpower(floatcos(around) * away, 2) + (floatpower(floatsin(around) * away, 2)));
 			theta += hsep / away;
 		}
 	}
@@ -308,7 +312,8 @@ CreateDynamicObjectSpiral(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,
 			);
 			AddOBMObject(playerid,modelid, x, y, z, detrx, detry, detrz);
 		
-			c += vsep;
+			//c += vsep;
+			c = vsep + floatsqroot(floatpower(floatcos(around) * away, 2) + (floatpower(floatsin(around) * away, 2)));
 			theta += hsep / away;
 		}
 	}
@@ -640,5 +645,121 @@ CreateDynamicCircleOut(playerid,modelid,deg,Float:posx,Float:posy,Float:posz,Flo
 	Streamer_Update(playerid);
     return 1;
 }
+
+//==========================================================================================
+
+/* Creates objects in a line */
+CreateDynamicLine(playerid, modelid, Float:sx, Float:sy, Float:sz, Float:ex, Float:ey, Float:ez, Float:orx, Float:ory, Float:orz, segs)
+{
+	new Float:dx = (ex - sx),
+		Float:dy = (ey - sy),
+		Float:dz = (ez - sz),
+		Float:d = VectorSize(dx, dy, dz);
+	
+	new Float:step = d / segs;
+	dx /= d; dy /= d; dz /= d;
+	
+	for(new Float:j; j <= segs * step; j += step)
+		AddOBMObject(
+			playerid, modelid,
+			sx + (j * dx), sy + (j * dy), sz + (j * dz),
+			orx, ory, orz
+		);
+
+	Streamer_Update(playerid);
+    return 1;
+}
+
+/* Creates objects in a line */
+CreateDynamicQuadrilateral(playerid, modelid, Float:cx, Float:cy, Float:cz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:orz, Float:length, Float:width, lsegs, wsegs, bool:fill)
+{ 
+	length -= 1.0, width -= 1.0, 
+	lsegs -= 1, wsegs -= 1;
+	
+	new Float:sx = cx - (length / 2.0),		Float:sy = cy - (width / 2.0),
+		Float:ex = cx + (length / 2.0),		Float:ey = cy + (width / 2.0),
+		Float:dx = (ex - sx),				Float:dy = (ey - sy),
+		Float:lstep = dx / lsegs,			Float:wstep = dy / wsegs;
+
+	new Float:nx, Float:ny, Float:nz, Float:nrx, Float:nry, Float:nrz;
+	
+	for(new Float:x, Float:mx = lsegs * lstep; x <= mx; x += lstep) {
+		for(new Float:y, Float:my = wsegs * wstep; y <= my; y += wstep) {
+			if(fill || (x == 0.0 || y == 0.0 || x == mx || y == my)) {
+				AttachPoint(
+					sx + x, sy + y, cz, orx, ory, orz,
+					cx, cy, cz, rx, ry, rz,
+					nx, ny, nz, nrx, nry, nrz
+				);
+				AddOBMObject(playerid, modelid, nx, ny, nz, nrx, nry, nrz);
+			}
+		}
+	}
+	return 1;
+}
+
+/* Creates objects in a line */
+CreateDynamicPrism(playerid, modelid, Float:cx, Float:cy, Float:cz, Float:rx, Float:ry, Float:rz, Float:orx, Float:ory, Float:orz, Float:length, Float:width, Float:height, lsegs, wsegs, hsegs, bool:fill)
+{ 
+	length -= 1.0, width -= 1.0, 
+	lsegs -= 1, wsegs -= 1;
+	
+	new Float:sx = cx - (length / 2.0),		Float:sy = cy - (width / 2.0),		Float:sz = cz - (height / 2.0),
+		Float:ex = cx + (length / 2.0),		Float:ey = cy + (width / 2.0),		Float:ez = cz + (height / 2.0),
+		Float:dx = (ex - sx),				Float:dy = (ey - sy),				Float:dz = (ez - sz),
+		Float:lstep = dx / lsegs,			Float:wstep = dy / wsegs,			Float:hstep = dz / hsegs;
+
+	new Float:nx, Float:ny, Float:nz, Float:nrx, Float:nry, Float:nrz;
+	
+	for(new Float:x, Float:mx = lsegs * lstep; x <= mx; x += lstep) {
+		for(new Float:y, Float:my = wsegs * wstep; y <= my; y += wstep) {
+			for(new Float:z, Float:mz = hsegs * hstep; z <= mz; z += hstep) {
+				if(fill || (x == 0.0 || y == 0.0 || z == 0.0 || x == mx || y == my || z == mz)) {
+					AttachPoint(
+						sx + x, sy + y, sy + y, orx, ory, orz,
+						cx, cy, cz, rx, ry, rz,
+						nx, ny, nz, nrx, nry, nrz
+					);
+					AddOBMObject(playerid, modelid, nx, ny, nz, nrx, nry, nrz);
+				}
+			}
+		}
+	}
+	return 1;
+}
+
+/* Creates objects in a line */
+/*CreateDynamicPrism(playerid, modelid,
+	Float:cx, Float:cy, Float:cz,
+	Float:l, Float:w, Float:h,
+	Float:rx, Float:ry, Float:rz,
+	Float:orz, Float:ory, Float:orz,
+	segs, bool:fill)
+{
+
+	const
+		Float:halve = l / 2.0,
+		Float:d = VectorSize(l, w, h),
+		Float:step = d / segs;
+	new
+		Float:sx = cx - halve,
+		Float:sy = cy - halve,
+		Float:sz = cz - halve;
+	//	Float:ex = cx + halve,
+	//	Float:ey = cy + halve,
+	//	Float:ez = cz + halve;
+
+	l /= d; w /= d; h /= d;
+	
+	for(new Float:j; j <= segs * step; j += step)
+		AddOBMObject(
+			playerid, modelid,
+			sx + (j * l), sy + (j * w), sz + (j * h),
+			orx, ory, orz
+		);
+
+	Streamer_Update(playerid);
+    return 1;
+}*/
 
 //==========================================================================================
