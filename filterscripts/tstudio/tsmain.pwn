@@ -2355,19 +2355,19 @@ MapExport(playerid, mapname[], Float:drawdist)
 					// Write the create object line
 					if(elistitem == 0)
 					{
-				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist);
+				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist);
 				        fwrite(f,templine);
 					}
 
 					// Write the create dynamic object line
 					else if(elistitem == 1)
 					{
-						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
 				        fwrite(f,templine);
 					}
 					else if(elistitem  == 2)
 					{
-						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,-1,-1,-1,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
 				        fwrite(f,templine);
 					}
 
@@ -2468,17 +2468,17 @@ MapExport(playerid, mapname[], Float:drawdist)
 				{
 					if(elistitem == 0)
 					{
-				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist);
+				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist);
 				        fwrite(f,templine);
 					}
 					else if(elistitem == 1)
 					{
-				        format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+				        format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
 				        fwrite(f,templine);
 					}
 					else if(elistitem == 2)
 					{
-						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,-1,-1,-1,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
 				        fwrite(f,templine);
 					}
 				}
@@ -2740,7 +2740,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 		{
 			mobjects++;
 
-			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,-1,-1,-1,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
 	        fwrite(f,templine);
 
 			// Write all materials and colors
@@ -2799,7 +2799,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 		// Object has not been exported yet export
 		if(writeobject)
 		{
-			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,-1,-1,-1,%.3f,%.3f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
 	        fwrite(f,templine);
 		}
 	}
