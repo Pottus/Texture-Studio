@@ -1018,6 +1018,7 @@ YCMD:gclone(playerid, arg[], help)
 
 	for(new i = 0; i < MAX_TEXTURE_OBJECTS; i++) { tmpgrp[i] = false; }
 
+	db_begin_transaction(EditMap);
     foreach(new i : Objects)
     {
         if(GroupedObjects[playerid][i])
@@ -1029,6 +1030,7 @@ YCMD:gclone(playerid, arg[], help)
 			count++;
         }
     }
+	db_end_transaction(EditMap);
 
     // Update grouped objects
     for(new i = 0; i < MAX_TEXTURE_OBJECTS; i++)
