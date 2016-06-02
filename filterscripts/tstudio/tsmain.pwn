@@ -2468,17 +2468,17 @@ MapExport(playerid, mapname[], Float:drawdist)
 				{
 					if(elistitem == 0)
 					{
-				        format(templine,sizeof(templine),"CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist);
+				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist);
 				        fwrite(f,templine);
 					}
 					else if(elistitem == 1)
 					{
-				        format(templine,sizeof(templine),"CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+				        format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
 				        fwrite(f,templine);
 					}
 					else if(elistitem == 2)
 					{
-						format(templine,sizeof(templine),"CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
 				        fwrite(f,templine);
 					}
 				}
