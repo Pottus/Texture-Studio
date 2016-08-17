@@ -1,10 +1,10 @@
 new Iterator:Restriction[100]<MAX_PLAYERS>;
 // playerid, object index (must be 0 or more than 50, if not it must be in a group with no restrictions, if not then the restriction must allow this player)
 #define CanSelectObject(%0,%1) \
-    (!(0 < ObjectData[%1][oGroup] <= 50) || !Iter_Count(Restriction[ObjectData[%1][oGroup]]) || Iter_Contains(Restriction[ObjectData[%1][oGroup]], playerid))
+    (!(0 < ObjectData[%1][oGroup] <= 50) || !Iter_Count(Restriction[ObjectData[%1][oGroup]]) || Iter_Contains(Restriction[ObjectData[%1][oGroup]], playerid) || IsPlayerAdmin(playerid))
 // playerid, group index (it must be a group with no restrictions, if not then the restriction must allow this player)
 #define CanSelectGroup(%0,%1) \
-    (!Iter_Count(Restriction[%1]) || Iter_Contains(Restriction[%1], playerid))
+    (!Iter_Count(Restriction[%1]) || Iter_Contains(Restriction[%1], playerid) || IsPlayerAdmin(playerid))
 
 public OnFilterScriptInit()
 {
@@ -45,4 +45,64 @@ public OnPlayerDisconnect(playerid, reason)
 	forward RS_OnPlayerDisconnect(playerid, reason);
 #endif
 
+YCMD:restrict(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "[RCON ONLY] Prevent a group of objects from being edited.");
+		return 1;
+	}
+    
+    if(!IsPlayerAdmin(playerid))
+        return SendClientMessage(playerid, STEALTH_YELLOW, "Only RCON administrators can use this command");
+    
+    new groupid, players[10];
+    if(sscanf(arg, "iA<i>(-1)[10]", groupid, players))
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "/restrict <Group ID> <Optional: Players, up to 10>");
+		SendClientMessage(playerid, STEALTH_GREEN, "If no players are listed then only YOU can edit this group");
+		return 1;
+	}
+    
+    if(!(0 < groupid <= 50))
+        return SendClientMessage(playerid, STEALTH_YELLOW, "You can only restrict groups 1-50");
+    
+    Iter_Clear(Restriction[groupid]);
+    
+    for(new i; i < 10; i++)
+        Iter_Add(Restriction[groupid], groupid);
+    
+    SendClientMessage(playerid, STEALTH_GREEN, "You've restricted this group");
+    return 1;
+}
 
+YCMD:unrestrict(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "[RCON ONLY] Allow all players to edit a group.");
+		return 1;
+	}
+    
+    if(!IsPlayerAdmin(playerid))
+        return SendClientMessage(playerid, STEALTH_YELLOW, "Only RCON administrators can use this command");
+    
+    new groupid;
+    if(sscanf(arg, "i", groupid))
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "You must provide a group ID");
+		return 1;
+	}
+    
+    if(!(0 < groupid <= 50))
+        return SendClientMessage(playerid, STEALTH_YELLOW, "You can only restrict groups 1-50");
+    
+    Iter_Clear(Restriction[groupid]);
+    
+    SendClientMessage(playerid, STEALTH_GREEN, "You've unrestricted this group");
+    return 1;
+}
