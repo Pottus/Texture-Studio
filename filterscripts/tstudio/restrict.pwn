@@ -1,10 +1,12 @@
-new Iterator:Restriction[100]<MAX_PLAYERS>;
+new Iterator:Restriction[51]<MAX_PLAYERS>, bool:gRestricted[51] = {false, ...};
+
 // playerid, object index (must be 0 or more than 50, if not it must be in a group with no restrictions, if not then the restriction must allow this player)
 #define CanSelectObject(%0,%1) \
-    (!(0 < ObjectData[%1][oGroup] <= 50) || !Iter_Count(Restriction[ObjectData[%1][oGroup]]) || Iter_Contains(Restriction[ObjectData[%1][oGroup]], playerid) || IsPlayerAdmin(playerid))
+    (!(0 <= %1 < MAX_TEXTURE_OBJECTS) || (!gRestricted[ObjectData[%1][oGroup]] || !(0 < ObjectData[%1][oGroup] <= 50) || !Iter_Count(Restriction[ObjectData[%1][oGroup]]) || Iter_Contains(Restriction[ObjectData[%1][oGroup]], playerid) || IsPlayerAdmin(playerid)))
 // playerid, group index (it must be a group with no restrictions, if not then the restriction must allow this player)
 #define CanSelectGroup(%0,%1) \
-    (!Iter_Count(Restriction[%1]) || Iter_Contains(Restriction[%1], playerid) || IsPlayerAdmin(playerid))
+    (!(0 < %1 <= 50) || (!gRestricted[%1] || !Iter_Count(Restriction[%1]) || Iter_Contains(Restriction[%1], playerid) || IsPlayerAdmin(playerid)))
+    //not in this ? then safely test these
 
 public OnFilterScriptInit()
 {
@@ -27,7 +29,7 @@ public OnFilterScriptInit()
 
 public OnPlayerDisconnect(playerid, reason)
 {
-	for(new g; g < 100; g++)
+	for(new g; g < 51; g++)
         Iter_Remove(Restriction[g], playerid);
     
 	#if defined RS_OnPlayerDisconnect
@@ -74,6 +76,8 @@ YCMD:restrict(playerid, arg[], help)
     for(new i; i < 10; i++)
         Iter_Add(Restriction[groupid], groupid);
     
+    gRestricted[groupid] = true;
+    
     SendClientMessage(playerid, STEALTH_GREEN, "You've restricted this group");
     return 1;
 }
@@ -102,6 +106,7 @@ YCMD:unrestrict(playerid, arg[], help)
         return SendClientMessage(playerid, STEALTH_YELLOW, "You can only restrict groups 1-50");
     
     Iter_Clear(Restriction[groupid]);
+    gRestricted[groupid] = false;
     
     SendClientMessage(playerid, STEALTH_GREEN, "You've unrestricted this group");
     return 1;
