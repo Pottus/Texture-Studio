@@ -311,6 +311,9 @@ forward OnDeleteGroup3DText(index);
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________"); \
 	return SendClientMessage(playerid, STEALTH_YELLOW, "There is no map currently open"); }
 
+// RCON Restrictor (I include it here because of the macroes above ^)
+#include "tstudio\restrict.pwn"
+
 // Removebuilding information enum
 enum REMOVEINFO
 {
@@ -572,9 +575,6 @@ new bool:MapOpen;
 
 // Menu GUI
 #include "tstudio\menugui.pwn"
-
-// RCON Restrictor
-#include "tstudio\restrict.pwn"
 
 // Main system
 #include "tstudio\tsmain.pwn"

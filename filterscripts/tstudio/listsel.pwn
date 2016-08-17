@@ -551,7 +551,7 @@ ClickTextDrawListSel(playerid, Text:clickedid)
 		{
             if(SetCurrObject(playerid, CurrListOffset[playerid]+CurrListHighlight[playerid])) {
                 new line[128];
-                format(line, sizeof(line), "You have selected object index %i for editing", index);
+                format(line, sizeof(line), "You have selected object index %i for editing", CurrListOffset[playerid]+CurrListHighlight[playerid]);
                 SendClientMessage(playerid, STEALTH_GREEN, line);
             }
             else

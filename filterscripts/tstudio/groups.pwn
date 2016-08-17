@@ -142,7 +142,7 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 			}
 		}
         
-        if(!CanSelectObject(playerid, i))
+        if(!CanSelectObject(playerid, index))
             SendClientMessage(playerid, STEALTH_YELLOW, "You can not select objects in this object's group");
         else
         {
@@ -557,7 +557,7 @@ YCMD:selectgroup(playerid, arg[], help)
 
 	new groupid = strval(arg);
     
-    if(!CanSelectGroup(groupid))
+    if(!CanSelectGroup(playerid, groupid))
         return SendClientMessage(playerid, STEALTH_YELLOW, "You can not select this group");
 
 	if(PlayerHasGroup(playerid)) ClearGroup(playerid);

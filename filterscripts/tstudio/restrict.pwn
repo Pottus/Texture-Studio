@@ -1,8 +1,9 @@
 new Iterator:Restriction[100]<MAX_PLAYERS>;
-
-#define CanSelectObject(%0,%1) \ // playerid, object index (must be 0 or more than 50, if not it must be in a group with no restrictions, if not then the restriction must allow this player)
+// playerid, object index (must be 0 or more than 50, if not it must be in a group with no restrictions, if not then the restriction must allow this player)
+#define CanSelectObject(%0,%1) \
     (!(0 < ObjectData[%1][oGroup] <= 50) || !Iter_Count(Restriction[ObjectData[%1][oGroup]]) || Iter_Contains(Restriction[ObjectData[%1][oGroup]], playerid))
-#define CanSelectGroup(%0,%1) \ // playerid, group index (it must be a group with no restrictions, if not then the restriction must allow this player)
+// playerid, group index (it must be a group with no restrictions, if not then the restriction must allow this player)
+#define CanSelectGroup(%0,%1) \
     (!Iter_Count(Restriction[%1]) || Iter_Contains(Restriction[%1], playerid))
 
 public OnFilterScriptInit()
@@ -27,7 +28,7 @@ public OnFilterScriptInit()
 public OnPlayerDisconnect(playerid, reason)
 {
 	for(new g; g < 100; g++)
-        Iter_Remove(Restriction[i], playerid);
+        Iter_Remove(Restriction[g], playerid);
     
 	#if defined RS_OnPlayerDisconnect
 		RS_OnPlayerDisconnect(playerid, reason);
