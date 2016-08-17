@@ -141,38 +141,43 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 			    break;
 			}
 		}
+        
+        if(!CanSelectObject(playerid, i))
+            SendClientMessage(playerid, STEALTH_YELLOW, "You can not select objects in this object's group");
+        else
+        {
+            SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+            // Try and add to group
+            if(Keys & KEY_CTRL_BACK || (InFlyMode(playerid) && (Keys & KEY_SECONDARY_ATTACK)))
+            {
+                if(GroupedObjects[playerid][index]) SendClientMessage(playerid, STEALTH_YELLOW, "Object is already in your group selection");
+                else
+                {
+                    SendClientMessage(playerid, STEALTH_GREEN, "Object added to your group selection");
+                    GroupedObjects[playerid][index] = true;
+                    OnUpdateGroup3DText(index);
 
-		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-		// Try and add to group
-		if(Keys & KEY_CTRL_BACK || (InFlyMode(playerid) && (Keys & KEY_SECONDARY_ATTACK)))
-		{
-			if(GroupedObjects[playerid][index]) SendClientMessage(playerid, STEALTH_YELLOW, "Object is already in your group selection");
-			else
-			{
-				SendClientMessage(playerid, STEALTH_GREEN, "Object added to your group selection");
-				GroupedObjects[playerid][index] = true;
-				OnUpdateGroup3DText(index);
+                }
+            }
 
-			}
-		}
+            // Try and remove from group
+            else if(Keys & KEY_WALK)
+            {
+                if(!GroupedObjects[playerid][index]) SendClientMessage(playerid, STEALTH_YELLOW, "Object is not in your group selection");
+                else
+                {
+                    SendClientMessage(playerid, STEALTH_GREEN, "Object removed from your group selection");
+                    GroupedObjects[playerid][index] = false;
+                    OnUpdateGroup3DText(index);
+                }
+            }
+            else
+            {
+                SendClientMessage(playerid, STEALTH_YELLOW, "Hold the 'H' key and click a object to select it");
+                SendClientMessage(playerid, STEALTH_YELLOW, "Hold the 'Walk' key and click a object to deselect it");
 
-		// Try and remove from group
-		else if(Keys & KEY_WALK)
-		{
-			if(!GroupedObjects[playerid][index]) SendClientMessage(playerid, STEALTH_YELLOW, "Object is not in your group selection");
-			else
-			{
-				SendClientMessage(playerid, STEALTH_GREEN, "Object removed from your group selection");
-				GroupedObjects[playerid][index] = false;
-				OnUpdateGroup3DText(index);
-			}
-		}
-		else
-		{
-		    SendClientMessage(playerid, STEALTH_YELLOW, "Hold the 'H' key and click a object to select it");
-		    SendClientMessage(playerid, STEALTH_YELLOW, "Hold the 'Walk' key and click a object to deselect it");
-
-		}
+            }
+        }
 	}
 
 	#if defined GR_OnPlayerSelectDynamicObject
@@ -551,6 +556,9 @@ YCMD:selectgroup(playerid, arg[], help)
     SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 
 	new groupid = strval(arg);
+    
+    if(!CanSelectGroup(groupid))
+        return SendClientMessage(playerid, STEALTH_YELLOW, "You can not select this group");
 
 	if(PlayerHasGroup(playerid)) ClearGroup(playerid);
 
@@ -599,6 +607,9 @@ YCMD:gselmodel(playerid, arg[], help)
 	new count;
 	foreach(new i : Objects)
 	{
+        if(!CanSelectObject(playerid, i))
+            continue;
+        
 	    if(ObjectData[i][oModel] == modelid)
 		{
 		    GroupedObjects[playerid][i] = true;
@@ -861,7 +872,10 @@ YCMD:gadd(playerid, arg[], help)
 	
 	new index, range;
 	sscanf(arg, "iI(-1)", index, range);
-	
+    
+    if(range == -1 && !CanSelectObject(playerid, index))
+        return SendClientMessage(playerid, STEALTH_YELLOW, "You can not select objects in this object's group");
+        
 	if(index < 0 || (range != -1 && range < 0)) return SendClientMessage(playerid, STEALTH_YELLOW, "Index can not be less than 0");
 	if(index >= MAX_TEXTURE_OBJECTS || range >= MAX_TEXTURE_OBJECTS)
 	{
@@ -876,7 +890,7 @@ YCMD:gadd(playerid, arg[], help)
 		new count;
 		for(new i = index; i <= range; i++)
 		{
-			if(Iter_Contains(Objects, i) && !GroupedObjects[playerid][i])
+			if(CanSelectObject(playerid, i) && Iter_Contains(Objects, i) && !GroupedObjects[playerid][i])
 			{
 				// Update the Group GUI
 				UpdatePlayerGSelText(playerid);
@@ -1113,6 +1127,9 @@ YCMD:gall(playerid, arg[], help)
 
     foreach(new i : Objects)
 	{
+        if(!CanSelectObject(playerid, i))
+            continue;
+        
         GroupedObjects[playerid][i] = true;
 		OnUpdateGroup3DText(i);
 		count++;
