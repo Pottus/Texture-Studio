@@ -465,25 +465,46 @@ YCMD:avnewcar(playerid, arg[], help)
 
 	NoEditingMode(playerid);
 
-    inline SelectModel(pid, dialogid, response, listitem, string:text[])
+    if(strlen(arg))
     {
-        #pragma unused listitem, dialogid, pid, text
-		if(response)
-		{
-			new index = Iter_Free(Cars);
-			if(index > -1)
-			{
-				GetPlayerPos(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ]);
-				GetXYInFrontOfPlayer(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], 2.0);
-				GetPlayerFacingAngle(playerid, CarData[index][CarSpawnFA]);
-				CurrVehicle[playerid] = AddNewCar(listitem+400, index, true);
-				return 1;
-			}
-			SendClientMessage(playerid, STEALTH_YELLOW, "Too many cars");
-		}
+        new model, index = Iter_Free(Cars);
+        if(index > -1)
+        {
+            sscanf(arg, "k<vehicle>", model);
+            if(model != -1)
+            {
+                GetPlayerPos(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ]);
+                GetXYInFrontOfPlayer(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], 2.0);
+                GetPlayerFacingAngle(playerid, CarData[index][CarSpawnFA]);
+                CurrVehicle[playerid] = AddNewCar(model, index, true);
+                return 1;
+            }
+            SendClientMessage(playerid, STEALTH_YELLOW, "Invalid vehicle name or ID");
+        }
+        SendClientMessage(playerid, STEALTH_YELLOW, "Too many cars");
     }
-    Dialog_ShowCallback(playerid, using inline SelectModel, DIALOG_STYLE_LIST, "Texture Studio", VehicleList, "Ok", "Cancel");
-
+    else 
+    {
+        inline SelectModel(pid, dialogid, response, listitem, string:text[])
+        {
+            #pragma unused listitem, dialogid, pid, text
+            if(response)
+            {
+                new index = Iter_Free(Cars);
+                if(index > -1)
+                {
+                    GetPlayerPos(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ]);
+                    GetXYInFrontOfPlayer(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], 2.0);
+                    GetPlayerFacingAngle(playerid, CarData[index][CarSpawnFA]);
+                    CurrVehicle[playerid] = AddNewCar(listitem+400, index, true);
+                    return 1;
+                }
+                SendClientMessage(playerid, STEALTH_YELLOW, "Too many cars");
+            }
+        }
+        Dialog_ShowCallback(playerid, using inline SelectModel, DIALOG_STYLE_LIST, "Texture Studio", VehicleList, "Ok", "Cancel");
+    }
+    
 	return 1;
 }
 
