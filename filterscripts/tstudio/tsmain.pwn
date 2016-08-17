@@ -65,9 +65,13 @@ public OnPlayerDisconnect(playerid, reason)
 
 SetCurrObject(playerid, index)
 {
-    CurrObject[playerid] = index;
-	CallLocalFunction("OnPlayerObjectSelectChange", "ii", playerid, index);
-	return 1;
+    if(CanSelectObject(playerid, index))
+    {
+        CurrObject[playerid] = index;
+        CallLocalFunction("OnPlayerObjectSelectChange", "ii", playerid, index);
+        return 1;
+    }
+    return 0;
 }
 
 OnPlayerKeyStateChangeOEdit(playerid,newkeys,oldkeys)
@@ -225,11 +229,13 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 			{
 				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 
-				new line[128];
-				format(line, sizeof(line), "You have selected object index %i for editing", index);
-				SendClientMessage(playerid, STEALTH_GREEN, line);
-
-				SetCurrObject(playerid, index);
+				if(SetCurrObject(playerid, index)) {
+                    new line[128];
+                    format(line, sizeof(line), "You have selected object index %i for editing", index);
+                    SendClientMessage(playerid, STEALTH_GREEN, line);
+                }
+                else
+                    SendClientMessage(playerid, STEALTH_YELLOW, "You can not select objects in this object's group");
 			}
 		}
 	}
@@ -2913,11 +2919,13 @@ YCMD:sel(playerid, arg[], help)
 
 	if(Iter_Contains(Objects, index))
 	{
-		new line[128];
-		format(line, sizeof(line), "You have selected object index %i for editing", index);
-		SendClientMessage(playerid, STEALTH_GREEN, line);
-
-		SetCurrObject(playerid, index);
+		if(SetCurrObject(playerid, index)) {
+            new line[128];
+            format(line, sizeof(line), "You have selected object index %i for editing", index);
+            SendClientMessage(playerid, STEALTH_GREEN, line);
+        }
+        else
+            SendClientMessage(playerid, STEALTH_YELLOW, "You can not select objects in this object's group");
 	}
 	else SendClientMessage(playerid, STEALTH_YELLOW, "That object does not exist!");
 	return 1;
@@ -2961,6 +2969,9 @@ YCMD:scsel(playerid, arg[], help)
 
 	foreach(new i : Objects)
 	{
+        if(!CanSelectObject(playerid, i))
+            continue;
+        
 		tmpdist = GetPlayerDistanceFromPoint(playerid, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
 		if(tmpdist < dist)
 		{
@@ -2976,7 +2987,6 @@ YCMD:scsel(playerid, arg[], help)
 		new line[128];
 		format(line, sizeof(line), "You have selected object index %i for editing", index);
 		SendClientMessage(playerid, STEALTH_GREEN, line);
-
 	}
 	else SendClientMessage(playerid, STEALTH_YELLOW, "There are no objects");
 
@@ -3000,6 +3010,9 @@ YCMD:dcsel(playerid, arg[], help)
 
 	foreach(new i : Objects)
 	{
+		if(!CanSelectObject(playerid, i))
+            continue;
+        
 		tmpdist = GetPlayerDistanceFromPoint(playerid, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
 		if(tmpdist < dist)
 		{

@@ -573,6 +573,9 @@ new bool:MapOpen;
 // Menu GUI
 #include "tstudio\menugui.pwn"
 
+// RCON Restrictor
+#include "tstudio\restrict.pwn"
+
 // Main system
 #include "tstudio\tsmain.pwn"
 

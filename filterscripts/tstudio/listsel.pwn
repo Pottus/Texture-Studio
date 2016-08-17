@@ -549,11 +549,13 @@ ClickTextDrawListSel(playerid, Text:clickedid)
 	{
 		if(Iter_Contains(Objects, CurrListOffset[playerid]+CurrListHighlight[playerid]))
 		{
-			new line[128];
-			format(line, sizeof(line), "You have selected object index %i for editing", CurrListOffset[playerid]+CurrListHighlight[playerid]);
-			SendClientMessage(playerid, STEALTH_GREEN, line);
-
-			SetCurrObject(playerid, CurrListOffset[playerid]+CurrListHighlight[playerid]);
+            if(SetCurrObject(playerid, CurrListOffset[playerid]+CurrListHighlight[playerid])) {
+                new line[128];
+                format(line, sizeof(line), "You have selected object index %i for editing", index);
+                SendClientMessage(playerid, STEALTH_GREEN, line);
+            }
+            else
+                SendClientMessage(playerid, STEALTH_YELLOW, "You can not select objects in this object's group");
 		}
 		else
 		{
