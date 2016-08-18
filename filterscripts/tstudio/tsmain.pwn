@@ -4716,6 +4716,30 @@ ShowObjectText()
 	return 1;
 }
 
+YCMD:stopedit(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Reset editing mode.");
+		return 1;
+	}
+
+    MapOpenCheck();
+
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+
+	if(EditingMode[playerid])
+	{
+		EditingMode[playerid] = false;
+        CancelEdit(playerid);
+        SendClientMessage(playerid, STEALTH_GREEN, "Editing mode reset.");
+	}
+	else SendClientMessage(playerid, STEALTH_YELLOW, "You're not editing.");
+
+	return 1;
+}
+
 // Command list
 YCMD:thelp(playerid, arg[], help)
 {
@@ -4984,9 +5008,10 @@ YCMD:thelp(playerid, arg[], help)
 			{"echo"},
 			{"restrict"},
 			{"unrestrict"},
+			{"stopedit"},
 			
 			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
-			{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		}
 	};
 
