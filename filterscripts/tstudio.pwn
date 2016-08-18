@@ -304,7 +304,7 @@ forward OnDeleteGroup3DText(index);
 // Don't let player use command if they are editing an object
 #define NoEditingMode(%0); if(EditingMode[%0]) { \
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________"); \
-	return SendClientMessage(playerid, STEALTH_YELLOW, "You need to finish editng your object before using this command"); }
+	return SendClientMessage(playerid, STEALTH_YELLOW, "You need to finish editing your object before using this command"); }
 
 // Checks if a map is open
 #define MapOpenCheck(); if(!MapOpen) { \
