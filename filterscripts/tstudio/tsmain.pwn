@@ -48,6 +48,9 @@ public OnFilterScriptExit()
 public OnPlayerConnect(playerid)
 {
     RemoveAllBuildings(playerid);
+    
+    SendClientMessage(playerid, STEALTH_GREEN, "Welcome to Texture Studio!");
+    SendClientMessage(playerid, STEALTH_GREEN, sprintf("There are currently %i commands registered, check \"/thelp\" to see them!", Command_GetPlayerCommandCount(playerid)));
 	return 1;
 }
 
