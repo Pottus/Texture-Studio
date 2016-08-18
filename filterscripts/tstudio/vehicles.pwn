@@ -479,9 +479,11 @@ YCMD:avnewcar(playerid, arg[], help)
                 CurrVehicle[playerid] = AddNewCar(model, index, true);
                 return 1;
             }
-            SendClientMessage(playerid, STEALTH_YELLOW, "Invalid vehicle name or ID");
+            else
+                SendClientMessage(playerid, STEALTH_YELLOW, "Invalid vehicle name or ID");
         }
-        SendClientMessage(playerid, STEALTH_YELLOW, "Too many cars");
+        else
+            SendClientMessage(playerid, STEALTH_YELLOW, "Too many cars");
     }
     else 
     {

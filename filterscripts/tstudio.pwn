@@ -311,9 +311,6 @@ forward OnDeleteGroup3DText(index);
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________"); \
 	return SendClientMessage(playerid, STEALTH_YELLOW, "There is no map currently open"); }
 
-// RCON Restrictor (I include it here because of the macroes above ^)
-#include "tstudio\restrict.pwn"
-
 // Removebuilding information enum
 enum REMOVEINFO
 {
@@ -538,8 +535,23 @@ new bool:MapOpen;
 // Texture viewer
 #include "tstudio\texviewer.pwn"
 
+// ===== Restriction Variables =====
+new Iterator:Restriction[51]<MAX_PLAYERS>, bool:gRestricted[51] = {false, ...};
+
+// playerid, object index (must be 0 or more than 50, if not it must be in a group with no restrictions, if not then the restriction must allow this player)
+#define CanSelectObject(%0,%1) \
+    (!(0 <= %1 < MAX_TEXTURE_OBJECTS) || (!gRestricted[ObjectData[%1][oGroup]] || !(0 < ObjectData[%1][oGroup] <= 50) || !Iter_Count(Restriction[ObjectData[%1][oGroup]]) || Iter_Contains(Restriction[ObjectData[%1][oGroup]], playerid) || IsPlayerAdmin(playerid)))
+// playerid, group index (it must be a group with no restrictions, if not then the restriction must allow this player)
+#define CanSelectGroup(%0,%1) \
+    (!(0 < %1 <= 50) || (!gRestricted[%1] || !Iter_Count(Restriction[%1]) || Iter_Contains(Restriction[%1], playerid) || IsPlayerAdmin(playerid)))
+    //not in this ? then safely test these
+// ===== Not a very good modular technique... =====
+    
 // Group editing
 #include "tstudio\groups.pwn"
+
+// RCON Restrictor
+#include "tstudio\restrict.pwn"
 
 // List selection
 #include "tstudio\listsel.pwn"

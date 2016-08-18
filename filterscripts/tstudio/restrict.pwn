@@ -1,13 +1,3 @@
-new Iterator:Restriction[51]<MAX_PLAYERS>, bool:gRestricted[51] = {false, ...};
-
-// playerid, object index (must be 0 or more than 50, if not it must be in a group with no restrictions, if not then the restriction must allow this player)
-#define CanSelectObject(%0,%1) \
-    (!(0 <= %1 < MAX_TEXTURE_OBJECTS) || (!gRestricted[ObjectData[%1][oGroup]] || !(0 < ObjectData[%1][oGroup] <= 50) || !Iter_Count(Restriction[ObjectData[%1][oGroup]]) || Iter_Contains(Restriction[ObjectData[%1][oGroup]], playerid) || IsPlayerAdmin(playerid)))
-// playerid, group index (it must be a group with no restrictions, if not then the restriction must allow this player)
-#define CanSelectGroup(%0,%1) \
-    (!(0 < %1 <= 50) || (!gRestricted[%1] || !Iter_Count(Restriction[%1]) || Iter_Contains(Restriction[%1], playerid) || IsPlayerAdmin(playerid)))
-    //not in this ? then safely test these
-
 public OnFilterScriptInit()
 {
 	Iter_Init(Restriction);
@@ -74,9 +64,52 @@ YCMD:restrict(playerid, arg[], help)
     Iter_Clear(Restriction[groupid]);
     
     for(new i; i < 10; i++)
-        Iter_Add(Restriction[groupid], groupid);
+    {
+        if(players[i] != -1)
+            Iter_Add(Restriction[groupid], players[i]);
+        else
+            break;
+    }
     
     gRestricted[groupid] = true;
+    
+    foreach(new p: Player)
+    {
+        new bool:cont;
+        for(new i; i < 10; i++)
+        {
+            if(players[i] == p)
+            {
+                cont = true;
+                break;
+            }
+        }
+        if(cont || IsPlayerAdmin(p))
+            continue;
+        
+        if(ObjectData[CurrObject[p]][oGroup] == groupid)
+        {
+            CurrObject[p] = -1;
+            SendClientMessage(p, STEALTH_YELLOW, "You're selected object has been deselected due to a restriction");
+        }
+        
+        new count;
+        foreach(new i : Objects)
+        {
+            if(GroupedObjects[p][i] && ObjectData[i][oGroup] == groupid)
+            {
+                GroupedObjects[p][i] = false;
+                OnUpdateGroup3DText(i);
+                UpdateObject3DText(i);
+                count++;
+            }
+        }
+        if(count)
+        {
+            UpdatePlayerGSelText(p);
+            SendClientMessage(p, STEALTH_YELLOW, sprintf("%i of your grouped objects have been deselected due to a restriction", count));
+        }
+    }
     
     SendClientMessage(playerid, STEALTH_GREEN, "You've restricted this group");
     return 1;
