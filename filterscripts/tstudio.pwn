@@ -203,9 +203,6 @@ Change Log:
 // Compile the Angular Map Extension module
 //#define COMPILE_MANGLE
 
-// Compile the GTA Object module for removing buildings
-#define COMPILE_GTA_OBJECTS
-
 // Compile the local input module for advanced keys and mouse control
 //#define COMPILE_LOCAL_INPUT
 
@@ -567,9 +564,7 @@ new Iterator:Restriction[51]<MAX_PLAYERS>, bool:gRestricted[51] = {false, ...};
 #include "tstudio\obmedit.pwn"
 
 // GTA objects module
-#if defined COMPILE_GTA_OBJECTS
-	#include "tstudio\gtaobjects.pwn"
-#endif
+#include "tstudio\gtaobjects.pwn"
 
 // Local input module
 #if defined COMPILE_LOCAL_INPUT

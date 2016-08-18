@@ -1628,9 +1628,7 @@ ClearRemoveBuildings()
 	{
 		SendClientMessageToAll(STEALTH_YELLOW, "Warning: The previous map had removed objects you will have to reconnect to see them");
 
-		#if defined COMPILE_GTA_OBJECTS
-			ResetGTADeletedObjects();
-		#endif
+		ResetGTADeletedObjects();
 	}
 	return 1;
 }
@@ -4754,17 +4752,9 @@ YCMD:thelp(playerid, arg[], help)
 		Command_ReProcess(playerid, arg, true);
 	
 #if defined MANGLE
-	#if defined COMPILE_GTA_OBJECTS
-		#define TYPES 11
-	#else
-		#define TYPES 10
-	#endif
+	#define TYPES 11
 #else
-	#if defined COMPILE_GTA_OBJECTS
-		#define TYPES 10
-	#else
-		#define TYPES 9
-	#endif
+	#define TYPES 10
 #endif
 
 	static Commands[TYPES][32][64] =
@@ -4935,7 +4925,6 @@ YCMD:thelp(playerid, arg[], help)
 			{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},
 		},
 #endif
-#if defined COMPILE_GTA_OBJECTS
 		{//BUILDINGS
 			{"Buildings"},
 			
@@ -4950,7 +4939,6 @@ YCMD:thelp(playerid, arg[], help)
 			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 			{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},
 		},
-#endif
 		{//VEHICLE
 			{"Vehicles"},
 			
