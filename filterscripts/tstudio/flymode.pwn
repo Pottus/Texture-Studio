@@ -10,9 +10,10 @@
 //-------------------------------------------------
 
 
-// Players Move Speed
+// Default Move Speed
 #define MOVE_SPEED              100.0
 #define ACCEL_RATE              0.03
+#define ACCEL_MODE              true
 
 // Players Mode
 #define CAMERA_MODE_NONE    	0
@@ -37,7 +38,11 @@ enum noclipenum
 	lrold,
 	udold,
 	lastmove,
-	Float:accelmul
+	Float:accelmul,
+    
+    Float:accelrate,
+    Float:maxspeed,
+    bool:accel
 }
 new noclipdata[MAX_PLAYERS][noclipenum];
 
@@ -84,6 +89,9 @@ public OnPlayerConnect(playerid)
 	noclipdata[playerid][mode]   		= 0;
 	noclipdata[playerid][lastmove]   	= 0;
 	noclipdata[playerid][accelmul]   	= 0.0;
+	noclipdata[playerid][accel]   	    = ACCEL_MODE;
+	noclipdata[playerid][accelrate]   	= ACCEL_RATE;
+	noclipdata[playerid][maxspeed]   	= MOVE_SPEED;
 	FlyMode[playerid] = false;
 
 	#if defined FM_OnPlayerConnect
@@ -117,6 +125,69 @@ YCMD:flymode(playerid, arg[], help)
 	else StartFlyMode(playerid);
 	return 1;
 }
+
+YCMD:fmspeed(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Change flymode speed, must be 5-200.");
+		return 1;
+	}
+
+    new Float:newspeed;
+    sscanf(arg, "F(-1.0)", newspeed);
+    
+    if(newspeed == -1.0)
+        newspeed = MOVE_SPEED;
+    else if(newspeed < 5.0)
+        newspeed = 5.0;
+    else if(newspeed > 200.0)
+        newspeed = 200.0;
+	
+	noclipdata[playerid][maxspeed] = newspeed;
+    SendClientMessage(playerid, STEALTH_GREEN, sprintf("Flymode max speed set to %0.2f", newspeed));
+	return 1;
+}
+
+YCMD:fmaccel(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Change flymode acceleration rate, must be 0.005 - 0.05");
+		return 1;
+	}
+
+    new Float:newacc;
+    sscanf(arg, "F(-1.0)", newacc);
+    
+    if(newacc == -1.0)
+        newacc = ACCEL_RATE;
+    else if(newacc < 0.005)
+        newacc = 0.005;
+    else if(newacc > 0.05)
+        newacc = 0.05;
+	
+	noclipdata[playerid][accelrate] = newacc;
+    SendClientMessage(playerid, STEALTH_GREEN, sprintf("Flymode max speed set to %0.3f", newacc));
+	return 1;
+}
+
+YCMD:fmtoggle(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Toggle flymode acceleration.");
+		return 1;
+	}
+
+	noclipdata[playerid][accel] = !noclipdata[playerid][accel];
+	SendClientMessage(playerid, STEALTH_GREEN, sprintf("Flymode acceleration toggled %s", noclipdata[playerid][accel] ? ("on") : ("off")));
+	return 1;
+}
+
 //--------------------------------------------------
 
 public OnPlayerUpdate(playerid)
@@ -208,10 +279,10 @@ stock MoveCamera(playerid)
     GetPlayerCameraFrontVector(playerid, FV[0], FV[1], FV[2]);  //  Where the camera is looking at
 
 	// Increases the acceleration multiplier the longer the key is held
-	if(noclipdata[playerid][accelmul] <= 1) noclipdata[playerid][accelmul] += ACCEL_RATE;
+	if(noclipdata[playerid][accelmul] <= 1.0) noclipdata[playerid][accelmul] += noclipdata[playerid][accelrate];
 
 	// Determine the speed to move the camera based on the acceleration multiplier
-	new Float:speed = MOVE_SPEED * noclipdata[playerid][accelmul];
+	new Float:speed = noclipdata[playerid][maxspeed] * (noclipdata[playerid][accel] ? noclipdata[playerid][accelmul] : 1.0);
 
 	// Calculate the cameras next position based on their current position and the direction their camera is facing
 	new Float:X, Float:Y, Float:Z;
