@@ -275,7 +275,8 @@ stock GetMoveDirectionFromKeys(ud, lr)
 stock MoveCamera(playerid)
 {
 	new Float:FV[3], Float:CP[3];
-	GetPlayerCameraPos(playerid, CP[0], CP[1], CP[2]);          // 	Cameras position in space
+	//GetPlayerCameraPos(playerid, CP[0], CP[1], CP[2]);          // 	Cameras position in space
+	GetPlayerObjectPos(playerid, noclipdata[playerid][flyobject], CP[0], CP[1], CP[2]);          // 	Cameras position in space
     GetPlayerCameraFrontVector(playerid, FV[0], FV[1], FV[2]);  //  Where the camera is looking at
 
 	// Increases the acceleration multiplier the longer the key is held
@@ -289,6 +290,8 @@ stock MoveCamera(playerid)
 	GetNextCameraPosition(noclipdata[playerid][mode], CP, FV, X, Y, Z);
 	MovePlayerObject(playerid, noclipdata[playerid][flyobject], X, Y, Z, speed);
 
+    SendClientMessage(playerid, -1, sprintf("(%0.1f, %0.1f, %0.1f) - (%0.1f, %0.1f, %0.1f) - (%0.1f, %0.1f, %0.1f)", CP[0], CP[1], CP[2], FV[0], FV[1], FV[2], X, Y, Z));
+    
 	// Store the last time the camera was moved as now
 	noclipdata[playerid][lastmove] = GetTickCount();
 	return 1;
