@@ -823,7 +823,7 @@ static HidePlayerOSDraws(playerid)
 
 }
 
-stock isnumeric_f(str[])
+tsfunc isnumeric_f(str[])
 {
 	new i, ch;
 	while ((ch = str[i++])) if (!('0' <= ch <= '9') && ch != '.') return 0;

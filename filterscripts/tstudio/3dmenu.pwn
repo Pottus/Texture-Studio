@@ -40,7 +40,7 @@ forward OnPlayerSelect3DMenuBox(playerid,MenuID,boxid);
 forward OnPlayerChange3DMenuBox(playerid,MenuID,boxid);
 
 // Create a new menu
-stock Create3DMenu(playerid,Float:x,Float:y,Float:z,Float:rotation,boxes)
+tsfunc Create3DMenu(playerid,Float:x,Float:y,Float:z,Float:rotation,boxes)
 {
 	// Make sure box is in range
 	if(boxes > MAX_BOXES || boxes <= 0) return -1;
@@ -77,7 +77,7 @@ stock Create3DMenu(playerid,Float:x,Float:y,Float:z,Float:rotation,boxes)
 	return -1;
 }
 
-stock SetBoxMaterial(MenuID,box,index,model,txd[],texture[], selectcolor, unselectcolor)
+tsfunc SetBoxMaterial(MenuID,box,index,model,txd[],texture[], selectcolor, unselectcolor)
 {
 	if(!MenuInfo[MenuID][IsExist]) return -1;
 	if(box == MenuInfo[MenuID][Boxes] || box < 0) return -1;
@@ -89,7 +89,7 @@ stock SetBoxMaterial(MenuID,box,index,model,txd[],texture[], selectcolor, unsele
 	return 1;
 }
 
-stock Select3DMenu(playerid,MenuID)
+tsfunc Select3DMenu(playerid,MenuID)
 {
 	if(!IsPlayerConnected(playerid)) return -1;
 	if(!MenuInfo[MenuID][IsExist]) return -1;
@@ -252,7 +252,7 @@ OnPlayerKeyStateChange3DMenu(playerid,newkeys,oldkeys)
 	return 0;
 }
 
-stock CancelSelect3DMenu(playerid)
+tsfunc CancelSelect3DMenu(playerid)
 {
 	if(!IsPlayerConnected(playerid)) return -1;
 	if(SelectedMenu[playerid] == -1) return -1;
@@ -269,7 +269,7 @@ stock CancelSelect3DMenu(playerid)
 	return 1;
 }
 
-stock Destroy3DMenu(MenuID)
+tsfunc Destroy3DMenu(MenuID)
 {
     if(!MenuInfo[MenuID][IsExist]) return -1;
     if(SelectedMenu[MenuInfo[MenuID][Player]] == MenuID) CancelSelect3DMenu(MenuInfo[MenuID][Player]);

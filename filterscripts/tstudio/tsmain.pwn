@@ -1233,7 +1233,7 @@ UpdateObject3DText(index, bool:newobject=false)
 // Rotation functions (Thanks to Stylock)
 
 // Calculates group object / whole map rotations
-stock AttachObjectToPoint(objectid, Float:px, Float:py, Float:pz, Float:prx, Float:pry, Float:prz, &Float:RetX, &Float:RetY, &Float:RetZ, &Float:RetRX, &Float:RetRY, &Float:RetRZ, sync_rotation = 1)
+tsfunc AttachObjectToPoint(objectid, Float:px, Float:py, Float:pz, Float:prx, Float:pry, Float:prz, &Float:RetX, &Float:RetY, &Float:RetZ, &Float:RetRX, &Float:RetRY, &Float:RetRZ, sync_rotation = 1)
 {
     new
         Float:g_sin[3],
@@ -1269,7 +1269,7 @@ stock AttachObjectToPoint(objectid, Float:px, Float:py, Float:pz, Float:prx, Flo
     }
 }
 
-stock AttachObjectToPoint_GroupEdit(objectid, Float:offx, Float:offy, Float:offz, Float:px, Float:py, Float:pz, Float:prx, Float:pry, Float:prz, &Float:RetX, &Float:RetY, &Float:RetZ, &Float:RetRX, &Float:RetRY, &Float:RetRZ, sync_rotation = 1)
+tsfunc AttachObjectToPoint_GroupEdit(objectid, Float:offx, Float:offy, Float:offz, Float:px, Float:py, Float:pz, Float:prx, Float:pry, Float:prz, &Float:RetX, &Float:RetY, &Float:RetZ, &Float:RetRX, &Float:RetRY, &Float:RetRZ, sync_rotation = 1)
 {
     new
         Float:g_sin[3],
@@ -1304,7 +1304,7 @@ stock AttachObjectToPoint_GroupEdit(objectid, Float:offx, Float:offy, Float:offz
 }
 
 
-stock AttachPoint(Float:offx, Float:offy, Float:offz, Float:offrx, Float:offry, Float:offrz, Float:px, Float:py, Float:pz, Float:prx, Float:pry, Float:prz, &Float:RetX, &Float:RetY, &Float:RetZ, &Float:RetRX, &Float:RetRY, &Float:RetRZ, sync_rotation = 1)
+tsfunc AttachPoint(Float:offx, Float:offy, Float:offz, Float:offrx, Float:offry, Float:offrz, Float:px, Float:py, Float:pz, Float:prx, Float:pry, Float:prz, &Float:RetX, &Float:RetY, &Float:RetZ, &Float:RetRX, &Float:RetRY, &Float:RetRZ, sync_rotation = 1)
 {
     new
         Float:g_sin[3],
@@ -1342,7 +1342,7 @@ stock AttachPoint(Float:offx, Float:offy, Float:offz, Float:offrx, Float:offry, 
 
 
 
-stock EDIT_FloatConvertValue(Float:rot_x, Float:rot_y, Float:rot_z, Float:sin[3], Float:cos[3])
+tsfunc EDIT_FloatConvertValue(Float:rot_x, Float:rot_y, Float:rot_z, Float:sin[3], Float:cos[3])
 {
     sin[0] = floatsin(rot_x, degrees);
     sin[1] = floatsin(rot_y, degrees);
@@ -1357,7 +1357,7 @@ stock EDIT_FloatConvertValue(Float:rot_x, Float:rot_y, Float:rot_z, Float:sin[3]
  * Fixes a bug that causes objects to not rotate
  * correctly when rotating on the Z axis only.
  */
-stock EDIT_FloatEulerFix(&Float:rot_x, &Float:rot_y, &Float:rot_z)
+tsfunc EDIT_FloatEulerFix(&Float:rot_x, &Float:rot_y, &Float:rot_z)
 {
     EDIT_FloatGetRemainder(rot_x, rot_y, rot_z);
     if((!floatcmp(rot_x, 0.0) || !floatcmp(rot_x, 360.0))
@@ -1368,7 +1368,7 @@ stock EDIT_FloatEulerFix(&Float:rot_x, &Float:rot_y, &Float:rot_z)
     return 1;
 }
 
-stock EDIT_FloatGetRemainder(&Float:rot_x, &Float:rot_y, &Float:rot_z)
+tsfunc EDIT_FloatGetRemainder(&Float:rot_x, &Float:rot_y, &Float:rot_z)
 {
     EDIT_FloatRemainder(rot_x, 360.0);
     EDIT_FloatRemainder(rot_y, 360.0);
@@ -1376,7 +1376,7 @@ stock EDIT_FloatGetRemainder(&Float:rot_x, &Float:rot_y, &Float:rot_z)
     return 1;
 }
 
-stock EDIT_FloatRemainder(&Float:remainder, Float:value)
+tsfunc EDIT_FloatRemainder(&Float:remainder, Float:value)
 {
     if(remainder >= value)
     {
@@ -3204,7 +3204,7 @@ YCMD:ogroup(playerid, arg[], help)
 
 
 
-stock ColumnExists(DB:database, table[], columnname[])
+tsfunc ColumnExists(DB:database, table[], columnname[])
 {
 	new q[128];
 	format(q, sizeof(q), "pragma table_info(%s)", table);

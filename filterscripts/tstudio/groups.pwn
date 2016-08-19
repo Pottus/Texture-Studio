@@ -329,7 +329,7 @@ OnPlayerEditDOGroup(playerid, objectid, response, Float:x, Float:y, Float:z, Flo
 	return 1;
 }
 
-stock ClearGroup(playerid)
+tsfunc ClearGroup(playerid)
 {
 	for(new i = 0; i < MAX_TEXTURE_OBJECTS; i++)
 	{
@@ -339,7 +339,7 @@ stock ClearGroup(playerid)
 	return 1;
 }
 
-stock GroupUpdate(index)
+tsfunc GroupUpdate(index)
 {
 	foreach(new i : Player)
 	{
@@ -348,7 +348,8 @@ stock GroupUpdate(index)
 	return 1;
 }
 
-stock GroupRotate(playerid, Float:rx, Float:ry, Float:rz, update = true)
+#if defined COMPILE_MANGLE
+tsfunc GroupRotate(playerid, Float:rx, Float:ry, Float:rz, update = true)
 {
 	new Float:gCenterX, Float:gCenterY, Float:gCenterZ;
 	GetGroupCenter(playerid, gCenterX, gCenterY, gCenterZ);
@@ -371,6 +372,7 @@ stock GroupRotate(playerid, Float:rx, Float:ry, Float:rz, update = true)
 	}
 	db_end_transaction(EditMap);
 }
+#endif
 
 YCMD:ginfront(playerid, arg[], help)
 {
@@ -461,7 +463,7 @@ GetGroupRadius(playerid, &Float:radius)
 	return 1;
 }
 
-stock GetGroupCenter(playerid, &Float:X, &Float:Y, &Float:Z)
+tsfunc GetGroupCenter(playerid, &Float:X, &Float:Y, &Float:Z)
 {
 	new Float:highX = -9999999.0;
 	new Float:highY = -9999999.0;
@@ -2196,7 +2198,7 @@ YCMD:0group(playerid, arg[], help)
 	return 1;
 }
 
-stock ShowPrefabs(playerid)
+tsfunc ShowPrefabs(playerid)
 {
 	new dir:dHandle = dir_open("./scriptfiles/tstudio/PreFabs/");
 	new item[40], type;

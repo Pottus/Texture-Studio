@@ -2308,7 +2308,7 @@ stock IsValidModel(modelid)
 	return 0;
 }
 
-stock GetModelArray(modelid)
+tsfunc GetModelArray(modelid)
 {
 	for(new i = 0; i < sizeof(ObjectList); i++)
 	{

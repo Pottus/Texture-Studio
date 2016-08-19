@@ -355,7 +355,7 @@ YCMD:cobjectsets(playerid, arg[], help)
 
 
 
-stock CalcSlopeAtPoint(Float:x, Float:y, &Float:RXAngle, &Float:RYAngle)
+tsfunc CalcSlopeAtPoint(Float:x, Float:y, &Float:RXAngle, &Float:RYAngle)
 {
 	new Float:North[3], Float:South[3], Float:East[3], Float:West[3], Float:opposite, Float:hypotenuse;
 
@@ -397,7 +397,7 @@ stock CalcSlopeAtPoint(Float:x, Float:y, &Float:RXAngle, &Float:RYAngle)
 }
 
 
-stock ObjectRotateZ(Float:RX, Float:RY, Float:RZ, Float:rot_z, &Float:NewRX, &Float:NewRY, &Float:NewRZ)
+tsfunc ObjectRotateZ(Float:RX, Float:RY, Float:RZ, Float:rot_z, &Float:NewRX, &Float:NewRY, &Float:NewRZ)
 {
 	new
 		Float:sinx,
@@ -419,7 +419,7 @@ stock ObjectRotateZ(Float:RX, Float:RY, Float:RZ, Float:rot_z, &Float:NewRX, &Fl
     return 1;
 }
 
-stock FloatConvertValue(Float:rot_x, Float:rot_y, Float:rot_z, &Float:sinx, &Float:siny, &Float:sinz, &Float:cosx, &Float:cosy, &Float:cosz)
+tsfunc FloatConvertValue(Float:rot_x, Float:rot_y, Float:rot_z, &Float:sinx, &Float:siny, &Float:sinz, &Float:cosx, &Float:cosy, &Float:cosz)
 {
     sinx = floatsin(rot_x, degrees);
     siny = floatsin(rot_y, degrees);
@@ -706,7 +706,7 @@ ConvertMeditPrefab(tempmap[64])
 }
 
 
-stock GetPrefabCenter(openmap[64], &Float:pfx, &Float:pfy, &Float:pfz)
+tsfunc GetPrefabCenter(openmap[64], &Float:pfx, &Float:pfy, &Float:pfz)
 {
 	new File:f;
 	f = fopen(openmap,io_read);

@@ -52,7 +52,7 @@ new bool:FlyMode[MAX_PLAYERS];
 
 //--------------------------------------------------
 
-stock IsFlyMode(playerid) { return noclipdata[playerid][cameramode]; }
+tsfunc IsFlyMode(playerid) { return noclipdata[playerid][cameramode]; }
 
 
 public OnFilterScriptExit()
@@ -248,7 +248,7 @@ public OnPlayerUpdate(playerid)
 
 //--------------------------------------------------
 
-stock GetMoveDirectionFromKeys(ud, lr)
+tsfunc GetMoveDirectionFromKeys(ud, lr)
 {
 	new direction = 0;
 	
@@ -272,7 +272,7 @@ stock GetMoveDirectionFromKeys(ud, lr)
 
 //--------------------------------------------------
 
-stock MoveCamera(playerid)
+tsfunc MoveCamera(playerid)
 {
 	new Float:FV[3], Float:CP[3];
 	//GetPlayerCameraPos(playerid, CP[0], CP[1], CP[2]);          // 	Cameras position in space
@@ -297,7 +297,7 @@ stock MoveCamera(playerid)
 	return 1;
 }
 
-stock SetFlyModePos(playerid, Float:x, Float:y, Float:z)
+tsfunc SetFlyModePos(playerid, Float:x, Float:y, Float:z)
 {
     SetPlayerObjectPos(playerid, noclipdata[playerid][flyobject], x, y, z);
 	noclipdata[playerid][lastmove] = GetTickCount();
@@ -307,7 +307,7 @@ stock SetFlyModePos(playerid, Float:x, Float:y, Float:z)
 
 //--------------------------------------------------
 
-stock GetNextCameraPosition(move_mode, Float:CP[3], Float:FV[3], &Float:X, &Float:Y, &Float:Z)
+tsfunc GetNextCameraPosition(move_mode, Float:CP[3], Float:FV[3], &Float:X, &Float:Y, &Float:Z)
 {
     // Calculate the cameras next position based on their current position and the direction their camera is facing
     #define OFFSET_X (FV[0]*6000.0)
@@ -367,7 +367,7 @@ stock GetNextCameraPosition(move_mode, Float:CP[3], Float:FV[3], &Float:X, &Floa
 }
 //--------------------------------------------------
 
-stock CancelFlyMode(playerid)
+tsfunc CancelFlyMode(playerid)
 {
 	new Float:x, Float:y, Float:z;
 	GetPlayerCameraPos(playerid, x, y, z);
@@ -388,7 +388,7 @@ public DelaySetPos(playerid, Float:x, Float:y, Float:z) { SetPlayerPos(playerid,
 
 //--------------------------------------------------
 
-stock StartFlyMode(playerid)
+tsfunc StartFlyMode(playerid)
 {
 	// Create an invisible object for the players camera to be attached to
 	new Float:X, Float:Y, Float:Z;

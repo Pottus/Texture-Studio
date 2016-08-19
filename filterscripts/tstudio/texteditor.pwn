@@ -30,7 +30,7 @@ new PlayerText:Click_FontTextSize[MAX_PLAYERS];
 
 static bool:TextEditing[MAX_PLAYERS];
 
-stock IsTextEditing(playerid) { return TextEditing[playerid]; }
+#define IsTextEditing(%0) TextEditing[%0]
 
 // Open text editor
 YCMD:text(playerid, arg[], help)

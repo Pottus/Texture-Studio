@@ -218,6 +218,9 @@ Change Log:
 // Set max players
 #undef MAX_PLAYERS
 #define MAX_PLAYERS 10
+
+// "tsfunc" definition, to replace "stock"
+#define tsfunc
 	
 // System defines
 #define BroadcastCommand(%0,%1) CallLocalFunction("OnPlayerCommandText","is",%0,%1)
