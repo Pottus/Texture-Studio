@@ -525,6 +525,11 @@ static AddNewCar(modelid, index = -1, bool:sqlsave = true, bool:clearref = true)
 		CarData[index][CarText] = CreateDynamic3DTextLabel(line, -1, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ], 20.0, INVALID_PLAYER_ID, CarData[index][CarID]);
         Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, CarData[index][CarText], E_STREAMER_ATTACH_OFFSET_Z, 2.0);
 
+        ChangeVehiclePaintjob(CarData[index][CarID], CarData[index][CarPaintJob]);
+        for(new i; i < MAX_CAR_COMPONENTS; i++)
+            if(CarData[index][CarComponents][i])
+                AddVehicleComponent(CarData[index][CarID], CarData[index][CarComponents][i]);
+        
 		if(clearref)
 		{
 			for(new i = 0; i < MAX_CAR_OBJECTS; i++) CarData[index][CarObjectRef][i] = -1;
@@ -1208,6 +1213,12 @@ YCMD:avclonecar(playerid, arg[], help)
 		GetPlayerPos(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ]);
 		GetXYInFrontOfPlayer(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], 2.0);
 		GetPlayerFacingAngle(playerid, CarData[index][CarSpawnFA]);
+        
+        CarData[index][CarColor1]     = CarData[CloneCar][CarColor1];
+        CarData[index][CarColor2]     = CarData[CloneCar][CarColor2];
+        CarData[index][CarPaintJob]   = CarData[CloneCar][CarPaintJob];
+        CarData[index][CarComponents] = CarData[CloneCar][CarComponents];
+        
 		CurrVehicle[playerid] = AddNewCar(CarData[CloneCar][CarModel], index, true);
 
 		// Clone and attach objects
