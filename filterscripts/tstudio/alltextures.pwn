@@ -8487,6 +8487,7 @@ new ObjectTextures[][TEXTUREDEF] =
 	{ 19318, "flyingv01", "flyingv01" },
 	{ 19588, "footbridge1", "footbridge-diffuse" },
 	{ 18889, "forcefields", "glass1" },
+	{ 18888, "forcefields", "white" },
 	{ 19470, "forsale01", "forsale01" },
 	{ 19638, "fruitcrates1", "applesgreen1" },
 	{ 19638, "fruitcrates1", "applesred1" },
