@@ -193,6 +193,14 @@ Change Log:
 	v1.7 - /undo command (Note you can't undo edits on vehicles currently)
 */
 
+/*      NONE    MAJOR   MINOR   PATCH
+-  0x   00      00      00      00
+-  Major: X.00 (# 1-10)
+-  Minor: 0.X0 (# 1-10)
+-  Patch: 0.0X (Letter a-z, not A-Z)
+*/
+#define TS_VERSION (0x00010900)
+
 #define FILTERSCRIPT
 
 // Uncomment to turn on DEBUG mode
@@ -334,6 +342,7 @@ enum OBJECTINFO
 	oGroup,                                     // Object group
 	oModel,                                     // Object Model
 	Text3D:oTextID,                             // Object 3d text label
+    oNote[64],                                  // Object note
 	Float:oX,                                   // Position Z
 	Float:oY,                                   // Position Z
 	Float:oZ,                                   // Position Z
@@ -379,6 +388,17 @@ new CopyBuffer[MAX_PLAYERS][COPYINFO];
 // Object information array
 new ObjectData[MAX_TEXTURE_OBJECTS][OBJECTINFO];
 
+// 3D Text Options
+enum TEXTOPTIONS
+{
+    bool:tShowText,
+    bool:tShowNote,
+    bool:tShowModel,
+    bool:tShowGroup
+}
+new TextOption[TEXTOPTIONS] = {
+    true, false, false, true
+};
 
 // Sets the current object a player is editing
 new CurrObject[MAX_PLAYERS] = { -1, ... };

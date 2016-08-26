@@ -125,7 +125,7 @@ ShowPropMenu(playerid)
 								{
 								    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 									ObjectData[CurrObject[playerid]][oRX] = floatstr(etext);
-									SetDynamicObjectPos(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
+									SetDynamicObjectRot(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
 									sqlite_UpdateObjectPos(CurrObject[playerid]);
 									UpdateObject3DText(CurrObject[playerid]);
 									SendClientMessage(playerid, STEALTH_GREEN, "RX Updated");
@@ -135,7 +135,7 @@ ShowPropMenu(playerid)
 								{
 								    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 									ObjectData[CurrObject[playerid]][oRY] = floatstr(etext);
-									SetDynamicObjectPos(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
+									SetDynamicObjectRot(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
 									sqlite_UpdateObjectPos(CurrObject[playerid]);
 									UpdateObject3DText(CurrObject[playerid]);
 									SendClientMessage(playerid, STEALTH_GREEN, "RY Updated");
@@ -145,12 +145,11 @@ ShowPropMenu(playerid)
 								{
 								    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
 									ObjectData[CurrObject[playerid]][oRZ] = floatstr(etext);
-									SetDynamicObjectPos(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
+									SetDynamicObjectRot(ObjectData[CurrObject[playerid]][oID], ObjectData[CurrObject[playerid]][oRX], ObjectData[CurrObject[playerid]][oRY], ObjectData[CurrObject[playerid]][oRZ]);
 									sqlite_UpdateObjectPos(CurrObject[playerid]);
 									UpdateObject3DText(CurrObject[playerid]);
 									SendClientMessage(playerid, STEALTH_GREEN, "RZ Updated");
 								}
-								
 							}
 						}
                         ShowPropMenu(playerid);
@@ -483,6 +482,26 @@ ShowPropMenu(playerid)
 				    }
                     Dialog_ShowCallback(playerid, using inline ChangeTextString, DIALOG_STYLE_INPUT, "Texture Studio", "A new text string", "Ok", "Cancel");
 				}
+				
+				// Note
+				case 49:
+				{
+				    inline ChangeNote(epid, edialogid, eresponse, elistitem, string:etext[])
+				    {
+						#pragma unused elistitem, edialogid, epid, etext
+						if(eresponse)
+						{
+							SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
+							format(ObjectData[CurrObject[playerid]][oNote], 64, "%s", etext);
+							sqlite_ObjNote(CurrObject[playerid]);
+                            UpdateObject3DText(CurrObject[playerid]);
+							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+							SendClientMessage(playerid, STEALTH_YELLOW, "Note changed");
+						}
+                        ShowPropMenu(playerid);
+				    }
+				    Dialog_ShowCallback(playerid, using inline ChangeNote, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new note", "Ok", "Cancel");
+				}
 		    }
 		}
 	}
@@ -496,9 +515,12 @@ ShowPropMenu(playerid)
 	for(new i = 0; i < MAX_MATERIALS; i++) format(propline, sizeof(propline), "%s{FFFF00}Material Index %i: {00FF00}%i\n", propline, i, ObjectData[index][oTexIndex][i]);
 	for(new i = 0; i < MAX_MATERIALS; i++) format(propline, sizeof(propline), "%s{FFFF00}Material Color %i: {00FF00}%i\n", propline, i, ObjectData[index][oColorIndex][i]);
 
-	format(propline, sizeof(propline), "%s{FFFF00}Usetext: {00FF00}%i\n{FFFF00}FontFace: {00FF00}%s\n{FFFF00}FontSize: {00FF00}%s\n{FFFF00}FontBold: {00FF00}%i\n{FFFF00}FontColor: {00FF00}%i\n{FFFF00}FontBackColor: {00FF00}%i\n{FFFF00}Alignment: {00FF00}%s\n{FFFF00}FontTextSize: {00FF00}%i\n{FFFF00}Text: {00FF00}%s", propline,
+	format(propline, sizeof(propline), "%s{FFFF00}Usetext: {00FF00}%i\n{FFFF00}FontFace: {00FF00}%s\n{FFFF00}FontSize: {00FF00}%s\n{FFFF00}FontBold: {00FF00}%i\n{FFFF00}FontColor: {00FF00}%i\n{FFFF00}FontBackColor: {00FF00}%i\n{FFFF00}Alignment: {00FF00}%s\n{FFFF00}FontTextSize: {00FF00}%i\n{FFFF00}Text: {00FF00}%s\n", propline,
         ObjectData[index][ousetext], FontNames[ObjectData[index][oFontFace]], FontSizeNames[ObjectData[index][oFontSize]], ObjectData[index][oFontBold], ObjectData[index][oFontColor],
         ObjectData[index][oBackColor], AlignmentNames[ObjectData[index][oAlignment]], ObjectData[index][oTextFontSize], ObjectData[index][oObjectText]);
+
+	format(propline, sizeof(propline), "%s{FFFF00}Note: {00FF00}%s", propline,
+        ObjectData[index][oNote]);
 
 	Dialog_ShowCallback(playerid, using inline SelectProp, DIALOG_STYLE_LIST, "Texture Studio - Property editor", propline, "Ok", "Cancel");
 

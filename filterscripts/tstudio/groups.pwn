@@ -95,7 +95,7 @@ public OnUpdateGroup3DText(index)
 			GroupObjectText[i][index] = Text3D:-1;
 		}
 
-        if(GroupedObjects[i][index])
+        if(TextOption[tShowGroup] && GroupedObjects[i][index])
         {
 			// 3D Text Label (To identify objects)
 			new line[32];

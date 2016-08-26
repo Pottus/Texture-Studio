@@ -348,6 +348,7 @@ sqlite_LoadMapObjects()
     stmt_bind_result_field(loadstmt, 17, DB::TYPE_INT, tmpobject[oTextFontSize]);
     stmt_bind_result_field(loadstmt, 18, DB::TYPE_STRING, tmpobject[oObjectText], MAX_TEXT_LENGTH);
     stmt_bind_result_field(loadstmt, 19, DB::TYPE_INT, tmpobject[oGroup]);
+    stmt_bind_result_field(loadstmt, 20, DB::TYPE_STRING, tmpobject[oNote]);
 
 	// Execute query
     if(stmt_execute(loadstmt))
@@ -378,6 +379,7 @@ sqlite_LoadMapObjects()
 
 			// Get any text string
 			format(ObjectData[currindex][oObjectText], MAX_TEXT_LENGTH, "%s", tmpobject[oObjectText]);
+			format(ObjectData[currindex][oNote], MAX_TEXT_LENGTH, "%s", tmpobject[oNote]);
 
 			// We need to update textures and materials
 			UpdateMaterial(currindex);
@@ -412,7 +414,7 @@ sqlite_InsertObject(index)
 			InsertObjectString,
 			sizeof(InsertObjectString),
 			"INSERT INTO `Objects`",
-	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		);
 		// Prepare data base for writing
 	}
@@ -442,6 +444,7 @@ sqlite_InsertObject(index)
     stmt_bind_value(insertstmt, 17, DB::TYPE_INT, ObjectData[index][oTextFontSize]);
     stmt_bind_value(insertstmt, 18, DB::TYPE_STRING, ObjectData[index][oObjectText], MAX_TEXT_LENGTH);
     stmt_bind_value(insertstmt, 19, DB::TYPE_INT, ObjectData[index][oGroup]);
+    stmt_bind_value(insertstmt, 20, DB::TYPE_STRING, ObjectData[index][oNote]);
 
     stmt_execute(insertstmt);
 	stmt_close(insertstmt);
@@ -493,7 +496,8 @@ sqlite_CreateMapDB()
 			"Alignment INTEGER,",
 			"TextFontSize INTEGER,",
 			"ObjectText TEXT,",
-			"GroupID INTEGER);"
+			"GroupID INTEGER,",
+			"Note TEXT);"
 		);
 	}
 
@@ -520,15 +524,61 @@ sqlite_CreateRBDB()
 	db_exec(EditMap, NewRemoveString);
 }
 
+new NewSettingsString[512];
+sqlite_CreateSettings()
+{
+	if(!NewSettingsString[0])
+	{
+		strimplode(" ",
+			NewSettingsString,
+			sizeof(NewSettingsString),
+			"CREATE TABLE IF NOT EXISTS `Settings`",
+			"(Version INTEGER DEFAULT 0,",
+			"LastTime,",
+			"Author TEXT,",
+			"SpawnX REAL,",
+			"SpawnY REAL,",
+			"SpawnZ REAL);"
+		);
+	}
+	db_exec(EditMap, NewSettingsString);
+}
+
 // Makes any version updates
 sqlite_UpdateDB()
 {
     sqlite_CreateRBDB();
     sqlite_CreateVehicle();
+    sqlite_CreateSettings();
 
     // Version 1.3
     if(!ColumnExists(EditMap, "Objects", "GroupID")) db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `GroupID` INTEGER DEFAULT 0");
-
+    
+    new dbver = db_query_int(EditMap, "SELECT Version FROM Settings");
+    if(dbver != TS_VERSION)
+    {
+        printf("Map version (%i.%i%c) does not match TS version (%i.%i%c)",
+            (dbver & 0x00FF0000), (dbver & 0x0000FF00), (dbver & 0x000000FF) + 96,
+            (TS_VERSION & 0x00FF0000), (TS_VERSION & 0x0000FF00), (TS_VERSION & 0x000000FF) + 96);
+    
+        if((dbver & 0x00FF0000) > (TS_VERSION & 0x00FF0000)) // Major version, changes were made that are needed to edit this map
+            printf("Map major version is higher than TS version, update TS to edit this map.");
+        else if((dbver & 0x0000FF00) > (TS_VERSION & 0x0000FF00)) // Minor version, changes were made that affect this map
+            printf("Map minor version is higher than TS version, update TS to edit this map correctly.");
+        else if((dbver & 0x000000FF) > (TS_VERSION & 0x000000FF)) // Patch, backwards compatible
+            printf("Your version of TS is old, consider updating.");
+        
+        if((dbver & 0x00FF0000) < (TS_VERSION & 0x00FF0000)) // Major version, making updates
+            printf("Map major version is lower than TS version, updating map.");
+        else if((dbver & 0x0000FF00) < (TS_VERSION & 0x0000FF00)) // Minor version, making updates
+            printf("Map minor version is lower than TS version, updating map.");
+        else if((dbver & 0x000000FF) < (TS_VERSION & 0x000000FF)) // Patch, backwards compatible
+            printf("Map version is compatible with TS version.");
+    }
+    
+    // Version 1.9a
+    if((dbver & 0x0000FF00) < 9 || !ColumnExists(EditMap, "Objects", "Note")) db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `Note` TEXT DEFAULT ''");
+    
 	return 1;
 }
 
@@ -1009,6 +1059,34 @@ sqlite_ObjModel(index)
 	return 1;
 }
 
+// Update sql object note
+new DBStatement:objectnoteupdatestmt;
+new ObjectNoteString[512];
+
+sqlite_ObjNote(index)
+{
+	if(!ObjectNoteString[0])
+	{
+		strimplode(" ",
+			ObjectNoteString,
+			sizeof(ObjectNoteString),
+			"UPDATE `Objects` SET",
+			"`Note` = ?",
+			"WHERE `IndexID` = ?"
+		);
+	}
+	objectnoteupdatestmt = db_prepare(EditMap, ObjectNoteString);
+
+	// Bind values
+	stmt_bind_value(objectnoteupdatestmt, 0, DB::TYPE_STRING, ObjectData[index][oNote]);
+	stmt_bind_value(objectnoteupdatestmt, 1, DB::TYPE_INT, index);
+
+	// Execute stmt
+    stmt_execute(objectnoteupdatestmt);
+	stmt_close(objectnoteupdatestmt);
+	return 1;
+}
+
 
 // Insert a remove building to DB
 new DBStatement:insertremovebuldingstmt;
@@ -1208,12 +1286,26 @@ UpdateObject3DText(index, bool:newobject=false)
 
 	if(!newobject) DestroyDynamic3DTextLabel(ObjectData[index][oTextID]);
 
+    if(!TextOption[tShowText])
+        return 1;
+    
 	// 3D Text Label (To identify objects)
-	new line[64];
+	new line[128];
 	format(line, sizeof(line), "Ind: {33DD11}%i {FF8800}Grp:{33DD11} %i", index, ObjectData[index][oGroup]);
+    
+    // Append note
+    if(TextOption[tShowModel])
+    {
+        strcat(line, sprintf("\n{FF8800}Model: {FFFFFF}%s {FF8800}Name: {FFFFFF}%s", ObjectData[index][oModel], GetModelName(ObjectData[index][oModel])));
+    }
+    
+    // Append note
+    if(TextOption[tShowNote] && strlen(ObjectData[index][oNote]))
+    {
+        strcat(line, sprintf("\n{FF8800}Note: {FFFFFF}%s", ObjectData[index][oNote]));
+    }
 
-
-		// Shows the models index
+	// Shows the models index
 	if(ObjectData[index][oAttachedVehicle] > -1)
 	{
 		ObjectData[index][oTextID] = CreateDynamic3DTextLabel(line, 0xFF8800FF, ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], TEXT3D_DRAW_DIST, INVALID_PLAYER_ID, CarData[ObjectData[index][oAttachedVehicle]][CarID]);
