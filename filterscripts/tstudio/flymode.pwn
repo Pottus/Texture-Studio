@@ -290,7 +290,7 @@ tsfunc MoveCamera(playerid)
 	GetNextCameraPosition(noclipdata[playerid][mode], CP, FV, X, Y, Z);
 	MovePlayerObject(playerid, noclipdata[playerid][flyobject], X, Y, Z, speed);
 
-    SendClientMessage(playerid, -1, sprintf("(%0.1f, %0.1f, %0.1f) - (%0.1f, %0.1f, %0.1f) - (%0.1f, %0.1f, %0.1f)", CP[0], CP[1], CP[2], FV[0], FV[1], FV[2], X, Y, Z));
+    //SendClientMessage(playerid, -1, sprintf("(%0.1f, %0.1f, %0.1f) - (%0.1f, %0.1f, %0.1f) - (%0.1f, %0.1f, %0.1f)", CP[0], CP[1], CP[2], FV[0], FV[1], FV[2], X, Y, Z));
     
 	// Store the last time the camera was moved as now
 	noclipdata[playerid][lastmove] = GetTickCount();
