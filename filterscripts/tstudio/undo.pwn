@@ -29,6 +29,7 @@ enum OBJECTUNDOINFO
 	uoAlignment,   								// Font alignment
 	uoTextFontSize, 							 // Font text size
 	uoObjectText[MAX_TEXT_LENGTH],              // Font text
+	uoNote[64],              // Font text
 	uoAttachedVehicle,                           // Vehicle object is attached to
 	uoIndex,                                    // Store indexid object
 	uoType,                                     // Type of undo
@@ -65,6 +66,7 @@ SaveUndoInfo(index, type, group=0)
 		UndoBuffer[CurrBufferIndex][uoColorIndex][i] = ObjectData[index][oColorIndex][i];
 	}
 
+	format(UndoBuffer[CurrBufferIndex][uoNote], 64, "%s", ObjectData[index][oNote]);
 	format(UndoBuffer[CurrBufferIndex][uoObjectText], MAX_TEXT_LENGTH, "%s", ObjectData[index][oObjectText]);
 	
 	UndoBuffer[CurrBufferIndex][uoIndex] = index;
@@ -122,6 +124,7 @@ UndoLastAction(lastgroup=0)
 			   	ObjectData[index][oAlignment] = UndoBuffer[CurrBufferIndex][uoAlignment];
 			   	ObjectData[index][oTextFontSize] = UndoBuffer[CurrBufferIndex][uoTextFontSize];
 			   	ObjectData[index][oAttachedVehicle] = UndoBuffer[CurrBufferIndex][uoAttachedVehicle];
+			   	format(ObjectData[index][oNote], 64, "%s", UndoBuffer[CurrBufferIndex][uoNote]);
 
 				for(new i = 0; i < MAX_MATERIALS; i++)
 				{

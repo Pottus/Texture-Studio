@@ -4788,6 +4788,40 @@ YCMD:showtext3d(playerid, arg[], help)
 	return 1;
 }
 
+YCMD:note(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Show or change an object's note.");
+		return 1;
+	}
+	
+ 	new index, note[64];
+	if(sscanf(arg, "iS()[64]", index, note))
+	{
+	    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+        SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /note <Index> <Optional: New Note>");
+		return 1;
+	}
+    
+    if(isnull(note) || !strlen(note))
+    {
+        SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+        SendClientMessage(playerid, STEALTH_GREEN, sprintf("Object's note: %s", ObjectData[index][oNote]));
+    }
+    else
+    {
+        SaveUndoInfo(index, UNDO_TYPE_EDIT);
+        format(ObjectData[index][oNote], 64, "%s", note);
+        sqlite_ObjNote(index);
+        UpdateObject3DText(index);
+        SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+        SendClientMessage(playerid, STEALTH_YELLOW, "Note changed");
+    }
+	return 1;
+}
+
 HideObjectText()
 {
 	foreach(new i : Objects)
@@ -4881,13 +4915,14 @@ YCMD:thelp(playerid, arg[], help)
 			{"osearch"},
 			{"osearchex"},
 			{"oprop"},
+			{"onote"},
 			
 			{" \n{81181C} - Pivot{FFFFFF}"},
 			{"pivot"},
 			{"togpivot"},
 			
-			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
-			{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""}//,
+			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		},
 		{//TEXTURES
 			{"Textures"},
