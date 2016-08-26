@@ -400,6 +400,21 @@ new TextOption[TEXTOPTIONS] = {
     true, false, false, true
 };
 
+// Map Options
+enum MAPOPTIONS
+{
+    mVersion,
+    mAuthor[MAX_PLAYER_NAME],
+    mLastEdit,
+    mSpawn[XYZ]
+}
+new MapSetting[MAPOPTIONS] = {
+    TS_VERSION,
+    "Creator",
+    0,
+    {0.0, 0.0, 0.0}
+};
+
 // Sets the current object a player is editing
 new CurrObject[MAX_PLAYERS] = { -1, ... };
 

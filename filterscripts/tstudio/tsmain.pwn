@@ -4915,7 +4915,7 @@ YCMD:thelp(playerid, arg[], help)
 			{"osearch"},
 			{"osearchex"},
 			{"oprop"},
-			{"onote"},
+			{"note"},
 			
 			{" \n{81181C} - Pivot{FFFFFF}"},
 			{"pivot"},
