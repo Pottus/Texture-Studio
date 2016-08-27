@@ -31,6 +31,9 @@ public OnFilterScriptExit()
 	{
  		ClearCopyBuffer(i);
 	}
+    
+    // Update the map settings
+    sqlite_UpdateSettings();
 
 	// Always close map
 	db_free_persistent(EditMap);
@@ -466,6 +469,7 @@ sqlite_CreateNewMap()
     sqlite_CreateMapDB();
     sqlite_CreateRBDB();
     sqlite_CreateVehicle();
+    sqlite_CreateSettings();
 }
 
 new NewMapString[512];
@@ -534,7 +538,7 @@ sqlite_CreateSettings()
 			sizeof(NewSettingsString),
 			"CREATE TABLE IF NOT EXISTS `Settings`",
 			"(Version INTEGER DEFAULT 0,",
-			"LastTime,",
+			"LastTime INTEGER,",
 			"Author TEXT,",
 			"SpawnX REAL,",
 			"SpawnY REAL,",
@@ -577,8 +581,10 @@ sqlite_UpdateDB()
     }
     
     // Version 1.9a
-    if((dbver & 0x0000FF00) < 9 || !ColumnExists(EditMap, "Objects", "Note")) db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `Note` TEXT DEFAULT ''");
+    if((((dbver & 0x00FF0000) >> 16) <= 1 && ((dbver & 0x0000FF00) >> 8) < 9) || !ColumnExists(EditMap, "Objects", "Note"))
+        db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `Note` TEXT DEFAULT ''");
     
+    sqlite_UpdateSettings();
 	return 1;
 }
 
@@ -1119,6 +1125,38 @@ sqlite_InsertRemoveBuilding(index)
 	stmt_close(insertremovebuldingstmt);
 }
 
+// Update settings in DB
+new DBStatement:insertsettingstmt;
+new InsertSettingsString[256];
+
+sqlite_UpdateSettings()
+{
+	// Inserts a new index
+	if(!InsertSettingsString[0])
+	{
+		// Prepare query
+		strimplode(" ",
+			InsertSettingsString,
+			sizeof(InsertSettingsString),
+			"INSERT INTO `Settings`",
+	        "VALUES(?, ?, ?, ?, ?, ?)"
+		);
+		// Prepare data base for writing
+	}
+	insertsettingstmt = db_prepare(EditMap, InsertSettingsString);
+
+	// Bind our results
+    stmt_bind_value(insertsettingstmt, 0, DB::TYPE_INT, TS_VERSION);
+    stmt_bind_value(insertsettingstmt, 1, DB::TYPE_STRING, MapSetting[mAuthor]);
+    stmt_bind_value(insertsettingstmt, 2, DB::TYPE_INT, gettime());
+    stmt_bind_value(insertsettingstmt, 3, DB::TYPE_FLOAT, MapSetting[mSpawn][xPos]);
+    stmt_bind_value(insertsettingstmt, 4, DB::TYPE_FLOAT, MapSetting[mSpawn][yPos]);
+    stmt_bind_value(insertsettingstmt, 5, DB::TYPE_FLOAT, MapSetting[mSpawn][zPos]);
+
+    stmt_execute(insertsettingstmt);
+	stmt_close(insertsettingstmt);
+}
+
 // Load any remove buildings
 new DBStatement:loadremovebuldingstmt;
 
@@ -1149,6 +1187,40 @@ sqlite_LoadRemoveBuildings()
         return count;
     }
 	stmt_close(loadremovebuldingstmt);
+    return 0;
+}
+
+// Load settings
+new DBStatement:loadsettingstmt;
+
+sqlite_LoadSettings()
+{
+    new tmpsetting[MAPOPTIONS];
+
+	loadsettingstmt = db_prepare(EditMap, "SELECT * FROM `Settings`");
+
+	// Bind our results
+    stmt_bind_result_field(loadsettingstmt, 0, DB::TYPE_INT, tmpsetting[mVersion]);
+    stmt_bind_result_field(loadsettingstmt, 1, DB::TYPE_STRING, tmpsetting[mAuthor]);
+    stmt_bind_result_field(loadsettingstmt, 2, DB::TYPE_INT, tmpsetting[mLastEdit]);
+    stmt_bind_result_field(loadsettingstmt, 3, DB::TYPE_FLOAT, tmpsetting[mSpawn][xPos]);
+    stmt_bind_result_field(loadsettingstmt, 4, DB::TYPE_FLOAT, tmpsetting[mSpawn][yPos]);
+    stmt_bind_result_field(loadsettingstmt, 5, DB::TYPE_FLOAT, tmpsetting[mSpawn][zPos]);
+    
+    // Set to default
+    ResetSettings();
+
+	// Execute query
+    if(stmt_execute(loadsettingstmt))
+    {
+        if(stmt_fetch_row(loadsettingstmt))
+        {
+            // Set to loaded data
+            MapSetting = tmpsetting;
+			return 1;
+        }
+    }
+	stmt_close(loadsettingstmt);
     return 0;
 }
 
@@ -1819,7 +1891,10 @@ YCMD:loadmap(playerid, arg[], help)
 			// Open a map
 		    if(cresponse)
 			{
-				// Close map
+                // Update map settings
+                sqlite_UpdateSettings();
+                
+                // Close map
 				db_free_persistent(EditMap);
 
 				// Delete all map objects
@@ -1827,6 +1902,9 @@ YCMD:loadmap(playerid, arg[], help)
 
 				// Clear all removed buildings
 				ClearRemoveBuildings();
+                
+                // Reset settings
+                ResetSettings();
 
 				// Load map
 				LoadMap(playerid);
@@ -1845,6 +1923,18 @@ YCMD:loadmap(playerid, arg[], help)
 	}
 	else LoadMap(playerid);
 	return 1;
+}
+
+// Resets settings array
+ResetSettings()
+{
+    MapSetting[mVersion] = TS_VERSION;
+    format(MapSetting[mVersion], MAX_PLAYER_NAME, "Creator");
+    MapSetting[mLastEdit] = 0;
+    MapSetting[mSpawn][xPos] = 0.0;
+    MapSetting[mSpawn][yPos] = 0.0;
+    MapSetting[mSpawn][zPos] = 0.0;
+    return 1;
 }
 
 // Load map function call
@@ -1903,6 +1993,9 @@ LoadMap(playerid)
 
                 // Load the maps objects
                 new ocount = sqlite_LoadMapObjects();
+                
+                // Load the maps settings
+                sqlite_LoadSettings();
 
 				// Load any vehicles
 			    sqlite_LoadCars();
@@ -1916,6 +2009,8 @@ LoadMap(playerid)
 
 				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 				SendClientMessage(playerid, STEALTH_GREEN, sprintf("You have loaded a map with %i objects and %i removed buildings.", ocount, rmcount));
+                if(MapSetting[mLastEdit])
+                    SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was last edited %i seconds ago.", MapSetting[mLastEdit]));
             }
         }
         Dialog_ShowCallback(playerid, using inline Select, DIALOG_STYLE_LIST, "Texture Studio (Load Map)", line, "Ok", "Cancel");
@@ -2125,6 +2220,9 @@ NewMap(playerid)
 					// Create new table for map
 		            sqlite_CreateNewMap();
 
+                    // Set map author
+                    format(MapSetting[mAuthor], MAX_PLAYER_NAME, "%s", ReturnPlayerName(playerid));
+                    
 					// Map is now open
 		            MapOpen = true;
 

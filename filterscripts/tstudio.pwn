@@ -408,12 +408,7 @@ enum MAPOPTIONS
     mLastEdit,
     mSpawn[XYZ]
 }
-new MapSetting[MAPOPTIONS] = {
-    TS_VERSION,
-    "Creator",
-    0,
-    {0.0, 0.0, 0.0}
-};
+new MapSetting[MAPOPTIONS];
 
 // Sets the current object a player is editing
 new CurrObject[MAX_PLAYERS] = { -1, ... };
