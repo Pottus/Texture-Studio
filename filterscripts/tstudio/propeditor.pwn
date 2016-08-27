@@ -12,14 +12,14 @@ YCMD:oprop(playerid, arg[], help)
     EditCheck(playerid);
     NoEditingMode(playerid);
 
-    ShowPropMenu(playerid);
+    ShowObjectPropMenu(playerid);
 
 	return 1;
 }
 
 static propline[2048];
 
-ShowPropMenu(playerid)
+ShowObjectPropMenu(playerid)
 {
 	// Init the prop menu
     inline SelectProp(spid, sdialogid, sresponse, slistitem, string:stext[])
@@ -53,7 +53,7 @@ ShowPropMenu(playerid)
 								SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 								SendClientMessage(playerid, STEALTH_YELLOW, "You must supply a group!");
 							}
-							ShowPropMenu(playerid);
+							ShowObjectPropMenu(playerid);
 						}
 					}
 					Dialog_ShowCallback(playerid, using inline ChangeGroup, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new group", "Ok", "Cancel");
@@ -76,7 +76,7 @@ ShowPropMenu(playerid)
 							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 							SendClientMessage(playerid, STEALTH_YELLOW, "Model changed");
 						}
-                        ShowPropMenu(playerid);
+                        ShowObjectPropMenu(playerid);
 				    }
 				    Dialog_ShowCallback(playerid, using inline ChangeModel, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new model", "Ok", "Cancel");
 				}
@@ -152,7 +152,7 @@ ShowPropMenu(playerid)
 								}
 							}
 						}
-                        ShowPropMenu(playerid);
+                        ShowObjectPropMenu(playerid);
 				    }
 				    
 					new line[128];
@@ -180,7 +180,7 @@ ShowPropMenu(playerid)
 						    
 							printf(cmd);
 						}
-						ShowPropMenu(playerid);
+						ShowObjectPropMenu(playerid);
 				    }
                     Dialog_ShowCallback(playerid, using inline ChangeMaterial, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new material index", "Ok", "Cancel");
 				}
@@ -198,7 +198,7 @@ ShowPropMenu(playerid)
 						    format(cmd, sizeof(cmd), "/mtcolor %i %s", slistitem - 24, etext);
 						    BroadcastCommand(playerid, cmd);
 						}
-						ShowPropMenu(playerid);
+						ShowObjectPropMenu(playerid);
 				    }
                     Dialog_ShowCallback(playerid, using inline ChangeColor, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new color use 0xFFFFFFFF format input", "Ok", "Cancel");
 				}
@@ -247,7 +247,7 @@ ShowPropMenu(playerid)
 							
 						}
 						
-						ShowPropMenu(playerid);
+						ShowObjectPropMenu(playerid);
 				    }
                     Dialog_ShowCallback(playerid, using inline PropUseText, DIALOG_STYLE_MSGBOX, "Texture Studio", "Turn text on/off", "On", "Off");
 				}
@@ -268,7 +268,7 @@ ShowPropMenu(playerid)
 							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 							SendClientMessage(playerid, STEALTH_GREEN, "Font face changed");
 						}
-						ShowPropMenu(playerid);
+						ShowObjectPropMenu(playerid);
 				    }
 				    new line[512];
 					for(new i = 0; i < sizeof(FontNames); i++) format(line, sizeof(line), "%s%s\n", line, FontNames[i]);
@@ -291,7 +291,7 @@ ShowPropMenu(playerid)
 							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 							SendClientMessage(playerid, STEALTH_GREEN, "Font size changed");
 						}
-						ShowPropMenu(playerid);
+						ShowObjectPropMenu(playerid);
 				    }
 				    new line[512];
 					for(new i = 0; i < sizeof(FontSizeNames); i++) format(line, sizeof(line), "%s%s\n", line, FontSizeNames[i]);
@@ -344,7 +344,7 @@ ShowPropMenu(playerid)
 							}
 						}
 
-						ShowPropMenu(playerid);
+						ShowObjectPropMenu(playerid);
 				    }
                     Dialog_ShowCallback(playerid, using inline PropFontBold, DIALOG_STYLE_MSGBOX, "Texture Studio", "Turn bold on/off", "On", "Off");
 
@@ -374,7 +374,7 @@ ShowPropMenu(playerid)
 								SendClientMessage(playerid, STEALTH_YELLOW, "Invalid hex value");
                             }
 						}
-						ShowPropMenu(playerid);
+						ShowObjectPropMenu(playerid);
 				    }
                     Dialog_ShowCallback(playerid, using inline ChangeFontColor, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new color use 0xFFFFFFFF format input", "Ok", "Cancel");
 				}
@@ -404,7 +404,7 @@ ShowPropMenu(playerid)
                             }
 
 						}
-						ShowPropMenu(playerid);
+						ShowObjectPropMenu(playerid);
 				    }
                     Dialog_ShowCallback(playerid, using inline ChangeFontBackColor, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new color use 0xFFFFFFFF format input", "Ok", "Cancel");
 				}
@@ -425,7 +425,7 @@ ShowPropMenu(playerid)
 							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 							SendClientMessage(playerid, STEALTH_GREEN, "Font size changed");
 						}
-						ShowPropMenu(playerid);
+						ShowObjectPropMenu(playerid);
 				    }
 				    new line[512];
      				for(new i = 0; i < sizeof(AlignmentNames); i++) format(line, sizeof(line), "%s%s\n", line, AlignmentNames[i]);
@@ -453,7 +453,7 @@ ShowPropMenu(playerid)
 								SendClientMessage(playerid, STEALTH_GREEN, "Text size changed");
 							}
 						}
-						ShowPropMenu(playerid);
+						ShowObjectPropMenu(playerid);
 				    }
                     Dialog_ShowCallback(playerid, using inline ChangeTextSize, DIALOG_STYLE_INPUT, "Texture Studio", "A new text size", "Ok", "Cancel");
 				
@@ -478,7 +478,7 @@ ShowPropMenu(playerid)
 								SendClientMessage(playerid, STEALTH_GREEN, "Text has been changed");
 							}
 						}
-						ShowPropMenu(playerid);
+						ShowObjectPropMenu(playerid);
 				    }
                     Dialog_ShowCallback(playerid, using inline ChangeTextString, DIALOG_STYLE_INPUT, "Texture Studio", "A new text string", "Ok", "Cancel");
 				}
@@ -498,7 +498,7 @@ ShowPropMenu(playerid)
 							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 							SendClientMessage(playerid, STEALTH_YELLOW, "Note changed");
 						}
-                        ShowPropMenu(playerid);
+                        ShowObjectPropMenu(playerid);
 				    }
 				    Dialog_ShowCallback(playerid, using inline ChangeNote, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new note", "Ok", "Cancel");
 				}
@@ -522,7 +522,98 @@ ShowPropMenu(playerid)
 	format(propline, sizeof(propline), "%s{FFFF00}Note: {00FF00}%s", propline,
         ObjectData[index][oNote]);
 
-	Dialog_ShowCallback(playerid, using inline SelectProp, DIALOG_STYLE_LIST, "Texture Studio - Property editor", propline, "Ok", "Cancel");
+	Dialog_ShowCallback(playerid, using inline SelectProp, DIALOG_STYLE_LIST, "Texture Studio - Object Property editor", propline, "Ok", "Cancel");
+
+	return 1;
+}
+
+YCMD:mprop(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Edit the maps properties.");
+		return 1;
+	}
+
+    MapOpenCheck();
+
+    ShowMapPropMenu(playerid);
+
+	return 1;
+}
+
+ShowMapPropMenu(playerid)
+{
+	// Init the prop menu
+    inline SelectProp(spid, sdialogid, sresponse, slistitem, string:stext[])
+	{
+		#pragma unused slistitem, sdialogid, spid, stext
+		if(sresponse)
+		{
+		    switch(slistitem)
+		    {
+				// Interior
+		        case 0:
+		        {
+				    inline ChangeInterior(epid, edialogid, eresponse, elistitem, string:etext[])
+				    {
+						#pragma unused elistitem, edialogid, epid, etext
+						if(eresponse)
+						{
+							if(!isnull(etext) || !isnumeric(etext))
+							{
+								MapSetting[mInterior] = strval(etext);
+                                
+								SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+								SendClientMessage(playerid, STEALTH_YELLOW, "Interior changed");
+							}
+							else
+							{
+								SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+								SendClientMessage(playerid, STEALTH_YELLOW, "You must supply an interior index!");
+							}
+						}
+                        ShowObjectPropMenu(playerid);
+					}
+					Dialog_ShowCallback(playerid, using inline ChangeInterior, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new interior", "Ok", "Cancel");
+				}
+				
+				// Virtual World
+				case 1:
+				{
+				    inline ChangeVW(epid, edialogid, eresponse, elistitem, string:etext[])
+				    {
+						#pragma unused elistitem, edialogid, epid, etext
+						if(eresponse)
+						{
+							if(!isnull(etext) || !isnumeric(etext))
+							{
+								MapSetting[mVirtualWorld] = strval(etext);
+                                
+								SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+								SendClientMessage(playerid, STEALTH_YELLOW, "Virtual world changed");
+							}
+							else
+							{
+								SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+								SendClientMessage(playerid, STEALTH_YELLOW, "You must supply a virtual world index!");
+							}
+						}
+                        ShowObjectPropMenu(playerid);
+				    }
+				    Dialog_ShowCallback(playerid, using inline ChangeVW, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new virtual world", "Ok", "Cancel");
+				}
+		    }
+            
+            sqlite_UpdateSettings();
+		}
+	}
+	
+	format(propline, sizeof(propline), "{FFFF00}Interior: {00FF00}%i\n{FFFF00}Virtual World: {00FF00}%i\n",
+        MapSetting[mInterior], MapSetting[mVirtualWorld]);
+
+	Dialog_ShowCallback(playerid, using inline SelectProp, DIALOG_STYLE_LIST, "Texture Studio - Map Property editor", propline, "Ok", "Cancel");
 
 	return 1;
 }
@@ -534,7 +625,7 @@ RebuildObject(index)
 	DestroyDynamicObject(ObjectData[index][oID]);
 
 	// Re-create object
-	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 	Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 	// Update the streamer

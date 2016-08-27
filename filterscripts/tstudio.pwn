@@ -408,7 +408,10 @@ enum MAPOPTIONS
     mVersion,
     mAuthor[MAX_PLAYER_NAME],
     mLastEdit,
-    mSpawn[XYZ]
+    mSpawn[XYZ],
+    
+    mInterior,
+    mVirtualWorld
 }
 new MapSetting[MAPOPTIONS];
 

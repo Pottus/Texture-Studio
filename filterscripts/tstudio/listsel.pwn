@@ -444,7 +444,7 @@ ClickTextDrawListSel(playerid, Text:clickedid)
 		{
 			new i = CurrListHighlightObject[playerid];
 			DestroyDynamicObject(ObjectData[i][oID]);
-			ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], -1, -1, -1, 300.0);
+			ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 
 		    UpdateMaterial(CurrListHighlightObject[playerid]);
             UpdateObjectText(CurrListHighlightObject[playerid]);
@@ -724,7 +724,7 @@ static UpdateListPreview(playerid, index, bool:update = true)
 			if(i > -1)
 			{
 				DestroyDynamicObject(ObjectData[i][oID]);
-				ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], -1, -1, -1, 300.0);
+				ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 
 			    UpdateMaterial(CurrListHighlightObject[playerid]);
 	            UpdateObjectText(CurrListHighlightObject[playerid]);
@@ -752,7 +752,7 @@ static UpdateListPreview(playerid, index, bool:update = true)
 		{
 			new i = CurrListHighlightObject[playerid];
 			DestroyDynamicObject(ObjectData[i][oID]);
-			ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], -1, -1, -1, 300.0);
+			ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 
 		    UpdateMaterial(CurrListHighlightObject[playerid]);
             UpdateObjectText(CurrListHighlightObject[playerid]);

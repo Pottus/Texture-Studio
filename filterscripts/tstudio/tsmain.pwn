@@ -545,7 +545,9 @@ sqlite_CreateSettings()
 			"Author TEXT,",
 			"SpawnX REAL,",
 			"SpawnY REAL,",
-			"SpawnZ REAL);"
+			"SpawnZ REAL,",
+			"Interior INTEGER DEFAULT -1,",
+			"VirtualWorld INTEGER DEFAULT -1);"
 		);
 	}
 	db_exec(EditMap, NewSettingsString);
@@ -1174,7 +1176,7 @@ sqlite_UpdateSettings()
 			InsertSettingsString,
 			sizeof(InsertSettingsString),
 			"INSERT INTO `Settings`",
-	        "VALUES(?, ?, ?, ?, ?, ?)"
+	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?)"
 		);
 		// Prepare data base for writing
 	}
@@ -1187,6 +1189,8 @@ sqlite_UpdateSettings()
     stmt_bind_value(insertsettingstmt, 3, DB::TYPE_FLOAT, MapSetting[mSpawn][xPos]);
     stmt_bind_value(insertsettingstmt, 4, DB::TYPE_FLOAT, MapSetting[mSpawn][yPos]);
     stmt_bind_value(insertsettingstmt, 5, DB::TYPE_FLOAT, MapSetting[mSpawn][zPos]);
+    stmt_bind_value(insertsettingstmt, 6, DB::TYPE_INT, MapSetting[mInterior]);
+    stmt_bind_value(insertsettingstmt, 7, DB::TYPE_INT, MapSetting[mVirtualWorld]);
 
     stmt_execute(insertsettingstmt);
 	stmt_close(insertsettingstmt);
@@ -1241,6 +1245,8 @@ sqlite_LoadSettings()
     stmt_bind_result_field(loadsettingstmt, 3, DB::TYPE_FLOAT, tmpsetting[mSpawn][xPos]);
     stmt_bind_result_field(loadsettingstmt, 4, DB::TYPE_FLOAT, tmpsetting[mSpawn][yPos]);
     stmt_bind_result_field(loadsettingstmt, 5, DB::TYPE_FLOAT, tmpsetting[mSpawn][zPos]);
+    stmt_bind_result_field(loadsettingstmt, 6, DB::TYPE_INT, tmpsetting[mInterior]);
+    stmt_bind_result_field(loadsettingstmt, 7, DB::TYPE_INT, tmpsetting[mVirtualWorld]);
     
     // Set to default
     ResetSettings();
@@ -1642,7 +1648,7 @@ AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:r
 		Iter_Add(Objects, index);
 
 		// Create object and set data
-		ObjectData[index][oID] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, -1, -1, -1, dd != 0.0 ? dd : 300.0);
+		ObjectData[index][oID] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, MapSetting[mVirtualWorld], MapSetting[mInterior], -1, dd != 0.0 ? dd : 300.0);
 		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, dd != 0.0 ? dd : 300.0);
 		
 		#if defined COMPILE_MANGLE
@@ -1969,6 +1975,8 @@ ResetSettings()
     MapSetting[mVersion] = TS_VERSION;
     format(MapSetting[mVersion], MAX_PLAYER_NAME, "Creator");
     MapSetting[mLastEdit] = 0;
+    MapSetting[mInterior] = -1;
+    MapSetting[mVirtualWorld] = -1;
     MapSetting[mSpawn][xPos] = 0.0;
     MapSetting[mSpawn][yPos] = 0.0;
     MapSetting[mSpawn][zPos] = 0.0;
@@ -2025,15 +2033,15 @@ LoadMap(playerid)
 
 				// Perform any version updates
 				sqlite_UpdateDB();
+                
+                // Load the maps settings
+                sqlite_LoadSettings();
 
 				// Load the maps remove buildings
 			    new rmcount = sqlite_LoadRemoveBuildings();
 
                 // Load the maps objects
                 new ocount = sqlite_LoadMapObjects();
-                
-                // Load the maps settings
-                sqlite_LoadSettings();
 
 				// Load any vehicles
 			    sqlite_LoadCars();
@@ -2263,6 +2271,9 @@ NewMap(playerid)
                     
 					// Map is now open
 		            MapOpen = true;
+                    
+                    // Set settings to default
+                    ResetSettings();
     
                     // Update the map settings
                     sqlite_UpdateSettings();
@@ -3627,7 +3638,7 @@ PasteCopyBuffer(playerid, index)
     DestroyDynamicObject(ObjectData[index][oID]);
 
 	// Re-create object
-	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 	Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 	// Update the streamer
@@ -3712,7 +3723,7 @@ SetMaterials(index, mindex, tref)
     DestroyDynamicObject(ObjectData[index][oID]);
 
 	// Re-create object
-	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 	Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 	// Update streamer for all
@@ -3799,7 +3810,7 @@ YCMD:mtcolor(playerid, arg[], help)
 	    DestroyDynamicObject(ObjectData[index][oID]);
 
 		// Re-create object
-		ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+		ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 		// Update the materials
@@ -3883,7 +3894,7 @@ YCMD:mtcolorall(playerid, arg[], help)
 			    DestroyDynamicObject(ObjectData[i][oID]);
 
 				// Re-create object
-				ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], -1, -1, -1, 300.0);
+				ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 				Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[i][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 				// Update the materials
@@ -3945,7 +3956,7 @@ YCMD:oswap(playerid, arg[], help)
 	    DestroyDynamicObject(ObjectData[index][oID]);
 
 		// Re-create object
-		ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+		ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 		// Update streamer for all
@@ -4190,7 +4201,7 @@ YCMD:robject(playerid, arg[], help)
 
 	DestroyDynamicObject(ObjectData[index][oID]);
 
-	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 	Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 	sqlite_SaveColorIndex(index);
@@ -4302,7 +4313,7 @@ YCMD:rindex(playerid, arg[], help)
     DestroyDynamicObject(ObjectData[index][oID]);
 
 	// Re-create object
-	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 	Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 	// Update the streamer

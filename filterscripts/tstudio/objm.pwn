@@ -162,7 +162,7 @@ static AddOBMObject(playerid,modelid,Float:x,Float:y,Float:z,Float:rx,Float:ry,F
 	{
 	    if(OBMStack[playerid][i][OMBID] == -1)
 		{
-		    OBMStack[playerid][i][OMBID] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, -1, -1, -1, 300.0, 300.0);
+		    OBMStack[playerid][i][OMBID] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0, 300.0);
 		    OBMStack[playerid][i][OMBModel] = modelid;
 		    OBMStack[playerid][i][OBMX] = x;
 		    OBMStack[playerid][i][OBMY] = y;
