@@ -5,8 +5,8 @@
 public OnFilterScriptInit()
 {
 	print("----------------------------------------------");
-	print("---------Texture Studio By [uL]Pottus---------");
-	print("-------------------------------------Loaded---");
+	print("----Texture Studio By [uL]Pottus and Crayder--");
+	print("------------------------------------Loaded----");
 
 	SystemDB = db_open_persistent("tstudio/system.db");
 	ThemeDataDB = db_open_persistent("tstudio/themedata.db");
@@ -18,8 +18,8 @@ public OnFilterScriptInit()
 public OnFilterScriptExit()
 {
 	print("----------------------------------------------");
-	print("---------Texture Studio By [uL]Pottus---------");
-	print("-----------------------------------Unloaded---");
+	print("----Texture Studio By [uL]Pottus and Crayder--");
+	print("------------------------------------Unloaded--");
 
 	// Delete all map objects
 	DeleteMapObjects(false);
