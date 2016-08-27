@@ -352,6 +352,7 @@ sqlite_LoadMapObjects()
     stmt_bind_result_field(loadstmt, 18, DB::TYPE_STRING, tmpobject[oObjectText], MAX_TEXT_LENGTH);
     stmt_bind_result_field(loadstmt, 19, DB::TYPE_INT, tmpobject[oGroup]);
     stmt_bind_result_field(loadstmt, 20, DB::TYPE_STRING, tmpobject[oNote], 64);
+    stmt_bind_result_field(loadstmt, 21, DB::TYPE_FLOAT, tmpobject[oDD]);
 
 	// Execute query
     if(stmt_execute(loadstmt))
@@ -360,7 +361,7 @@ sqlite_LoadMapObjects()
         while(stmt_fetch_row(loadstmt))
         {
 			// Load object into database at specified index (Don't save to sqlite database)
-			AddDynamicObject(tmpobject[oModel], tmpobject[oX], tmpobject[oY], tmpobject[oZ], tmpobject[oRX], tmpobject[oRY], tmpobject[oRZ], currindex, false);
+			AddDynamicObject(tmpobject[oModel], tmpobject[oX], tmpobject[oY], tmpobject[oZ], tmpobject[oRX], tmpobject[oRY], tmpobject[oRZ], currindex, false, .dd = tmpobject[oDD]);
 
 			// Set textures and colors
 			for(new i = 0; i < MAX_MATERIALS; i++)
@@ -417,7 +418,7 @@ sqlite_InsertObject(index)
 			InsertObjectString,
 			sizeof(InsertObjectString),
 			"INSERT INTO `Objects`",
-	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		);
 		// Prepare data base for writing
 	}
@@ -448,6 +449,7 @@ sqlite_InsertObject(index)
     stmt_bind_value(insertstmt, 18, DB::TYPE_STRING, ObjectData[index][oObjectText], MAX_TEXT_LENGTH);
     stmt_bind_value(insertstmt, 19, DB::TYPE_INT, ObjectData[index][oGroup]);
     stmt_bind_value(insertstmt, 20, DB::TYPE_STRING, ObjectData[index][oNote]);
+    stmt_bind_value(insertstmt, 21, DB::TYPE_FLOAT, ObjectData[index][oDD]);
 
     stmt_execute(insertstmt);
 	stmt_close(insertstmt);
@@ -501,7 +503,8 @@ sqlite_CreateMapDB()
 			"TextFontSize INTEGER,",
 			"ObjectText TEXT,",
 			"GroupID INTEGER,",
-			"Note TEXT);"
+			"Note TEXT,",
+			"DrawDistance REAL);"
 		);
 	}
 
@@ -582,8 +585,10 @@ sqlite_UpdateDB()
     
     // Version 1.9a
     if((((dbver & 0x00FF0000) >> 16) <= 1 && ((dbver & 0x0000FF00) >> 8) < 9) || !ColumnExists(EditMap, "Objects", "Note"))
+    {
         db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `Note` TEXT DEFAULT ''");
-    
+        db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `DrawDistance` REAL DEFAULT 300.0");
+    }
     sqlite_UpdateSettings();
 	return 1;
 }
@@ -694,6 +699,36 @@ sqlite_UpdateObjectPos(index)
 	{
 		if(CurrObject[i] == index) OnObjectUpdatePos(i, index);
 	}
+
+    return 1;
+}
+
+new DBStatement:ddupdatestmt;
+new DDUpdateString[512];
+
+sqlite_UpdateObjectDD(index)
+{
+	// Inserts a new index
+	if(!DDUpdateString[0])
+	{
+		// Prepare query
+		strimplode(" ",
+			DDUpdateString,
+			sizeof(DDUpdateString),
+			"UPDATE `Objects` SET",
+			"`DrawDistance` = ?,",
+			"WHERE `IndexID` = ?"
+		);
+	}
+    ddupdatestmt = db_prepare(EditMap, DDUpdateString);
+
+	// Bind values
+	stmt_bind_value(ddupdatestmt, 0, DB::TYPE_FLOAT, ObjectData[index][oDD]);
+	stmt_bind_value(ddupdatestmt, 1, DB::TYPE_INT, index);
+
+	// Execute stmt
+    stmt_execute(ddupdatestmt);
+	stmt_close(ddupdatestmt);
 
     return 1;
 }
@@ -1595,7 +1630,7 @@ GetMapCenter(&Float:X, &Float:Y, &Float:Z)
 	return 1;
 }
 
-AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, index = -1, bool:sqlsave = true)
+AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, index = -1, bool:sqlsave = true, Float:dd = 0.0)
 {
 	// Index was not specified get a free index
 	if(index == -1) index = Iter_Free(Objects);
@@ -1607,8 +1642,8 @@ AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:r
 		Iter_Add(Objects, index);
 
 		// Create object and set data
-		ObjectData[index][oID] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, -1, -1, -1, 300.0);
-		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
+		ObjectData[index][oID] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, -1, -1, -1, dd != 0.0 ? dd : 300.0);
+		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, dd != 0.0 ? dd : 300.0);
 		
 		#if defined COMPILE_MANGLE
 			ObjectData[index][oCAID] = CA_CreateObject(modelid, x, y, z, rx, ry, rz, true);
@@ -1627,6 +1662,7 @@ AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:r
 		ObjectData[index][oRX] = rx;
 		ObjectData[index][oRY] = ry;
 		ObjectData[index][oRZ] = rz;
+		ObjectData[index][oDD] = dd;
 
 		ObjectData[index][oAttachedVehicle] = -1;
 
@@ -1687,7 +1723,7 @@ CloneObject(index, grouptask=0)
 {
 	if(Iter_Contains(Objects, index))
 	{
-    	new cindex = AddDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ]);
+    	new cindex = AddDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], .dd = ObjectData[index][oDD]);
 
   		ObjectData[cindex][ousetext] = ObjectData[index][ousetext];
 	   	ObjectData[cindex][oFontFace] = ObjectData[index][oFontFace];
@@ -1698,6 +1734,7 @@ CloneObject(index, grouptask=0)
 	   	ObjectData[cindex][oAlignment] = ObjectData[index][oAlignment];
 	   	ObjectData[cindex][oTextFontSize] = ObjectData[index][oTextFontSize];
 	   	ObjectData[cindex][oGroup] = ObjectData[index][oGroup];
+	   	ObjectData[cindex][oNote] = ObjectData[index][oNote];
 
 		for(new i = 0; i < MAX_MATERIALS; i++)
 		{
@@ -2443,8 +2480,14 @@ YCMD:exportmap(playerid, arg[], help)
 					if(dresponse)
 					{
                         if(sscanf(dtext, "f", dist)) dist = 300.0;
+                        /*else foreach(new i : Objects)
+                        {
+                            if(ObjectData[i][oDD] == 300.0) // Default oDD
+                                ObjectData[i][oDD] = dist;
+                        }*/
 					}
 					else dist = 300.0;
+                    
 
 					new exportmap[256];
 
@@ -2549,7 +2592,7 @@ MapExport(playerid, mapname[], Float:drawdist)
 			{
 			    if(ObjectData[i][oAttachedVehicle] > -1) continue;
 
-				new bool:writeobject;
+				new bool:writeobject, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
 
 				// Does the object have materials?
 		        for(new j = 0; j < MAX_MATERIALS; j++)
@@ -2569,7 +2612,7 @@ MapExport(playerid, mapname[], Float:drawdist)
 					// Write the create object line
 					if(elistitem == 0)
 					{
-				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,
+				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,
                             strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
@@ -2577,13 +2620,13 @@ MapExport(playerid, mapname[], Float:drawdist)
 					// Write the create dynamic object line
 					else if(elistitem == 1)
 					{
-						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist,
+						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
                             strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
 					else if(elistitem  == 2)
 					{
-						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist,
+						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
                             strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
@@ -2667,7 +2710,7 @@ MapExport(playerid, mapname[], Float:drawdist)
 			{
 			    if(ObjectData[i][oAttachedVehicle] > -1) continue;
 
-				new bool:writeobject = true;
+				new bool:writeobject, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
 
 				// Does the object have materials?
 		        for(new j = 0; j < MAX_MATERIALS; j++)
@@ -2685,19 +2728,19 @@ MapExport(playerid, mapname[], Float:drawdist)
 				{
 					if(elistitem == 0)
 					{
-				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,
+				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,
 				            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
 					else if(elistitem == 1)
 					{
-				        format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist,
+				        format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
 				            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
 					else if(elistitem == 2)
 					{
-						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist,
+						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
 				            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
@@ -2957,7 +3000,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 	{
 	    if(ObjectData[i][oAttachedVehicle] > -1) continue;
 
-		new bool:writeobject;
+        new bool:writeobject, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
 
 		// Does the object have materials?
         for(new j = 0; j < MAX_MATERIALS; j++)
@@ -2974,7 +3017,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 		{
 			mobjects++;
 
-			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist,
+			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
 	            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 			fwrite(f,templine);
 
@@ -3018,7 +3061,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 	{
 	    if(ObjectData[i][oAttachedVehicle] > -1) continue;
 
-		new bool:writeobject = true;
+        new bool:writeobject, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
 
 		// Does the object have materials?
         for(new j = 0; j < MAX_MATERIALS; j++)
@@ -3034,7 +3077,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 		// Object has not been exported yet export
 		if(writeobject)
 		{
-			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist,
+			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
 	            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 			fwrite(f,templine);
 		}
@@ -4878,6 +4921,37 @@ YCMD:drz(playerid, arg[], help)
 		SendClientMessage(playerid, STEALTH_YELLOW, "There is not enough objects for this command to work");
 	}
 
+	return 1;
+}
+
+YCMD:odd(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set a specific object's draw distance.");
+		return 1;
+	}
+
+    MapOpenCheck();
+    EditCheck(playerid);
+    NoEditingMode(playerid);
+
+	new Float:dd;
+	dd = floatstr(arg);
+	if(dd == 0.0) dd = 300.0;
+
+    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
+
+    ObjectData[CurrObject[playerid]][oDD] = dd;
+    Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[CurrObject[playerid]][oID], E_STREAMER_DRAW_DISTANCE, dd);
+    Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[CurrObject[playerid]][oID], E_STREAMER_STREAM_DISTANCE, dd);
+
+    sqlite_UpdateObjectDD(CurrObject[playerid]);
+
+    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+    SendClientMessage(playerid, STEALTH_GREEN, sprintf("Objects draw distance set to %.2f", dd));
+    
 	return 1;
 }
 

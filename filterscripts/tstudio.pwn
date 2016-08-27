@@ -361,6 +361,7 @@ enum OBJECTINFO
 	oTextFontSize, 							 	// Font text size
 	oObjectText[MAX_TEXT_LENGTH],              	// Font text
 	oAttachedVehicle,                           // Vehicle object is attached to
+    Float:oDD                                   // Draw distance
 }
 
 // Copy object material / color

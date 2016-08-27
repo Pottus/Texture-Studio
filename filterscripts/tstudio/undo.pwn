@@ -18,6 +18,7 @@ enum OBJECTUNDOINFO
 	Float:uoRX,                                  // Rotation Z
 	Float:uoRY,                                  // Rotation Z
 	Float:uoRZ,                                  // Rotation Z
+    Float:uoDD,                                  // Draw distance
 	uoTexIndex[MAX_MATERIALS],                   // Texture index ref
 	uoColorIndex[MAX_MATERIALS],                 // Material List
 	uousetext,              					// Use text
@@ -29,7 +30,7 @@ enum OBJECTUNDOINFO
 	uoAlignment,   								// Font alignment
 	uoTextFontSize, 							 // Font text size
 	uoObjectText[MAX_TEXT_LENGTH],              // Font text
-	uoNote[64],              // Font text
+	uoNote[64],                                 // Note
 	uoAttachedVehicle,                           // Vehicle object is attached to
 	uoIndex,                                    // Store indexid object
 	uoType,                                     // Type of undo
@@ -49,6 +50,7 @@ SaveUndoInfo(index, type, group=0)
    	UndoBuffer[CurrBufferIndex][uoRX] = ObjectData[index][oRX];
    	UndoBuffer[CurrBufferIndex][uoRY] = ObjectData[index][oRY];
    	UndoBuffer[CurrBufferIndex][uoRZ] = ObjectData[index][oRZ];
+   	UndoBuffer[CurrBufferIndex][uoDD] = ObjectData[index][oDD];
 	UndoBuffer[CurrBufferIndex][uousetext] = ObjectData[index][ousetext];
    	UndoBuffer[CurrBufferIndex][uoFontFace] = ObjectData[index][oFontFace];
    	UndoBuffer[CurrBufferIndex][uoFontSize] = ObjectData[index][oFontSize];
@@ -115,6 +117,7 @@ UndoLastAction(lastgroup=0)
 			   	ObjectData[index][oRX] = UndoBuffer[CurrBufferIndex][uoRX];
 			   	ObjectData[index][oRY] = UndoBuffer[CurrBufferIndex][uoRY];
 			   	ObjectData[index][oRZ] = UndoBuffer[CurrBufferIndex][uoRZ];
+			   	ObjectData[index][oDD] = UndoBuffer[CurrBufferIndex][uoDD];
 				ObjectData[index][ousetext] = UndoBuffer[CurrBufferIndex][uousetext];
 			   	ObjectData[index][oFontFace] = UndoBuffer[CurrBufferIndex][uoFontFace];
 			   	ObjectData[index][oFontSize] = UndoBuffer[CurrBufferIndex][uoFontSize];
@@ -196,6 +199,7 @@ ClearUndoInfo(index)
    	UndoBuffer[index][uoRX] = 0.0;
    	UndoBuffer[index][uoRY] = 0.0;
    	UndoBuffer[index][uoRZ] = 0.0;
+   	UndoBuffer[index][uoDD] = 0.0;
 	UndoBuffer[index][uousetext] = 0;
    	UndoBuffer[index][uoFontFace] = 0;
    	UndoBuffer[index][uoFontSize] = 0;
@@ -212,6 +216,7 @@ ClearUndoInfo(index)
 	}
 
 	format(UndoBuffer[index][uoObjectText], MAX_TEXT_LENGTH, "None");
+	UndoBuffer[index][uoNote][0] = EOS;
 
 	UndoBuffer[index][uoIndex] = 0;
 	UndoBuffer[index][uoType] = UNDO_TYPE_UNUSED;
