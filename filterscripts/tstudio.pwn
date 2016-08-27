@@ -286,7 +286,7 @@ Change Log:
 #define         HIGHLIGHT_OBJECT_COLOR      0xFFFF0000
 
 // Maximum text length
-#define         MAX_TEXT_LENGTH             128
+#define         MAX_TEXT_LENGTH             129
 
 
 // 3D Text drawdistance
