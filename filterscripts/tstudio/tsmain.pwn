@@ -2056,8 +2056,14 @@ LoadMap(playerid)
 
 				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 				SendClientMessage(playerid, STEALTH_GREEN, sprintf("You have loaded a map with %i objects and %i removed buildings.", ocount, rmcount));
+                
+                new DBResult:timeResult = db_query(EditMap, sprintf("SELECT datetime(%i, 'unixepoch', 'localtime')", MapSetting[mLastEdit]));
+                new timestr[64];
+                db_get_field(timeResult, 0, timestr, 64);
+                db_free_result(timeResult);
+                
                 if(MapSetting[mLastEdit])
-                    SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was last edited %i seconds ago.", MapSetting[mLastEdit]));
+                    SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was last edited on %s.", timestr));
             }
         }
         Dialog_ShowCallback(playerid, using inline Select, DIALOG_STYLE_LIST, "Texture Studio (Load Map)", line, "Ok", "Cancel");
