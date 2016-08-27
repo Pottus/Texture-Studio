@@ -502,6 +502,30 @@ ShowObjectPropMenu(playerid)
 				    }
 				    Dialog_ShowCallback(playerid, using inline ChangeNote, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new note", "Ok", "Cancel");
 				}
+				
+				// Draw Distance
+				case 50:
+				{
+				    inline ChangeDD(epid, edialogid, eresponse, elistitem, string:etext[])
+				    {
+						#pragma unused elistitem, edialogid, epid, etext
+						if(eresponse)
+						{
+							SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
+							
+                            ObjectData[CurrObject[playerid]][oDD] = floatstr(etext);
+                            if(ObjectData[CurrObject[playerid]][oDD] == 0.0) ObjectData[CurrObject[playerid]][oDD] = 300.0;
+                            Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[CurrObject[playerid]][oID], E_STREAMER_DRAW_DISTANCE, ObjectData[CurrObject[playerid]][oDD]);
+                            Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[CurrObject[playerid]][oID], E_STREAMER_STREAM_DISTANCE, ObjectData[CurrObject[playerid]][oDD]);
+							
+                            sqlite_UpdateObjectDD(CurrObject[playerid]);
+							SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+							SendClientMessage(playerid, STEALTH_YELLOW, sprintf("Draw distance set to %.2f", ObjectData[CurrObject[playerid]][oDD]));
+						}
+                        ShowObjectPropMenu(playerid);
+				    }
+				    Dialog_ShowCallback(playerid, using inline ChangeDD, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new draw distance", "Ok", "Cancel");
+				}
 		    }
 		}
 	}
@@ -519,8 +543,8 @@ ShowObjectPropMenu(playerid)
         ObjectData[index][ousetext], FontNames[ObjectData[index][oFontFace]], FontSizeNames[ObjectData[index][oFontSize]], ObjectData[index][oFontBold], ObjectData[index][oFontColor],
         ObjectData[index][oBackColor], AlignmentNames[ObjectData[index][oAlignment]], ObjectData[index][oTextFontSize], ObjectData[index][oObjectText]);
 
-	format(propline, sizeof(propline), "%s{FFFF00}Note: {00FF00}%s", propline,
-        ObjectData[index][oNote]);
+	format(propline, sizeof(propline), "%s{FFFF00}Note: {00FF00}%s\n{FFFF00}Draw Distance: {00FF00}%.2f", propline,
+        ObjectData[index][oNote], ObjectData[index][oDD]);
 
 	Dialog_ShowCallback(playerid, using inline SelectProp, DIALOG_STYLE_LIST, "Texture Studio - Object Property editor", propline, "Ok", "Cancel");
 
