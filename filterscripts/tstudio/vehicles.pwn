@@ -22,6 +22,7 @@ enum CARINFO
 	CarColor1,
 	CarColor2,
 	CarPaintJob,
+	CarSiren,
 	Float:CarSpawnX,
 	Float:CarSpawnY,
 	Float:CarSpawnZ,
@@ -517,7 +518,7 @@ static AddNewCar(modelid, index = -1, bool:sqlsave = true, bool:clearref = true)
 	if(index > -1)
 	{
 	    Iter_Add(Cars, index);
-	    CarData[index][CarID] = CreateVehicle(modelid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ], CarData[index][CarSpawnFA], CarData[index][CarColor1], CarData[index][CarColor2], -1);
+	    CarData[index][CarID] = CreateVehicle(modelid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ], CarData[index][CarSpawnFA], CarData[index][CarColor1], CarData[index][CarColor2], -1, CarData[index][CarSiren]);
 		CarData[index][CarModel] = modelid;
 
 		new line[32];
@@ -581,7 +582,8 @@ sqlite_CreateVehicle()
 			"COZ TEXT,",
 			"CORX TEXT,",
 			"CORY TEXT,",
-			"CORZ TEXT);"
+			"CORZ TEXT,",
+            "CarSiren INTEGER);"
 		);
 	}
 	db_exec(EditMap, NewVehicleString);
@@ -603,7 +605,7 @@ sqlite_InsertCar(index)
 			InsertCarString,
 			sizeof(InsertCarString),
 			"INSERT INTO `Vehicles`",
-	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		);
 		// Prepare data base for writing
 	}
@@ -628,6 +630,7 @@ sqlite_InsertCar(index)
     stmt_bind_value(insertcarstmt, 14, DB::TYPE_ARRAY, CarData[index][CORX], MAX_CAR_OBJECTS);
     stmt_bind_value(insertcarstmt, 15, DB::TYPE_ARRAY, CarData[index][CORY], MAX_CAR_OBJECTS);
     stmt_bind_value(insertcarstmt, 16, DB::TYPE_ARRAY, CarData[index][CORZ], MAX_CAR_OBJECTS);
+    stmt_bind_value(insertcarstmt, 17, DB::TYPE_INT, CarData[index][CarSiren]);
 
     stmt_execute(insertcarstmt);
 	stmt_close(insertcarstmt);
@@ -656,6 +659,7 @@ sqlite_SaveVehicleData(index)
 			"`CarSpawnZ` = ?,",
 			"`CarSpawnFA` = ?,",
 			"`CarComponents` = ?",
+			"`CarSiren` = ?",
 			"WHERE `IndexID` = ?"
 		);
 	}
@@ -672,7 +676,8 @@ sqlite_SaveVehicleData(index)
 	stmt_bind_value(savevposstmt, 6, DB::TYPE_FLOAT, CarData[index][CarSpawnZ]);
 	stmt_bind_value(savevposstmt, 7, DB::TYPE_FLOAT, CarData[index][CarSpawnFA]);
 	stmt_bind_value(savevposstmt, 8, DB::TYPE_ARRAY, CarData[index][CarComponents], MAX_CAR_COMPONENTS);
-	stmt_bind_value(savevposstmt, 9, DB::TYPE_INT, index);
+	stmt_bind_value(savevposstmt, 9, DB::TYPE_INT, CarData[index][CarSiren]);
+	stmt_bind_value(savevposstmt, 10, DB::TYPE_INT, index);
 
 	// Execute stmt
     stmt_execute(savevposstmt);
@@ -754,6 +759,7 @@ sqlite_LoadCars()
     stmt_bind_result_field(loadcarstmt, 14, DB::TYPE_ARRAY, tmpcar[CORX], MAX_CAR_OBJECTS);
     stmt_bind_result_field(loadcarstmt, 15, DB::TYPE_ARRAY, tmpcar[CORY], MAX_CAR_OBJECTS);
     stmt_bind_result_field(loadcarstmt, 16, DB::TYPE_ARRAY, tmpcar[CORZ], MAX_CAR_OBJECTS);
+    stmt_bind_result_field(loadcarstmt, 17, DB::TYPE_INT, tmpcar[CarSiren]);
 
 	// Execute query
     if(stmt_execute(loadcarstmt))
@@ -768,6 +774,7 @@ sqlite_LoadCars()
             CarData[currindex][CarSpawnY] = tmpcar[CarSpawnY];
             CarData[currindex][CarSpawnZ] = tmpcar[CarSpawnZ];
             CarData[currindex][CarSpawnFA] = tmpcar[CarSpawnFA];
+            CarData[currindex][CarSiren] = tmpcar[CarSiren];
 
 			for(new i = 0; i < MAX_CAR_COMPONENTS; i++) CarData[currindex][CarComponents][i] = tmpcar[CarComponents][i];
 			for(new i = 0; i < MAX_CAR_OBJECTS; i++)
@@ -828,6 +835,7 @@ DestroyEditCar(index, bool:sqldelete=true, deleteobjects=false)
     CarData[index][CarColor1] = -1;
     CarData[index][CarColor2] = -1;
     CarData[index][CarPaintJob] = 0;
+    CarData[index][CarSiren] = 0;
     CarData[index][CarSpawnX] = 0.0;
     CarData[index][CarSpawnY] = 0.0;
     CarData[index][CarSpawnZ] = 0.0;
@@ -951,9 +959,50 @@ YCMD:avpaint(playerid, arg[], help)
 	}
     Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Select Paint Job", "Paint Job 1\nPaint Job 2\nPaint Job 3\nNone", "Ok", "Cancel");
 	return 1;
+}
 
+YCMD:avsiren(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Toggle current vehicle's siren.");
+		return 1;
+	}
 
+    MapOpenCheck();
 
+	NoEditingMode(playerid);
+
+	VehicleCheck(playerid);
+
+	CarData[CurrVehicle[playerid]][CarSiren] = CarData[CurrVehicle[playerid]][CarSiren] ? 0 : 1;
+    sqlite_SaveVehicleData(CurrVehicle[playerid]);
+    
+    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+    SendClientMessage(playerid, STEALTH_GREEN, sprintf("Toggled vehicle's siren %s{33DD11}, use /avrespawn to apply it",
+        (CarData[CurrVehicle[playerid]][CarSiren] ? ("{00AA00}On") : ("{AA0000}Off"))));
+    return 1;
+}
+
+YCMD:avrespawn(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Respawn current vehicle.");
+		return 1;
+	}
+
+    MapOpenCheck();
+
+	NoEditingMode(playerid);
+
+	VehicleCheck(playerid);
+
+	CarData[CurrVehicle[playerid]][CarSiren] = CarData[CurrVehicle[playerid]][CarSiren] ? 0 : 1;
+    SetVehicleToRespawn(CarData[CurrVehicle[playerid]][CarID]);
+    return 1;
 }
 
 YCMD:avattach(playerid, arg[], help)
@@ -1217,6 +1266,7 @@ YCMD:avclonecar(playerid, arg[], help)
         CarData[index][CarColor1]     = CarData[CloneCar][CarColor1];
         CarData[index][CarColor2]     = CarData[CloneCar][CarColor2];
         CarData[index][CarPaintJob]   = CarData[CloneCar][CarPaintJob];
+        CarData[index][CarSiren]      = CarData[CloneCar][CarSiren];
         CarData[index][CarComponents] = CarData[CloneCar][CarComponents];
         
 		CurrVehicle[playerid] = AddNewCar(CarData[CloneCar][CarModel], index, true);

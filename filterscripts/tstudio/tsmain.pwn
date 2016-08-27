@@ -590,6 +590,7 @@ sqlite_UpdateDB()
     {
         db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `Note` TEXT DEFAULT ''");
         db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `DrawDistance` REAL DEFAULT 300.0");
+        db_exec(EditMap, "ALTER TABLE `Vehicles` ADD COLUMN `CarSiren` INTEGER DEFAULT 0");
     }
     sqlite_UpdateSettings();
 	return 1;
@@ -5403,6 +5404,8 @@ YCMD:thelp(playerid, arg[], help)
 			{"avnewcar"},
 			{"avcarcolor"},
 			{"avpaint"},
+			{"avsiren"},
+			{"avrespawn"},
 			{"avsel"},
 			{"avclonecar"},
 			{"avexport"},
@@ -5419,7 +5422,7 @@ YCMD:thelp(playerid, arg[], help)
 			{"avrz"},
 			{"avmirror"},
 			
-			{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		},
 		{//BINDS
