@@ -1363,7 +1363,8 @@ UpdateObject3DText(index, bool:newobject=false)
     
 	// 3D Text Label (To identify objects)
 	new line[128];
-	format(line, sizeof(line), "Ind: {33DD11}%i {FF8800}Grp:{33DD11} %i", index, ObjectData[index][oGroup]);
+	format(line, sizeof(line), "Ind: {33DD11}%i%s", index,
+        (TextOption[tShowGroup] ? sprintf(" {FF8800}Grp:{33DD11} %i", ObjectData[index][oGroup]) : ("")));
     
     // Append note
     if(TextOption[tShowModel])
@@ -4936,11 +4937,12 @@ YCMD:edittext3d(playerid, arg[], help)
 		{
             TextOption[TEXTOPTIONS:slistitem] = !TextOption[TEXTOPTIONS:slistitem];
 	
-            format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group Text: %s\n",
+            format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group ID: %s\n{FFFF00}Grouped Text: %s\n",
                 (TextOption[tShowText] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
                 (TextOption[tShowNote] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
                 (TextOption[tShowModel] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
-                (TextOption[tShowGroup] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
+                (TextOption[tShowGroup] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+                (TextOption[tShowGrouped] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
             );
             
             ShowObjectText();

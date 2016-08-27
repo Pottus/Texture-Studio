@@ -394,10 +394,11 @@ enum TEXTOPTIONS
     bool:tShowText,
     bool:tShowNote,
     bool:tShowModel,
-    bool:tShowGroup
+    bool:tShowGroup,
+    bool:tShowGrouped
 }
 new TextOption[TEXTOPTIONS] = {
-    true, false, false, true
+    true, false, false, true, true
 };
 
 // Map Options
