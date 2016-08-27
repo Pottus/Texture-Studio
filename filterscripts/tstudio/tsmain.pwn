@@ -2510,6 +2510,19 @@ MapExport(playerid, mapname[], Float:drawdist)
 			fwrite(f,"//////////////////////////////////////////////and Crayder////////////////////////////////////////////////////////\r\n");
 			fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 
+			fwrite(f,"\r\n//Map Information////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+            
+            new DBResult:timeResult = db_query(EditMap, sprintf("SELECT datetime(%i, 'unixepoch', 'localtime')", gettime()));
+            new timestr[64];
+            db_get_field(timeResult, 0, timestr, 64);
+            db_free_result(timeResult);
+            fwrite(f,sprintf("Exported on \"%s\" by \"%s\"", timestr, ReturnPlayerName(playerid)));
+            fwrite(f,sprintf("Created by \"%s\"", MapSetting[mAuthor]));
+            if(MapSetting[mSpawn][xPos])
+                fwrite(f,sprintf("Spawn Position: %f, %f, %f", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
+            
+			fwrite(f,"\r\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+
 			if(RemoveData[0][rModel] != 0) fwrite(f,"\r\n//Remove Buildings///////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 
 			for(new i = 0; i < MAX_REMOVE_BUILDING; i++)
@@ -2784,6 +2797,19 @@ static MapExportAll(playerid, name[], Float:drawdist)
 	fwrite(f,"///////////////////////////////////////////////////////////and Crayder///////////////////////////////////////////\r\n");
 	fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 
+    fwrite(f,"\r\n//Map Information////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+    
+    new DBResult:timeResult = db_query(EditMap, sprintf("SELECT datetime(%i, 'unixepoch', 'localtime')", gettime()));
+    new timestr[64];
+    db_get_field(timeResult, 0, timestr, 64);
+    db_free_result(timeResult);
+    fwrite(f,sprintf("Exported on \"%s\" by \"%s\"", timestr, ReturnPlayerName(playerid)));
+    fwrite(f,sprintf("Created by \"%s\"", MapSetting[mAuthor]));
+    if(MapSetting[mSpawn][xPos])
+        fwrite(f,sprintf("Spawn Position: %f, %f, %f", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
+    
+    fwrite(f,"\r\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+    
 	// Includes
 	fwrite(f, "#include <a_samp>\r\n");
 	fwrite(f, "#include <streamer>\r\n\n");
