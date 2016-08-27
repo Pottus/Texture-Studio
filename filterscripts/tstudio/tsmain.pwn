@@ -4878,6 +4878,8 @@ YCMD:hidetext3d(playerid, arg[], help)
 		return 1;
 	}
 
+    TextOption[tShowText] = false;
+    
 	HideGroupLabels(playerid);
 	HideObjectText();
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -4905,10 +4907,56 @@ YCMD:showtext3d(playerid, arg[], help)
 	}
 	else
 		Streamer_SetRadiusMultiplier(STREAMER_TYPE_3D_TEXT_LABEL, 1.0, playerid);*/
+    
+    TextOption[tShowText] = true;
+    
     ShowGroupLabels(playerid);
 	ShowObjectText();
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	SendClientMessage(playerid, STEALTH_GREEN, "All 3D Text labels shown");
+	return 1;
+}
+
+YCMD:edittext3d(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Shows you a dialog with 3D text options.");
+		return 1;
+	}
+    
+    new optline[256];
+    
+    // Init the text menu
+    inline SelectOption(spid, sdialogid, sresponse, slistitem, string:stext[])
+	{
+		#pragma unused slistitem, sdialogid, spid, stext
+		if(sresponse)
+		{
+            TextOption[TEXTOPTIONS:slistitem] = !TextOption[TEXTOPTIONS:slistitem];
+	
+            format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group Text: %s\n",
+                (TextOption[tShowText] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+                (TextOption[tShowNote] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+                (TextOption[tShowModel] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+                (TextOption[tShowGroup] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
+            );
+            
+            ShowObjectText();
+    
+            Dialog_ShowCallback(playerid, using inline SelectOption, DIALOG_STYLE_LIST, "Texture Studio - 3D Text Editor", optline, "Ok", "Cancel");
+		}
+	}
+	
+	format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group Text: %s\n",
+        (TextOption[tShowText] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+        (TextOption[tShowNote] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+        (TextOption[tShowModel] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+        (TextOption[tShowGroup] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
+    );
+
+	Dialog_ShowCallback(playerid, using inline SelectOption, DIALOG_STYLE_LIST, "Texture Studio - 3D Text Editor", optline, "Ok", "Cancel");
 	return 1;
 }
 
@@ -4920,6 +4968,8 @@ YCMD:note(playerid, arg[], help)
 		SendClientMessage(playerid, STEALTH_GREEN, "Show or change an object's note.");
 		return 1;
 	}
+    
+    MapOpenCheck();
 	
  	new index, note[64];
 	if(sscanf(arg, "iS()[64]", index, note))
@@ -4943,6 +4993,41 @@ YCMD:note(playerid, arg[], help)
         SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
         SendClientMessage(playerid, STEALTH_YELLOW, "Note changed");
     }
+	return 1;
+}
+
+YCMD:setspawn(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set this map's spawn position to your current position.");
+		return 1;
+	}
+    
+    GetPlayerPos(playerid, MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]);
+    
+    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+    SendClientMessage(playerid, STEALTH_YELLOW, sprintf("You have set the map's spawn position to (%0.2f, %0.2f, %0.2f)", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
+	return 1;
+}
+
+YCMD:gotomap(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Sends you to this map's spawn position.");
+		return 1;
+	}
+    
+    if(MapSetting[mSpawn][xPos] == 0.0)
+        return SendClientMessage(playerid, STEALTH_YELLOW, "This map doesn't have a spawn position, set one with \"/setspawn\"");
+    
+    SetPlayerPos(playerid, MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]);
+    
+    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+    SendClientMessage(playerid, STEALTH_YELLOW, "You've been teleported to the map's spawn position");
 	return 1;
 }
 
@@ -5237,6 +5322,7 @@ YCMD:thelp(playerid, arg[], help)
 			{"{81181C} - General{FFFFFF}"},
 			{"hidetext3d"},
 			{"showtext3d"},
+			{"edittext3d"},
 			{"minfo"},
 			{"flymode"},
 			{"fmspeed"},
@@ -5245,12 +5331,14 @@ YCMD:thelp(playerid, arg[], help)
 			{"thelp"},
 			{"undo"},
 			{"echo"},
+			{"setspawn"},
+			{"gotomap"},
 			{"restrict"},
 			{"unrestrict"},
 			{"stopedit"},
 			
-			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
-			{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},
+			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		}
 	};
 
