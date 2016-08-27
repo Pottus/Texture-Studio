@@ -1147,8 +1147,8 @@ sqlite_UpdateSettings()
 
 	// Bind our results
     stmt_bind_value(insertsettingstmt, 0, DB::TYPE_INT, TS_VERSION);
-    stmt_bind_value(insertsettingstmt, 1, DB::TYPE_STRING, MapSetting[mAuthor]);
-    stmt_bind_value(insertsettingstmt, 2, DB::TYPE_INT, gettime());
+    stmt_bind_value(insertsettingstmt, 1, DB::TYPE_INT, gettime());
+    stmt_bind_value(insertsettingstmt, 2, DB::TYPE_STRING, MapSetting[mAuthor]);
     stmt_bind_value(insertsettingstmt, 3, DB::TYPE_FLOAT, MapSetting[mSpawn][xPos]);
     stmt_bind_value(insertsettingstmt, 4, DB::TYPE_FLOAT, MapSetting[mSpawn][yPos]);
     stmt_bind_value(insertsettingstmt, 5, DB::TYPE_FLOAT, MapSetting[mSpawn][zPos]);
@@ -1201,8 +1201,8 @@ sqlite_LoadSettings()
 
 	// Bind our results
     stmt_bind_result_field(loadsettingstmt, 0, DB::TYPE_INT, tmpsetting[mVersion]);
-    stmt_bind_result_field(loadsettingstmt, 1, DB::TYPE_STRING, tmpsetting[mAuthor]);
-    stmt_bind_result_field(loadsettingstmt, 2, DB::TYPE_INT, tmpsetting[mLastEdit]);
+    stmt_bind_result_field(loadsettingstmt, 1, DB::TYPE_INT, tmpsetting[mLastEdit]);
+    stmt_bind_result_field(loadsettingstmt, 2, DB::TYPE_STRING, tmpsetting[mAuthor]);
     stmt_bind_result_field(loadsettingstmt, 3, DB::TYPE_FLOAT, tmpsetting[mSpawn][xPos]);
     stmt_bind_result_field(loadsettingstmt, 4, DB::TYPE_FLOAT, tmpsetting[mSpawn][yPos]);
     stmt_bind_result_field(loadsettingstmt, 5, DB::TYPE_FLOAT, tmpsetting[mSpawn][zPos]);
@@ -1369,13 +1369,13 @@ UpdateObject3DText(index, bool:newobject=false)
     // Append note
     if(TextOption[tShowModel])
     {
-        strcat(line, sprintf("\n{FF8800}Model: {FFFFFF}%s {FF8800}Name: {FFFFFF}%s", ObjectData[index][oModel], GetModelName(ObjectData[index][oModel])));
+        strcat(line, sprintf("\n{FF8800}Model: {33DD11}%i\n{FF8800}Name: {33DD11}%s", ObjectData[index][oModel], GetModelName(ObjectData[index][oModel])));
     }
     
     // Append note
     if(TextOption[tShowNote] && strlen(ObjectData[index][oNote]))
     {
-        strcat(line, sprintf("\n{FF8800}Note: {FFFFFF}%s", ObjectData[index][oNote]));
+        strcat(line, sprintf("\n{FF8800}Note: {33DD11}%s", ObjectData[index][oNote]));
     }
 
 	// Shows the models index
@@ -4935,8 +4935,25 @@ YCMD:edittext3d(playerid, arg[], help)
 		#pragma unused slistitem, sdialogid, spid, stext
 		if(sresponse)
 		{
+            // Toggle the selected option
             TextOption[TEXTOPTIONS:slistitem] = !TextOption[TEXTOPTIONS:slistitem];
+            
+            // Toggled text?
+            if(slistitem == 0)
+            {
+                if(TextOption[tShowText])
+                {
+                    ShowGroupLabels(playerid);
+                    ShowObjectText();
+                }
+                else
+                {
+                    HideGroupLabels(playerid);
+                    HideObjectText();
+                }
+            }
 	
+            // Show it again
             format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group ID: %s\n{FFFF00}Grouped Text: %s\n",
                 (TextOption[tShowText] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
                 (TextOption[tShowNote] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
@@ -4945,17 +4962,17 @@ YCMD:edittext3d(playerid, arg[], help)
                 (TextOption[tShowGrouped] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
             );
             
-            ShowObjectText();
-    
             Dialog_ShowCallback(playerid, using inline SelectOption, DIALOG_STYLE_LIST, "Texture Studio - 3D Text Editor", optline, "Ok", "Cancel");
 		}
 	}
 	
-	format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group Text: %s\n",
+    // Show the dialog
+    format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group ID: %s\n{FFFF00}Grouped Text: %s\n",
         (TextOption[tShowText] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
         (TextOption[tShowNote] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
         (TextOption[tShowModel] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
-        (TextOption[tShowGroup] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
+        (TextOption[tShowGroup] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+        (TextOption[tShowGrouped] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
     );
 
 	Dialog_ShowCallback(playerid, using inline SelectOption, DIALOG_STYLE_LIST, "Texture Studio - 3D Text Editor", optline, "Ok", "Cancel");
