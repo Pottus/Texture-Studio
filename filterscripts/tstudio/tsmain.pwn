@@ -351,7 +351,7 @@ sqlite_LoadMapObjects()
     stmt_bind_result_field(loadstmt, 17, DB::TYPE_INT, tmpobject[oTextFontSize]);
     stmt_bind_result_field(loadstmt, 18, DB::TYPE_STRING, tmpobject[oObjectText], MAX_TEXT_LENGTH);
     stmt_bind_result_field(loadstmt, 19, DB::TYPE_INT, tmpobject[oGroup]);
-    stmt_bind_result_field(loadstmt, 20, DB::TYPE_STRING, tmpobject[oNote]);
+    stmt_bind_result_field(loadstmt, 20, DB::TYPE_STRING, tmpobject[oNote], 64);
 
 	// Execute query
     if(stmt_execute(loadstmt))
@@ -1202,7 +1202,7 @@ sqlite_LoadSettings()
 	// Bind our results
     stmt_bind_result_field(loadsettingstmt, 0, DB::TYPE_INT, tmpsetting[mVersion]);
     stmt_bind_result_field(loadsettingstmt, 1, DB::TYPE_INT, tmpsetting[mLastEdit]);
-    stmt_bind_result_field(loadsettingstmt, 2, DB::TYPE_STRING, tmpsetting[mAuthor]);
+    stmt_bind_result_field(loadsettingstmt, 2, DB::TYPE_STRING, tmpsetting[mAuthor], MAX_PLAYER_NAME);
     stmt_bind_result_field(loadsettingstmt, 3, DB::TYPE_FLOAT, tmpsetting[mSpawn][xPos]);
     stmt_bind_result_field(loadsettingstmt, 4, DB::TYPE_FLOAT, tmpsetting[mSpawn][yPos]);
     stmt_bind_result_field(loadsettingstmt, 5, DB::TYPE_FLOAT, tmpsetting[mSpawn][zPos]);
@@ -2226,6 +2226,9 @@ NewMap(playerid)
                     
 					// Map is now open
 		            MapOpen = true;
+    
+                    // Update the map settings
+                    sqlite_UpdateSettings();
 
 					SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 					SendClientMessage(playerid, STEALTH_GREEN, "You have created a new map");
