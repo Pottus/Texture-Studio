@@ -561,11 +561,11 @@ sqlite_UpdateDB()
     new dbver = db_query_int(EditMap, "SELECT Version FROM Settings");
     if(dbver != TS_VERSION)
     {
-        printf("Map version (%i.%i%c) does not match TS version (%i.%i%c)",
+        /*printf("Map version (%i.%i%c) does not match TS version (%i.%i%c)",
             (dbver & 0x00FF0000), (dbver & 0x0000FF00), (dbver & 0x000000FF) + 96,
-            (TS_VERSION & 0x00FF0000), (TS_VERSION & 0x0000FF00), (TS_VERSION & 0x000000FF) + 96);
+            (TS_VERSION & 0x00FF0000), (TS_VERSION & 0x0000FF00), (TS_VERSION & 0x000000FF) + 96);*/
     
-        if((dbver & 0x00FF0000) > (TS_VERSION & 0x00FF0000)) // Major version, changes were made that are needed to edit this map
+        /*if((dbver & 0x00FF0000) > (TS_VERSION & 0x00FF0000)) // Major version, changes were made that are needed to edit this map
             printf("Map major version is higher than TS version, update TS to edit this map.");
         else if((dbver & 0x0000FF00) > (TS_VERSION & 0x0000FF00)) // Minor version, changes were made that affect this map
             printf("Map minor version is higher than TS version, update TS to edit this map correctly.");
@@ -577,7 +577,7 @@ sqlite_UpdateDB()
         else if((dbver & 0x0000FF00) < (TS_VERSION & 0x0000FF00)) // Minor version, making updates
             printf("Map minor version is lower than TS version, updating map.");
         else if((dbver & 0x000000FF) < (TS_VERSION & 0x000000FF)) // Patch, backwards compatible
-            printf("Map version is compatible with TS version.");
+            printf("Map version is compatible with TS version.");*/
     }
     
     // Version 1.9a
@@ -2520,8 +2520,8 @@ MapExport(playerid, mapname[], Float:drawdist)
             new timestr[64];
             db_get_field(timeResult, 0, timestr, 64);
             db_free_result(timeResult);
-            fwrite(f,sprintf("Exported on \"%s\" by \"%s\"", timestr, ReturnPlayerName(playerid)));
-            fwrite(f,sprintf("Created by \"%s\"", MapSetting[mAuthor]));
+            fwrite(f,sprintf("Exported on \"%s\" by \"%s\"\r\n", timestr, ReturnPlayerName(playerid)));
+            fwrite(f,sprintf("Created by \"%s\"\r\n", MapSetting[mAuthor]));
             if(MapSetting[mSpawn][xPos])
                 fwrite(f,sprintf("Spawn Position: %f, %f, %f", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
             
@@ -2807,8 +2807,8 @@ static MapExportAll(playerid, name[], Float:drawdist)
     new timestr[64];
     db_get_field(timeResult, 0, timestr, 64);
     db_free_result(timeResult);
-    fwrite(f,sprintf("Exported on \"%s\" by \"%s\"", timestr, ReturnPlayerName(playerid)));
-    fwrite(f,sprintf("Created by \"%s\"", MapSetting[mAuthor]));
+    fwrite(f,sprintf("Exported on \"%s\" by \"%s\"\r\n", timestr, ReturnPlayerName(playerid)));
+    fwrite(f,sprintf("Created by \"%s\"\r\n", MapSetting[mAuthor]));
     if(MapSetting[mSpawn][xPos])
         fwrite(f,sprintf("Spawn Position: %f, %f, %f", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
     
