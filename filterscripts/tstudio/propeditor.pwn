@@ -22,7 +22,7 @@ static propline[2048];
 ShowObjectPropMenu(playerid)
 {
 	// Init the prop menu
-    inline SelectProp(spid, sdialogid, sresponse, slistitem, string:stext[])
+    inline SelectObjProp(spid, sdialogid, sresponse, slistitem, string:stext[])
 	{
 		#pragma unused slistitem, sdialogid, spid, stext
 		if(sresponse)
@@ -546,7 +546,7 @@ ShowObjectPropMenu(playerid)
 	format(propline, sizeof(propline), "%s{FFFF00}Note: {00FF00}%s\n{FFFF00}Draw Distance: {00FF00}%.2f", propline,
         ObjectData[index][oNote], ObjectData[index][oDD]);
 
-	Dialog_ShowCallback(playerid, using inline SelectProp, DIALOG_STYLE_LIST, "Texture Studio - Object Property editor", propline, "Ok", "Cancel");
+	Dialog_ShowCallback(playerid, using inline SelectObjProp, DIALOG_STYLE_LIST, "Texture Studio - Object Property editor", propline, "Ok", "Cancel");
 
 	return 1;
 }
@@ -570,7 +570,7 @@ YCMD:mprop(playerid, arg[], help)
 ShowMapPropMenu(playerid)
 {
 	// Init the prop menu
-    inline SelectProp(spid, sdialogid, sresponse, slistitem, string:stext[])
+    inline SelectMapProp(spid, sdialogid, sresponse, slistitem, string:stext[])
 	{
 		#pragma unused slistitem, sdialogid, spid, stext
 		if(sresponse)
@@ -599,7 +599,7 @@ ShowMapPropMenu(playerid)
 								SendClientMessage(playerid, STEALTH_YELLOW, "You must supply an interior index!");
 							}
 						}
-                        ShowObjectPropMenu(playerid);
+                        ShowMapPropMenu(playerid);
 					}
 					Dialog_ShowCallback(playerid, using inline ChangeInterior, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new interior", "Ok", "Cancel");
 				}
@@ -626,7 +626,7 @@ ShowMapPropMenu(playerid)
 								SendClientMessage(playerid, STEALTH_YELLOW, "You must supply a virtual world index!");
 							}
 						}
-                        ShowObjectPropMenu(playerid);
+                        ShowMapPropMenu(playerid);
 				    }
 				    Dialog_ShowCallback(playerid, using inline ChangeVW, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new virtual world", "Ok", "Cancel");
 				}
@@ -637,7 +637,7 @@ ShowMapPropMenu(playerid)
 	format(propline, sizeof(propline), "{FFFF00}Interior: {00FF00}%i\n{FFFF00}Virtual World: {00FF00}%i\n",
         MapSetting[mInterior], MapSetting[mVirtualWorld]);
 
-	Dialog_ShowCallback(playerid, using inline SelectProp, DIALOG_STYLE_LIST, "Texture Studio - Map Property editor", propline, "Ok", "Cancel");
+	Dialog_ShowCallback(playerid, using inline SelectMapProp, DIALOG_STYLE_LIST, "Texture Studio - Map Property editor", propline, "Ok", "Cancel");
 
 	return 1;
 }

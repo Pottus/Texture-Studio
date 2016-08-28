@@ -580,6 +580,8 @@ sqlite_CreateSettings()
 
     stmt_execute(insertsettingstmt);
 	stmt_close(insertsettingstmt);
+    
+    NewSettingsString[0] = EOS;
 }
 
 // Makes any version updates
@@ -1203,14 +1205,14 @@ sqlite_UpdateSettings()
 		strimplode(" ",
 			InsertSettingsString,
 			sizeof(InsertSettingsString),
-			"UPDATE `SETTINGS` SET",
-			"`Version` = ?",
-			"`LastTime` = ?",
-			"`Author` = ?",
-			"`SpawnX` = ?",
-			"`SpawnY` = ?",
-			"`SpawnZ` = ?",
-			"`Interior` = ?",
+			"UPDATE `Settings` SET",
+			"`Version` = ?,",
+			"`LastTime` = ?,",
+			"`Author` = ?,",
+			"`SpawnX` = ?,",
+			"`SpawnY` = ?,",
+			"`SpawnZ` = ?,",
+			"`Interior` = ?,",
 			"`VirtualWorld` = ?",
             // Hacky way to change all of the data
 			"WHERE `Version` in (SELECT `Version` FROM Settings LIMIT 1)"
@@ -2324,9 +2326,6 @@ NewMap(playerid)
                     
 					// Map is now open
 		            MapOpen = true;
-                    
-                    // Set settings to default
-                    ResetSettings();
     
                     // Update the map settings, to set the last edit time and insert the player name
                     sqlite_UpdateSettings();
@@ -5175,6 +5174,7 @@ YCMD:setspawn(playerid, arg[], help)
 	}
     
     GetPlayerPos(playerid, MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]);
+    sqlite_UpdateSettings();
     
     SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
     SendClientMessage(playerid, STEALTH_YELLOW, sprintf("You have set the map's spawn position to (%0.2f, %0.2f, %0.2f)", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
