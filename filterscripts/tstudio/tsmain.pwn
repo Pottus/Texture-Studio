@@ -504,7 +504,7 @@ sqlite_CreateMapDB()
 			"ObjectText TEXT,",
 			"GroupID INTEGER,",
 			"Note TEXT,",
-			"DrawDistance REAL);"
+			"DrawDistance REAL DEFAULT 300.0);"
 		);
 	}
 
@@ -750,7 +750,7 @@ sqlite_UpdateObjectDD(index)
 			DDUpdateString,
 			sizeof(DDUpdateString),
 			"UPDATE `Objects` SET",
-			"`DrawDistance` = ?,",
+			"`DrawDistance` = ?",
 			"WHERE `IndexID` = ?"
 		);
 	}
@@ -1214,7 +1214,7 @@ sqlite_UpdateSettings()
 			"`SpawnZ` = ?,",
 			"`Interior` = ?,",
 			"`VirtualWorld` = ?",
-            // Hacky way to change all of the data
+            // Hacky way to change all of the data without a unique, pointless column
 			"WHERE `Version` in (SELECT `Version` FROM Settings LIMIT 1)"
 		);
 	}
@@ -1779,7 +1779,6 @@ CloneObject(index, grouptask=0)
 	   	ObjectData[cindex][oAlignment] = ObjectData[index][oAlignment];
 	   	ObjectData[cindex][oTextFontSize] = ObjectData[index][oTextFontSize];
 	   	ObjectData[cindex][oGroup] = ObjectData[index][oGroup];
-	   	ObjectData[cindex][oNote] = ObjectData[index][oNote];
 
 		for(new i = 0; i < MAX_MATERIALS; i++)
 		{
@@ -1787,6 +1786,7 @@ CloneObject(index, grouptask=0)
 			ObjectData[cindex][oColorIndex][i] = ObjectData[index][oColorIndex][i];
 		}
 
+	   	format(ObjectData[cindex][oNote], 64, "%s", ObjectData[index][oNote]);
 		format(ObjectData[cindex][oObjectText], MAX_TEXT_LENGTH, "%s", ObjectData[index][oObjectText]);
 
 		// Update the materials
@@ -2626,12 +2626,15 @@ MapExport(playerid, mapname[], Float:drawdist)
             new timestr[64];
             db_get_field(timeResult, 0, timestr, 64);
             db_free_result(timeResult);
-            fwrite(f,sprintf("Exported on \"%s\" by \"%s\"\r\n", timestr, ReturnPlayerName(playerid)));
-            fwrite(f,sprintf("Created by \"%s\"\r\n", MapSetting[mAuthor]));
-            if(MapSetting[mSpawn][xPos])
-                fwrite(f,sprintf("Spawn Position: %f, %f, %f", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
             
-			fwrite(f,"\r\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+            fwrite(f,"/*");
+            fwrite(f,sprintf("\tExported on \"%s\" by \"%s\"\r\n", timestr, ReturnPlayerName(playerid)));
+            fwrite(f,sprintf("\tCreated by \"%s\"\r\n", MapSetting[mAuthor]));
+            if(MapSetting[mSpawn][xPos])
+                fwrite(f,sprintf("\tSpawn Position: %f, %f, %f", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
+            fwrite(f,"*/");
+			
+            fwrite(f,"\r\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 
 			if(RemoveData[0][rModel] != 0) fwrite(f,"\r\n//Remove Buildings///////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 
@@ -2919,12 +2922,14 @@ static MapExportAll(playerid, name[], Float:drawdist)
     new timestr[64];
     db_get_field(timeResult, 0, timestr, 64);
     db_free_result(timeResult);
-    fwrite(f,sprintf("Exported on \"%s\" by \"%s\"\r\n", timestr, ReturnPlayerName(playerid)));
-    fwrite(f,sprintf("Created by \"%s\"\r\n", MapSetting[mAuthor]));
+    fwrite(f,"/*");
+    fwrite(f,sprintf("\tExported on \"%s\" by \"%s\"\r\n", timestr, ReturnPlayerName(playerid)));
+    fwrite(f,sprintf("\tCreated by \"%s\"\r\n", MapSetting[mAuthor]));
     if(MapSetting[mSpawn][xPos])
-        fwrite(f,sprintf("Spawn Position: %f, %f, %f", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
+        fwrite(f,sprintf("\tSpawn Position: %f, %f, %f", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
+    fwrite(f,"*/");
     
-    fwrite(f,"\r\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+    fwrite(f,"\r\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n");
     
 	// Includes
 	fwrite(f, "#include <a_samp>\r\n");

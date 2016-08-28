@@ -658,7 +658,7 @@ sqlite_SaveVehicleData(index)
 			"`CarSpawnY` = ?,",
 			"`CarSpawnZ` = ?,",
 			"`CarSpawnFA` = ?,",
-			"`CarComponents` = ?",
+			"`CarComponents` = ?,",
 			"`CarSiren` = ?",
 			"WHERE `IndexID` = ?"
 		);
@@ -977,10 +977,13 @@ YCMD:avsiren(playerid, arg[], help)
 	VehicleCheck(playerid);
 
 	CarData[CurrVehicle[playerid]][CarSiren] = CarData[CurrVehicle[playerid]][CarSiren] ? 0 : 1;
+    
+    // TODO: Destroy and recreate vehicle to apply the siren
+    
     sqlite_SaveVehicleData(CurrVehicle[playerid]);
     
     SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-    SendClientMessage(playerid, STEALTH_GREEN, sprintf("Toggled vehicle's siren %s{33DD11}, use /avrespawn to apply it",
+    SendClientMessage(playerid, STEALTH_GREEN, sprintf("Toggled vehicle's siren %s{33DD11}",
         (CarData[CurrVehicle[playerid]][CarSiren] ? ("{00AA00}On") : ("{AA0000}Off"))));
     return 1;
 }
@@ -1001,7 +1004,6 @@ YCMD:avrespawn(playerid, arg[], help)
 	VehicleCheck(playerid);
 
 	CarData[CurrVehicle[playerid]][CarSiren] = CarData[CurrVehicle[playerid]][CarSiren] ? 0 : 1;
-    SetVehicleToRespawn(CarData[CurrVehicle[playerid]][CarID]);
     return 1;
 }
 
@@ -1760,8 +1762,8 @@ static ExportCar(playerid, index, name[])
     fwrite(f, "{ \r\n");
     fwrite(f,"    new tmpobjid;\r\n\n");
     
-	format(templine, sizeof(templine), "    carvid = CreateVehicle(%i,%.3f,%.3f,%.3f,%.3f,%i,%i,-1);\r\n\n",
-        CarData[index][CarModel], CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ], CarData[index][CarSpawnFA], CarData[index][CarColor1], CarData[index][CarColor2]
+	format(templine, sizeof(templine), "    carvid = CreateVehicle(%i,%.3f,%.3f,%.3f,%.3f,%i,%i,-1,%i);\r\n\n",
+        CarData[index][CarModel], CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ], CarData[index][CarSpawnFA], CarData[index][CarColor1], CarData[index][CarColor2], CarData[index][CarSiren] ? 1 : 0
 	);
 	
  	fwrite(f, templine);
@@ -1924,8 +1926,8 @@ static ExportAllCars(playerid, name[])
 
 	foreach(new i : Cars)
 	{
-		format(templine, sizeof(templine), "    carvid_%i = CreateVehicle(%i,%.3f,%.3f,%.3f,%.3f,%i,%i,-1);\r\n",
-	        CurrCar++, CarData[i][CarModel], CarData[i][CarSpawnX], CarData[i][CarSpawnY], CarData[i][CarSpawnZ], CarData[i][CarSpawnFA], CarData[i][CarColor1], CarData[i][CarColor2]
+		format(templine, sizeof(templine), "    carvid_%i = CreateVehicle(%i,%.3f,%.3f,%.3f,%.3f,%i,%i,-1,%i);\r\n",
+	        CurrCar++, CarData[i][CarModel], CarData[i][CarSpawnX], CarData[i][CarSpawnY], CarData[i][CarSpawnZ], CarData[i][CarSpawnFA], CarData[i][CarColor1], CarData[i][CarColor2], CarData[i][CarSiren] ? 1 : 0
 		);
         fwrite(f, templine);
 	}
