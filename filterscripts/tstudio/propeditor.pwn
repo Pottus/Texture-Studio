@@ -588,6 +588,7 @@ ShowMapPropMenu(playerid)
 							if(!isnull(etext) || !isnumeric(etext))
 							{
 								MapSetting[mInterior] = strval(etext);
+                                sqlite_UpdateSettings();
                                 
 								SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 								SendClientMessage(playerid, STEALTH_YELLOW, "Interior changed");
@@ -614,6 +615,7 @@ ShowMapPropMenu(playerid)
 							if(!isnull(etext) || !isnumeric(etext))
 							{
 								MapSetting[mVirtualWorld] = strval(etext);
+                                sqlite_UpdateSettings();
                                 
 								SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 								SendClientMessage(playerid, STEALTH_YELLOW, "Virtual world changed");
@@ -629,8 +631,6 @@ ShowMapPropMenu(playerid)
 				    Dialog_ShowCallback(playerid, using inline ChangeVW, DIALOG_STYLE_INPUT, "Texture Studio", "Enter new virtual world", "Ok", "Cancel");
 				}
 		    }
-            
-            sqlite_UpdateSettings();
 		}
 	}
 	

@@ -541,16 +541,45 @@ sqlite_CreateSettings()
 			sizeof(NewSettingsString),
 			"CREATE TABLE IF NOT EXISTS `Settings`",
 			"(Version INTEGER DEFAULT 0,",
-			"LastTime INTEGER,",
-			"Author TEXT,",
-			"SpawnX REAL,",
-			"SpawnY REAL,",
-			"SpawnZ REAL,",
+			"LastTime INTEGER DEFAULT 0,",
+			"Author TEXT DEFAULT 'Creator',",
+			"SpawnX REAL DEFAULT 0.0,",
+			"SpawnY REAL DEFAULT 0.0,",
+			"SpawnZ REAL DEFAULT 0.0,",
 			"Interior INTEGER DEFAULT -1,",
 			"VirtualWorld INTEGER DEFAULT -1);"
 		);
 	}
 	db_exec(EditMap, NewSettingsString);
+    
+    NewSettingsString[0] = EOS;
+    
+	// Insert the initial values
+	if(!NewSettingsString[0])
+	{
+		// Prepare query
+		strimplode(" ",
+			NewSettingsString,
+			sizeof(NewSettingsString),
+			"INSERT INTO `Settings`",
+	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?)"
+		);
+		// Prepare data base for writing
+	}
+	new DBStatement:insertsettingstmt = db_prepare(EditMap, NewSettingsString);
+
+	// Bind our results
+    stmt_bind_value(insertsettingstmt, 0, DB::TYPE_INT, TS_VERSION);
+    stmt_bind_value(insertsettingstmt, 1, DB::TYPE_INT, gettime());
+    stmt_bind_value(insertsettingstmt, 2, DB::TYPE_STRING, MapSetting[mAuthor]);
+    stmt_bind_value(insertsettingstmt, 3, DB::TYPE_FLOAT, MapSetting[mSpawn][xPos]);
+    stmt_bind_value(insertsettingstmt, 4, DB::TYPE_FLOAT, MapSetting[mSpawn][yPos]);
+    stmt_bind_value(insertsettingstmt, 5, DB::TYPE_FLOAT, MapSetting[mSpawn][zPos]);
+    stmt_bind_value(insertsettingstmt, 6, DB::TYPE_INT, MapSetting[mInterior]);
+    stmt_bind_value(insertsettingstmt, 7, DB::TYPE_INT, MapSetting[mVirtualWorld]);
+
+    stmt_execute(insertsettingstmt);
+	stmt_close(insertsettingstmt);
 }
 
 // Makes any version updates
@@ -1164,37 +1193,44 @@ sqlite_InsertRemoveBuilding(index)
 }
 
 // Update settings in DB
-new DBStatement:insertsettingstmt;
+new DBStatement:updatesettingstmt;
 new InsertSettingsString[256];
 
 sqlite_UpdateSettings()
 {
-	// Inserts a new index
 	if(!InsertSettingsString[0])
 	{
-		// Prepare query
 		strimplode(" ",
 			InsertSettingsString,
 			sizeof(InsertSettingsString),
-			"INSERT INTO `Settings`",
-	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?)"
+			"UPDATE `SETTINGS` SET",
+			"`Version` = ?",
+			"`LastTime` = ?",
+			"`Author` = ?",
+			"`SpawnX` = ?",
+			"`SpawnY` = ?",
+			"`SpawnZ` = ?",
+			"`Interior` = ?",
+			"`VirtualWorld` = ?",
+            // Hacky way to change all of the data
+			"WHERE `Version` in (SELECT `Version` FROM Settings LIMIT 1)"
 		);
-		// Prepare data base for writing
 	}
-	insertsettingstmt = db_prepare(EditMap, InsertSettingsString);
-
+	updatesettingstmt = db_prepare(EditMap, InsertSettingsString);
+    
 	// Bind our results
-    stmt_bind_value(insertsettingstmt, 0, DB::TYPE_INT, TS_VERSION);
-    stmt_bind_value(insertsettingstmt, 1, DB::TYPE_INT, gettime());
-    stmt_bind_value(insertsettingstmt, 2, DB::TYPE_STRING, MapSetting[mAuthor]);
-    stmt_bind_value(insertsettingstmt, 3, DB::TYPE_FLOAT, MapSetting[mSpawn][xPos]);
-    stmt_bind_value(insertsettingstmt, 4, DB::TYPE_FLOAT, MapSetting[mSpawn][yPos]);
-    stmt_bind_value(insertsettingstmt, 5, DB::TYPE_FLOAT, MapSetting[mSpawn][zPos]);
-    stmt_bind_value(insertsettingstmt, 6, DB::TYPE_INT, MapSetting[mInterior]);
-    stmt_bind_value(insertsettingstmt, 7, DB::TYPE_INT, MapSetting[mVirtualWorld]);
+    stmt_bind_value(updatesettingstmt, 0, DB::TYPE_INT, TS_VERSION);
+    stmt_bind_value(updatesettingstmt, 1, DB::TYPE_INT, gettime());
+    stmt_bind_value(updatesettingstmt, 2, DB::TYPE_STRING, MapSetting[mAuthor]);
+    stmt_bind_value(updatesettingstmt, 3, DB::TYPE_FLOAT, MapSetting[mSpawn][xPos]);
+    stmt_bind_value(updatesettingstmt, 4, DB::TYPE_FLOAT, MapSetting[mSpawn][yPos]);
+    stmt_bind_value(updatesettingstmt, 5, DB::TYPE_FLOAT, MapSetting[mSpawn][zPos]);
+    stmt_bind_value(updatesettingstmt, 6, DB::TYPE_INT, MapSetting[mInterior]);
+    stmt_bind_value(updatesettingstmt, 7, DB::TYPE_INT, MapSetting[mVirtualWorld]);
 
-    stmt_execute(insertsettingstmt);
-	stmt_close(insertsettingstmt);
+    // Execute statement
+    stmt_execute(updatesettingstmt);
+	stmt_close(updatesettingstmt);
 }
 
 // Load any remove buildings
@@ -2064,6 +2100,9 @@ LoadMap(playerid)
                 
                 if(MapSetting[mLastEdit])
                     SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was last edited on %s.", timestr));
+                
+                // Update the maps settings, so the last edit time updates
+                sqlite_UpdateSettings();
             }
         }
         Dialog_ShowCallback(playerid, using inline Select, DIALOG_STYLE_LIST, "Texture Studio (Load Map)", line, "Ok", "Cancel");
@@ -2282,7 +2321,7 @@ NewMap(playerid)
                     // Set settings to default
                     ResetSettings();
     
-                    // Update the map settings
+                    // Update the map settings, to set the last edit time and insert the player name
                     sqlite_UpdateSettings();
 
 					SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -5229,9 +5268,10 @@ YCMD:thelp(playerid, arg[], help)
 			{"export"},
 			{"exportmap"},
 			{"exportallmap"},
+			{"mprop"},
 			
 			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
-			{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		},
 		{//OBJECTS
 			{"Objects"},
