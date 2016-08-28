@@ -1675,7 +1675,7 @@ GetMapCenter(&Float:X, &Float:Y, &Float:Z)
 	return 1;
 }
 
-AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, index = -1, bool:sqlsave = true, Float:dd = 0.0)
+AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, index = -1, bool:sqlsave = true, Float:dd = 300.0)
 {
 	// Index was not specified get a free index
 	if(index == -1) index = Iter_Free(Objects);
@@ -1687,8 +1687,8 @@ AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:r
 		Iter_Add(Objects, index);
 
 		// Create object and set data
-		ObjectData[index][oID] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, MapSetting[mVirtualWorld], MapSetting[mInterior], -1, dd != 0.0 ? dd : 300.0);
-		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, dd != 0.0 ? dd : 300.0);
+		ObjectData[index][oID] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, MapSetting[mVirtualWorld], MapSetting[mInterior], -1, dd);
+		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, dd);
 		
 		#if defined COMPILE_MANGLE
 			ObjectData[index][oCAID] = CA_CreateObject(modelid, x, y, z, rx, ry, rz, true);
@@ -2627,11 +2627,11 @@ MapExport(playerid, mapname[], Float:drawdist)
             db_get_field(timeResult, 0, timestr, 64);
             db_free_result(timeResult);
             
-            fwrite(f,"/*");
+            fwrite(f,"/*\r\n");
             fwrite(f,sprintf("\tExported on \"%s\" by \"%s\"\r\n", timestr, ReturnPlayerName(playerid)));
             fwrite(f,sprintf("\tCreated by \"%s\"\r\n", MapSetting[mAuthor]));
             if(MapSetting[mSpawn][xPos])
-                fwrite(f,sprintf("\tSpawn Position: %f, %f, %f", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
+                fwrite(f,sprintf("\tSpawn Position: %f, %f, %f\r\n", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
             fwrite(f,"*/");
 			
             fwrite(f,"\r\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
@@ -2776,7 +2776,7 @@ MapExport(playerid, mapname[], Float:drawdist)
 			{
 			    if(ObjectData[i][oAttachedVehicle] > -1) continue;
 
-				new bool:writeobject, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
+				new bool:writeobject = true, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
 
 				// Does the object have materials?
 		        for(new j = 0; j < MAX_MATERIALS; j++)
@@ -2922,11 +2922,11 @@ static MapExportAll(playerid, name[], Float:drawdist)
     new timestr[64];
     db_get_field(timeResult, 0, timestr, 64);
     db_free_result(timeResult);
-    fwrite(f,"/*");
+    fwrite(f,"/*\r\n");
     fwrite(f,sprintf("\tExported on \"%s\" by \"%s\"\r\n", timestr, ReturnPlayerName(playerid)));
     fwrite(f,sprintf("\tCreated by \"%s\"\r\n", MapSetting[mAuthor]));
     if(MapSetting[mSpawn][xPos])
-        fwrite(f,sprintf("\tSpawn Position: %f, %f, %f", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
+        fwrite(f,sprintf("\tSpawn Position: %f, %f, %f\r\n", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
     fwrite(f,"*/");
     
     fwrite(f,"\r\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n");
@@ -3129,7 +3129,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 	{
 	    if(ObjectData[i][oAttachedVehicle] > -1) continue;
 
-        new bool:writeobject, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
+        new bool:writeobject = true, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
 
 		// Does the object have materials?
         for(new j = 0; j < MAX_MATERIALS; j++)

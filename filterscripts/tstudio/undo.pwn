@@ -199,7 +199,7 @@ ClearUndoInfo(index)
    	UndoBuffer[index][uoRX] = 0.0;
    	UndoBuffer[index][uoRY] = 0.0;
    	UndoBuffer[index][uoRZ] = 0.0;
-   	UndoBuffer[index][uoDD] = 0.0;
+   	UndoBuffer[index][uoDD] = 300.0;
 	UndoBuffer[index][uousetext] = 0;
    	UndoBuffer[index][uoFontFace] = 0;
    	UndoBuffer[index][uoFontSize] = 0;
