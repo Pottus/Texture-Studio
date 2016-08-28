@@ -567,10 +567,10 @@ sqlite_CreateSettings()
 		// Prepare data base for writing
 	}
 	new DBStatement:insertsettingstmt = db_prepare(EditMap, NewSettingsString);
-
+    
 	// Bind our results
-    stmt_bind_value(insertsettingstmt, 0, DB::TYPE_INT, TS_VERSION);
-    stmt_bind_value(insertsettingstmt, 1, DB::TYPE_INT, gettime());
+    stmt_bind_value(insertsettingstmt, 0, DB::TYPE_INT, MapSetting[mVersion]);
+    stmt_bind_value(insertsettingstmt, 1, DB::TYPE_INT, MapSetting[mLastEdit]);
     stmt_bind_value(insertsettingstmt, 2, DB::TYPE_STRING, MapSetting[mAuthor]);
     stmt_bind_value(insertsettingstmt, 3, DB::TYPE_FLOAT, MapSetting[mSpawn][xPos]);
     stmt_bind_value(insertsettingstmt, 4, DB::TYPE_FLOAT, MapSetting[mSpawn][yPos]);
@@ -2309,11 +2309,18 @@ NewMap(playerid)
 					// Open the map for editing
 		            EditMap = db_open_persistent(MapName);
 
+                    // Set map default settings
+                    MapSetting[mVersion] = TS_VERSION;
+                    MapSetting[mLastEdit] = gettime();
+                    format(MapSetting[mAuthor], MAX_PLAYER_NAME, "%s", ReturnPlayerName(playerid));
+                    MapSetting[mSpawn][xPos] = 0.0;
+                    MapSetting[mSpawn][yPos] = 0.0;
+                    MapSetting[mSpawn][zPos] = 0.0;
+                    MapSetting[mInterior] = -1;
+                    MapSetting[mVirtualWorld] = -1;
+
 					// Create new table for map
 		            sqlite_CreateNewMap();
-
-                    // Set map author
-                    format(MapSetting[mAuthor], MAX_PLAYER_NAME, "%s", ReturnPlayerName(playerid));
                     
 					// Map is now open
 		            MapOpen = true;
