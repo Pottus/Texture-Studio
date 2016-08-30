@@ -306,6 +306,7 @@ public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
     if(OnPlayerKeyStateMenuChange(playerid, newkeys, oldkeys)) return 1;
     if(OnPlayerKeyStateChangeTex(playerid,newkeys,oldkeys)) return 1;
     if(OnPlayerKeyStateChangeLSel(playerid,newkeys,oldkeys)) return 1;
+    if(OnPlayerKeyStateChangeCMD(playerid,newkeys,oldkeys)) return 1;
 	return 1;
 }
 

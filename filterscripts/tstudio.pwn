@@ -265,6 +265,9 @@ Change Log:
 // Include 3D Menus (By SDraw)
 #include "tstudio\3dmenu.pwn"
 
+// Command Buffer
+#include "tstudio\cmdbuffer.pwn"
+
 // Common functions
 #include <functions>
 
