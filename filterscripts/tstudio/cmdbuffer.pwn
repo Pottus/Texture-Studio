@@ -37,8 +37,10 @@ public OnPlayerCommandPerformed(playerid, cmdtext[], success)
         // Insert the command and it's parameters into the buffer
         CommandBuffer[playerid][0][0] = EOS;
         strcat(CommandBuffer[playerid][0], cmdtext);
-    }
-    return 1; 
+		
+		return 1;
+    } 
+	return 0;
 }  
 
 public OnPlayerConnect(playerid)
