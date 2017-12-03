@@ -466,18 +466,25 @@ YCMD:avnewcar(playerid, arg[], help)
 
 	NoEditingMode(playerid);
 
-    if(strlen(arg))
+	new model;
+	sscanf(arg, "K<vehicle>(0)", model);
+	
+    if(model)
     {
-        new model, index = Iter_Free(Cars);
+        new index = Iter_Free(Cars);
         if(index > -1)
         {
-            sscanf(arg, "k<vehicle>", model);
             if(model != -1)
             {
                 GetPlayerPos(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], CarData[index][CarSpawnZ]);
                 GetXYInFrontOfPlayer(playerid, CarData[index][CarSpawnX], CarData[index][CarSpawnY], 2.0);
                 GetPlayerFacingAngle(playerid, CarData[index][CarSpawnFA]);
+				
                 CurrVehicle[playerid] = AddNewCar(model, index, true);
+				
+				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+				SendClientMessage(playerid, STEALTH_GREEN, "Vehicle can now be edited!");
+				
                 return 1;
             }
             else
