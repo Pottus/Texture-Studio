@@ -1010,7 +1010,7 @@ YCMD:avrespawn(playerid, arg[], help)
 
 	VehicleCheck(playerid);
 
-	CarData[CurrVehicle[playerid]][CarSiren] = CarData[CurrVehicle[playerid]][CarSiren] ? 0 : 1;
+	SetVehicleToRespawn(CarData[CurrVehicle[playerid]][CarID]);
     return 1;
 }
 
