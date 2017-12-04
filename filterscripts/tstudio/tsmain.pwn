@@ -473,6 +473,7 @@ sqlite_CreateNewMap()
     sqlite_CreateRBDB();
     sqlite_CreateVehicle();
     sqlite_CreateSettings();
+	sqlite_InitSettings();
 }
 
 new NewMapString[512];
@@ -552,22 +553,25 @@ sqlite_CreateSettings()
 		);
 	}
 	db_exec(EditMap, NewSettingsString);
-    
-    NewSettingsString[0] = EOS;
-    
+}
+
+new DBStatement:insertsettingstmt;
+new InitSettingsString[512];
+sqlite_InitSettings()
+{
 	// Insert the initial values
-	if(!NewSettingsString[0])
+	if(!InitSettingsString[0])
 	{
 		// Prepare query
 		strimplode(" ",
-			NewSettingsString,
-			sizeof(NewSettingsString),
+			InitSettingsString,
+			sizeof(InitSettingsString),
 			"INSERT INTO `Settings`",
 	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?)"
 		);
 		// Prepare data base for writing
 	}
-	new DBStatement:insertsettingstmt = db_prepare(EditMap, NewSettingsString);
+	insertsettingstmt = db_prepare(EditMap, InitSettingsString);
     
 	// Bind our results
     stmt_bind_value(insertsettingstmt, 0, DB::TYPE_INT, MapSetting[mVersion]);
@@ -581,26 +585,42 @@ sqlite_CreateSettings()
 
     stmt_execute(insertsettingstmt);
 	stmt_close(insertsettingstmt);
-    
-    NewSettingsString[0] = EOS;
 }
 
 // Makes any version updates
 sqlite_UpdateDB()
 {
-    sqlite_CreateRBDB();
-    sqlite_CreateVehicle();
-    sqlite_CreateSettings();
+	sqlite_CreateRBDB();
+	sqlite_CreateVehicle();
+	
+	new dbver = db_query_int(EditMap, "SELECT Version FROM Settings");
+	new major = (dbver >> 16) & 0xFF, minor = (dbver >> 8) & 0xFF, patch = (dbver & 0xFF) + 96;
+	
+	if(minor < 9)
+	{
+		ResetSettings();
+		sqlite_CreateSettings();
+		sqlite_InitSettings();
 
-    // Version 1.3
-    if(!ColumnExists(EditMap, "Objects", "GroupID")) db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `GroupID` INTEGER DEFAULT 0");
-    
-    new dbver = db_query_int(EditMap, "SELECT Version FROM Settings");
+		// Version 1.3
+		if(!ColumnExists(EditMap, "Objects", "GroupID")) db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `GroupID` INTEGER DEFAULT 0");
+		
+		// Version 1.9
+		if(!ColumnExists(EditMap, "Objects", "Note"))
+		{
+			db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `Note` TEXT DEFAULT ''");
+			db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `DrawDistance` REAL DEFAULT 300.0");
+			db_exec(EditMap, "ALTER TABLE `Vehicles` ADD COLUMN `CarSiren` INTEGER DEFAULT 0");
+		}
+    }
+	
+	
+    /*new dbver = db_query_int(EditMap, "SELECT Version FROM Settings");
     if(dbver != TS_VERSION)
     {
-        /*printf("Map version (%i.%i%c) does not match TS version (%i.%i%c)",
+        printf("Map version (%i.%i%c) does not match TS version (%i.%i%c)",
             (dbver & 0x00FF0000), (dbver & 0x0000FF00), (dbver & 0x000000FF) + 96,
-            (TS_VERSION & 0x00FF0000), (TS_VERSION & 0x0000FF00), (TS_VERSION & 0x000000FF) + 96);*/
+            (TS_VERSION & 0x00FF0000), (TS_VERSION & 0x0000FF00), (TS_VERSION & 0x000000FF) + 96);
     
         /*if((dbver & 0x00FF0000) > (TS_VERSION & 0x00FF0000)) // Major version, changes were made that are needed to edit this map
             printf("Map major version is higher than TS version, update TS to edit this map.");
@@ -614,16 +634,9 @@ sqlite_UpdateDB()
         else if((dbver & 0x0000FF00) < (TS_VERSION & 0x0000FF00)) // Minor version, making updates
             printf("Map minor version is lower than TS version, updating map.");
         else if((dbver & 0x000000FF) < (TS_VERSION & 0x000000FF)) // Patch, backwards compatible
-            printf("Map version is compatible with TS version.");*/
-    }
-    
-    // Version 1.9a
-    if((((dbver & 0x00FF0000) >> 16) <= 1 && ((dbver & 0x0000FF00) >> 8) < 9) || !ColumnExists(EditMap, "Objects", "Note"))
-    {
-        db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `Note` TEXT DEFAULT ''");
-        db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `DrawDistance` REAL DEFAULT 300.0");
-        db_exec(EditMap, "ALTER TABLE `Vehicles` ADD COLUMN `CarSiren` INTEGER DEFAULT 0");
-    }
+            printf("Map version is compatible with TS version.");
+    }*/
+	
     sqlite_UpdateSettings();
 	return 1;
 }
@@ -1289,7 +1302,7 @@ sqlite_LoadSettings()
     stmt_bind_result_field(loadsettingstmt, 7, DB::TYPE_INT, tmpsetting[mVirtualWorld]);
     
     // Set to default
-    ResetSettings();
+    //ResetSettings();
 
 	// Execute query
     if(stmt_execute(loadsettingstmt))
@@ -1988,7 +2001,7 @@ YCMD:loadmap(playerid, arg[], help)
 				ClearRemoveBuildings();
                 
                 // Reset settings
-                ResetSettings();
+                //ResetSettings();
 
 				// Load map
 				LoadMap(playerid);
@@ -2012,8 +2025,8 @@ YCMD:loadmap(playerid, arg[], help)
 // Resets settings array
 ResetSettings()
 {
-    MapSetting[mVersion] = TS_VERSION;
-    format(MapSetting[mVersion], MAX_PLAYER_NAME, "Creator");
+    MapSetting[mVersion] = 0;
+    format(MapSetting[mAuthor], MAX_PLAYER_NAME, "Creator");
     MapSetting[mLastEdit] = 0;
     MapSetting[mInterior] = -1;
     MapSetting[mVirtualWorld] = -1;
@@ -2070,10 +2083,10 @@ LoadMap(playerid)
 
 				// Map is now open
                 EditMap = db_open_persistent(MapName);
-
+                
 				// Perform any version updates
 				sqlite_UpdateDB();
-                
+
                 // Load the maps settings
                 sqlite_LoadSettings();
 
@@ -2102,8 +2115,11 @@ LoadMap(playerid)
                 db_free_result(timeResult);
                 
                 if(MapSetting[mLastEdit])
-                    SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was last edited on %s.", timestr));
-                
+				{
+                    SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was created by %s.", MapSetting[mAuthor]));
+                    SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was last edited on %s by %s.", timestr));
+                }
+				
                 // Update the maps settings, so the last edit time updates
                 sqlite_UpdateSettings();
             }
@@ -2312,6 +2328,12 @@ NewMap(playerid)
 					// Open the map for editing
 		            EditMap = db_open_persistent(MapName);
 
+					// Create new table for map
+		            sqlite_CreateNewMap();
+                    
+					// Map is now open
+		            MapOpen = true;
+
                     // Set map default settings
                     MapSetting[mVersion] = TS_VERSION;
                     MapSetting[mLastEdit] = gettime();
@@ -2321,12 +2343,6 @@ NewMap(playerid)
                     MapSetting[mSpawn][zPos] = 0.0;
                     MapSetting[mInterior] = -1;
                     MapSetting[mVirtualWorld] = -1;
-
-					// Create new table for map
-		            sqlite_CreateNewMap();
-                    
-					// Map is now open
-		            MapOpen = true;
     
                     // Update the map settings, to set the last edit time and insert the player name
                     sqlite_UpdateSettings();
