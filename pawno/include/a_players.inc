@@ -1,6 +1,6 @@
 /*  SA-MP Player Functions
  *
- *  (c) Copyright 2005-2015, SA-MP Team
+ *  (c) Copyright 2005-2017, SA-MP Team
  *
  */
 
@@ -89,6 +89,7 @@ native SetPlayerColor(playerid,color);
 native GetPlayerColor(playerid);
 native SetPlayerSkin(playerid, skinid);
 native GetPlayerSkin(playerid);
+native GetPlayerCustomSkin(playerid);
 native GivePlayerWeapon(playerid, weaponid, ammo);
 native ResetPlayerWeapons(playerid);
 native SetPlayerArmedWeapon(playerid, weaponid);
