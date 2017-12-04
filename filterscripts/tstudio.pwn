@@ -26,7 +26,7 @@ DDDDDDDDDDID~DDDDDDDD.O.,D8..$..?...     DD8Z...8.Z:,?...7I.
    | |/ _ \ \/ / __| | | | '__/ _ \  \___ \| __| | | |/ _` | |/ _ \
    | |  __/>  <| |_| |_| | | |  __/  ____) | |_| |_| | (_| | | (_) |
    |_|\___/_/\_\\__|\__,_|_|  \___| |_____/ \__|\__,_|\__,_|_|\___/
-	Texture Studio v1.5 by [uL]Pottus
+	Texture Studio v1.9 by [uL]Pottus and Crayder
 
 You may modify and re-release this this script if you please just rememeber the
 mule who built it!
@@ -193,6 +193,14 @@ Change Log:
 	v1.7 - /undo command (Note you can't undo edits on vehicles currently)
 */
 
+/*      NONE    MAJOR   MINOR   PATCH
+-  0x   00      00      00      00
+-  Major: X.00 (# 1-10)
+-  Minor: 0.X0 (# 1-10)
+-  Patch: 0.0X (Letter a-z, not A-Z)
+*/
+#define TS_VERSION (0x00010900)
+
 #define FILTERSCRIPT
 
 // Uncomment to turn on DEBUG mode
@@ -257,6 +265,9 @@ Change Log:
 // Include 3D Menus (By SDraw)
 #include "tstudio\3dmenu.pwn"
 
+// Command Buffer
+#include "tstudio\cmdbuffer.pwn"
+
 // Common functions
 #include <functions>
 
@@ -278,7 +289,7 @@ Change Log:
 #define         HIGHLIGHT_OBJECT_COLOR      0xFFFF0000
 
 // Maximum text length
-#define         MAX_TEXT_LENGTH             128
+#define         MAX_TEXT_LENGTH             129
 
 
 // 3D Text drawdistance
@@ -334,6 +345,7 @@ enum OBJECTINFO
 	oGroup,                                     // Object group
 	oModel,                                     // Object Model
 	Text3D:oTextID,                             // Object 3d text label
+    oNote[64],                                  // Object note
 	Float:oX,                                   // Position Z
 	Float:oY,                                   // Position Z
 	Float:oZ,                                   // Position Z
@@ -352,6 +364,7 @@ enum OBJECTINFO
 	oTextFontSize, 							 	// Font text size
 	oObjectText[MAX_TEXT_LENGTH],              	// Font text
 	oAttachedVehicle,                           // Vehicle object is attached to
+    Float:oDD                                   // Draw distance
 }
 
 // Copy object material / color
@@ -379,6 +392,31 @@ new CopyBuffer[MAX_PLAYERS][COPYINFO];
 // Object information array
 new ObjectData[MAX_TEXTURE_OBJECTS][OBJECTINFO];
 
+// 3D Text Options
+enum TEXTOPTIONS
+{
+    bool:tShowText,
+    bool:tShowNote,
+    bool:tShowModel,
+    bool:tShowGroup,
+    bool:tShowGrouped
+}
+new TextOption[TEXTOPTIONS] = {
+    true, false, false, true, true
+};
+
+// Map Options
+enum MAPOPTIONS
+{
+    mVersion,
+    mAuthor[MAX_PLAYER_NAME],
+    mLastEdit,
+    mSpawn[XYZ],
+    
+    mInterior,
+    mVirtualWorld
+}
+new MapSetting[MAPOPTIONS];
 
 // Sets the current object a player is editing
 new CurrObject[MAX_PLAYERS] = { -1, ... };

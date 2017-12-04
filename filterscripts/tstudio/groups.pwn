@@ -95,7 +95,7 @@ public OnUpdateGroup3DText(index)
 			GroupObjectText[i][index] = Text3D:-1;
 		}
 
-        if(GroupedObjects[i][index])
+        if(TextOption[tShowText] && TextOption[tShowGrouped] && GroupedObjects[i][index])
         {
 			// 3D Text Label (To identify objects)
 			new line[32];
@@ -796,7 +796,7 @@ YCMD:gmtcolor(playerid, arg[], help)
 					DestroyDynamicObject(ObjectData[i][oID]);
 
 					// Re-create object
-					ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], -1, -1, -1, 300.0);
+					ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 					Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[i][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 					// Update the materials
@@ -1611,6 +1611,42 @@ YCMD:grz(playerid, arg[], help)
 	return 1;
 }
 
+YCMD:gdd(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set a group's draw distance.");
+		return 1;
+	}
+
+    MapOpenCheck();
+	new time = GetTickCount();
+	new Float:dd;
+	sscanf(arg, "F(300.0)", dd);
+
+    db_begin_transaction(EditMap);
+    foreach(new i : Objects)
+    {
+        if(GroupedObjects[playerid][i])
+        {
+            SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
+
+            ObjectData[i][oDD] = dd;
+            Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[i][oID], E_STREAMER_DRAW_DISTANCE, dd);
+            Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[i][oID], E_STREAMER_STREAM_DISTANCE, dd);
+
+            sqlite_UpdateObjectDD(i);
+        }
+    }
+    db_end_transaction(EditMap);
+
+    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+    SendClientMessage(playerid, STEALTH_GREEN, sprintf("Groups draw distance set to %.2f", dd));
+
+	return 1;
+}
+
 
 // Export group of objects as an attached object
 YCMD:gaexport(playerid, arg[], help)
@@ -1763,7 +1799,7 @@ AttachExport(playerid, mapname[], Float:drawdist)
 			}
 			
 			fwrite(f,"//Attached Object Map Exported with Texture Studio By: [uL]Pottus////////////////////////////////////////////////\r\n");
-			fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+			fwrite(f,"//////////////////////////////////////////////////////////////and Crayder////////////////////////////////////////\r\n");
 			fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 
 			// Temp object for setting materials

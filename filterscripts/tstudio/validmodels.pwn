@@ -1,5 +1,3 @@
-#define GetModelName(%0) ObjectList[%0][oName]
-
 enum e_ObjectList
 {
 	oID,
@@ -2295,7 +2293,7 @@ new ObjectList[][e_ObjectList] =
 	{19984, "SAMPRoadSign37"},{19985, "SAMPRoadSign38"},{19986, "SAMPRoadSign39"},{19987, "SAMPRoadSign40"},{19988, "SAMPRoadSign41"},
 	{19989, "SAMPRoadSign42"},{19990, "SAMPRoadSign43"},{19991, "SAMPRoadSign44"},{19992, "SAMPRoadSign45"},{19993, "CutsceneBowl1"},
 	{19994, "CutsceneChair1"},{19995, "CutsceneAmmoClip1"},{19996, "CutsceneFoldChair1"},{19997, "CutsceneGrgTable1"},{19998, "CutsceneLighterFl"},
-	{19999, "CutsceneChair2"}
+	{19999, "CutsceneChair2"},{0, "N/A"}
 };
 
 stock IsValidModel(modelid)
@@ -2314,10 +2312,24 @@ tsfunc GetModelArray(modelid)
 	{
 	    if(ObjectList[i][oID] == modelid) return i;
 	}
-	// Not found
+	
 	return -1;
 }
 
+tsfunc GetModelName(modelid) 
+{
+	new temp[50] = "N/A";
+	for(new i = 0; i < sizeof(ObjectList); i++)
+	{
+	    if(ObjectList[i][oID] == modelid) 
+		{
+			format(temp, 50, "%s", ObjectList[i][oName]);
+			break;
+		}
+	}
+	
+	return temp;
+}
 
 stock IsUnListedValidModel(modelid)
 {

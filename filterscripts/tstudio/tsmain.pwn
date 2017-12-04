@@ -5,8 +5,8 @@
 public OnFilterScriptInit()
 {
 	print("----------------------------------------------");
-	print("---------Texture Studio By [uL]Pottus---------");
-	print("-------------------------------------Loaded---");
+	print("----Texture Studio By [uL]Pottus and Crayder--");
+	print("------------------------------------Loaded----");
 
 	SystemDB = db_open_persistent("tstudio/system.db");
 	ThemeDataDB = db_open_persistent("tstudio/themedata.db");
@@ -18,8 +18,8 @@ public OnFilterScriptInit()
 public OnFilterScriptExit()
 {
 	print("----------------------------------------------");
-	print("---------Texture Studio By [uL]Pottus---------");
-	print("-----------------------------------Unloaded---");
+	print("----Texture Studio By [uL]Pottus and Crayder--");
+	print("------------------------------------Unloaded--");
 
 	// Delete all map objects
 	DeleteMapObjects(false);
@@ -31,6 +31,9 @@ public OnFilterScriptExit()
 	{
  		ClearCopyBuffer(i);
 	}
+    
+    // Update the map settings
+    sqlite_UpdateSettings();
 
 	// Always close map
 	db_free_persistent(EditMap);
@@ -303,6 +306,7 @@ public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
     if(OnPlayerKeyStateMenuChange(playerid, newkeys, oldkeys)) return 1;
     if(OnPlayerKeyStateChangeTex(playerid,newkeys,oldkeys)) return 1;
     if(OnPlayerKeyStateChangeLSel(playerid,newkeys,oldkeys)) return 1;
+    if(OnPlayerKeyStateChangeCMD(playerid,newkeys,oldkeys)) return 1;
 	return 1;
 }
 
@@ -348,6 +352,8 @@ sqlite_LoadMapObjects()
     stmt_bind_result_field(loadstmt, 17, DB::TYPE_INT, tmpobject[oTextFontSize]);
     stmt_bind_result_field(loadstmt, 18, DB::TYPE_STRING, tmpobject[oObjectText], MAX_TEXT_LENGTH);
     stmt_bind_result_field(loadstmt, 19, DB::TYPE_INT, tmpobject[oGroup]);
+    stmt_bind_result_field(loadstmt, 20, DB::TYPE_STRING, tmpobject[oNote], 64);
+    stmt_bind_result_field(loadstmt, 21, DB::TYPE_FLOAT, tmpobject[oDD]);
 
 	// Execute query
     if(stmt_execute(loadstmt))
@@ -356,7 +362,7 @@ sqlite_LoadMapObjects()
         while(stmt_fetch_row(loadstmt))
         {
 			// Load object into database at specified index (Don't save to sqlite database)
-			AddDynamicObject(tmpobject[oModel], tmpobject[oX], tmpobject[oY], tmpobject[oZ], tmpobject[oRX], tmpobject[oRY], tmpobject[oRZ], currindex, false);
+			AddDynamicObject(tmpobject[oModel], tmpobject[oX], tmpobject[oY], tmpobject[oZ], tmpobject[oRX], tmpobject[oRY], tmpobject[oRZ], currindex, false, .dd = tmpobject[oDD]);
 
 			// Set textures and colors
 			for(new i = 0; i < MAX_MATERIALS; i++)
@@ -378,6 +384,7 @@ sqlite_LoadMapObjects()
 
 			// Get any text string
 			format(ObjectData[currindex][oObjectText], MAX_TEXT_LENGTH, "%s", tmpobject[oObjectText]);
+			format(ObjectData[currindex][oNote], MAX_TEXT_LENGTH, "%s", tmpobject[oNote]);
 
 			// We need to update textures and materials
 			UpdateMaterial(currindex);
@@ -412,7 +419,7 @@ sqlite_InsertObject(index)
 			InsertObjectString,
 			sizeof(InsertObjectString),
 			"INSERT INTO `Objects`",
-	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		);
 		// Prepare data base for writing
 	}
@@ -442,6 +449,8 @@ sqlite_InsertObject(index)
     stmt_bind_value(insertstmt, 17, DB::TYPE_INT, ObjectData[index][oTextFontSize]);
     stmt_bind_value(insertstmt, 18, DB::TYPE_STRING, ObjectData[index][oObjectText], MAX_TEXT_LENGTH);
     stmt_bind_value(insertstmt, 19, DB::TYPE_INT, ObjectData[index][oGroup]);
+    stmt_bind_value(insertstmt, 20, DB::TYPE_STRING, ObjectData[index][oNote]);
+    stmt_bind_value(insertstmt, 21, DB::TYPE_FLOAT, ObjectData[index][oDD]);
 
     stmt_execute(insertstmt);
 	stmt_close(insertstmt);
@@ -463,6 +472,8 @@ sqlite_CreateNewMap()
     sqlite_CreateMapDB();
     sqlite_CreateRBDB();
     sqlite_CreateVehicle();
+    sqlite_CreateSettings();
+	sqlite_InitSettings();
 }
 
 new NewMapString[512];
@@ -493,7 +504,9 @@ sqlite_CreateMapDB()
 			"Alignment INTEGER,",
 			"TextFontSize INTEGER,",
 			"ObjectText TEXT,",
-			"GroupID INTEGER);"
+			"GroupID INTEGER,",
+			"Note TEXT,",
+			"DrawDistance REAL DEFAULT 300.0);"
 		);
 	}
 
@@ -520,15 +533,111 @@ sqlite_CreateRBDB()
 	db_exec(EditMap, NewRemoveString);
 }
 
+new NewSettingsString[512];
+sqlite_CreateSettings()
+{
+	if(!NewSettingsString[0])
+	{
+		strimplode(" ",
+			NewSettingsString,
+			sizeof(NewSettingsString),
+			"CREATE TABLE IF NOT EXISTS `Settings`",
+			"(Version INTEGER DEFAULT 0,",
+			"LastTime INTEGER DEFAULT 0,",
+			"Author TEXT DEFAULT 'Creator',",
+			"SpawnX REAL DEFAULT 0.0,",
+			"SpawnY REAL DEFAULT 0.0,",
+			"SpawnZ REAL DEFAULT 0.0,",
+			"Interior INTEGER DEFAULT -1,",
+			"VirtualWorld INTEGER DEFAULT -1);"
+		);
+	}
+	db_exec(EditMap, NewSettingsString);
+}
+
+new DBStatement:insertsettingstmt;
+new InitSettingsString[512];
+sqlite_InitSettings()
+{
+	// Insert the initial values
+	if(!InitSettingsString[0])
+	{
+		// Prepare query
+		strimplode(" ",
+			InitSettingsString,
+			sizeof(InitSettingsString),
+			"INSERT INTO `Settings`",
+	        "VALUES(?, ?, ?, ?, ?, ?, ?, ?)"
+		);
+		// Prepare data base for writing
+	}
+	insertsettingstmt = db_prepare(EditMap, InitSettingsString);
+    
+	// Bind our results
+    stmt_bind_value(insertsettingstmt, 0, DB::TYPE_INT, MapSetting[mVersion]);
+    stmt_bind_value(insertsettingstmt, 1, DB::TYPE_INT, MapSetting[mLastEdit]);
+    stmt_bind_value(insertsettingstmt, 2, DB::TYPE_STRING, MapSetting[mAuthor]);
+    stmt_bind_value(insertsettingstmt, 3, DB::TYPE_FLOAT, MapSetting[mSpawn][xPos]);
+    stmt_bind_value(insertsettingstmt, 4, DB::TYPE_FLOAT, MapSetting[mSpawn][yPos]);
+    stmt_bind_value(insertsettingstmt, 5, DB::TYPE_FLOAT, MapSetting[mSpawn][zPos]);
+    stmt_bind_value(insertsettingstmt, 6, DB::TYPE_INT, MapSetting[mInterior]);
+    stmt_bind_value(insertsettingstmt, 7, DB::TYPE_INT, MapSetting[mVirtualWorld]);
+
+    stmt_execute(insertsettingstmt);
+	stmt_close(insertsettingstmt);
+}
+
 // Makes any version updates
 sqlite_UpdateDB()
 {
-    sqlite_CreateRBDB();
-    sqlite_CreateVehicle();
+	sqlite_CreateRBDB();
+	sqlite_CreateVehicle();
+	
+	new dbver = db_query_int(EditMap, "SELECT Version FROM Settings");
+	new major = (dbver >> 16) & 0xFF, minor = (dbver >> 8) & 0xFF, patch = (dbver & 0xFF) + 96;
+	
+	if(minor < 9)
+	{
+		ResetSettings();
+		sqlite_CreateSettings();
+		sqlite_InitSettings();
 
-    // Version 1.3
-    if(!ColumnExists(EditMap, "Objects", "GroupID")) db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `GroupID` INTEGER DEFAULT 0");
-
+		// Version 1.3
+		if(!ColumnExists(EditMap, "Objects", "GroupID")) db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `GroupID` INTEGER DEFAULT 0");
+		
+		// Version 1.9
+		if(!ColumnExists(EditMap, "Objects", "Note"))
+		{
+			db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `Note` TEXT DEFAULT ''");
+			db_exec(EditMap, "ALTER TABLE `Objects` ADD COLUMN `DrawDistance` REAL DEFAULT 300.0");
+			db_exec(EditMap, "ALTER TABLE `Vehicles` ADD COLUMN `CarSiren` INTEGER DEFAULT 0");
+		}
+    }
+	
+	
+    /*new dbver = db_query_int(EditMap, "SELECT Version FROM Settings");
+    if(dbver != TS_VERSION)
+    {
+        printf("Map version (%i.%i%c) does not match TS version (%i.%i%c)",
+            (dbver & 0x00FF0000), (dbver & 0x0000FF00), (dbver & 0x000000FF) + 96,
+            (TS_VERSION & 0x00FF0000), (TS_VERSION & 0x0000FF00), (TS_VERSION & 0x000000FF) + 96);
+    
+        /*if((dbver & 0x00FF0000) > (TS_VERSION & 0x00FF0000)) // Major version, changes were made that are needed to edit this map
+            printf("Map major version is higher than TS version, update TS to edit this map.");
+        else if((dbver & 0x0000FF00) > (TS_VERSION & 0x0000FF00)) // Minor version, changes were made that affect this map
+            printf("Map minor version is higher than TS version, update TS to edit this map correctly.");
+        else if((dbver & 0x000000FF) > (TS_VERSION & 0x000000FF)) // Patch, backwards compatible
+            printf("Your version of TS is old, consider updating.");
+        
+        if((dbver & 0x00FF0000) < (TS_VERSION & 0x00FF0000)) // Major version, making updates
+            printf("Map major version is lower than TS version, updating map.");
+        else if((dbver & 0x0000FF00) < (TS_VERSION & 0x0000FF00)) // Minor version, making updates
+            printf("Map minor version is lower than TS version, updating map.");
+        else if((dbver & 0x000000FF) < (TS_VERSION & 0x000000FF)) // Patch, backwards compatible
+            printf("Map version is compatible with TS version.");
+    }*/
+	
+    sqlite_UpdateSettings();
 	return 1;
 }
 
@@ -638,6 +747,36 @@ sqlite_UpdateObjectPos(index)
 	{
 		if(CurrObject[i] == index) OnObjectUpdatePos(i, index);
 	}
+
+    return 1;
+}
+
+new DBStatement:ddupdatestmt;
+new DDUpdateString[512];
+
+sqlite_UpdateObjectDD(index)
+{
+	// Inserts a new index
+	if(!DDUpdateString[0])
+	{
+		// Prepare query
+		strimplode(" ",
+			DDUpdateString,
+			sizeof(DDUpdateString),
+			"UPDATE `Objects` SET",
+			"`DrawDistance` = ?",
+			"WHERE `IndexID` = ?"
+		);
+	}
+    ddupdatestmt = db_prepare(EditMap, DDUpdateString);
+
+	// Bind values
+	stmt_bind_value(ddupdatestmt, 0, DB::TYPE_FLOAT, ObjectData[index][oDD]);
+	stmt_bind_value(ddupdatestmt, 1, DB::TYPE_INT, index);
+
+	// Execute stmt
+    stmt_execute(ddupdatestmt);
+	stmt_close(ddupdatestmt);
 
     return 1;
 }
@@ -1009,6 +1148,34 @@ sqlite_ObjModel(index)
 	return 1;
 }
 
+// Update sql object note
+new DBStatement:objectnoteupdatestmt;
+new ObjectNoteString[512];
+
+sqlite_ObjNote(index)
+{
+	if(!ObjectNoteString[0])
+	{
+		strimplode(" ",
+			ObjectNoteString,
+			sizeof(ObjectNoteString),
+			"UPDATE `Objects` SET",
+			"`Note` = ?",
+			"WHERE `IndexID` = ?"
+		);
+	}
+	objectnoteupdatestmt = db_prepare(EditMap, ObjectNoteString);
+
+	// Bind values
+	stmt_bind_value(objectnoteupdatestmt, 0, DB::TYPE_STRING, ObjectData[index][oNote]);
+	stmt_bind_value(objectnoteupdatestmt, 1, DB::TYPE_INT, index);
+
+	// Execute stmt
+    stmt_execute(objectnoteupdatestmt);
+	stmt_close(objectnoteupdatestmt);
+	return 1;
+}
+
 
 // Insert a remove building to DB
 new DBStatement:insertremovebuldingstmt;
@@ -1041,6 +1208,47 @@ sqlite_InsertRemoveBuilding(index)
 	stmt_close(insertremovebuldingstmt);
 }
 
+// Update settings in DB
+new DBStatement:updatesettingstmt;
+new InsertSettingsString[256];
+
+sqlite_UpdateSettings()
+{
+	if(!InsertSettingsString[0])
+	{
+		strimplode(" ",
+			InsertSettingsString,
+			sizeof(InsertSettingsString),
+			"UPDATE `Settings` SET",
+			"`Version` = ?,",
+			"`LastTime` = ?,",
+			"`Author` = ?,",
+			"`SpawnX` = ?,",
+			"`SpawnY` = ?,",
+			"`SpawnZ` = ?,",
+			"`Interior` = ?,",
+			"`VirtualWorld` = ?",
+            // Hacky way to change all of the data without a unique, pointless column
+			"WHERE `Version` in (SELECT `Version` FROM Settings LIMIT 1)"
+		);
+	}
+	updatesettingstmt = db_prepare(EditMap, InsertSettingsString);
+    
+	// Bind our results
+    stmt_bind_value(updatesettingstmt, 0, DB::TYPE_INT, TS_VERSION);
+    stmt_bind_value(updatesettingstmt, 1, DB::TYPE_INT, gettime());
+    stmt_bind_value(updatesettingstmt, 2, DB::TYPE_STRING, MapSetting[mAuthor]);
+    stmt_bind_value(updatesettingstmt, 3, DB::TYPE_FLOAT, MapSetting[mSpawn][xPos]);
+    stmt_bind_value(updatesettingstmt, 4, DB::TYPE_FLOAT, MapSetting[mSpawn][yPos]);
+    stmt_bind_value(updatesettingstmt, 5, DB::TYPE_FLOAT, MapSetting[mSpawn][zPos]);
+    stmt_bind_value(updatesettingstmt, 6, DB::TYPE_INT, MapSetting[mInterior]);
+    stmt_bind_value(updatesettingstmt, 7, DB::TYPE_INT, MapSetting[mVirtualWorld]);
+
+    // Execute statement
+    stmt_execute(updatesettingstmt);
+	stmt_close(updatesettingstmt);
+}
+
 // Load any remove buildings
 new DBStatement:loadremovebuldingstmt;
 
@@ -1071,6 +1279,42 @@ sqlite_LoadRemoveBuildings()
         return count;
     }
 	stmt_close(loadremovebuldingstmt);
+    return 0;
+}
+
+// Load settings
+new DBStatement:loadsettingstmt;
+
+sqlite_LoadSettings()
+{
+    new tmpsetting[MAPOPTIONS];
+
+	loadsettingstmt = db_prepare(EditMap, "SELECT * FROM `Settings`");
+
+	// Bind our results
+    stmt_bind_result_field(loadsettingstmt, 0, DB::TYPE_INT, tmpsetting[mVersion]);
+    stmt_bind_result_field(loadsettingstmt, 1, DB::TYPE_INT, tmpsetting[mLastEdit]);
+    stmt_bind_result_field(loadsettingstmt, 2, DB::TYPE_STRING, tmpsetting[mAuthor], MAX_PLAYER_NAME);
+    stmt_bind_result_field(loadsettingstmt, 3, DB::TYPE_FLOAT, tmpsetting[mSpawn][xPos]);
+    stmt_bind_result_field(loadsettingstmt, 4, DB::TYPE_FLOAT, tmpsetting[mSpawn][yPos]);
+    stmt_bind_result_field(loadsettingstmt, 5, DB::TYPE_FLOAT, tmpsetting[mSpawn][zPos]);
+    stmt_bind_result_field(loadsettingstmt, 6, DB::TYPE_INT, tmpsetting[mInterior]);
+    stmt_bind_result_field(loadsettingstmt, 7, DB::TYPE_INT, tmpsetting[mVirtualWorld]);
+    
+    // Set to default
+    //ResetSettings();
+
+	// Execute query
+    if(stmt_execute(loadsettingstmt))
+    {
+        if(stmt_fetch_row(loadsettingstmt))
+        {
+            // Set to loaded data
+            MapSetting = tmpsetting;
+			return 1;
+        }
+    }
+	stmt_close(loadsettingstmt);
     return 0;
 }
 
@@ -1208,12 +1452,27 @@ UpdateObject3DText(index, bool:newobject=false)
 
 	if(!newobject) DestroyDynamic3DTextLabel(ObjectData[index][oTextID]);
 
+    if(!TextOption[tShowText])
+        return 1;
+    
 	// 3D Text Label (To identify objects)
-	new line[64];
-	format(line, sizeof(line), "Ind: {33DD11}%i {FF8800}Grp:{33DD11} %i", index, ObjectData[index][oGroup]);
+	new line[128];
+	format(line, sizeof(line), "Ind: {33DD11}%i%s", index,
+        (TextOption[tShowGroup] ? sprintf(" {FF8800}Grp:{33DD11} %i", ObjectData[index][oGroup]) : ("")));
+    
+    // Append note
+    if(TextOption[tShowModel])
+    {
+        strcat(line, sprintf("\n{FF8800}Model: {33DD11}%i\n{FF8800}Name: {33DD11}%s", ObjectData[index][oModel], GetModelName(ObjectData[index][oModel])));
+    }
+    
+    // Append note
+    if(TextOption[tShowNote] && strlen(ObjectData[index][oNote]))
+    {
+        strcat(line, sprintf("\n{FF8800}Note: {33DD11}%s", ObjectData[index][oNote]));
+    }
 
-
-		// Shows the models index
+	// Shows the models index
 	if(ObjectData[index][oAttachedVehicle] > -1)
 	{
 		ObjectData[index][oTextID] = CreateDynamic3DTextLabel(line, 0xFF8800FF, ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], TEXT3D_DRAW_DIST, INVALID_PLAYER_ID, CarData[ObjectData[index][oAttachedVehicle]][CarID]);
@@ -1430,7 +1689,7 @@ GetMapCenter(&Float:X, &Float:Y, &Float:Z)
 	return 1;
 }
 
-AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, index = -1, bool:sqlsave = true)
+AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, index = -1, bool:sqlsave = true, Float:dd = 300.0)
 {
 	// Index was not specified get a free index
 	if(index == -1) index = Iter_Free(Objects);
@@ -1442,8 +1701,8 @@ AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:r
 		Iter_Add(Objects, index);
 
 		// Create object and set data
-		ObjectData[index][oID] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, -1, -1, -1, 300.0);
-		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
+		ObjectData[index][oID] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, MapSetting[mVirtualWorld], MapSetting[mInterior], -1, dd);
+		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, dd);
 		
 		#if defined COMPILE_MANGLE
 			ObjectData[index][oCAID] = CA_CreateObject(modelid, x, y, z, rx, ry, rz, true);
@@ -1462,6 +1721,7 @@ AddDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:r
 		ObjectData[index][oRX] = rx;
 		ObjectData[index][oRY] = ry;
 		ObjectData[index][oRZ] = rz;
+		ObjectData[index][oDD] = dd;
 
 		ObjectData[index][oAttachedVehicle] = -1;
 
@@ -1522,7 +1782,7 @@ CloneObject(index, grouptask=0)
 {
 	if(Iter_Contains(Objects, index))
 	{
-    	new cindex = AddDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ]);
+    	new cindex = AddDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], .dd = ObjectData[index][oDD]);
 
   		ObjectData[cindex][ousetext] = ObjectData[index][ousetext];
 	   	ObjectData[cindex][oFontFace] = ObjectData[index][oFontFace];
@@ -1540,6 +1800,7 @@ CloneObject(index, grouptask=0)
 			ObjectData[cindex][oColorIndex][i] = ObjectData[index][oColorIndex][i];
 		}
 
+	   	format(ObjectData[cindex][oNote], 64, "%s", ObjectData[index][oNote]);
 		format(ObjectData[cindex][oObjectText], MAX_TEXT_LENGTH, "%s", ObjectData[index][oObjectText]);
 
 		// Update the materials
@@ -1727,7 +1988,10 @@ YCMD:loadmap(playerid, arg[], help)
 			// Open a map
 		    if(cresponse)
 			{
-				// Close map
+                // Update map settings
+                sqlite_UpdateSettings();
+                
+                // Close map
 				db_free_persistent(EditMap);
 
 				// Delete all map objects
@@ -1735,6 +1999,9 @@ YCMD:loadmap(playerid, arg[], help)
 
 				// Clear all removed buildings
 				ClearRemoveBuildings();
+                
+                // Reset settings
+                //ResetSettings();
 
 				// Load map
 				LoadMap(playerid);
@@ -1753,6 +2020,20 @@ YCMD:loadmap(playerid, arg[], help)
 	}
 	else LoadMap(playerid);
 	return 1;
+}
+
+// Resets settings array
+ResetSettings()
+{
+    MapSetting[mVersion] = 0;
+    format(MapSetting[mAuthor], MAX_PLAYER_NAME, "Creator");
+    MapSetting[mLastEdit] = 0;
+    MapSetting[mInterior] = -1;
+    MapSetting[mVirtualWorld] = -1;
+    MapSetting[mSpawn][xPos] = 0.0;
+    MapSetting[mSpawn][yPos] = 0.0;
+    MapSetting[mSpawn][zPos] = 0.0;
+    return 1;
 }
 
 // Load map function call
@@ -1802,9 +2083,12 @@ LoadMap(playerid)
 
 				// Map is now open
                 EditMap = db_open_persistent(MapName);
-
+                
 				// Perform any version updates
 				sqlite_UpdateDB();
+
+                // Load the maps settings
+                sqlite_LoadSettings();
 
 				// Load the maps remove buildings
 			    new rmcount = sqlite_LoadRemoveBuildings();
@@ -1824,6 +2108,20 @@ LoadMap(playerid)
 
 				SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 				SendClientMessage(playerid, STEALTH_GREEN, sprintf("You have loaded a map with %i objects and %i removed buildings.", ocount, rmcount));
+                
+                new DBResult:timeResult = db_query(EditMap, sprintf("SELECT datetime(%i, 'unixepoch', 'localtime')", MapSetting[mLastEdit]));
+                new timestr[64];
+                db_get_field(timeResult, 0, timestr, 64);
+                db_free_result(timeResult);
+                
+                if(MapSetting[mLastEdit])
+				{
+                    SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was created by %s.", MapSetting[mAuthor]));
+                    SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was last edited on %s by %s.", timestr));
+                }
+				
+                // Update the maps settings, so the last edit time updates
+                sqlite_UpdateSettings();
             }
         }
         Dialog_ShowCallback(playerid, using inline Select, DIALOG_STYLE_LIST, "Texture Studio (Load Map)", line, "Ok", "Cancel");
@@ -2032,9 +2330,22 @@ NewMap(playerid)
 
 					// Create new table for map
 		            sqlite_CreateNewMap();
-
+                    
 					// Map is now open
 		            MapOpen = true;
+
+                    // Set map default settings
+                    MapSetting[mVersion] = TS_VERSION;
+                    MapSetting[mLastEdit] = gettime();
+                    format(MapSetting[mAuthor], MAX_PLAYER_NAME, "%s", ReturnPlayerName(playerid));
+                    MapSetting[mSpawn][xPos] = 0.0;
+                    MapSetting[mSpawn][yPos] = 0.0;
+                    MapSetting[mSpawn][zPos] = 0.0;
+                    MapSetting[mInterior] = -1;
+                    MapSetting[mVirtualWorld] = -1;
+    
+                    // Update the map settings, to set the last edit time and insert the player name
+                    sqlite_UpdateSettings();
 
 					SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 					SendClientMessage(playerid, STEALTH_GREEN, "You have created a new map");
@@ -2249,8 +2560,14 @@ YCMD:exportmap(playerid, arg[], help)
 					if(dresponse)
 					{
                         if(sscanf(dtext, "f", dist)) dist = 300.0;
+                        /*else foreach(new i : Objects)
+                        {
+                            if(ObjectData[i][oDD] == 300.0) // Default oDD
+                                ObjectData[i][oDD] = dist;
+                        }*/
 					}
 					else dist = 300.0;
+                    
 
 					new exportmap[256];
 
@@ -2317,8 +2634,24 @@ MapExport(playerid, mapname[], Float:drawdist)
 			f = fopen(exportmap,io_write);
 
 			fwrite(f,"//Map Exported with Texture Studio By: [uL]Pottus////////////////////////////////////////////////////////////////\r\n");
+			fwrite(f,"//////////////////////////////////////////////and Crayder////////////////////////////////////////////////////////\r\n");
 			fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
-			fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+
+			fwrite(f,"\r\n//Map Information////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+            
+            new DBResult:timeResult = db_query(EditMap, sprintf("SELECT datetime(%i, 'unixepoch', 'localtime')", gettime()));
+            new timestr[64];
+            db_get_field(timeResult, 0, timestr, 64);
+            db_free_result(timeResult);
+            
+            fwrite(f,"/*\r\n");
+            fwrite(f,sprintf("\tExported on \"%s\" by \"%s\"\r\n", timestr, ReturnPlayerName(playerid)));
+            fwrite(f,sprintf("\tCreated by \"%s\"\r\n", MapSetting[mAuthor]));
+            if(MapSetting[mSpawn][xPos])
+                fwrite(f,sprintf("\tSpawn Position: %f, %f, %f\r\n", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
+            fwrite(f,"*/");
+			
+            fwrite(f,"\r\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 
 			if(RemoveData[0][rModel] != 0) fwrite(f,"\r\n//Remove Buildings///////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 
@@ -2342,7 +2675,7 @@ MapExport(playerid, mapname[], Float:drawdist)
 			{
 			    if(ObjectData[i][oAttachedVehicle] > -1) continue;
 
-				new bool:writeobject;
+				new bool:writeobject, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
 
 				// Does the object have materials?
 		        for(new j = 0; j < MAX_MATERIALS; j++)
@@ -2362,19 +2695,22 @@ MapExport(playerid, mapname[], Float:drawdist)
 					// Write the create object line
 					if(elistitem == 0)
 					{
-				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist);
+				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,
+                            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
 
 					// Write the create dynamic object line
 					else if(elistitem == 1)
 					{
-						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
+                            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
 					else if(elistitem  == 2)
 					{
-						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
+                            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
 
@@ -2457,7 +2793,7 @@ MapExport(playerid, mapname[], Float:drawdist)
 			{
 			    if(ObjectData[i][oAttachedVehicle] > -1) continue;
 
-				new bool:writeobject = true;
+				new bool:writeobject = true, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
 
 				// Does the object have materials?
 		        for(new j = 0; j < MAX_MATERIALS; j++)
@@ -2475,17 +2811,20 @@ MapExport(playerid, mapname[], Float:drawdist)
 				{
 					if(elistitem == 0)
 					{
-				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist);
+				        format(templine,sizeof(templine),"tmpobjid = CreateObject(%i, %f, %f, %f, %f, %f, %f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,
+				            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
 					else if(elistitem == 1)
 					{
-				        format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+				        format(templine,sizeof(templine),"tmpobjid = CreateDynamicObjectEx(%i, %f, %f, %f, %f, %f, %f, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
+				            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
 					else if(elistitem == 2)
 					{
-						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
+						format(templine,sizeof(templine),"tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
+				            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
 				        fwrite(f,templine);
 					}
 				}
@@ -2591,9 +2930,24 @@ static MapExportAll(playerid, name[], Float:drawdist)
 
 	// Header
 	fwrite(f,"//Map Filterscript Exported with Texture Studio By: [uL]Pottus///////////////////////////////////////////////////\r\n");
-	fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+	fwrite(f,"///////////////////////////////////////////////////////////and Crayder///////////////////////////////////////////\r\n");
 	fwrite(f,"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
 
+    fwrite(f,"\r\n//Map Information////////////////////////////////////////////////////////////////////////////////////////////////\r\n");
+    
+    new DBResult:timeResult = db_query(EditMap, sprintf("SELECT datetime(%i, 'unixepoch', 'localtime')", gettime()));
+    new timestr[64];
+    db_get_field(timeResult, 0, timestr, 64);
+    db_free_result(timeResult);
+    fwrite(f,"/*\r\n");
+    fwrite(f,sprintf("\tExported on \"%s\" by \"%s\"\r\n", timestr, ReturnPlayerName(playerid)));
+    fwrite(f,sprintf("\tCreated by \"%s\"\r\n", MapSetting[mAuthor]));
+    if(MapSetting[mSpawn][xPos])
+        fwrite(f,sprintf("\tSpawn Position: %f, %f, %f\r\n", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
+    fwrite(f,"*/");
+    
+    fwrite(f,"\r\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n");
+    
 	// Includes
 	fwrite(f, "#include <a_samp>\r\n");
 	fwrite(f, "#include <streamer>\r\n\n");
@@ -2670,8 +3024,9 @@ static MapExportAll(playerid, name[], Float:drawdist)
 	        new oindex = CarData[i][CarObjectRef][j];
 
 			// Create object
-			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i,0.0,0.0,-1000.0,0.0,0.0,0.0,-1,-1,-1,300.0,300.0);\r\n",ObjectData[oindex][oModel]);
-	        fwrite(f,templine);
+			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i,0.0,0.0,-1000.0,0.0,0.0,0.0,-1,-1,-1,300.0,300.0); %s\r\n",ObjectData[oindex][oModel],
+	            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
+            fwrite(f,templine);
 
 
 			// Write all materials and colors
@@ -2730,7 +3085,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 	{
 	    if(ObjectData[i][oAttachedVehicle] > -1) continue;
 
-		new bool:writeobject;
+        new bool:writeobject, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
 
 		// Does the object have materials?
         for(new j = 0; j < MAX_MATERIALS; j++)
@@ -2747,8 +3102,9 @@ static MapExportAll(playerid, name[], Float:drawdist)
 		{
 			mobjects++;
 
-			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
-	        fwrite(f,templine);
+			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
+	            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
+			fwrite(f,templine);
 
 			// Write all materials and colors
   			for(new j = 0; j < MAX_MATERIALS; j++)
@@ -2790,7 +3146,7 @@ static MapExportAll(playerid, name[], Float:drawdist)
 	{
 	    if(ObjectData[i][oAttachedVehicle] > -1) continue;
 
-		new bool:writeobject = true;
+        new bool:writeobject = true, Float:odd = (ObjectData[i][oDD] != 300.0 ? ObjectData[i][oDD] : drawdist);
 
 		// Does the object have materials?
         for(new j = 0; j < MAX_MATERIALS; j++)
@@ -2806,8 +3162,9 @@ static MapExportAll(playerid, name[], Float:drawdist)
 		// Object has not been exported yet export
 		if(writeobject)
 		{
-			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f);\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],drawdist,drawdist);
-	        fwrite(f,templine);
+			format(templine,sizeof(templine),"    tmpobjid = CreateDynamicObject(%i, %f, %f, %f, %f, %f, %f, -1, -1, -1, %.2f, %.2f); %s\r\n",ObjectData[i][oModel],ObjectData[i][oX],ObjectData[i][oY],ObjectData[i][oZ],ObjectData[i][oRX],ObjectData[i][oRY],ObjectData[i][oRZ],odd,odd,
+	            strlen(ObjectData[i][oNote]) ? sprintf("// %s", ObjectData[i][oNote]) : (""));
+			fwrite(f,templine);
 		}
 	}
 
@@ -3355,7 +3712,7 @@ PasteCopyBuffer(playerid, index)
     DestroyDynamicObject(ObjectData[index][oID]);
 
 	// Re-create object
-	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 	Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 	// Update the streamer
@@ -3440,7 +3797,7 @@ SetMaterials(index, mindex, tref)
     DestroyDynamicObject(ObjectData[index][oID]);
 
 	// Re-create object
-	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 	Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 	// Update streamer for all
@@ -3527,7 +3884,7 @@ YCMD:mtcolor(playerid, arg[], help)
 	    DestroyDynamicObject(ObjectData[index][oID]);
 
 		// Re-create object
-		ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+		ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 		// Update the materials
@@ -3611,7 +3968,7 @@ YCMD:mtcolorall(playerid, arg[], help)
 			    DestroyDynamicObject(ObjectData[i][oID]);
 
 				// Re-create object
-				ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], -1, -1, -1, 300.0);
+				ObjectData[i][oID] = CreateDynamicObject(ObjectData[i][oModel], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 				Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[i][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 				// Update the materials
@@ -3673,7 +4030,7 @@ YCMD:oswap(playerid, arg[], help)
 	    DestroyDynamicObject(ObjectData[index][oID]);
 
 		// Re-create object
-		ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+		ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 		// Update streamer for all
@@ -3918,7 +4275,7 @@ YCMD:robject(playerid, arg[], help)
 
 	DestroyDynamicObject(ObjectData[index][oID]);
 
-	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 	Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 	sqlite_SaveColorIndex(index);
@@ -4030,7 +4387,7 @@ YCMD:rindex(playerid, arg[], help)
     DestroyDynamicObject(ObjectData[index][oID]);
 
 	// Re-create object
-	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], -1, -1, -1, 300.0);
+	ObjectData[index][oID] = CreateDynamicObject(ObjectData[index][oModel], ObjectData[index][oX], ObjectData[index][oY], ObjectData[index][oZ], ObjectData[index][oRX], ObjectData[index][oRY], ObjectData[index][oRZ], MapSetting[mVirtualWorld], MapSetting[mInterior], -1, 300.0);
 	Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[index][oID], E_STREAMER_DRAW_DISTANCE, 300.0);
 
 	// Update the streamer
@@ -4652,6 +5009,37 @@ YCMD:drz(playerid, arg[], help)
 	return 1;
 }
 
+YCMD:odd(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set a specific object's draw distance.");
+		return 1;
+	}
+
+    MapOpenCheck();
+    EditCheck(playerid);
+    NoEditingMode(playerid);
+
+	new Float:dd;
+	dd = floatstr(arg);
+	if(dd == 0.0) dd = 300.0;
+
+    SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_EDIT);
+
+    ObjectData[CurrObject[playerid]][oDD] = dd;
+    Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[CurrObject[playerid]][oID], E_STREAMER_DRAW_DISTANCE, dd);
+    Streamer_SetFloatData(STREAMER_TYPE_OBJECT, ObjectData[CurrObject[playerid]][oID], E_STREAMER_STREAM_DISTANCE, dd);
+
+    sqlite_UpdateObjectDD(CurrObject[playerid]);
+
+    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+    SendClientMessage(playerid, STEALTH_GREEN, sprintf("Objects draw distance set to %.2f", dd));
+    
+	return 1;
+}
+
 // Extras
 YCMD:hidetext3d(playerid, arg[], help)
 {
@@ -4662,6 +5050,8 @@ YCMD:hidetext3d(playerid, arg[], help)
 		return 1;
 	}
 
+    TextOption[tShowText] = false;
+    
 	HideGroupLabels(playerid);
 	HideObjectText();
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -4689,10 +5079,146 @@ YCMD:showtext3d(playerid, arg[], help)
 	}
 	else
 		Streamer_SetRadiusMultiplier(STREAMER_TYPE_3D_TEXT_LABEL, 1.0, playerid);*/
+    
+    TextOption[tShowText] = true;
+    
     ShowGroupLabels(playerid);
 	ShowObjectText();
 	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 	SendClientMessage(playerid, STEALTH_GREEN, "All 3D Text labels shown");
+	return 1;
+}
+
+YCMD:edittext3d(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Shows you a dialog with 3D text options.");
+		return 1;
+	}
+    
+    new optline[256];
+    
+    // Init the text menu
+    inline SelectOption(spid, sdialogid, sresponse, slistitem, string:stext[])
+	{
+		#pragma unused slistitem, sdialogid, spid, stext
+		if(sresponse)
+		{
+            // Toggle the selected option
+            TextOption[TEXTOPTIONS:slistitem] = !TextOption[TEXTOPTIONS:slistitem];
+            
+            // Toggled text?
+            if(slistitem == 0)
+            {
+                if(TextOption[tShowText])
+                {
+                    ShowGroupLabels(playerid);
+                    ShowObjectText();
+                }
+                else
+                {
+                    HideGroupLabels(playerid);
+                    HideObjectText();
+                }
+            }
+	
+            // Show it again
+            format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group ID: %s\n{FFFF00}Grouped Text: %s\n",
+                (TextOption[tShowText] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+                (TextOption[tShowNote] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+                (TextOption[tShowModel] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+                (TextOption[tShowGroup] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+                (TextOption[tShowGrouped] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
+            );
+            
+            Dialog_ShowCallback(playerid, using inline SelectOption, DIALOG_STYLE_LIST, "Texture Studio - 3D Text Editor", optline, "Ok", "Cancel");
+		}
+	}
+	
+    // Show the dialog
+    format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group ID: %s\n{FFFF00}Grouped Text: %s\n",
+        (TextOption[tShowText] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+        (TextOption[tShowNote] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+        (TextOption[tShowModel] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+        (TextOption[tShowGroup] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+        (TextOption[tShowGrouped] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
+    );
+
+	Dialog_ShowCallback(playerid, using inline SelectOption, DIALOG_STYLE_LIST, "Texture Studio - 3D Text Editor", optline, "Ok", "Cancel");
+	return 1;
+}
+
+YCMD:note(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Show or change an object's note.");
+		return 1;
+	}
+    
+    MapOpenCheck();
+	
+ 	new index, note[64];
+	if(sscanf(arg, "iS()[64]", index, note))
+	{
+	    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+        SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /note <Index> <Optional: New Note>");
+		return 1;
+	}
+    
+    if(isnull(note) || !strlen(note))
+    {
+        SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+        SendClientMessage(playerid, STEALTH_GREEN, sprintf("Object's note: %s", ObjectData[index][oNote]));
+    }
+    else
+    {
+        SaveUndoInfo(index, UNDO_TYPE_EDIT);
+        format(ObjectData[index][oNote], 64, "%s", note);
+        sqlite_ObjNote(index);
+        UpdateObject3DText(index);
+        SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+        SendClientMessage(playerid, STEALTH_YELLOW, "Note changed");
+    }
+	return 1;
+}
+
+YCMD:setspawn(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Set this map's spawn position to your current position.");
+		return 1;
+	}
+    
+    GetPlayerPos(playerid, MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]);
+    sqlite_UpdateSettings();
+    
+    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+    SendClientMessage(playerid, STEALTH_YELLOW, sprintf("You have set the map's spawn position to (%0.2f, %0.2f, %0.2f)", MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]));
+	return 1;
+}
+
+YCMD:gotomap(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Sends you to this map's spawn position.");
+		return 1;
+	}
+    
+    if(MapSetting[mSpawn][xPos] == 0.0)
+        return SendClientMessage(playerid, STEALTH_YELLOW, "This map doesn't have a spawn position, set one with \"/setspawn\"");
+    
+    SetPlayerPos(playerid, MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]);
+    
+    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+    SendClientMessage(playerid, STEALTH_YELLOW, "You've been teleported to the map's spawn position");
 	return 1;
 }
 
@@ -4771,9 +5297,10 @@ YCMD:thelp(playerid, arg[], help)
 			{"export"},
 			{"exportmap"},
 			{"exportallmap"},
+			{"mprop"},
 			
 			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
-			{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		},
 		{//OBJECTS
 			{"Objects"},
@@ -4789,13 +5316,14 @@ YCMD:thelp(playerid, arg[], help)
 			{"osearch"},
 			{"osearchex"},
 			{"oprop"},
+			{"note"},
 			
 			{" \n{81181C} - Pivot{FFFFFF}"},
 			{"pivot"},
 			{"togpivot"},
 			
-			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
-			{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""}//,
+			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		},
 		{//TEXTURES
 			{"Textures"},
@@ -4951,6 +5479,8 @@ YCMD:thelp(playerid, arg[], help)
 			{"avnewcar"},
 			{"avcarcolor"},
 			{"avpaint"},
+			{"avsiren"},
+			{"avrespawn"},
 			{"avsel"},
 			{"avclonecar"},
 			{"avexport"},
@@ -4967,7 +5497,7 @@ YCMD:thelp(playerid, arg[], help)
 			{"avrz"},
 			{"avmirror"},
 			
-			{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		},
 		{//BINDS
@@ -4986,6 +5516,7 @@ YCMD:thelp(playerid, arg[], help)
 			{"{81181C} - General{FFFFFF}"},
 			{"hidetext3d"},
 			{"showtext3d"},
+			{"edittext3d"},
 			{"minfo"},
 			{"flymode"},
 			{"fmspeed"},
@@ -4994,12 +5525,14 @@ YCMD:thelp(playerid, arg[], help)
 			{"thelp"},
 			{"undo"},
 			{"echo"},
+			{"setspawn"},
+			{"gotomap"},
 			{"restrict"},
 			{"unrestrict"},
 			{"stopedit"},
 			
-			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
-			{""}//,{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
+			{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""}//,{""},{""},
+			//{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},{""},
 		}
 	};
 
