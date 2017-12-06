@@ -12,6 +12,8 @@ public OnFilterScriptInit()
 	ThemeDataDB = db_open_persistent("tstudio/themedata.db");
 	sqlite_ThemeSetup();
 	sqlite_LoadBindString();
+	
+	ResetSettings();
 	return 1;
 }
 
@@ -2001,7 +2003,7 @@ YCMD:loadmap(playerid, arg[], help)
 				ClearRemoveBuildings();
                 
                 // Reset settings
-                //ResetSettings();
+                ResetSettings();
 
 				// Load map
 				LoadMap(playerid);
@@ -2083,12 +2085,12 @@ LoadMap(playerid)
 
 				// Map is now open
                 EditMap = db_open_persistent(MapName);
-                
-				// Perform any version updates
-				sqlite_UpdateDB();
 
                 // Load the maps settings
                 sqlite_LoadSettings();
+                
+				// Perform any version updates
+				sqlite_UpdateDB();
 
 				// Load the maps remove buildings
 			    new rmcount = sqlite_LoadRemoveBuildings();
@@ -2337,7 +2339,7 @@ NewMap(playerid)
                     // Set map default settings
                     MapSetting[mVersion] = TS_VERSION;
                     MapSetting[mLastEdit] = gettime();
-                    format(MapSetting[mAuthor], MAX_PLAYER_NAME, "%s", ReturnPlayerName(playerid));
+					GetPlayerName(playerid, MapSetting[mAuthor], MAX_PLAYER_NAME);
                     MapSetting[mSpawn][xPos] = 0.0;
                     MapSetting[mSpawn][yPos] = 0.0;
                     MapSetting[mSpawn][zPos] = 0.0;
