@@ -2119,7 +2119,7 @@ LoadMap(playerid)
                 if(MapSetting[mLastEdit])
 				{
                     SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was created by %s.", MapSetting[mAuthor]));
-                    SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was last edited on %s by %s.", timestr));
+                    SendClientMessage(playerid, STEALTH_GREEN, sprintf("This map was last edited on %s.", timestr)); // by %s
                 }
 				
                 // Update the maps settings, so the last edit time updates
