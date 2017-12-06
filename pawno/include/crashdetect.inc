@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2014 Zeex
+// Copyright (c) 2013-2015 Zeex
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,14 @@
 #endif
 #define CRASHDETECT_INC
 
-native PrintAmxBacktrace();
+// Backwards compatibility; will be removed in the future.
+#define PrintAmxBacktrace PrintBacktrace
+#define GetAmxBacktrace GetBacktrace
+
+native PrintBacktrace();
 native PrintNativeBacktrace();
 
-native GetAmxBacktrace(string[], size = sizeof(string));
+native GetBacktrace(string[], size = sizeof(string));
 native GetNativeBacktrace(string[], size = sizeof(string));
 
 forward OnRuntimeError(code, &bool:suppress);
