@@ -1625,6 +1625,35 @@ YCMD:runbind(playerid, arg[], help)
 	return 1;
 }
 
+YCMD:makebind(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Create a bind out of the specified number of last commands.");
+		return 1;
+	}
+
+	new index, range;
+	sscanf(arg, "iI(1)", index, range);
+	
+	if(0 > index > MAX_CLICK_BINDS) return SendClientMessage(playerid, STEALTH_YELLOW, "Usage /makebind <Bind Index (0-9)> <Number of Commands (1-10)>");
+	if(1 > range > MAX_COMMAND_BUFFER) return SendClientMessage(playerid, STEALTH_YELLOW, "Usage /makebind <Bind Index (0-9)> <Number of Commands (1-10)>");
+	
+	for(new x; x < range; x++) { 
+		//CommandBindData[index][x] = CommandBuffer[playerid][range - 1 - x];
+		format(CommandBindData[index][x], 128, "%s", CommandBuffer[playerid][range - 1 - x]);
+		printf("%i: %s", x, CommandBindData[index][x]);
+	}
+	
+	BindUsed[index] = true;
+
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+	SendClientMessage(playerid, STEALTH_GREEN, sprintf("%i is now the last %i commands", index, range));
+	
+	return 1;
+}
+
 
 YCMD:bindeditor(playerid, arg[], help)
 {

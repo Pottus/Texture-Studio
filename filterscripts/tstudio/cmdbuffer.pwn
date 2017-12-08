@@ -22,24 +22,22 @@ OnPlayerKeyStateChangeCMD(playerid,newkeys,oldkeys)
     return 0;
 }
 
-public OnPlayerCommandPerformed(playerid, cmdtext[], success) 
-{ 
-    if(success)
-    {
-        // If we need to shift the buffer
-        if(CommandBuffed[playerid][MAX_COMMAND_BUFFER - 1])
-        {
-            // Make every slot, start from slot 2, take the data from the slot before
-            for(new i = 1; i < MAX_COMMAND_BUFFER; i++)
-                CommandBuffer[playerid][i] = CommandBuffer[playerid][i - 1];
-        }
-        
-        // Insert the command and it's parameters into the buffer
-        CommandBuffer[playerid][0][0] = EOS;
-        strcat(CommandBuffer[playerid][0], cmdtext);
-		
-		return 1;
-    } 
+public OnPlayerCommandText(playerid, cmdtext[]) 
+{
+	print(cmdtext);
+
+	// Make every slot, start from slot 2, take the data from the slot before
+	for(new i = MAX_COMMAND_BUFFER - 1; i > 0; --i) {
+		//printf("i = %2i 1, CB[i] = %s, CB[i-1] = %s", i, CommandBuffer[playerid][i], CommandBuffer[playerid][i - 1]);
+		//CommandBuffer[playerid][i] = CommandBuffer[playerid][i - 1];
+		//printf("i = %2i 2, CB[i] = %s, CB[i-1] = %s", i, CommandBuffer[playerid][i], CommandBuffer[playerid][i - 1]);
+		format(CommandBuffer[playerid][i], 128, "%s", CommandBuffer[playerid][i - 1]);
+	}
+	
+	// Insert the command and it's parameters into the buffer
+	//CommandBuffer[playerid][0][0] = EOS;
+	format(CommandBuffer[playerid][0], 128, "%s", cmdtext);
+	
 	return 0;
 }  
 
