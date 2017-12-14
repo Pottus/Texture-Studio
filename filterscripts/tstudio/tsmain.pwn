@@ -109,6 +109,7 @@ OnPlayerKeyStateChangeOEdit(playerid,newkeys,oldkeys)
 // player finished editing an object
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
+	//printf("%i, %i, %i, %i", playerid, objectid, response, GetEditMode(playerid));
 	switch(GetEditMode(playerid))
 	{
 	    case EDIT_MODE_OBJECT:
