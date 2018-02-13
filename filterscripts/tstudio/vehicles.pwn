@@ -1169,6 +1169,61 @@ YCMD:avmirror(playerid, arg[], help)
 	return 1;
 }
 
+YCMD:avclone(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Clone an attached object on the current vehicle.");
+		return 1;
+	}
+
+	MapOpenCheck();
+
+	NoEditingMode(playerid);
+
+	EditCheck(playerid);
+
+	if(ObjectData[CurrObject[playerid]][oAttachedVehicle] < 0)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "This object is not attached to any vehicles.");
+	}
+	
+	for(new i = 0; i < MAX_CAR_OBJECTS; i++)
+	{
+		if(CarData[ObjectData[CurrObject[playerid]][oAttachedVehicle]][CarObjectRef][i] == -1)
+		{
+			new cloneindex = CurrObject[playerid];
+			SetCurrObject(playerid, CloneObject(CurrObject[playerid]));
+			new refindex = GetCarObjectRefIndex(ObjectData[cloneindex][oAttachedVehicle], cloneindex);
+			
+			CarData[ObjectData[cloneindex][oAttachedVehicle]][COX][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][COX][refindex];
+			CarData[ObjectData[cloneindex][oAttachedVehicle]][COY][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][COY][refindex];
+			CarData[ObjectData[cloneindex][oAttachedVehicle]][COZ][i] = CarData[ObjectData[cloneindex][oAttachedVehicle]][COZ][refindex];
+
+			AttachDynamicObjectToVehicle(ObjectData[CurrObject[playerid]][oID], CarData[ObjectData[cloneindex][oAttachedVehicle]][CarID],
+				0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+			);
+
+			CarData[ObjectData[cloneindex][oAttachedVehicle]][CarObjectRef][i] = CurrObject[playerid];
+			ObjectData[CurrObject[playerid]][oAttachedVehicle] = ObjectData[cloneindex][oAttachedVehicle];
+
+			UpdateAttachedVehicleObject(ObjectData[CurrObject[playerid]][oAttachedVehicle], i, VEHICLE_ATTACH_UPDATE);
+
+			sqlite_SaveVehicleObjectData(ObjectData[CurrObject[playerid]][oAttachedVehicle]);
+
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			SendClientMessage(playerid, STEALTH_GREEN, "Cloned object attached object to vehicle.");
+			return 1;
+		}
+	}
+	
+	SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+	SendClientMessage(playerid, STEALTH_YELLOW, "Too many attached objects.");
+	return 1;
+}
+
 YCMD:avdetach(playerid, arg[], help)
 {
 	if(help)
