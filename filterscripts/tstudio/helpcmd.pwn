@@ -62,6 +62,7 @@ new Commands[][COMMAND_INFO] = {
     {1, 0, "osearchex"},
     {1, 0, "oprop"},
     {1, 0, "note"},
+    {1, 0, "odd"},
     
     {2, 0, "mtextures"},
     {2, 0, "ttextures"},
@@ -125,6 +126,7 @@ new Commands[][COMMAND_INFO] = {
     {5, 0, "gclone"},
     {5, 0, "gdelete"},
     {5, 0, "gall"},
+    {5, 0, "gdd"},
     {5, 0, "0group"},
     
     {5, 6, "editgroup"},
@@ -175,6 +177,7 @@ new Commands[][COMMAND_INFO] = {
     {7, 8, "avmirror"},
     
     {8, 0, "runbind"},
+    {8, 0, "makebind"},
     {8, 0, "bindeditor"},
     
     {9, 0, "hidetext3d"},

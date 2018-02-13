@@ -61,6 +61,29 @@ public OnPlayerConnect(playerid)
     
     SendClientMessage(playerid, STEALTH_GREEN, "Welcome to Texture Studio!");
     SendClientMessage(playerid, STEALTH_GREEN, sprintf("There are currently %i commands registered, check \"/thelp\" to see them!", Command_GetPlayerCommandCount(playerid)));
+	
+	new bool:found, bool:warn, string[36];
+	for (new i, j = Command_GetPlayerCommandCount(playerid); i < j; i++)
+  	{
+  	    format(string, 36, "%s", Command_GetNext(i, playerid));
+		//foreach(new c : Command()) {
+		
+		for(new k; k < sizeof(Commands); k++) {
+			if(!strcmp(Commands[k][cName], string)) {
+				found = true;
+				break;
+			}
+		}
+		if(!found) {
+			printf("    /thelp missing command: %s", string);
+			warn = true;
+		}
+		else
+			found = false;
+	}
+	if(warn)
+		printf("Warning: There's something missing or extra in /thelp for player %i.\n    (Report to Crayder on SA-MP Discord if this message ever shows)");
+	
 	return 1;
 }
 
