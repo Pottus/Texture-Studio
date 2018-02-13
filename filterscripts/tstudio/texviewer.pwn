@@ -287,9 +287,7 @@ public OnPlayerDisconnect(playerid, reason)
 	forward TV_OnPlayerDisconnect(playerid, reason);
 #endif
 
-
-static FoundTextures[4096];
-
+static BitArray:FoundTextures<(sizeof(ObjectTextures) + 1)>, sFoundTextures[4096];
 YCMD:tsearch(playerid, arg[], help)
 {
 	if(help)
@@ -303,36 +301,90 @@ YCMD:tsearch(playerid, arg[], help)
 	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must supply a texture search string");
 
     new line[128];
+	new numfound, lastpage, page;
 
 	inline TexSearch(pid, dialogid, response, listitem, string:text[])
 	{
         #pragma unused listitem, dialogid, pid, text
 		if(response)
 		{
-			new index;
-		    sscanf(text, "p<:>i", index);
-		    format(line, sizeof(line), "/mtextures %i", index);
-		    BroadcastCommand(playerid, line);
+			if(!strcmp(text, "Next Page ->"))
+				page++;
+			else if(!strcmp(text, "Previous Page <-"))
+				page--;
+			
+			if(page != lastpage)
+			{
+				sFoundTextures[0] = '\0';
+				
+				if(page)
+					strcat(sFoundTextures, "{00CC00}Previous Page <-{FFFFFF}\n");
+				
+				for(new i, j; i < sizeof(ObjectTextures); i++)
+				{
+					if(Bit_Get(FoundTextures, i))
+					{
+						if((page * 100) < j < ((page + 1) * 100) + 1)
+						{
+							strcat(sFoundTextures, sprintf("%i:%s\n", i, ObjectTextures[i][TextureName]));
+							
+							if(j == ((page + 1) * 100))
+							{
+								strcat(sFoundTextures, "{00CC00}Next Page ->");
+								break;
+							}
+						}
+						j++;
+					}
+				}
+				
+				lastpage = page;
+				Dialog_ShowCallback(playerid, using inline TexSearch, DIALOG_STYLE_LIST, "Texture Studio - Texture Search", sFoundTextures, "Ok", "Cancel");
+			}
+			else
+			{
+				new index;
+				sscanf(text, "p<:>i", index);
+				format(line, sizeof(line), "/mtextures %i", index);
+				BroadcastCommand(playerid, line);
+			}
 		}
 	}
 
 
-    FoundTextures[0] = '\0';
-	new numfound;
+    Bit_SetAll(FoundTextures, false);
+	sFoundTextures[0] = '\0';
 	for(new i = 0; i < sizeof(ObjectTextures); i++)
 	{
 	    if(strfind(ObjectTextures[i][TextureName], arg, true) > -1)
  	    {
-			format(FoundTextures, sizeof(FoundTextures), "%s%i:%s\n", FoundTextures, i, ObjectTextures[i][TextureName]);
-	        numfound++;
-	        if(numfound == 100) break;
+			//strcat(sFoundTextures, sprintf("%i:%s\n", i, ObjectTextures[i][TextureName]));
+	        Bit_Let(FoundTextures, i);
+			numfound++;
+	        //if(numfound == 100) break;
 	    }
 	}
 	if(numfound)
 	{
 		format(line, sizeof(line), "Found %i textures", numfound);
 		SendClientMessage(playerid, STEALTH_GREEN, line);
-		Dialog_ShowCallback(playerid, using inline TexSearch, DIALOG_STYLE_LIST, "Texture Studio - Texture Search", FoundTextures, "Ok", "Cancel");
+		
+		for(new i, j; i < sizeof(ObjectTextures); i++)
+		{
+			if(Bit_Get(FoundTextures, i))
+			{
+				strcat(sFoundTextures, sprintf("%i:%s\n", i, ObjectTextures[i][TextureName]));
+				
+				j++;
+				if(j == 100)
+				{
+					strcat(sFoundTextures, "Next Page ->");
+					break;
+				}
+			}
+		}
+		
+		Dialog_ShowCallback(playerid, using inline TexSearch, DIALOG_STYLE_LIST, "Texture Studio - Texture Search", sFoundTextures, "Ok", "Cancel");
 	}
 	else SendClientMessage(playerid, STEALTH_YELLOW, "No textures found with that string");
 	return 1;
