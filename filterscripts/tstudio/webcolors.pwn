@@ -1,5 +1,5 @@
 
-new webcolors[4096];
+new webcolors[216 * (9 + 2 + 3)];
 
 new WebColorsRGB[216][9] = {
 	"{000000}","{000033}","{000066}","{000099}","{0000CC}","{0000FF}",
@@ -81,7 +81,8 @@ new WebColorsARGB[216][11] = {
 
 public OnFilterScriptInit()
 {
-	for(new j = 0; j < 216; j++) format(webcolors, sizeof(webcolors), "%s%s00000000\n", webcolors, WebColorsRGB[j]);
+	for(new j = 0; j < 216; j++)
+		strcat(webcolors, sprintf("%s@@@\n", WebColorsRGB[j]));
 
 	#if defined WC_OnFilterScriptInit
 		WC_OnFilterScriptInit();

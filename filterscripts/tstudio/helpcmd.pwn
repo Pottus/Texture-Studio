@@ -219,7 +219,7 @@ YCMD:thelp(playerid, arg[], help)
 	new cmdtypes[256];
 	for(new i; i < sizeof(CommandTypes); i++)
 		strcat(cmdtypes, sprintf("%s\n", CommandTypes[i]));
-	print(cmdtypes);
+
 	inline SelectCommandType(spid, sdialogid, sresponse, slistitem, string:stext[])
 	{
 		#pragma unused slistitem, sdialogid, spid, stext

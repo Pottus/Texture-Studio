@@ -220,7 +220,8 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 				}
 			}
 
-			if(Keys & KEY_CTRL_BACK)
+			if(Keys & KEY_CTRL_BACK || (InFlyMode(playerid) && (Keys & KEY_SECONDARY_ATTACK)))
+			//if(Keys & KEY_CTRL_BACK)
 			{
 				CopyCopyBuffer(playerid, index);
 
@@ -1457,7 +1458,7 @@ UpdateObject3DText(index, bool:newobject=false)
 
 	if(!newobject) DestroyDynamic3DTextLabel(ObjectData[index][oTextID]);
 
-    if(!TextOption[tShowText])
+    if(!TextOption[tShowText] && !TextOption[tAlwaysShowNew] && newobject)
         return 1;
     
 	// 3D Text Label (To identify objects)
@@ -3415,7 +3416,7 @@ YCMD:csel(playerid, arg[], help)
 	{
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, "Select an object using cursor.");
-		SendClientMessage(playerid, STEALTH_GREEN, "Holding 'H' while clicking an object will copy properites to buffer.");
+		SendClientMessage(playerid, STEALTH_GREEN, "Holding 'H' ('Enter' in /flymode) while clicking an object will copy properites to buffer.");
 		SendClientMessage(playerid, STEALTH_GREEN, "Holding 'Walk Key' while clicking an object will paste properties from buffer.");
 		return 1;
 	}
@@ -5130,12 +5131,13 @@ YCMD:edittext3d(playerid, arg[], help)
             }
 	
             // Show it again
-            format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group ID: %s\n{FFFF00}Grouped Text: %s\n",
+            format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group ID: %s\n{FFFF00}Grouped Text: %s\n{FFFF00}Always Show New Objects: %s\n",
                 (TextOption[tShowText] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
                 (TextOption[tShowNote] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
                 (TextOption[tShowModel] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
                 (TextOption[tShowGroup] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
-                (TextOption[tShowGrouped] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
+                (TextOption[tShowGrouped] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+                (TextOption[tAlwaysShowNew] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
             );
             
             Dialog_ShowCallback(playerid, using inline SelectOption, DIALOG_STYLE_LIST, "Texture Studio - 3D Text Editor", optline, "Ok", "Cancel");
@@ -5143,12 +5145,13 @@ YCMD:edittext3d(playerid, arg[], help)
 	}
 	
     // Show the dialog
-    format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group ID: %s\n{FFFF00}Grouped Text: %s\n",
+    format(optline, sizeof(optline), "{FFFF00}Text: %s\n{FFFF00}Object Note: %s\n{FFFF00}Model Info: %s\n{FFFF00}Group ID: %s\n{FFFF00}Grouped Text: %s\n{FFFF00}Always Show New Objects: %s\n",
         (TextOption[tShowText] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
         (TextOption[tShowNote] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
         (TextOption[tShowModel] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
         (TextOption[tShowGroup] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
-        (TextOption[tShowGrouped] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
+        (TextOption[tShowGrouped] ? ("{00AA00}Enabled") : ("{FF3000}Disabled")),
+                (TextOption[tAlwaysShowNew] ? ("{00AA00}Enabled") : ("{FF3000}Disabled"))
     );
 
 	Dialog_ShowCallback(playerid, using inline SelectOption, DIALOG_STYLE_LIST, "Texture Studio - 3D Text Editor", optline, "Ok", "Cancel");

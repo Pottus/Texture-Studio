@@ -23,7 +23,7 @@ OnPlayerKeyStateChangeCMD(playerid,newkeys,oldkeys)
 
 public OnPlayerCommandText(playerid, cmdtext[]) 
 {
-	print(cmdtext);
+	//print(cmdtext);
 
 	// Make every slot, start from slot 2, take the data from the slot before
 	for(new i = MAX_COMMAND_BUFFER - 1; i > 0; --i) {

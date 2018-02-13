@@ -173,7 +173,7 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
             }
             else
             {
-                SendClientMessage(playerid, STEALTH_YELLOW, "Hold the 'H' key and click a object to select it");
+                SendClientMessage(playerid, STEALTH_YELLOW, "Hold the 'H' ('Enter' in /flymode) key and click a object to select it");
                 SendClientMessage(playerid, STEALTH_YELLOW, "Hold the 'Walk' key and click a object to deselect it");
 
             }
