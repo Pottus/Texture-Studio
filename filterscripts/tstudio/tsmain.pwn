@@ -3416,8 +3416,8 @@ YCMD:csel(playerid, arg[], help)
 	{
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, "Select an object using cursor.");
-		SendClientMessage(playerid, STEALTH_GREEN, "Holding 'H' ('Enter' in /flymode) while clicking an object will copy properites to buffer.");
-		SendClientMessage(playerid, STEALTH_GREEN, "Holding 'Walk Key' while clicking an object will paste properties from buffer.");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Holding 'H' ('Enter' in /flymode) while clicking an object will copy properties to buffer.");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Holding 'Walk Key' while clicking an object will paste properties from buffer.");
 		return 1;
 	}
 

@@ -839,6 +839,8 @@ YCMD:gsel(playerid, arg[], help)
 	{
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, "Select/deselect objects using the cursor.");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Hold the 'H' ('Enter' in /flymode) key and click a object to select it");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Hold the 'Walk' key and click a object to deselect it");
 		return 1;
 	}
 
