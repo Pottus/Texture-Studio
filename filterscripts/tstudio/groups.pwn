@@ -230,9 +230,9 @@ OnPlayerEditDOGroup(playerid, objectid, response, Float:x, Float:y, Float:z, Flo
 				SaveUndoInfo(i, UNDO_TYPE_EDIT, time);
 
 				new Float:offx, Float:offy, Float:offz;
-				offx = (ObjectData[i][oX] + (x - gCenterX)) - PivotOffset[playerid][xPos];
-				offy = (ObjectData[i][oY] + (y - gCenterY)) - PivotOffset[playerid][yPos];
-				offz = (ObjectData[i][oZ] + (z - gCenterZ)) - PivotOffset[playerid][zPos];
+				offx = (ObjectData[i][oX] + (LastGroupPosition[playerid][xPos] - gCenterX)) - PivotOffset[playerid][xPos];
+				offy = (ObjectData[i][oY] + (LastGroupPosition[playerid][yPos] - gCenterY)) - PivotOffset[playerid][yPos];
+				offz = (ObjectData[i][oZ] + (LastGroupPosition[playerid][zPos] - gCenterZ)) - PivotOffset[playerid][zPos];
 
                 AttachObjectToPoint_GroupEdit(i, offx, offy, offz, x, y, z, rx, ry, rz, ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ], ObjectData[i][oRX], ObjectData[i][oRY], ObjectData[i][oRZ]);
 				SetDynamicObjectPos(ObjectData[i][oID], ObjectData[i][oX], ObjectData[i][oY], ObjectData[i][oZ]);
