@@ -627,6 +627,9 @@ new Iterator:Restriction[51]<MAX_PLAYERS>, bool:gRestricted[51] = {false, ...};
 // Main system
 #include "tstudio\tsmain.pwn"
 
+// Help Command
+#include "tstudio\helpcmd.pwn"
+
 // SA-MP Introspect by Slice and Y_Less, automatically included with debug mode.
 #if debug > 1
 	#define AMX_NAME "tstudio.amx"

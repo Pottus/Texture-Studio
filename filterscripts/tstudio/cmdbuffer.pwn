@@ -1,7 +1,6 @@
 #define MAX_COMMAND_BUFFER          (20)
 
-new CommandBuffer[MAX_PLAYERS][MAX_COMMAND_BUFFER][128],
-    bool:CommandBuffed[MAX_PLAYERS][MAX_COMMAND_BUFFER];
+new CommandBuffer[MAX_PLAYERS][MAX_COMMAND_BUFFER][128];
 
 #define PRESSED(%0) \
 	(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))

@@ -345,6 +345,12 @@ YCMD:mtextures(playerid, arg[], help)
 	{
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, "Open 3D texture viewer.");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Controls on-foot:");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Y - Last Texture, H - Next Texture");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Num 4 - Last Page, Num 6 - Next Page");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Controls in flymode:");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Enter + Num 4 - Last Texture, Enter + Num 6 - Next Texture");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Num 4 - Last Page, Num 6 - Next Page");
 		return 1;
 	}
 
@@ -368,7 +374,8 @@ YCMD:mtextures(playerid, arg[], help)
 		UpdateTextureInfo(playerid, SelectedBox[playerid]);
 
    		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-		SendClientMessage(playerid, STEALTH_GREEN, "Texture selection tool cpened - All Textures");
+		SendClientMessage(playerid, STEALTH_GREEN, "Texture selection tool opened - All Textures");
+		SendClientMessage(playerid, STEALTH_GREEN, "View /thelp for texture selection controls");
 
 	}
 	
@@ -414,6 +421,12 @@ YCMD:ttextures(playerid, arg[], help)
 	{
 		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, "View a saved set of textures in the 3D texture viewer.");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Controls on-foot:");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Y - Last Texture, H - Next Texture");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Num 4 - Last Page, Num 6 - Next Page");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Controls in flymode:");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Enter + Num 4 - Last Texture, Enter + Num 6 - Next Texture");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Num 4 - Last Page, Num 6 - Next Page");
 		return 1;
 	}
 
@@ -434,6 +447,7 @@ YCMD:ttextures(playerid, arg[], help)
 
    		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
 		SendClientMessage(playerid, STEALTH_GREEN, "Texture selection tool opened - Theme Textures");
+		SendClientMessage(playerid, STEALTH_GREEN, "View /thelp for texture selection controls");
 	}
    	else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
 	{

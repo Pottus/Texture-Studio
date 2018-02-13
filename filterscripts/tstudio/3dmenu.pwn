@@ -208,7 +208,7 @@ OnPlayerKeyStateChange3DMenu(playerid,newkeys,oldkeys)
 		if(OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)) return 1;
 
 
-	    if(newkeys == KEY_CTRL_BACK || (IsFlyMode(playerid) && (newkeys & KEY_ANALOG_LEFT && (newkeys & 16 || oldkeys & 16) )))
+	    if(newkeys == KEY_CTRL_BACK || (IsFlyMode(playerid) && (newkeys & KEY_ANALOG_LEFT && (newkeys & KEY_SECONDARY_ATTACK || oldkeys & KEY_SECONDARY_ATTACK) )))
 	    {
 			new model,txd[32],texture[32], color;
 			GetDynamicObjectMaterial(MenuInfo[MenuID][Objects][SelectedBox[playerid]],0,model, txd, texture, color);
@@ -228,7 +228,7 @@ OnPlayerKeyStateChange3DMenu(playerid,newkeys,oldkeys)
 
 			return 1;
 		}
-		if(newkeys == KEY_YES || (IsFlyMode(playerid) && (newkeys & KEY_ANALOG_RIGHT && (newkeys & 16 || oldkeys & 16) )))
+		if(newkeys == KEY_YES || (IsFlyMode(playerid) && (newkeys & KEY_ANALOG_RIGHT && (newkeys & KEY_SECONDARY_ATTACK || oldkeys & KEY_SECONDARY_ATTACK) )))
 	    {
 			new model,txd[32],texture[32], color;
 			GetDynamicObjectMaterial(MenuInfo[MenuID][Objects][SelectedBox[playerid]],0,model, txd, texture, color);
