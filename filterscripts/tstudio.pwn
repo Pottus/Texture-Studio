@@ -199,7 +199,7 @@ Change Log:
 -  Minor: 0.X0 (# 1-10)
 -  Patch: 0.0X (Letter a-z, not A-Z)
 */
-#define TS_VERSION (0x00010900)
+#define TS_VERSION (0x0001090c)
 
 #define FILTERSCRIPT
 

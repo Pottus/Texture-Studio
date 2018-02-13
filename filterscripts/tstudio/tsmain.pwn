@@ -648,6 +648,14 @@ sqlite_UpdateDB()
 		}
     }
 	
+	/* example: Less than 1.9b
+	if(major <= 1 && minor <= 9 && patch <= 'b'))
+	{
+		print("worked");
+		sqlite_CreateRangeRemoved();
+		sqlite_InitSettings();
+    }*/
+	
 	
     /*new dbver = db_query_int(EditMap, "SELECT Version FROM Settings");
     if(dbver != TS_VERSION)

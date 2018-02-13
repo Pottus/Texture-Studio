@@ -148,6 +148,7 @@ new Commands[][COMMAND_INFO] = {
     {6, 0, "gtashow"},
     {6, 0, "gtahide"},
     {6, 0, "remobject"},
+    {6, 0, "rremobject"},
     {6, 0, "swapbuilding"},
     {6, 0, "clonebuilding"},
     

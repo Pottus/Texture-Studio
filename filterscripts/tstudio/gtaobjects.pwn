@@ -183,9 +183,11 @@ YCMD:remobject(playerid, arg[], help)
 	}
 
     MapOpenCheck();
+	
+	new index;
+	if(sscanf(arg, "i", index)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must provide an index to delete!");
 
-	if(isnull(arg)) return SendClientMessage(playerid, STEALTH_YELLOW, "You must provide an index to delete!");
-	new line[128], index = strval(arg);
+	new line[128];
 
 	if(index < 0 || index >= SEARCH_DATA_SIZE)
 	{
@@ -210,6 +212,74 @@ YCMD:remobject(playerid, arg[], help)
 		sprintf("Index: %i\nName: %s\nModelID: %i", index, name, db_get_field_int(AO_RESULT, 1)));
 
 	SendClientMessage(playerid, STEALTH_YELLOW, "Object has been removed!");
+	
+	return 1;
+}
+
+YCMD:rremobject(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Destroy all San Andreas buildings of specified model in specific range from your location. (CAUTION: Permanent!)");
+		return 1;
+	}
+
+    MapOpenCheck();
+	
+	new model, Float:range;
+	if(sscanf(arg, "if", model, range))
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /rremobject <Model> <Range>");
+		return 1;
+	}
+
+	if(model < 0 || model >= 19999)
+	{
+	    SendClientMessage(playerid, STEALTH_YELLOW, "Model must be between 0 and 19999");
+		return 1;
+	}
+	
+	new index, name[32], count, Float:x, Float:y, Float:z;
+	if(IsFlyMode(playerid))
+		GetFlyModePos(playerid, x, y, z);
+	else
+		GetPlayerPos(playerid, x, y, z);
+	
+	db_begin_transaction(AO_DB);
+	AO_RESULT = db_query(AO_DB, sprintf("SELECT * FROM `buildings` WHERE `Model` = %i", model));
+	do
+	{
+		index = db_get_field_int(AO_RESULT, 0);
+		
+		if(GTAObjectDeleted[index] == true) continue;
+
+		new Float:dbx = db_get_field_float(AO_RESULT, 4), Float:dby = db_get_field_float(AO_RESULT, 5), Float:dbz = db_get_field_float(AO_RESULT, 6);
+		new Float:dist = VectorSize(dbx - x, dby - y, dbz - z);
+		
+		if(dist < range)
+		{
+			GTAObjectDeleted[index] = true;
+			
+			db_get_field(AO_RESULT, 3, name, sizeof name[]);
+			
+			
+			AddRemoveBuilding(db_get_field_int(AO_RESULT, 1), dbx, dby, dbz, 0.25, true);
+			if(db_get_field_int(AO_RESULT, 2) != INVALID_OBJECT_ID)
+				AddRemoveBuilding(db_get_field_int(AO_RESULT, 2), dbx, dby, dbz, 0.25, true);
+
+			UpdateDynamic3DTextLabelText(GTAObjectText[index],
+				(GTAObjectDeleted[index] ? (GTAObjectSwapped[index] ? 0x5A34FFFF : 0xF51414FF) : 0xFF69B4FF),
+				sprintf("Index: %i\nName: %s\nModelID: %i", index, name, db_get_field_int(AO_RESULT, 1)));
+			
+			count++;
+		}
+	}
+	while(db_next_row(AO_RESULT));
+	db_end_transaction(AO_DB);
+
+	SendClientMessage(playerid, STEALTH_YELLOW, sprintf("%i objects have been removed!", count));
 	
 	return 1;
 }

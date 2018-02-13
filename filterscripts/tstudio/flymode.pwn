@@ -299,9 +299,22 @@ tsfunc MoveCamera(playerid)
 
 tsfunc SetFlyModePos(playerid, Float:x, Float:y, Float:z)
 {
-    SetPlayerObjectPos(playerid, noclipdata[playerid][flyobject], x, y, z);
-	noclipdata[playerid][lastmove] = GetTickCount();
-	return 1;
+	if(FlyMode[playerid])
+	{
+		SetPlayerObjectPos(playerid, noclipdata[playerid][flyobject], x, y, z);
+		noclipdata[playerid][lastmove] = GetTickCount();
+		return 1;
+	}
+	return 0;
+}
+tsfunc GetFlyModePos(playerid, &Float:x, &Float:y, &Float:z)
+{
+	if(FlyMode[playerid])
+	{
+		GetPlayerObjectPos(playerid, noclipdata[playerid][flyobject], x, y, z);
+		return 1;
+	}
+	return 0;
 }
 
 
