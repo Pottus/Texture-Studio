@@ -167,6 +167,7 @@ new Commands[][COMMAND_INFO] = {
     {7, 0, "avexport"},
     {7, 0, "avexportall"},
     
+    {7, 8, "avclone"},
     {7, 8, "avattach"},
     {7, 8, "avdetach"},
     {7, 8, "avox"},
