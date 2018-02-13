@@ -219,7 +219,6 @@ Change Log:
 	#define DB_QUERY_ERRORS true
 #endif
 
-
 // Includes
 #include <a_samp>
 

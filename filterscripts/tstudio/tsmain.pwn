@@ -14,6 +14,11 @@ public OnFilterScriptInit()
 	sqlite_LoadBindString();
 	
 	ResetSettings();
+	
+	#if defined AddSimpleModel
+	Streamer_SetMaxItems(STREAMER_TYPE_OBJECT, 1500);
+	#endif
+	
 	return 1;
 }
 
