@@ -2029,7 +2029,7 @@ static ExportAllCars(playerid, name[])
 
 			// Attach object to vehicle
 			format(templine, sizeof(templine), "    AttachDynamicObjectToVehicle(tmpobjid, carvid_%i, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f);\r\n",
-				CurrCar, CarData[i][COX], CarData[i][COY][j], CarData[i][COZ][j], CarData[i][CORX][j], CarData[i][CORY][j], CarData[i][CORZ][j]
+				CurrCar, CarData[i][COX][j], CarData[i][COY][j], CarData[i][COZ][j], CarData[i][CORX][j], CarData[i][CORY][j], CarData[i][CORZ][j]
 			);
 
 			fwrite(f,templine);
