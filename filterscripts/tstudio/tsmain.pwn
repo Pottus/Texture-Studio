@@ -10,13 +10,14 @@ public OnFilterScriptInit()
 
 	SystemDB = db_open_persistent("tstudio/system.db");
 	ThemeDataDB = db_open_persistent("tstudio/themedata.db");
+    
 	sqlite_ThemeSetup();
 	sqlite_LoadBindString();
 	
 	ResetSettings();
 	
 	#if defined AddSimpleModel
-	Streamer_SetMaxItems(STREAMER_TYPE_OBJECT, 1500);
+	Streamer_SetVisibleItems(STREAMER_TYPE_OBJECT, 1500);
 	#endif
 	
 	return 1;
