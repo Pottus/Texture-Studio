@@ -16,7 +16,7 @@ public OnFilterScriptInit()
 	
 	ResetSettings();
 	
-	#if defined AddSimpleModel
+	#if defined AddSimpleModel // DL-SUPPORT
 	Streamer_SetVisibleItems(STREAMER_TYPE_OBJECT, 1500);
 	#endif
 	
@@ -44,7 +44,8 @@ public OnFilterScriptExit()
     sqlite_UpdateSettings();
 
 	// Always close map
-	db_free_persistent(EditMap);
+	if(MapOpen)
+        db_free_persistent(EditMap);
 	db_free_persistent(SystemDB);
 	db_free_persistent(ThemeDataDB);
 
@@ -5239,6 +5240,8 @@ YCMD:setspawn(playerid, arg[], help)
 		SendClientMessage(playerid, STEALTH_GREEN, "Set this map's spawn position to your current position.");
 		return 1;
 	}
+    
+    MapOpenCheck();
     
     GetPlayerPos(playerid, MapSetting[mSpawn][xPos], MapSetting[mSpawn][yPos], MapSetting[mSpawn][zPos]);
     sqlite_UpdateSettings();

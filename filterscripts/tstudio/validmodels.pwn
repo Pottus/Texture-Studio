@@ -2381,8 +2381,7 @@ stock IsUnListedValidModel(modelid)
 		return 1;
 	}
 	
-	//0.3.8 support
-	if(-30000 < modelid <= -2000)
+	if(-30000 < modelid <= -1000) // DL-SUPPORT
 	{
 		return 1;
 	}
