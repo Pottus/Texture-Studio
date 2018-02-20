@@ -634,4 +634,6 @@ new Iterator:Restriction[51]<MAX_PLAYERS>, bool:gRestricted[51] = {false, ...};
 #if debug > 1
 	#define AMX_NAME "tstudio.amx"
 	#include <interpreter>
+	
+	#include "tstudio\debugging.pwn"
 #endif

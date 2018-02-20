@@ -36,9 +36,21 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	// Insert the command and it's parameters into the buffer
 	//CommandBuffer[playerid][0][0] = EOS;
 	format(CommandBuffer[playerid][0], 128, "%s", cmdtext);
-	
-	return 0;
-}  
+
+	#if defined CB_OnPlayerCommandText
+		CB_OnPlayerCommandText(playerid, cmdtext);
+	#endif
+	return 1;
+}
+#if defined _ALS_OnPlayerCommandText
+	#undef OnPlayerCommandText
+#else
+	#define _ALS_OnPlayerCommandText
+#endif
+#define OnPlayerCommandText CB_OnPlayerCommandText
+#if defined CB_OnPlayerCommandText
+	forward CB_OnPlayerCommandText(playerid, cmdtext[]);
+#endif
 
 public OnPlayerConnect(playerid)
 {

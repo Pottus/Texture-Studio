@@ -34,7 +34,7 @@ public OnPlayerConnect(playerid)
 
 public OnGameModeInit()
 {
-	SetGameModeText("TS 1.9c");
+	SetGameModeText("TS 1.9d");
 	UsePlayerPedAnims();
 
 	AddPlayerClass(265,1322.1832,1564.2081,10.8203,300.1425,0,0,0,0,-1,-1);
