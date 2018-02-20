@@ -2455,6 +2455,7 @@ ImportMap(playerid)
 	new item[40], itype;
 	new line[1024];
 	new fcount;
+	new templast;
 	new tmp[16];
 	new tmpobject[OBJECTINFO];
 	new tmpremove[REMOVEINFO];
@@ -2490,37 +2491,56 @@ ImportMap(playerid)
 				// Read lines and import data
 				while(fread(f,templine,sizeof(templine),false))
 				{
-					// Is the line a valid create object line?
-
 					strtrim(templine);
+				
 					new type;
-			  		if(strfind(templine, "CreateObject", true) != -1) type = 1;
-			        if(strfind(templine, "CreateDynamicObject", true) != -1) type = 2;
-			        if(strfind(templine, "RemoveBuildingForPlayer", true) != -1) type = 3;
-					if(type == 0) continue;
-					if(type == 1) strmid(templine, templine, 13, sizeof(templine), sizeof(templine));
-					if(type == 2) strmid(templine, templine, 20, sizeof(templine), sizeof(templine));
-					if(type == 3) strmid(templine, templine, 24, sizeof(templine), sizeof(templine));
+			  		if(strfind(templine, "CreateObject(", true) != -1) type = 1;
+			        else if(strfind(templine, "CreateDynamicObject(", true) != -1) type = 2;
+			        else if(strfind(templine, "RemoveBuildingForPlayer(", true) != -1) type = 3;
+			        else if(strfind(templine, "SetObjectMaterial(", true) != -1) type = 4;
+			        else if(strfind(templine, "SetDynamicObjectMaterial(", true) != -1) type = 5;
+					else continue;
 
-					strmid(templine, templine, 0, strfind(templine, ");", true), sizeof(templine));
+					strmid(templine, templine, strfind(templine, "(") + 1, strfind(templine, ");"), sizeof(templine));
 
 					if(type == 1 || type == 2)
 					{
-						sscanf(templine, "p<,>iffffff", tmpobject[oModel], tmpobject[oX], tmpobject[oY], tmpobject[oZ],
-						    tmpobject[oRX], tmpobject[oRY], tmpobject[oRZ]);
-
+						if(sscanf(templine, "p<,>iffffff", tmpobject[oModel], tmpobject[oX], tmpobject[oY], tmpobject[oZ], tmpobject[oRX], tmpobject[oRY], tmpobject[oRZ]))
+							continue;
+						
 						// Create the new object
-				        AddDynamicObject(tmpobject[oModel], tmpobject[oX], tmpobject[oY], tmpobject[oZ], tmpobject[oRX], tmpobject[oRY], tmpobject[oRZ]);
+				        templast = AddDynamicObject(tmpobject[oModel], tmpobject[oX], tmpobject[oY], tmpobject[oZ], tmpobject[oRX], tmpobject[oRY], tmpobject[oRZ]);
 	                    icount++;
 					}
 					else if(type == 3)
 					{
-						sscanf(templine, "p<,>s[16]iffff", tmp, tmpremove[rModel], tmpremove[rX], tmpremove[rY], tmpremove[rZ], tmpremove[rRange]);
+						if(sscanf(templine, "p<,>s[16]iffff", tmp, tmpremove[rModel], tmpremove[rX], tmpremove[rY], tmpremove[rZ], tmpremove[rRange]))
+							continue;
 
 						// Delete building
 						AddRemoveBuilding(tmpremove[rModel], tmpremove[rX], tmpremove[rY], tmpremove[rZ], tmpremove[rRange], true);
 
 					    rcount++;
+					}
+					else if(type == 4 || type == 5)
+					{
+						strreplace(templine, "\"", "");//"
+						
+						new tempindex, tempmodel, temptxd[32], temptexture[32], tempcolor;
+						if(sscanf(templine, "p<,>s[16]iis[32]s[32]h", tmp, tempindex, tempmodel, temptxd, temptexture, tempcolor))
+							continue;
+						
+						ObjectData[templast][oColorIndex][tempindex] = tempcolor;
+						for(new i = 0; i < sizeof(ObjectTextures); i++)
+						{
+							if(!strcmp(ObjectTextures[i][TextureName], temptexture))
+							{
+								ObjectData[templast][oTexIndex][tempindex] = i;
+								break;
+							}
+						}
+                        
+                        UpdateMaterial(templast);
 					}
 				}
 
