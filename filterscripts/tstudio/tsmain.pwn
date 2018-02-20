@@ -2455,7 +2455,7 @@ ImportMap(playerid)
 	new item[40], itype;
 	new line[1024];
 	new fcount;
-	new templast;
+	new templast, templastid[32];
 	new tmp[16];
 	new tmpobject[OBJECTINFO];
 	new tmpremove[REMOVEINFO];
@@ -2500,7 +2500,13 @@ ImportMap(playerid)
 			        else if(strfind(templine, "SetObjectMaterial(", true) != -1) type = 4;
 			        else if(strfind(templine, "SetDynamicObjectMaterial(", true) != -1) type = 5;
 					else continue;
-
+					
+					new assignment = strfind(templine, "="); 
+					if(assignment != -1) {
+						strmid(templastid, templine, 0, assignment);
+						strtrim(templastid);
+					}
+					
 					strmid(templine, templine, strfind(templine, "(") + 1, strfind(templine, ");"), sizeof(templine));
 
 					if(type == 1 || type == 2)
@@ -2528,6 +2534,9 @@ ImportMap(playerid)
 						
 						new tempindex, tempmodel, temptxd[32], temptexture[32], tempcolor;
 						if(sscanf(templine, "p<,>s[16]iis[32]s[32]h", tmp, tempindex, tempmodel, temptxd, temptexture, tempcolor))
+							continue;
+						
+						if(strcmp(tmp, templastid)) // Stuff before '=' doesn't equal stuff in first param
 							continue;
 						
 						ObjectData[templast][oColorIndex][tempindex] = tempcolor;
