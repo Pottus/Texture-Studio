@@ -2495,10 +2495,12 @@ ImportMap(playerid)
 				
 					new type;
 			  		if(strfind(templine, "CreateObject(", true) != -1) type = 1;
-			        else if(strfind(templine, "CreateDynamicObject(", true) != -1) type = 2;
-			        else if(strfind(templine, "RemoveBuildingForPlayer(", true) != -1) type = 3;
-			        else if(strfind(templine, "SetObjectMaterial(", true) != -1) type = 4;
-			        else if(strfind(templine, "SetDynamicObjectMaterial(", true) != -1) type = 5;
+			        else if(strfind(templine, "CreateDynamicObject(", true) != -1) type = 1;
+			        else if(strfind(templine, "RemoveBuildingForPlayer(", true) != -1) type = 2;
+			        else if(strfind(templine, "SetObjectMaterial(", true) != -1) type = 3;
+			        else if(strfind(templine, "SetDynamicObjectMaterial(", true) != -1) type = 3;
+			        else if(strfind(templine, "SetObjectMaterialText(", true) != -1) type = 4;
+			        else if(strfind(templine, "SetDynamicObjectMaterialText(", true) != -1) type = 4;
 					else continue;
 					
 					new assignment = strfind(templine, "="); 
@@ -2509,7 +2511,7 @@ ImportMap(playerid)
 					
 					strmid(templine, templine, strfind(templine, "(") + 1, strfind(templine, ");"), sizeof(templine));
 
-					if(type == 1 || type == 2)
+					if(type == 1)
 					{
 						if(sscanf(templine, "p<,>iffffff", tmpobject[oModel], tmpobject[oX], tmpobject[oY], tmpobject[oZ], tmpobject[oRX], tmpobject[oRY], tmpobject[oRZ]))
 							continue;
@@ -2518,7 +2520,7 @@ ImportMap(playerid)
 				        templast = AddDynamicObject(tmpobject[oModel], tmpobject[oX], tmpobject[oY], tmpobject[oZ], tmpobject[oRX], tmpobject[oRY], tmpobject[oRZ]);
 	                    icount++;
 					}
-					else if(type == 3)
+					else if(type == 2)
 					{
 						if(sscanf(templine, "p<,>s[16]iffff", tmp, tmpremove[rModel], tmpremove[rX], tmpremove[rY], tmpremove[rZ], tmpremove[rRange]))
 							continue;
@@ -2528,7 +2530,7 @@ ImportMap(playerid)
 
 					    rcount++;
 					}
-					else if(type == 4 || type == 5)
+					else if(type == 3)
 					{
 						strreplace(templine, "\"", "");//"
 						
@@ -2550,6 +2552,13 @@ ImportMap(playerid)
 						}
                         
                         UpdateMaterial(templast);
+					}
+					else if(type == 4)
+					{
+						//SetObjectMaterialText(tmp, text[], index, mat_size, fontface[], fontsize, bold, color, backcolor, alignment)
+                        
+                        // start by extracting text[], removing it from the parameters
+                        // then sscanf all other params separate
 					}
                     
                     UpdateObject3DText(templast, true);
