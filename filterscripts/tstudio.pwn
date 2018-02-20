@@ -26,7 +26,7 @@ DDDDDDDDDDID~DDDDDDDD.O.,D8..$..?...     DD8Z...8.Z:,?...7I.
    | |/ _ \ \/ / __| | | | '__/ _ \  \___ \| __| | | |/ _` | |/ _ \
    | |  __/>  <| |_| |_| | | |  __/  ____) | |_| |_| | (_| | | (_) |
    |_|\___/_/\_\\__|\__,_|_|  \___| |_____/ \__|\__,_|\__,_|_|\___/
-	Texture Studio v1.9c by [uL]Pottus and Crayder
+	Texture Studio v1.9d by [uL]Pottus and Crayder
 
 You may modify and re-release this this script if you please just rememeber the
 mule who built it!
@@ -199,7 +199,7 @@ Change Log:
 -  Minor: 0.X0 (# 1-10)
 -  Patch: 0.0X (Letter a-z, not A-Z)
 */
-#define TS_VERSION (0x0001090c)
+#define TS_VERSION (0x00010904)
 
 #define FILTERSCRIPT
 
