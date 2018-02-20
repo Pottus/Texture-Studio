@@ -40,12 +40,12 @@ public OnFilterScriptExit()
  		ClearCopyBuffer(i);
 	}
     
-    // Update the map settings
-    sqlite_UpdateSettings();
-
 	// Always close map
 	if(MapOpen)
-        db_free_persistent(EditMap);
+    {
+		db_free_persistent(EditMap);
+		sqlite_UpdateSettings();
+	}
 	db_free_persistent(SystemDB);
 	db_free_persistent(ThemeDataDB);
 
@@ -1878,13 +1878,23 @@ CloneObject(index, grouptask=0)
 // Deletes all map objects
 DeleteMapObjects(bool:sqlsave)
 {
-	db_begin_transaction(EditMap);
-	foreach(new i : Objects)
+	if(sqlsave)
 	{
-        i = DeleteDynamicObject(i, sqlsave);
+		db_begin_transaction(EditMap);
+		foreach(new i : Objects)
+		{
+			i = DeleteDynamicObject(i, true);
+		}
+		db_end_transaction(EditMap);
 	}
-	db_end_transaction(EditMap);
-
+	else
+	{
+		foreach(new i : Objects)
+		{
+			i = DeleteDynamicObject(i, false);
+		}
+	}
+	
 	// Reset any player variables
 	foreach(new i : Player)
 	{
@@ -2047,9 +2057,6 @@ YCMD:loadmap(playerid, arg[], help)
                 // Reset settings
                 ResetSettings();
 
-				// Load map
-				LoadMap(playerid);
-
 				// Clean up vehicles
 				ClearVehicles();
 
@@ -2058,6 +2065,9 @@ YCMD:loadmap(playerid, arg[], help)
 				{
 					ClearCopyBuffer(i);
 				}
+
+				// Load map
+				LoadMap(playerid);
 			}
 		}
 		Dialog_ShowCallback(playerid, using inline Confirm, DIALOG_STYLE_MSGBOX, "Texture Studio", "You have a map open are you sure you want to load another map?\n(Note: Your map is already saved)", "Ok", "Cancel");
