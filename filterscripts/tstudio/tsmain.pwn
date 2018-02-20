@@ -2551,6 +2551,8 @@ ImportMap(playerid)
                         
                         UpdateMaterial(templast);
 					}
+                    
+                    UpdateObject3DText(templast, true);
 				}
 
 				format(templine, sizeof(templine), "%i objects were imported, %i removed buildings were imported", icount, rcount);
