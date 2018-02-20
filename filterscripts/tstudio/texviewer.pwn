@@ -419,7 +419,7 @@ YCMD:mtextures(playerid, arg[], help)
 		// Update textures
 		for(new i = 0; i < 16; i++)
 		{
-		    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0, 0xFF999999);
+		    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0xFFFFFFFF, 0xFF999999);
 		}
 
 		// Update the info texdraw
@@ -439,7 +439,7 @@ YCMD:mtextures(playerid, arg[], help)
 		{
 			for(new i = 0; i < 16; i++)
 			{
-			    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0, 0xFF999999);
+			    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0xFFFFFFFF, 0xFF999999);
 			}
 
 			UpdateTextureInfo(playerid, SelectedBox[playerid]);
@@ -452,7 +452,7 @@ YCMD:mtextures(playerid, arg[], help)
 	{
 		for(new i = 0; i < 16; i++)
 		{
-		    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0, 0xFF999999);
+		    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0xFFFFFFFF, 0xFF999999);
 		}
 
 		Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_ALLTEXTURES;
@@ -540,7 +540,7 @@ static UpdateThemeTextures(playerid)
 				ObjectTextures[DEFAULT_TEXTURE][TModel],
 				ObjectTextures[DEFAULT_TEXTURE][TXDName],
 			   	ObjectTextures[DEFAULT_TEXTURE][TextureName],
-			   	0, 0xFF999999);
+			   	0xFFFFFFFF, 0xFF999999);
 
 		}
 		else
@@ -549,7 +549,7 @@ static UpdateThemeTextures(playerid)
 				ObjectTextures[PlayerThemeIndex[playerid][i+Menu3DData[playerid][CurrThemeIndex]]][TModel],
 				ObjectTextures[PlayerThemeIndex[playerid][i+Menu3DData[playerid][CurrThemeIndex]]][TXDName],
 				ObjectTextures[PlayerThemeIndex[playerid][i+Menu3DData[playerid][CurrThemeIndex]]][TextureName],
-			   	0, 0xFF999999);
+			   	0xFFFFFFFF, 0xFF999999);
 		}
 	}
 }
@@ -580,7 +580,7 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)
 			for(new i = 0; i < 16; i++)
 			{
 			   if(i+Menu3DData[playerid][CurrTextureIndex] >= sizeof(ObjectTextures) - 1) continue;
-		       SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0, 0xFF999999);
+		       SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0xFFFFFFFF, 0xFF999999);
 			}
 		}
 		else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
@@ -614,7 +614,7 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)
 			for(new i = 0; i < 16; i++)
 			{
 			   if(i+Menu3DData[playerid][CurrTextureIndex] >= sizeof(ObjectTextures) - 1) continue;
-		       SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0, 0xFF999999);
+		       SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0xFFFFFFFF, 0xFF999999);
 			}
 		}
 		else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
