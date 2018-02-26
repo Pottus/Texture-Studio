@@ -11,27 +11,29 @@
 #define         PREVIEW_STATE_NONE              0
 #define         PREVIEW_STATE_ALLTEXTURES       1
 #define         PREVIEW_STATE_THEME             2
+#define         PREVIEW_STATE_SEARCH            3
 
 // Default player texture when slot is empty
-#define         DEFAULT_TEXTURE                 1000
-
-#define         MAX_THEME_TEXTURES              1000
-
+#define         DEFAULT_TEXTURE                 6375
 
 // enum for menu data
 enum MENU3DINFO
 {
     TPreviewState,
-	CurrTextureIndex,
+	CurrTexturePage,
     Menus3D,
-    CurrThemeIndex,
+    CurrThemePage,
+    CurrSearchPage,
     PlayerText:Menu3D_Model_Info,
 }
 
 // Menu Data
 new Menu3DData[MAX_PLAYERS][MENU3DINFO];
 
-static PlayerThemeIndex[MAX_PLAYERS][1000];
+static PlayerThemeIndex[MAX_PLAYERS][sizeof(ObjectTextures)];
+static PlayerThemeCount[MAX_PLAYERS];
+static PlayerSearchIndex[MAX_PLAYERS][sizeof(ObjectTextures)];
+static PlayerSearchResults[MAX_PLAYERS];
 
 
 static Text:Click_SetTexture[16];
@@ -73,8 +75,8 @@ sqlite_ThemeSetup()
 	
 	foreach(new i : Player)
 	{
+        PlayerThemeCount[i] = 0;
 	    LoadPlayerTheme(i, "default_theme");
-	
 	}
 	
 	return 1;
@@ -221,6 +223,7 @@ public OnPlayerConnect(playerid)
 {
 	InitText3DDraw(playerid);
 	InitPlayerTextureInfo(playerid);
+	PlayerThemeCount[playerid] = 0;
 	LoadPlayerTheme(playerid, "default_theme");
 	// Create texture editor
 
@@ -407,19 +410,23 @@ YCMD:mtextures(playerid, arg[], help)
 	}
 
 	new index = strval(arg);
-	if(index < 1 || index > sizeof(ObjectTextures) - 1) Menu3DData[playerid][CurrTextureIndex] = 1;
-	else Menu3DData[playerid][CurrTextureIndex] = index;
-
+	if(index < 1 || index > sizeof(ObjectTextures) - 1) Menu3DData[playerid][CurrTexturePage] = 0;
+	else
+	{
+		Menu3DData[playerid][CurrTexturePage] = (index - 1) / 16;
+		Select3DMenuBox(playerid, Menu3DData[playerid][Menus3D], (index - 1) % 16);
+	}
+	
 	// No menu created yet
 	if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_NONE)
 	{
 	    CreateTexViewer(playerid);
         Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_ALLTEXTURES;
-        
+		
 		// Update textures
 		for(new i = 0; i < 16; i++)
 		{
-		    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0xFFFFFFFF, 0xFF999999);
+		    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TextureName], 0xFFFFFFFF, 0xFF999999);
 		}
 
 		// Update the info texdraw
@@ -439,7 +446,7 @@ YCMD:mtextures(playerid, arg[], help)
 		{
 			for(new i = 0; i < 16; i++)
 			{
-			    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0xFFFFFFFF, 0xFF999999);
+			    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TextureName], 0xFFFFFFFF, 0xFF999999);
 			}
 
 			UpdateTextureInfo(playerid, SelectedBox[playerid]);
@@ -448,11 +455,14 @@ YCMD:mtextures(playerid, arg[], help)
 			SendClientMessage(playerid, STEALTH_GREEN, "Texture selection slot changed - All Textures");
 		}
 	}
-	else if(Menu3DData[playerid][TPreviewState] ==  PREVIEW_STATE_THEME)
+	else if(Menu3DData[playerid][TPreviewState] !=  PREVIEW_STATE_ALLTEXTURES)
 	{
+        Menu3DData[playerid][CurrTexturePage] = 0;
+		SelectedBox[playerid] = 0;
+		
 		for(new i = 0; i < 16; i++)
 		{
-		    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0xFFFFFFFF, 0xFF999999);
+		    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TextureName], 0xFFFFFFFF, 0xFF999999);
 		}
 
 		Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_ALLTEXTURES;
@@ -483,8 +493,12 @@ YCMD:ttextures(playerid, arg[], help)
 	}
 
 	new index = strval(arg);
-	if(index < 1 || index > MAX_THEME_TEXTURES - 1) Menu3DData[playerid][CurrThemeIndex] = 1;
-	else Menu3DData[playerid][CurrThemeIndex] = index;
+	if(!strlen(arg) || index <= 15 || index >= PlayerThemeCount[playerid]) Menu3DData[playerid][CurrThemePage] = 0;
+	else
+	{
+		Menu3DData[playerid][CurrThemePage] = (index - 1) / 16;
+		Select3DMenuBox(playerid, Menu3DData[playerid][Menus3D], (index - 1) % 16);
+	}
 
 	// No menu created yet
 	if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_NONE)
@@ -513,9 +527,12 @@ YCMD:ttextures(playerid, arg[], help)
 			SendClientMessage(playerid, STEALTH_GREEN, "Texture selection slot changed - All Textures");
 		}
 	}
-	else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
+	else if(Menu3DData[playerid][TPreviewState] != PREVIEW_STATE_THEME)
 	{
-        Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_THEME;
+		Menu3DData[playerid][CurrTexturePage] = 0;
+		SelectedBox[playerid] = 0;
+        
+		Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_THEME;
 
         UpdateThemeTextures(playerid);
    		UpdateTextureInfo(playerid, SelectedBox[playerid]);
@@ -527,28 +544,127 @@ YCMD:ttextures(playerid, arg[], help)
 	return 1;
 }
 
+YCMD:mtsearch(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Same as /tsearch, but in the 3D texture viewer.");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Controls on-foot:");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Y - Last Texture, H - Next Texture");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Num 4 - Last Page, Num 6 - Next Page");
+		SendClientMessage(playerid, STEALTH_YELLOW, "Controls in flymode:");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Enter + Num 4 - Last Texture, Enter + Num 6 - Next Texture");
+		SendClientMessage(playerid, STEALTH_GREEN, "    Num 4 - Last Page, Num 6 - Next Page");
+		return 1;
+	}
+
+	if(isnull(arg)) DestroyTexViewer(playerid);
+
+	PlayerSearchResults[playerid] = 0;
+	for(new i = 0; i < sizeof(ObjectTextures); i++)
+	{
+	    if(strfind(ObjectTextures[i][TextureName], arg, true) > -1)
+ 	    {
+			PlayerSearchIndex[playerid][PlayerSearchResults[playerid]] = i;
+			PlayerSearchResults[playerid]++;
+	    }
+		else PlayerSearchIndex[playerid][i] = -1;
+	}
+	
+	if(PlayerSearchResults[playerid])
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, sprintf("Found %i textures", PlayerSearchResults[playerid]));
+		
+		if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_NONE)
+		{
+			CreateTexViewer(playerid);
+			Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_SEARCH;
+
+			UpdateSearchTextures(playerid);
+			UpdateTextureInfo(playerid, SelectedBox[playerid]);
+
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			SendClientMessage(playerid, STEALTH_GREEN, "Texture selection tool opened - Theme Textures");
+			SendClientMessage(playerid, STEALTH_GREEN, "View /thelp for texture selection controls");
+		}
+		else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_SEARCH)
+		{
+			UpdateSearchTextures(playerid);
+			UpdateTextureInfo(playerid, SelectedBox[playerid]);
+
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			SendClientMessage(playerid, STEALTH_GREEN, "Texture selection slot changed - All Textures");
+		}
+		else if(Menu3DData[playerid][TPreviewState] != PREVIEW_STATE_SEARCH)
+		{
+			Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_SEARCH;
+        
+			Menu3DData[playerid][CurrTexturePage] = 0;
+			SelectedBox[playerid] = 0;
+
+			UpdateSearchTextures(playerid);
+			UpdateTextureInfo(playerid, SelectedBox[playerid]);
+
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			SendClientMessage(playerid, STEALTH_GREEN, "Switched to viewing search /mtsearch results");
+		}
+	}
+	else 
+	{
+		DestroyTexViewer(playerid);
+		
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "No textures found with that string");
+	}
+	return 1;
+}
+
 
 static UpdateThemeTextures(playerid)
 {
 	for(new i = 0; i < 16; i++)
 	{
-	   	if(PlayerThemeIndex[playerid][Menu3DData[playerid][CurrThemeIndex]+i] >= sizeof(ObjectTextures) - 1) continue;
-
-		if(PlayerThemeIndex[playerid][Menu3DData[playerid][CurrThemeIndex]+i] == 0)
+		if(PlayerThemeIndex[playerid][i + 16 * Menu3DData[playerid][CurrThemePage]] == -1)
+		//if(PlayerThemeIndex[playerid][i + 16 * Menu3DData[playerid][CurrThemePage]] >= PlayerThemeCount[playerid])
 		{
 	    	SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,
 				ObjectTextures[DEFAULT_TEXTURE][TModel],
 				ObjectTextures[DEFAULT_TEXTURE][TXDName],
 			   	ObjectTextures[DEFAULT_TEXTURE][TextureName],
-			   	0xFFFFFFFF, 0xFF999999);
-
+			   	0x80FF0000, 0x80990000);
 		}
 		else
 		{
 	    	SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,
-				ObjectTextures[PlayerThemeIndex[playerid][i+Menu3DData[playerid][CurrThemeIndex]]][TModel],
-				ObjectTextures[PlayerThemeIndex[playerid][i+Menu3DData[playerid][CurrThemeIndex]]][TXDName],
-				ObjectTextures[PlayerThemeIndex[playerid][i+Menu3DData[playerid][CurrThemeIndex]]][TextureName],
+				ObjectTextures[PlayerThemeIndex[playerid][i + 16 * Menu3DData[playerid][CurrThemePage]]][TModel],
+				ObjectTextures[PlayerThemeIndex[playerid][i + 16 * Menu3DData[playerid][CurrThemePage]]][TXDName],
+				ObjectTextures[PlayerThemeIndex[playerid][i + 16 * Menu3DData[playerid][CurrThemePage]]][TextureName],
+			   	0xFFFFFFFF, 0xFF999999);
+		}
+	}
+}
+
+static UpdateSearchTextures(playerid)
+{
+	for(new i = 0; i < 16; i++)
+	{
+	   	if(PlayerSearchIndex[playerid][i + 16 * Menu3DData[playerid][CurrSearchPage]] == -1)
+	   	//if(PlayerThemeIndex[playerid][i + 16 * Menu3DData[playerid][CurrSearchPage]] >= PlayerSearchResults[playerid])
+		{
+	    	SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,
+				ObjectTextures[DEFAULT_TEXTURE][TModel],
+				ObjectTextures[DEFAULT_TEXTURE][TXDName],
+			   	ObjectTextures[DEFAULT_TEXTURE][TextureName],
+			   	0x80FF0000, 0x80990000);
+		}
+		else
+		{
+	    	SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,
+				ObjectTextures[PlayerSearchIndex[playerid][i + 16 * Menu3DData[playerid][CurrSearchPage]]][TModel],
+				ObjectTextures[PlayerSearchIndex[playerid][i + 16 * Menu3DData[playerid][CurrSearchPage]]][TXDName],
+				ObjectTextures[PlayerSearchIndex[playerid][i + 16 * Menu3DData[playerid][CurrSearchPage]]][TextureName],
 			   	0xFFFFFFFF, 0xFF999999);
 		}
 	}
@@ -569,28 +685,62 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)
 	{
 		if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
 		{
-			// Next 16 entries
-			Menu3DData[playerid][CurrTextureIndex] += 16;
+			Menu3DData[playerid][CurrTexturePage]++;
 
-			// Too high of entries set default
-			if(Menu3DData[playerid][CurrTextureIndex] >= sizeof(ObjectTextures) - 1) Menu3DData[playerid][CurrTextureIndex] = 1;
-			else if(sizeof(ObjectTextures) - 1 - Menu3DData[playerid][CurrTextureIndex] - 16 < 0) Menu3DData[playerid][CurrTextureIndex] = sizeof(ObjectTextures) - 16 - 1;
+            if(Menu3DData[playerid][CurrTexturePage] > (sizeof(ObjectTextures) / 16))
+				Menu3DData[playerid][CurrTexturePage] = 0;
+			else if((sizeof(ObjectTextures) / 16) - (Menu3DData[playerid][CurrTexturePage] - 1) < 0)
+				Menu3DData[playerid][CurrTexturePage] = (sizeof(ObjectTextures) / 16);
 
-			// Update the textures
 			for(new i = 0; i < 16; i++)
 			{
-			   if(i+Menu3DData[playerid][CurrTextureIndex] >= sizeof(ObjectTextures) - 1) continue;
-		       SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0xFFFFFFFF, 0xFF999999);
-			}
+                if(Menu3DData[playerid][CurrTexturePage] * 16 + i + 1 >= sizeof(ObjectTextures))
+                {
+                    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,
+                        ObjectTextures[DEFAULT_TEXTURE][TModel],
+                        ObjectTextures[DEFAULT_TEXTURE][TXDName],
+                        ObjectTextures[DEFAULT_TEXTURE][TextureName],
+                        0x80FF0000, 0x80990000);
+                }
+                else
+                {
+                    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,
+                        ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TModel],
+                        ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TXDName],
+                        ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TextureName],
+                        0xFFFFFFFF, 0xFF999999);
+                }
+            }
 		}
 		else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
 		{
-			Menu3DData[playerid][CurrThemeIndex] += 16;
+			if(PlayerThemeCount[playerid] <= 16) Menu3DData[playerid][CurrThemePage] = 0;
+			else
+			{
+				Menu3DData[playerid][CurrThemePage]++;
 
-		    if(Menu3DData[playerid][CurrThemeIndex] >= MAX_THEME_TEXTURES - 1) Menu3DData[playerid][CurrThemeIndex] = 1;
-		    else if(MAX_THEME_TEXTURES - 1 - Menu3DData[playerid][CurrThemeIndex] - 16 < 0) Menu3DData[playerid][CurrThemeIndex] = MAX_THEME_TEXTURES - 16 - 1;
+				if(Menu3DData[playerid][CurrThemePage] > (PlayerThemeCount[playerid] / 16))
+					Menu3DData[playerid][CurrThemePage] = 0;
+				else if((PlayerThemeCount[playerid] / 16) - (Menu3DData[playerid][CurrThemePage] - 1) < 0)
+					Menu3DData[playerid][CurrThemePage] = (PlayerThemeCount[playerid] / 16);
+				
+				UpdateThemeTextures(playerid);
+			}
+		}
+		else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_SEARCH)
+		{
+			if(PlayerSearchResults[playerid] <= 16) Menu3DData[playerid][CurrSearchPage] = 0;
+			else
+			{
+				Menu3DData[playerid][CurrSearchPage]++;
 
-            UpdateThemeTextures(playerid);
+				if(Menu3DData[playerid][CurrSearchPage] > (PlayerSearchResults[playerid] / 16))
+					Menu3DData[playerid][CurrSearchPage] = 0;
+				else if((PlayerSearchResults[playerid] / 16) - (Menu3DData[playerid][CurrSearchPage] - 1) < 0)
+					Menu3DData[playerid][CurrSearchPage] = (PlayerSearchResults[playerid] / 16);
+				
+				UpdateSearchTextures(playerid);
+			}
 		}
 		// Update the info
 		UpdateTextureInfo(playerid, SelectedBox[playerid]);
@@ -604,27 +754,68 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)
 		if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
 		{
 	        // Last 16 entries
-			Menu3DData[playerid][CurrTextureIndex] -= 16;
+			Menu3DData[playerid][CurrTexturePage]--;
 
 			// Too high of entries set default
-			if(Menu3DData[playerid][CurrTextureIndex] < 1) Menu3DData[playerid][CurrTextureIndex] = sizeof(ObjectTextures) - 16 - 1;
-
-            // Update the textures
-			if(Menu3DData[playerid][CurrTextureIndex] >= sizeof(ObjectTextures) - 1) Menu3DData[playerid][CurrTextureIndex] = sizeof(ObjectTextures) - 1;
+			if(Menu3DData[playerid][CurrTexturePage] < 0)
+				Menu3DData[playerid][CurrTexturePage] = (sizeof(ObjectTextures) / 16);
+			else if(Menu3DData[playerid][CurrTexturePage] >= (sizeof(ObjectTextures) / 16))
+				Menu3DData[playerid][CurrTexturePage] = 0;
+            
 			for(new i = 0; i < 16; i++)
 			{
-			   if(i+Menu3DData[playerid][CurrTextureIndex] >= sizeof(ObjectTextures) - 1) continue;
-		       SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TModel],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TXDName],ObjectTextures[i+Menu3DData[playerid][CurrTextureIndex]][TextureName], 0xFFFFFFFF, 0xFF999999);
-			}
+                if(Menu3DData[playerid][CurrTexturePage] * 16 + i + 1 >= sizeof(ObjectTextures))
+                {
+                    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,
+                        ObjectTextures[DEFAULT_TEXTURE][TModel],
+                        ObjectTextures[DEFAULT_TEXTURE][TXDName],
+                        ObjectTextures[DEFAULT_TEXTURE][TextureName],
+                        0x80FF0000, 0x80990000);
+                }
+                else
+                {
+                    SetBoxMaterial(Menu3DData[playerid][Menus3D],i,0,
+                        ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TModel],
+                        ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TXDName],
+                        ObjectTextures[i+Menu3DData[playerid][CurrTexturePage] * 16 + 1][TextureName],
+                        0xFFFFFFFF, 0xFF999999);
+                }
+            }
 		}
 		else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
 		{
-	        Menu3DData[playerid][CurrThemeIndex] -= 16;
+			if(PlayerThemeCount[playerid] <= 16) Menu3DData[playerid][CurrThemePage] = 0;
+			else
+			{
+				Menu3DData[playerid][CurrThemePage]--;
 
-		    if(Menu3DData[playerid][CurrThemeIndex] < 1) Menu3DData[playerid][CurrThemeIndex] = MAX_THEME_TEXTURES - 16 - 1;
-      		if(Menu3DData[playerid][CurrThemeIndex] >= MAX_THEME_TEXTURES - 1) Menu3DData[playerid][CurrThemeIndex] = MAX_THEME_TEXTURES - 1;
+				if(Menu3DData[playerid][CurrThemePage] < 0)
+					Menu3DData[playerid][CurrThemePage] = (PlayerThemeCount[playerid] / 16);
+				else if(Menu3DData[playerid][CurrThemePage] >= (PlayerThemeCount[playerid] / 16))
+					Menu3DData[playerid][CurrThemePage] = 0;
+					
+				//Menu3DData[playerid][CurrThemePage] -= 16;
+                //
+				//if(Menu3DData[playerid][CurrThemePage] < 1) Menu3DData[playerid][CurrThemePage] = PlayerThemeCount[playerid] - 16 - 1;
+				//if(Menu3DData[playerid][CurrThemePage] >= PlayerThemeCount[playerid] - 1) Menu3DData[playerid][CurrThemePage] = PlayerThemeCount[playerid] - 1;
 
-			UpdateThemeTextures(playerid);
+				UpdateThemeTextures(playerid);
+			}
+		}
+		else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_SEARCH)
+		{
+			if(PlayerSearchResults[playerid] <= 16) Menu3DData[playerid][CurrSearchPage] = 0;
+			else
+			{
+				Menu3DData[playerid][CurrSearchPage]--;
+
+				if(Menu3DData[playerid][CurrSearchPage] < 0)
+					Menu3DData[playerid][CurrSearchPage] = (PlayerSearchResults[playerid] / 16);
+				else if(Menu3DData[playerid][CurrSearchPage] >= (PlayerSearchResults[playerid] / 16))
+					Menu3DData[playerid][CurrSearchPage] = 0;
+
+				UpdateSearchTextures(playerid);
+			}
 		}
 			
 		// Update the info
@@ -637,9 +828,9 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)
 	else if(newkeys & KEY_SPRINT && (FlyMode[playerid] || newkeys & KEY_HANDBRAKE))
 	{
 		// Add to your theme
-	    if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
+	    if(Menu3DData[playerid][TPreviewState] != PREVIEW_STATE_THEME)
 	    {
-			new addt = AddTextureToTheme(playerid, Menu3DData[playerid][CurrTextureIndex]+SelectedBox[playerid]);
+			new addt = AddTextureToTheme(playerid, 1 + 16 * Menu3DData[playerid][CurrTexturePage] + SelectedBox[playerid]);
 			if(addt >= 0)
 			{
 		   		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
@@ -666,12 +857,12 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)
 	    {
 			if(TextureAll[playerid])
 			{
-				format(line, sizeof(line), "/mtsetall %i %i", CurrTexturingIndex[playerid], Menu3DData[playerid][CurrTextureIndex]+SelectedBox[playerid]);
+				format(line, sizeof(line), "/mtsetall %i %i", CurrTexturingIndex[playerid], 1 + 16 * Menu3DData[playerid][CurrTexturePage] + SelectedBox[playerid]);
 				BroadcastCommand(playerid, line);
 			}
 			else
 			{
-				format(line, sizeof(line), "/mtset %i %i", CurrTexturingIndex[playerid], Menu3DData[playerid][CurrTextureIndex]+SelectedBox[playerid]);
+				format(line, sizeof(line), "/mtset %i %i", CurrTexturingIndex[playerid], 1 + 16 * Menu3DData[playerid][CurrTexturePage] + SelectedBox[playerid]);
 				BroadcastCommand(playerid, line);
 			}
 			return 1;
@@ -680,12 +871,26 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys)
         {
 			if(TextureAll[playerid])
 			{
-				format(line, sizeof(line), "/mtsetall %i %i", CurrTexturingIndex[playerid], PlayerThemeIndex[playerid][Menu3DData[playerid][CurrThemeIndex]+SelectedBox[playerid]]);
+				format(line, sizeof(line), "/mtsetall %i %i", CurrTexturingIndex[playerid], 16 * Menu3DData[playerid][CurrThemePage] + SelectedBox[playerid]);
 				BroadcastCommand(playerid, line);
 			}
 			else
 			{
-				format(line, sizeof(line), "/mtset %i %i", CurrTexturingIndex[playerid], PlayerThemeIndex[playerid][Menu3DData[playerid][CurrThemeIndex]+SelectedBox[playerid]]);
+				format(line, sizeof(line), "/mtset %i %i", CurrTexturingIndex[playerid], 16 * Menu3DData[playerid][CurrThemePage] + SelectedBox[playerid]);
+				BroadcastCommand(playerid, line);
+			}
+			return 1;
+        }
+        else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_SEARCH)
+        {
+			if(TextureAll[playerid])
+			{
+				format(line, sizeof(line), "/mtsetall %i %i", CurrTexturingIndex[playerid], 16 * Menu3DData[playerid][CurrSearchPage] + SelectedBox[playerid]);
+				BroadcastCommand(playerid, line);
+			}
+			else
+			{
+				format(line, sizeof(line), "/mtset %i %i", CurrTexturingIndex[playerid], 16 * Menu3DData[playerid][CurrSearchPage] + SelectedBox[playerid]);
 				BroadcastCommand(playerid, line);
 			}
 			return 1;
@@ -713,12 +918,14 @@ OnPlayerKeyStateChangeTex(playerid,newkeys,oldkeys)
 
 static AddTextureToTheme(playerid, index)
 {
-	for(new i = 1; i < MAX_THEME_TEXTURES; i++) { if(index == PlayerThemeIndex[playerid][i]) return -1; }
-    for(new i = 1; i < MAX_THEME_TEXTURES; i++)
+    for(new i = 1; i < sizeof(ObjectTextures); i++)
 	{
-		if(PlayerThemeIndex[playerid][i] == 0)
+		if(index == PlayerThemeIndex[playerid][i])
+			return -1;
+		else if(PlayerThemeIndex[playerid][i] == -1)
 		{
 			PlayerThemeIndex[playerid][i] = index;
+			PlayerThemeCount[playerid]++;
 			return i;
 		}
 	}
@@ -736,30 +943,70 @@ public OnPlayerChange3DMenuBox(playerid,MenuID,boxid)
 static UpdateTextureInfo(playerid, boxid)
 {
 	// Standard texture viewer
+	new line[128];
 	if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_ALLTEXTURES)
 	{
-		new line[128];
-		format(line, sizeof(line), "~n~~n~Model: %i TXD: %s Texture: %s~n~~r~Index: %i/%i", ObjectTextures[boxid+Menu3DData[playerid][CurrTextureIndex]][TModel],
-					ObjectTextures[boxid+Menu3DData[playerid][CurrTextureIndex]][TXDName],
-					ObjectTextures[boxid+Menu3DData[playerid][CurrTextureIndex]][TextureName],
-					Menu3DData[playerid][CurrTextureIndex]+boxid, sizeof(ObjectTextures) - 1);
-
-		PlayerTextDrawSetString(playerid, Menu3DData[playerid][Menu3D_Model_Info], line);
+		if((boxid + 16 * Menu3DData[playerid][CurrTexturePage] + 1) < sizeof(ObjectTextures))
+		{
+			format(line, sizeof(line), "~n~~n~Model: %i TXD: %s Texture: %s~n~~r~Index: %i/%i", ObjectTextures[boxid + 16 * Menu3DData[playerid][CurrTexturePage]][TModel],
+				ObjectTextures[boxid + 16 * Menu3DData[playerid][CurrTexturePage]][TXDName],
+				ObjectTextures[boxid + 16 * Menu3DData[playerid][CurrTexturePage]][TextureName],
+				Menu3DData[playerid][CurrTexturePage] * 16 + boxid + 1, sizeof(ObjectTextures) - 1);
+		}
+		else
+		{
+			format(line, sizeof(line), "~n~~n~Model: %i TXD: %s Texture: %s~n~~r~Index: %i/%i", ObjectTextures[0][TModel],
+				ObjectTextures[0][TXDName],
+				ObjectTextures[0][TextureName],
+				Menu3DData[playerid][CurrTexturePage] * 16 + boxid + 1, sizeof(ObjectTextures) - 1);
+		}
 	}
 	else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_THEME)
 	{
-		new line[128];
-		
-		format(line, sizeof(line), "~n~~n~Model: %i TXD: %s Texture: %s~n~~r~Index: %i/%i~n~Theme Index: %i/%i",
-			ObjectTextures[PlayerThemeIndex[playerid][boxid+Menu3DData[playerid][CurrThemeIndex]]][TModel],
-			ObjectTextures[PlayerThemeIndex[playerid][boxid+Menu3DData[playerid][CurrThemeIndex]]][TXDName],
-			ObjectTextures[PlayerThemeIndex[playerid][boxid+Menu3DData[playerid][CurrThemeIndex]]][TextureName],
-			PlayerThemeIndex[playerid][boxid+Menu3DData[playerid][CurrThemeIndex]], sizeof(ObjectTextures) - 1,
-			boxid+Menu3DData[playerid][CurrThemeIndex], MAX_THEME_TEXTURES - 1);
-
-		PlayerTextDrawSetString(playerid, Menu3DData[playerid][Menu3D_Model_Info], line);
+		if(PlayerThemeIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrThemePage]] != -1)
+		//if((boxid + 16 * Menu3DData[playerid][CurrThemePage]) < sizeof(ObjectTextures))
+		{
+			format(line, sizeof(line), "~n~~n~Model: %i TXD: %s Texture: %s~n~~r~Index: %i/%i~n~Theme Index: %i/%i",
+				ObjectTextures[PlayerThemeIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrThemePage]]][TModel],
+				ObjectTextures[PlayerThemeIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrThemePage]]][TXDName],
+				ObjectTextures[PlayerThemeIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrThemePage]]][TextureName],
+				PlayerThemeIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrThemePage]], sizeof(ObjectTextures) - 1,
+				boxid + 16 * Menu3DData[playerid][CurrThemePage] + 1, PlayerThemeCount[playerid]);
+		}
+		else
+		{
+			format(line, sizeof(line), "~n~~n~Model: %i TXD: %s Texture: %s~n~~r~Index: %i/%i~n~Theme Index: %i/%i",
+				ObjectTextures[0][TModel],
+				ObjectTextures[0][TXDName],
+				ObjectTextures[0][TextureName],
+				PlayerThemeIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrThemePage]], sizeof(ObjectTextures) - 1,
+				boxid + 16 * Menu3DData[playerid][CurrThemePage] + 1, PlayerThemeCount[playerid]);
+		}
 	}
-
+	else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_SEARCH)
+	{
+		if(PlayerSearchIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrSearchPage]] != -1)
+		//if((boxid + 16 * Menu3DData[playerid][CurrSearchPage]) < sizeof(ObjectTextures))
+		{
+			format(line, sizeof(line), "~n~~n~Model: %i TXD: %s Texture: %s~n~~r~Index: %i/%i~n~Search Index: %i/%i",
+				ObjectTextures[PlayerSearchIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrSearchPage]]][TModel],
+				ObjectTextures[PlayerSearchIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrSearchPage]]][TXDName],
+				ObjectTextures[PlayerSearchIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrSearchPage]]][TextureName],
+				PlayerSearchIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrSearchPage]], sizeof(ObjectTextures) - 1,
+				boxid + 16 * Menu3DData[playerid][CurrSearchPage] + 1, PlayerSearchResults[playerid]);
+		}
+		else
+		{
+			format(line, sizeof(line), "~n~~n~Model: %i TXD: %s Texture: %s~n~~r~Index: %i/%i~n~Search Index: %i/%i",
+				ObjectTextures[0][TModel],
+				ObjectTextures[0][TXDName],
+				ObjectTextures[0][TextureName],
+				PlayerSearchIndex[playerid][boxid + 16 * Menu3DData[playerid][CurrSearchPage]], sizeof(ObjectTextures) - 1,
+				boxid + 16 * Menu3DData[playerid][CurrSearchPage] + 1, PlayerSearchResults[playerid]);
+		}
+	}
+	PlayerTextDrawSetString(playerid, Menu3DData[playerid][Menu3D_Model_Info], line);
+	
 	return 1;
 }
 
@@ -822,9 +1069,9 @@ YCMD:savetheme(playerid, arg[], help)
 	new DBResult:r;
 
 	// Any theme to save?
-	for(new i = 0; i < MAX_THEME_TEXTURES; i++)
+	for(new i = 0; i < sizeof(ObjectTextures); i++)
 	{
-		if(PlayerThemeIndex[playerid][i] != 0)
+		if(PlayerThemeIndex[playerid][i] != -1)
 		{
 			count++;
 			break;
@@ -1017,13 +1264,14 @@ static SavePlayerTheme(playerid, name[], bool:deletedb=false)
 	else format(q, sizeof(q), "CREATE TABLE IF NOT EXISTS `%s` (TIndex INTEGER)", name);
 	db_free_result(db_query(ThemeDataDB, q));
 	
-	for(new i = 0; i < MAX_THEME_TEXTURES; i++)
+	for(new i = 0; i < sizeof(ObjectTextures); i++)
 	{
-		if(PlayerThemeIndex[playerid][i] != 0)
+		if(PlayerThemeIndex[playerid][i] != -1)
 		{
 		    format(q, sizeof(q), "INSERT INTO `%s` (`TIndex`) VALUES(%i)", name, PlayerThemeIndex[playerid][i]);
 		    db_free_result(db_query(ThemeDataDB, q));
 		}
+		else break;
 	}
 	
 	return 1;
@@ -1038,19 +1286,23 @@ static LoadPlayerTheme(playerid, name[], bool:cleararray=true)
 	
 	if(db_num_rows(r))
 	{
-		new currpos = 1;
-		if(cleararray) for(new i = 0; i < MAX_THEME_TEXTURES; i++) { PlayerThemeIndex[playerid][i] = 0; }
-
+		if(cleararray)
+		{
+			for(new i = 0; i < sizeof(ObjectTextures); i++) PlayerThemeIndex[playerid][i] = -1;
+			PlayerThemeCount[playerid] = 0;
+		}
+		
 	    for(new i = 0; i < db_num_rows(r); i++)
 	    {
-			for(new j = currpos; j < MAX_THEME_TEXTURES; j++)
+			for(new j, currpos; j < sizeof(ObjectTextures); j++)
 			{
-			    if(PlayerThemeIndex[playerid][j] == 0)
+			    if(PlayerThemeIndex[playerid][j] == -1)
 			    {
 					currpos = j;
 					new Field[8];
 					db_get_field_assoc(r, "TIndex", Field, 8);
 					PlayerThemeIndex[playerid][currpos] = strval(Field);
+					PlayerThemeCount[playerid]++;
 					break;
 			    }
 			}
