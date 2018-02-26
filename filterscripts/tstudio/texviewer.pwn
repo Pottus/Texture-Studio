@@ -458,7 +458,7 @@ YCMD:mtextures(playerid, arg[], help)
 	else if(Menu3DData[playerid][TPreviewState] !=  PREVIEW_STATE_ALLTEXTURES)
 	{
         Menu3DData[playerid][CurrTexturePage] = 0;
-		SelectedBox[playerid] = 0;
+		Select3DMenu(playerid, Menu3DData[playerid][Menus3D]);
 		
 		for(new i = 0; i < 16; i++)
 		{
@@ -529,8 +529,8 @@ YCMD:ttextures(playerid, arg[], help)
 	}
 	else if(Menu3DData[playerid][TPreviewState] != PREVIEW_STATE_THEME)
 	{
-		Menu3DData[playerid][CurrTexturePage] = 0;
-		SelectedBox[playerid] = 0;
+        Menu3DData[playerid][CurrTexturePage] = 0;
+		Select3DMenu(playerid, Menu3DData[playerid][Menus3D]);
         
 		Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_THEME;
 
@@ -586,23 +586,26 @@ YCMD:mtsearch(playerid, arg[], help)
 			UpdateTextureInfo(playerid, SelectedBox[playerid]);
 
 			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-			SendClientMessage(playerid, STEALTH_GREEN, "Texture selection tool opened - Theme Textures");
+			SendClientMessage(playerid, STEALTH_GREEN, "Texture selection tool opened - Search Results");
 			SendClientMessage(playerid, STEALTH_GREEN, "View /thelp for texture selection controls");
 		}
 		else if(Menu3DData[playerid][TPreviewState] == PREVIEW_STATE_SEARCH)
 		{
+			Menu3DData[playerid][CurrTexturePage] = 0;
+			Select3DMenu(playerid, Menu3DData[playerid][Menus3D]);
+			
 			UpdateSearchTextures(playerid);
 			UpdateTextureInfo(playerid, SelectedBox[playerid]);
 
 			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-			SendClientMessage(playerid, STEALTH_GREEN, "Texture selection slot changed - All Textures");
+			SendClientMessage(playerid, STEALTH_GREEN, "Texture search results updated - Search Results");
 		}
 		else if(Menu3DData[playerid][TPreviewState] != PREVIEW_STATE_SEARCH)
 		{
-			Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_SEARCH;
-        
 			Menu3DData[playerid][CurrTexturePage] = 0;
-			SelectedBox[playerid] = 0;
+			Select3DMenu(playerid, Menu3DData[playerid][Menus3D]);
+			
+			Menu3DData[playerid][TPreviewState] = PREVIEW_STATE_SEARCH;
 
 			UpdateSearchTextures(playerid);
 			UpdateTextureInfo(playerid, SelectedBox[playerid]);

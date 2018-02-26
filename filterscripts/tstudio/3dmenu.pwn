@@ -96,15 +96,10 @@ tsfunc Select3DMenu(playerid,MenuID)
 	if(MenuInfo[MenuID][Player] != playerid) return -1;
 	if(SelectedMenu[playerid] != -1) CancelSelect3DMenu(playerid);
 
-	SelectedBox[playerid] = 0;
 	SelectedMenu[playerid] = MenuID;
 
-	new model,txd[32],texture[32], color;
-	GetDynamicObjectMaterial(MenuInfo[MenuID][Objects][0],0,model, txd, texture, color);
- 	SetDynamicObjectMaterial(MenuInfo[MenuID][Objects][0],0, model, txd, texture, MenuInfo[MenuID][SelectColor][0]);
-
- 	MoveDynamicObject(MenuInfo[MenuID][Objects][0],MenuInfo[MenuID][OrigPosX][0]+MenuInfo[MenuID][AddingX],MenuInfo[MenuID][OrigPosY][0]+MenuInfo[MenuID][AddingY],MenuInfo[MenuID][OrigPosZ][0],1.0);
-
+	Select3DMenuBox(playerid, MenuID, 0);
+	
 	return 1;
 }
 
@@ -258,12 +253,15 @@ tsfunc CancelSelect3DMenu(playerid)
 	if(SelectedMenu[playerid] == -1) return -1;
 	new MenuID = SelectedMenu[playerid];
 
-	new model,txd[32],texture[32], color;
-	GetDynamicObjectMaterial(MenuInfo[MenuID][Objects][SelectedBox[playerid]],0,model, txd, texture, color);
- 	SetDynamicObjectMaterial(MenuInfo[MenuID][Objects][SelectedBox[playerid]],0, model, txd, texture, MenuInfo[MenuID][UnselectColor][SelectedBox[playerid]]);
+	if(SelectedBox[playerid] != -1)
+	{
+		new model,txd[32],texture[32], color;
+		GetDynamicObjectMaterial(MenuInfo[MenuID][Objects][SelectedBox[playerid]],0,model, txd, texture, color);
+		SetDynamicObjectMaterial(MenuInfo[MenuID][Objects][SelectedBox[playerid]],0, model, txd, texture, MenuInfo[MenuID][UnselectColor][SelectedBox[playerid]]);
 
-
-	MoveDynamicObject(MenuInfo[MenuID][Objects][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosX][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosY][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosZ][SelectedBox[playerid]],1.0);
+		MoveDynamicObject(MenuInfo[MenuID][Objects][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosX][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosY][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosZ][SelectedBox[playerid]],1.0);
+	}
+	
 	SelectedMenu[playerid] = -1;
 	SelectedBox[playerid] = -1;
 	return 1;
@@ -276,10 +274,14 @@ tsfunc Select3DMenuBox(playerid,MenuID,BoxID)
 	if(MenuInfo[MenuID][Player] != playerid) return -1;
 
 	new model,txd[32],texture[32], color;
-	GetDynamicObjectMaterial(MenuInfo[MenuID][Objects][SelectedBox[playerid]],0,model, txd, texture, color);
-	SetDynamicObjectMaterial(MenuInfo[MenuID][Objects][SelectedBox[playerid]],0, model, txd, texture, MenuInfo[MenuID][UnselectColor][SelectedBox[playerid]]);
+	if(SelectedBox[playerid] != -1)
+	{
+		GetDynamicObjectMaterial(MenuInfo[MenuID][Objects][SelectedBox[playerid]],0,model, txd, texture, color);
+		SetDynamicObjectMaterial(MenuInfo[MenuID][Objects][SelectedBox[playerid]],0, model, txd, texture, MenuInfo[MenuID][UnselectColor][SelectedBox[playerid]]);
+		
+		MoveDynamicObject(MenuInfo[MenuID][Objects][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosX][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosY][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosZ][SelectedBox[playerid]],1.0);
+	}
 
-	MoveDynamicObject(MenuInfo[MenuID][Objects][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosX][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosY][SelectedBox[playerid]],MenuInfo[MenuID][OrigPosZ][SelectedBox[playerid]],1.0);
 
 	SelectedBox[playerid] = BoxID;
 
