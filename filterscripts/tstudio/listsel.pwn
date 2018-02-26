@@ -632,7 +632,7 @@ YCMD:lsel(playerid, arg[], help)
         CurrListHighlight[playerid] = 0;
 	}
 
-	printf("Offset: %i, Highlight: %i", CurrListOffset[playerid], CurrListHighlight[playerid]);
+	//printf("Offset: %i, Highlight: %i", CurrListOffset[playerid], CurrListHighlight[playerid]);
 
 
     HideGUIInterface(playerid);
@@ -696,7 +696,7 @@ static UpdateObjectList(playerid, offset)
 		if(Iter_Contains(Objects, offset+i))
 		{
 			modelarray = GetModelArray(ObjectData[offset+i][oModel]);
-			if(modelarray > -1) format(line, sizeof(line), "%i) %s - Model: %i", offset+i, GetModelName(modelarray), ObjectData[offset+i][oModel]);
+			if(modelarray > -1) format(line, sizeof(line), "%i) %s - Model: %i", offset+i, GetModelName(ObjectData[offset+i][oModel]), ObjectData[offset+i][oModel]);
 			else format(line, sizeof(line), "%i) Unknown - Model: %i", offset+i, ObjectData[offset+i][oModel]);
             PlayerTextDrawSetString(playerid, ListObjects[playerid][i], line);
             
