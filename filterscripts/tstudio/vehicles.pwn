@@ -212,6 +212,26 @@ YCMD:avdeletecar(playerid, arg[], help)
 
 
 static VehicleList[4096];
+SSCANF:vehiclemodel(string[])
+{
+    if('0' <= string[0] <= '9')
+    {
+        new ret = strval(string);
+        if (400 <= ret <= 611)
+        {
+            return ret;
+        }
+    }
+	else for(new i; i < sizeof(VehicleNames); i++)
+	{
+		if(strfind(string, VehicleNames[i], true) != -1)
+		{
+			return i + 400;
+		}
+	}
+    
+    return -1;
+}
 
 public OnFilterScriptInit()
 {
@@ -380,23 +400,47 @@ YCMD:tcar(playerid, arg[], help)
 		SendClientMessage(playerid, STEALTH_GREEN, "Gives you a temporary vehicle.");
 		return 1;
 	}
-
-	inline SelectModel(pid, dialogid, response, listitem, string:text[])
+	
+	new model;
+	sscanf(arg, "K<vehiclemodel>(0)", model);
+	
+    if(model)
     {
-        #pragma unused listitem, dialogid, pid, text
-		if(response)
+		if(model != -1)
 		{
 			new Float:X, Float:Y, Float:Z, Float:R;
 			GetPlayerPos(playerid, X, Y, Z);
 			GetPlayerFacingAngle(playerid, R);
-			TempVehicle[playerid] = CreateVehicle(listitem+400, X, Y, Z, R, 0, 0, 1);
+			TempVehicle[playerid] = CreateVehicle(model, X + 5.0 * floatcos(R + 180.0, degrees), Y + 5.0 * floatsin(R + 180.0, degrees), Z, R, 0, 0, 1);
 			IsTempVehicle[TempVehicle[playerid]] = true;
 			PutPlayerInVehicle(playerid, TempVehicle[playerid], 0);
 			return 1;
 		}
-    }
-    Dialog_ShowCallback(playerid, using inline SelectModel, DIALOG_STYLE_LIST, "Texture Studio", VehicleList, "Ok", "Cancel");
-
+		else
+		{
+			SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+			SendClientMessage(playerid, STEALTH_YELLOW, "Invalid vehicle name/ID.");
+		}
+	}
+	else
+	{
+		inline SelectModel(pid, dialogid, response, listitem, string:text[])
+		{
+			#pragma unused listitem, dialogid, pid, text
+			if(response)
+			{
+				new Float:X, Float:Y, Float:Z, Float:R;
+				GetPlayerPos(playerid, X, Y, Z);
+				GetPlayerFacingAngle(playerid, R);
+				TempVehicle[playerid] = CreateVehicle(listitem+400, X, Y, Z, R, 0, 0, 1);
+				IsTempVehicle[TempVehicle[playerid]] = true;
+				PutPlayerInVehicle(playerid, TempVehicle[playerid], 0);
+				return 1;
+			}
+		}
+		Dialog_ShowCallback(playerid, using inline SelectModel, DIALOG_STYLE_LIST, "Texture Studio", VehicleList, "Ok", "Cancel");
+	}
+	
 	return 1;
 }
 
@@ -467,7 +511,7 @@ YCMD:avnewcar(playerid, arg[], help)
 	NoEditingMode(playerid);
 
 	new model;
-	sscanf(arg, "K<vehicle>(0)", model);
+	sscanf(arg, "K<vehiclemodel>(0)", model);
 	
     if(model)
     {
