@@ -1,0 +1,18 @@
+{
+	"user": "Crayder",
+	"repo": "Texture-Studio",
+	"entry": "filterscripts\\tstudio.pwn",
+	"output": "filterscripts\\tstudio.amx",
+	"builds": [
+		{
+			"name": "release",
+			"args": ["-;+", "-(+", "-Z+"],
+			"includes": [".\\pawno\\include\\"]
+		},
+		{
+			"name": "debug",
+			"args": ["-;+", "-(+", "-d3", "-Z+"],
+			"includes": [".\\pawno\\include\\"]
+		}
+	]
+}
