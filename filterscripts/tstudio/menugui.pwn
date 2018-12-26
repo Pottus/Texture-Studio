@@ -214,7 +214,7 @@ public OnFilterScriptInit()
 	new Float:inc = 0.0;
 	new line[128];
 
-	for(new i = 0; i < 8; i++)
+	for(new i = 0; i < sizeof(BindElementIDS); i++)
 	{
 		format(line, sizeof(line), "User Bind %i", i);
 		LoadGUIMenu(MainMenu,MenuButton,535.0, 270.0+inc, CLICK_BIND_1+i, E_INDEX);
@@ -1688,18 +1688,22 @@ YCMD:bindeditor(playerid, arg[], help)
 					        #pragma unused slistitem, sdialogid, spid, stext
 							if(sresponse)
 							{
-								if(strlen(stext) > 0 && strlen(stext) < 16)
+								new len = strlen(stext);
+								if(len > 0 && len < 16)
 								{
 									format(CommandBindText[clistitem], MAX_BIND_LENGTH, "%s", stext);
 
-									GUISetPlayerText(MainMenu, BindElementIDS[clistitem], CommandBindText[clistitem]);
+									if(clistitem <= sizeof(BindElementIDS))
+									{
+										GUISetPlayerText(MainMenu, BindElementIDS[clistitem], CommandBindText[clistitem]);
+									}
 									BindUsed[clistitem] = true;
 									sqlite_DeleteBindString(clistitem);
 									sqlite_InsertBindString(clistitem);
 								}
 								else
 								{
-									if(strlen(stext) < 1) SendClientMessage(playerid, STEALTH_YELLOW, "Bind name too short");
+									if(len < 1) SendClientMessage(playerid, STEALTH_YELLOW, "Bind name too short");
 									else SendClientMessage(playerid, STEALTH_YELLOW, "Bind name too long");
 								}
 								Dialog_ShowCallback(playerid, using inline ChooseEditOption, DIALOG_STYLE_LIST, "Texture Studio - Choose Edit Type", "Edit Bind Name\nEdit Bind Text\nDelete Bind", "Ok", "Cancel");
@@ -1759,9 +1763,12 @@ YCMD:bindeditor(playerid, arg[], help)
 
 								format(CommandBindText[clistitem], MAX_BIND_TEXT_LENGTH, "");
 
-								new TDText[16];
-								format(TDText, sizeof(TDText), "User Bind %0", clistitem);
-								GUISetPlayerText(MainMenu, BindElementIDS[clistitem], TDText);
+								if(clistitem <= sizeof(BindElementIDS))
+								{
+									new TDText[16];
+									format(TDText, sizeof(TDText), "User Bind %0", clistitem);
+									GUISetPlayerText(MainMenu, BindElementIDS[clistitem], TDText);
+								}
 
 								for(new i = 0; i < MAX_BINDS_PER_BIND; i++) { format (CommandBindData[clistitem][i], MAX_BIND_LENGTH, ""); }
 
@@ -1849,7 +1856,10 @@ sqlite_LoadBindString()
         {
             BindUsed[index] = true;
             format(CommandBindText[index], 16, "%s", tmpCommandBindText);
-			GUISetPlayerText(MainMenu, BindElementIDS[index], CommandBindText[index]);
+			if(index <= sizeof(BindElementIDS))
+			{
+				GUISetPlayerText(MainMenu, BindElementIDS[index], CommandBindText[index]);
+			}
 
 			for(new i = 0; i < MAX_BINDS_PER_BIND; i++) { CommandBindData[index][i] = tmpCommandBindData[i]; }
         }
