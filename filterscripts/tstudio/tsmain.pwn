@@ -2561,6 +2561,9 @@ ImportMap(playerid)
 							}
 						}
                         
+                        sqlite_SaveMaterialIndex(templast);
+                        sqlite_SaveColorIndex(templast);
+			
                         UpdateMaterial(templast);
 					}
 					else if(type == 4)
