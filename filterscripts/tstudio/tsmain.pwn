@@ -2499,6 +2499,7 @@ ImportMap(playerid)
 				f = fopen(tempmap,io_read);
 
 				// Read lines and import data
+				db_begin_transaction(EditMap);
 				while(fread(f,templine,sizeof(templine),false))
 				{
 					strtrim(templine);
@@ -2576,6 +2577,7 @@ ImportMap(playerid)
                     
                     UpdateObject3DText(templast, true);
 				}
+				db_end_transaction(EditMap);
 
 				format(templine, sizeof(templine), "%i objects were imported, %i removed buildings were imported", icount, rcount);
 				SendClientMessage(playerid, STEALTH_GREEN, templine);
