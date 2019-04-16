@@ -1,3 +1,3 @@
 # `Texture-Studio`
 
-## [New Thread](https://www.burgershot.gg/showthread.php?tid=174)
+[New thread](https://www.burgershot.gg/showthread.php?tid=174), since the previous thread was deleted by your king. 
