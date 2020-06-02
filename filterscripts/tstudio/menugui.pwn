@@ -1619,7 +1619,7 @@ YCMD:runbind(playerid, arg[], help)
 	// Broadcast commands from command binds
 	for(new i = 0; i < MAX_BINDS_PER_BIND; i++)
 	{
-		if(!isnull(CommandBindData[bind][i])) BroadcastCommand(playerid, CommandBindData[bind][i]);
+		if(!isnull(CommandBindData[bind][i])) BroadcastCommand(playerid, sprintf("%s", CommandBindData[bind][i]));
 	}
 
 	return 1;
@@ -1642,7 +1642,7 @@ YCMD:makebind(playerid, arg[], help)
 	
 	for(new x; x < range; x++) { 
 		//CommandBindData[index][x] = CommandBuffer[playerid][range - 1 - x];
-		format(CommandBindData[index][x], 128, "%s", CommandBuffer[playerid][range - 1 - x]);
+		format(CommandBindData[index][x], 128, "/%s", CommandBuffer[playerid][range - 1 - x]);
 		printf("%i: %s", x, CommandBindData[index][x]);
 	}
 	
