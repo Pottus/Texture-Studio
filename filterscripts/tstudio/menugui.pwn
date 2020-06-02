@@ -1619,7 +1619,7 @@ YCMD:runbind(playerid, arg[], help)
 	// Broadcast commands from command binds
 	for(new i = 0; i < MAX_BINDS_PER_BIND; i++)
 	{
-		if(!isnull(CommandBindData[bind][i])) BroadcastCommand(playerid, sprintf("%s", CommandBindData[bind][i]));
+		if(!isnull(CommandBindData[bind][i])) BroadcastCommand(playerid, CommandBindData[bind][i]);
 	}
 
 	return 1;
