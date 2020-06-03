@@ -11,7 +11,7 @@ new bool:HoldKeyPressed;
 OnPlayerKeyStateChangeCMD(playerid,newkeys,oldkeys)
 {
 	if(HoldKeyPressed && PRESSED(KEY_CROUCH) && !isnull(CommandBuffer[playerid][0]))
-        Command_ReProcess(playerid, CommandBuffer[playerid][0], 0); //BroadcastCommand(playerid, CommandBuffer[playerid][0]);
+        Command_ReProcess(playerid, sprintf("/%s", CommandBuffer[playerid][0]), 0); //BroadcastCommand(playerid, CommandBuffer[playerid][0]);
     
 	if(PRESSED(KEY_WALK))
         HoldKeyPressed = true;
@@ -24,7 +24,7 @@ OnPlayerKeyStateChangeCMD(playerid,newkeys,oldkeys)
 public OnPlayerCommandText(playerid, cmdtext[]) 
 {
 	//print(cmdtext);
-
+	
 	// Make every slot, start from slot 2, take the data from the slot before
 	for(new i = MAX_COMMAND_BUFFER - 1; i > 0; --i) {
 		//printf("i = %2i 1, CB[i] = %s, CB[i-1] = %s", i, CommandBuffer[playerid][i], CommandBuffer[playerid][i - 1]);
@@ -36,11 +36,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	// Insert the command and it's parameters into the buffer
 	//CommandBuffer[playerid][0][0] = EOS;
 	format(CommandBuffer[playerid][0], 128, "%s", cmdtext);
+	strtrim(CommandBuffer[playerid][0], "/");
 
 	#if defined CB_OnPlayerCommandText
 		CB_OnPlayerCommandText(playerid, cmdtext);
 	#endif
-	return 1;
+	return 0;
 }
 #if defined _ALS_OnPlayerCommandText
 	#undef OnPlayerCommandText

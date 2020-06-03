@@ -84,7 +84,7 @@ public OnPlayerConnect(playerid)
 			found = false;
 	}
 	if(warn)
-		printf("Warning: There's something missing or extra in /thelp for player %i.\n    (Report to Crayder on SA-MP Discord if this message ever shows)");
+		printf("Warning: There's something missing or extra in /thelp for player %i.\n    (Report to Crayder on SA-MP Discord if this message ever shows)", playerid);
 	
 	return 1;
 }
@@ -100,6 +100,8 @@ public OnPlayerDisconnect(playerid, reason)
 	ClearCopyBuffer(playerid);
 	return 1;
 }
+
+public OnPlayerClickMap(playerid, Float:fX, Float:fY, Float:fZ) return 0;
 
 SetCurrObject(playerid, index)
 {

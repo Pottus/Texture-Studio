@@ -1,5 +1,5 @@
 
-#define         MAX_EDIT_CARS                   10
+#define         MAX_EDIT_CARS                   1000
 #define         MAX_CAR_OBJECTS         		30
 #define         MAX_CAR_COMPONENTS              14
 
@@ -190,8 +190,6 @@ YCMD:avdeletecar(playerid, arg[], help)
     MapOpenCheck();
 
 	NoEditingMode(playerid);
-
-	EditCheck(playerid);
 
 	VehicleCheck(playerid);
 	

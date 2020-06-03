@@ -65,6 +65,7 @@ new Commands[][COMMAND_INFO] = {
     {1, 0, "odd"},
     
     {2, 0, "mtextures"},
+    {2, 0, "mtsearch"},
     {2, 0, "ttextures"},
     {2, 0, "stexture"},
     {2, 0, "mtset"},
