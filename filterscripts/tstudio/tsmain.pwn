@@ -15,6 +15,8 @@ public OnFilterScriptInit()
 	sqlite_LoadBindString();
 	
 	ResetSettings();
+
+	Streamer_ToggleErrorCallback(1); // Enable Streammer Error Callback
 	
 	#if defined AddSimpleModel // DL-SUPPORT
 	Streamer_SetVisibleItems(STREAMER_TYPE_OBJECT, 1500);
@@ -138,6 +140,9 @@ OnPlayerKeyStateChangeOEdit(playerid,newkeys,oldkeys)
 	return 0;
 }
 
+// player finished editing an object; Fix For new streamer version
+public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, Float:fY, Float:fZ, Float:fRotX, Float:fRotY, Float:fRotZ) return 0;
+
 // player finished editing an object
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
@@ -231,6 +236,11 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	forward MA_OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
 #endif
 
+
+
+// Player clicked a dynamic object; Fix For new streamer version
+public OnPlayerSelectObject(playerid, type, objectid, modelid, Float:fX, Float:fY, Float:fZ) return 0;
+
 // Player clicked a dynamic object
 public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, Float:z)
 {
@@ -282,6 +292,12 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 		}
 	}
 	return 1;
+}
+
+// Streamer Error Log
+public Streamer_OnPluginError(const error[])
+{
+	printf("Streamer Plugin Error: %s", error);
 }
 
 // Player clicked textdraw
@@ -3641,6 +3657,9 @@ YCMD:ogroup(playerid, arg[], help)
 	EditCheck(playerid);
 
 	NoEditingMode(playerid);
+
+	if (!(0 <= strval(arg) < MAX_GROUPS))
+		return SendClientMessage(playerid, STEALTH_YELLOW, "The group id must be from 0 to 200");
 
     new index = CurrObject[playerid];
 

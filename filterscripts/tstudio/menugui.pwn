@@ -1625,6 +1625,7 @@ YCMD:runbind(playerid, arg[], help)
 	return 1;
 }
 
+/*
 YCMD:makebind(playerid, arg[], help)
 {
 	if(help)
@@ -1642,7 +1643,7 @@ YCMD:makebind(playerid, arg[], help)
 	
 	for(new x; x < range; x++) { 
 		//CommandBindData[index][x] = CommandBuffer[playerid][range - 1 - x];
-		format(CommandBindData[index][x], 128, "/%s", CommandBuffer[playerid][range - 1 - x]);
+		format(CommandBindData[index][x], 128, "%s", CommandBuffer[playerid][range - 1 - x]);
 		printf("%i: %s", x, CommandBindData[index][x]);
 	}
 	
@@ -1653,7 +1654,7 @@ YCMD:makebind(playerid, arg[], help)
 	
 	return 1;
 }
-
+*/
 
 YCMD:bindeditor(playerid, arg[], help)
 {

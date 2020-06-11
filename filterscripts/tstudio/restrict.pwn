@@ -59,7 +59,7 @@ YCMD:restrict(playerid, arg[], help)
 	}
     
     if(!(0 < groupid <= 50))
-        return SendClientMessage(playerid, STEALTH_YELLOW, "You can only restrict groups 1-50");
+        return SendClientMessage(playerid, STEALTH_YELLOW, "You can only restrict groups 1-200");
     
     Iter_Clear(Restriction[groupid]);
     
