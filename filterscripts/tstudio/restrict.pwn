@@ -58,7 +58,7 @@ YCMD:restrict(playerid, arg[], help)
 		return 1;
 	}
     
-    if(!(0 < groupid <= 50))
+    if(!(0 < groupid < MAX_GROUPS))
         return SendClientMessage(playerid, STEALTH_YELLOW, "You can only restrict groups 1-200");
     
     Iter_Clear(Restriction[groupid]);
@@ -135,8 +135,8 @@ YCMD:unrestrict(playerid, arg[], help)
 		return 1;
 	}
     
-    if(!(0 < groupid <= 50))
-        return SendClientMessage(playerid, STEALTH_YELLOW, "You can only restrict groups 1-50");
+    if(!(0 < groupid < MAX_GROUPS))
+        return SendClientMessage(playerid, STEALTH_YELLOW, "You can only restrict groups 1-200");
     
     Iter_Clear(Restriction[groupid]);
     gRestricted[groupid] = false;
