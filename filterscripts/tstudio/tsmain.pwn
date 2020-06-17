@@ -224,7 +224,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	#if defined MA_OnPlayerEditDynamicObject
 		MA_OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
 	#endif
-	return 1;
+	return 0;
 }
 #if defined _ALS_OnPlayerEditDynamicObject
 	#undef OnPlayerEditDynamicObject
@@ -291,7 +291,7 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 			}
 		}
 	}
-	return 1;
+	return 0;
 }
 
 // Streamer Error Log
