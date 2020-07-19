@@ -180,7 +180,7 @@ new Commands[][COMMAND_INFO] = {
     {7, 8, "avmirror"},
     
     {8, 0, "runbind"},
-    {8, 0, "makebind"},
+    //{8, 0, "makebind"},
     {8, 0, "bindeditor"},
     
     {9, 0, "hidetext3d"},

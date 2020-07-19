@@ -1,3 +1,4 @@
+/*
 #define MAX_COMMAND_BUFFER          (20)
 
 new CommandBuffer[MAX_PLAYERS][MAX_COMMAND_BUFFER][128];
@@ -8,8 +9,11 @@ new CommandBuffer[MAX_PLAYERS][MAX_COMMAND_BUFFER][128];
 	(((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
 
 new bool:HoldKeyPressed;
+*/
 OnPlayerKeyStateChangeCMD(playerid,newkeys,oldkeys)
 {
+	#pragma unused playerid, newkeys, oldkeys
+	/*
 	if(HoldKeyPressed && PRESSED(KEY_CROUCH) && !isnull(CommandBuffer[playerid][0]))
         Command_ReProcess(playerid, sprintf("/%s", CommandBuffer[playerid][0]), 0); //BroadcastCommand(playerid, CommandBuffer[playerid][0]);
     
@@ -17,12 +21,14 @@ OnPlayerKeyStateChangeCMD(playerid,newkeys,oldkeys)
         HoldKeyPressed = true;
 	else if(RELEASED(KEY_WALK))
         HoldKeyPressed = false;
+    */
     
     return 0;
 }
 
 public OnPlayerCommandText(playerid, cmdtext[]) 
 {
+	/*
 	//print(cmdtext);
 	
 	// Make every slot, start from slot 2, take the data from the slot before
@@ -36,11 +42,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	// Insert the command and it's parameters into the buffer
 	//CommandBuffer[playerid][0][0] = EOS;
 	format(CommandBuffer[playerid][0], 128, "%s", cmdtext);
-	strtrim(CommandBuffer[playerid][0], "/");
+	*/
 
 	#if defined CB_OnPlayerCommandText
 		CB_OnPlayerCommandText(playerid, cmdtext);
 	#endif
+	
 	return 0;
 }
 #if defined _ALS_OnPlayerCommandText
@@ -55,13 +62,16 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 public OnPlayerConnect(playerid)
 {
+	/*
     // Reset the player's buffer
     new tmpCommandBuffer[MAX_COMMAND_BUFFER][128];
     CommandBuffer[playerid] = tmpCommandBuffer;
+    */
 
 	#if defined CB_OnPlayerConnect
 		CB_OnPlayerConnect(playerid);
 	#endif
+
 	return 1;
 }
 #if defined _ALS_OnPlayerConnect

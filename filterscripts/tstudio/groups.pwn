@@ -512,6 +512,9 @@ YCMD:setgroup(playerid, arg[], help)
     MapOpenCheck();
     NoEditingMode(playerid);
 
+    if (!(0 <= strval(arg) < MAX_GROUPS))
+		return SendClientMessage(playerid, STEALTH_YELLOW, sprintf("The group id must be from 0 to %d", MAX_GROUPS - 1));
+
     new groupid = strval(arg);
 
     new time = GetTickCount();

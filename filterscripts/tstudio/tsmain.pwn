@@ -15,6 +15,8 @@ public OnFilterScriptInit()
 	sqlite_LoadBindString();
 	
 	ResetSettings();
+
+	Streamer_ToggleErrorCallback(1); // Enable Streammer Error Callback
 	
 	#if defined AddSimpleModel // DL-SUPPORT
 	Streamer_SetVisibleItems(STREAMER_TYPE_OBJECT, 1500);
@@ -138,6 +140,9 @@ OnPlayerKeyStateChangeOEdit(playerid,newkeys,oldkeys)
 	return 0;
 }
 
+// player finished editing an object; Fix For new streamer version
+public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, Float:fY, Float:fZ, Float:fRotX, Float:fRotY, Float:fRotZ) return 0;
+
 // player finished editing an object
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
@@ -219,7 +224,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	#if defined MA_OnPlayerEditDynamicObject
 		MA_OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
 	#endif
-	return 1;
+	return 0;
 }
 #if defined _ALS_OnPlayerEditDynamicObject
 	#undef OnPlayerEditDynamicObject
@@ -230,6 +235,11 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 #if defined MA_OnPlayerEditDynamicObject
 	forward MA_OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
 #endif
+
+
+
+// Player clicked a dynamic object; Fix For new streamer version
+public OnPlayerSelectObject(playerid, type, objectid, modelid, Float:fX, Float:fY, Float:fZ) return 0;
 
 // Player clicked a dynamic object
 public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, Float:z)
@@ -281,7 +291,13 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 			}
 		}
 	}
-	return 1;
+	return 0;
+}
+
+// Streamer Error Log
+public Streamer_OnPluginError(const error[])
+{
+	printf("Streamer Plugin Error: %s", error);
 }
 
 // Player clicked textdraw
@@ -3641,6 +3657,9 @@ YCMD:ogroup(playerid, arg[], help)
 	EditCheck(playerid);
 
 	NoEditingMode(playerid);
+
+	if (!(0 <= strval(arg) < MAX_GROUPS))
+		return SendClientMessage(playerid, STEALTH_YELLOW, sprintf("The group id must be from 0 to %d", MAX_GROUPS - 1));
 
     new index = CurrObject[playerid];
 
