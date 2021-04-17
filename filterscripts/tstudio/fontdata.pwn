@@ -1,6 +1,6 @@
 // Font Names
 stock const FontNames[][] = {
-	"Ariel",
+	"Arial",
 	"courier",
 	"Webdings",
 	"Wingdings",

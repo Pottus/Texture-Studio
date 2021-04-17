@@ -4476,7 +4476,7 @@ YCMD:sindex(playerid, arg[], help)
 			i,
 			line,
 			10,
-			"Ariel",
+			"Arial",
 			size,
 			1,
 			ShowIndexColors[i][FaceColor],

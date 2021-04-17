@@ -659,7 +659,7 @@ CreatePlayerTextDraws(playerid)
 	PlayerTextDrawTextSize(playerid,Click_SetText[playerid], 497.000000, 8.000000);
 	PlayerTextDrawSetSelectable(playerid,Click_SetText[playerid], 1);
 
-	Click_SetFont[playerid] = CreatePlayerTextDraw(playerid,141.000000, 170.000000, "Ariel");
+	Click_SetFont[playerid] = CreatePlayerTextDraw(playerid,141.000000, 170.000000, "Arial");
 	PlayerTextDrawBackgroundColor(playerid,Click_SetFont[playerid], 255);
 	PlayerTextDrawFont(playerid,Click_SetFont[playerid], 2);
 	PlayerTextDrawLetterSize(playerid,Click_SetFont[playerid], 0.300000, 1.000000);
