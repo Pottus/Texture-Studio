@@ -607,6 +607,9 @@ sqlite_CreateSettings()
 	db_exec(EditMap, NewSettingsString);
 }
 
+
+
+
 new DBStatement:insertsettingstmt;
 new InitSettingsString[512];
 sqlite_InitSettings()

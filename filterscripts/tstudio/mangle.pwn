@@ -26,6 +26,7 @@ public OnFilterScriptInit()
 
 new Float:GroupSlopeRX[MAX_PLAYERS], Float:GroupSlopeRY[MAX_PLAYERS];
 
+
 /* Debug Command
 YCMD:gs(playerid, arg[], help)
 {
@@ -36,6 +37,7 @@ YCMD:gs(playerid, arg[], help)
     SendClientMessage(playerid, -1, line);
 	return 1;
 }*/
+
 
 
 // Load a prefab specify a filename
@@ -209,6 +211,7 @@ YCMD:editgroups(playerid, arg[], help)
 	return 1;
 }
 
+
 // Rotate object on ground slope
 YCMD:osets(playerid, arg[], help)
 {
@@ -307,7 +310,7 @@ YCMD:cobjectsets(playerid, arg[], help)
 	if(sscanf(arg, "iF(0.0)", modelid, RZAngle))
 	{
 	    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
-        SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /csobject <modelid>");
+        SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /cobjectsets <modelid>");
 		return 1;
 	}
 
@@ -323,12 +326,14 @@ YCMD:cobjectsets(playerid, arg[], help)
 	//new Float:angle = float(random(360));
 	//ObjectRotateZ(RXAngle, RYAngle, RZAngle, angle, RXAngle, RYAngle, RZAngle);
 
-	// Create the object
 	SetCurrObject(playerid, AddDynamicObject(modelid, px, py, pz, RXAngle, RYAngle, RZAngle));
 
 	// Object was created
 	if(CurrObject[playerid] != -1)
 	{
+		// Update text
+	    UpdateObject3DText(CurrObject[playerid], true);
+	
 		// Update the streamer for this player
         Streamer_Update(playerid);
 
@@ -352,6 +357,82 @@ YCMD:cobjectsets(playerid, arg[], help)
 
 	return 1;
 }
+
+
+YCMD:csnap(playerid, arg[], help)
+{
+	if(help)
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, "Creates a rotated object according to the map slope (Snap Method) and selects it.");
+		return 1;
+	}
+
+    MapOpenCheck();
+	NoEditingMode(playerid);
+
+ 	new modelid, Float:RZAngle;
+	if(sscanf(arg, "iF(0.0)", modelid, RZAngle))
+	{
+	    SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+        SendClientMessage(playerid, STEALTH_YELLOW, "Usage: /csnap <modelid>");
+		return 1;
+	}
+
+	// Set the initial object position
+	new Float:px, Float:py, Float:pz, Float:fa, Float:RXAngle, Float:RYAngle, Float:minZ, Float:tmp;
+	new Float:colradius = GetColSphereRadius(modelid);
+	GetPosFaInFrontOfPlayer(playerid, colradius + 1.0, px, py, pz, fa);
+
+	if(!CA_RayCastLine(px, py, pz + 500.0, px, py, pz - 500.0, px, py, pz))
+	{
+        SendClientMessage(playerid, STEALTH_YELLOW, "No surface found");
+		return 1;
+	}
+	
+
+	CA_GetModelBoundingBox(modelid, tmp, tmp, minZ, tmp, tmp, tmp);
+	
+	// Calculate rotation
+	//CalcSlopeAtPoint(px, py, RXAngle, RYAngle);
+	CA_RayCastLineAngle(px, py, 1200.0, px, py, -100.0, fa, fa, fa, RXAngle, RYAngle, RZAngle);
+	//new Float:angle = float(random(360));
+	//ObjectRotateZ(RXAngle, RYAngle, RZAngle, angle, RXAngle, RYAngle, RZAngle);
+	SetCurrObject(playerid, AddDynamicObject(modelid, px, py, pz-floatabs(minZ), RXAngle, RYAngle, RZAngle));
+
+	// Object was created
+	if(CurrObject[playerid] != -1)
+	{
+		// Update text
+	    UpdateObject3DText(CurrObject[playerid], true);
+	
+		// Update the streamer for this player
+        Streamer_Update(playerid);
+
+		SaveUndoInfo(CurrObject[playerid], UNDO_TYPE_CREATED);
+
+		// Show output message
+		new line[128];
+		new modelarray = GetModelArray(modelid);
+		if(modelarray > -1) format(line, sizeof(line), "Created Object Index: %i Model Name: %s", CurrObject[playerid], GetModelName(modelarray));
+		else format(line, sizeof(line), "Created Object Index: %i Model Name: Unknown", CurrObject[playerid]);
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_GREEN, line);
+
+	}
+	// Too many objects already created
+	else
+	{
+		SendClientMessage(playerid, STEALTH_ORANGE, "______________________________________________");
+		SendClientMessage(playerid, STEALTH_YELLOW, "You have too many objects created to create anymore!");
+	}
+
+	return 1;
+}
+
+
+
+
 
 
 

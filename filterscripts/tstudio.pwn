@@ -209,7 +209,7 @@ Change Log:
 // #define GUI_DEBUG
 
 // Compile the Angular Map Extension module
-//#define COMPILE_MANGLE
+// #define COMPILE_MANGLE
 
 // Compile the local input module for advanced keys and mouse control
 //#define COMPILE_LOCAL_INPUT

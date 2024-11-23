@@ -202,6 +202,7 @@ new Commands[][COMMAND_INFO] = {
 #if defined MANGLE
     ,{10, 9, "cobjectsets"},
     {10, 9, "osets"},
+    {10, 9, "csnap"},
     
     {10, 10, "gsets"},
     
